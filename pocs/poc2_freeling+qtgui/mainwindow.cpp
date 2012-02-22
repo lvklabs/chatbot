@@ -14,11 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->input, SIGNAL(returnPressed()), SLOT(lemmatize()));
     connect(ui->input, SIGNAL(textEdited(QString)), SLOT(lemmatize()));
 
-    std::string tokenizerConfigFile = "/home/andres/Downloads/FreeLing/FreeLing-2.2.2/data/es/tokenizer.dat";
-    std::string splitterConfigFile = "/home/andres/Downloads/FreeLing/FreeLing-2.2.2/data/es/splitter.dat";
-    std::string diccFile = "/home/andres/Downloads/FreeLing/FreeLing-2.2.2/data/es/dicc.src";
-
-    m_lemmatizer =  new Lemmatizer(tokenizerConfigFile, splitterConfigFile, diccFile);
+    m_lemmatizer =  new Lemmatizer();
 }
 
 MainWindow::~MainWindow()

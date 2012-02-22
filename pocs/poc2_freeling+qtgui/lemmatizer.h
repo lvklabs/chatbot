@@ -8,7 +8,7 @@
 class Lemmatizer
 {
 public:
-    Lemmatizer(const std::string &tokenizerConfigFile, const std::string &splitterConfigFile, const std::string &dictFile);
+    Lemmatizer();
     ~Lemmatizer();
 
     std::list<sentence> lemmatize(const std::string& input);
