@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<aiml>
+
+<category>
+    <pattern>HELLO</pattern>
+    <template>Hi $NICKNAME!</template>
+</category>
+
+<category>
+    <pattern>HI</pattern>
+    <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+    <pattern>HI *</pattern>
+    <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+    <pattern>HOLA</pattern>
+    <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+    <pattern>HOLA *</pattern>
+    <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+    <pattern>WHAT ARE YOU</pattern>
+    <template>I'm a chatbot</template>
+</category>
+
+<category>
+    <pattern>WHAT IS YOUR NAME</pattern>
+    <template>Andres</template>
+</category>
+
+<category>
+    <pattern>* YOUR NAME</pattern>
+    <template><srai>WHAT IS YOUR NAME</srai></template>
+</category>
+
+<category>
+    <pattern>_ TONTO</pattern>
+    <template><srai>TONTO</srai></template>
+</category>
+
+<category>
+    <pattern>_ ÑOÑO</pattern>
+    <template><srai>ÑOÑO</srai></template>
+</category>
+
+<category>
+    <pattern>TONTO</pattern>
+    <template>Tonto serás vos!</template>
+</category>
+
+<category>
+    <pattern>ÑOÑO</pattern>
+    <template>Ñoño serás vos!</template>
+</category>
+</aiml>
+
+
