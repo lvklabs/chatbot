@@ -20,62 +20,15 @@
       <item row="0" column="0">
        <widget class="QTabWidget" name="mainTabWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="trainTab">
          <attribute name="title">
-          <string>Entrenar</string>
+          <string>Enseñar</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="2">
            <layout class="QGridLayout" name="trainTabGridLayout" columnstretch="2,0,0,3">
-            <item row="1" column="0" rowspan="5" colspan="2">
-             <widget class="QTreeWidget" name="categoriesTree">
-              <property name="mouseTracking">
-               <bool>true</bool>
-              </property>
-              <column>
-               <property name="text">
-                <string>Reglas</string>
-               </property>
-              </column>
-              <item>
-               <property name="text">
-                <string>Saludos</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Hola</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Buen día</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Buenas tardes</string>
-                </property>
-               </item>
-              </item>
-              <item>
-               <property name="text">
-                <string>Preguntas Personales</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>¿Cuál es tu nombre?</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>¿Cuantos años tienes?</string>
-                </property>
-               </item>
-              </item>
-             </widget>
-            </item>
             <item row="0" column="2" rowspan="6">
              <spacer name="trainTabSpacer1">
               <property name="orientation">
@@ -96,41 +49,65 @@
              <layout class="QHBoxLayout" name="rulesToolbarLayout">
               <item>
                <widget class="QToolButton" name="addRuleButton">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="toolTip">
                  <string>Agregar regla</string>
                 </property>
                 <property name="text">
-                 <string>+R</string>
+                 <string>Agregar
+Regla</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QToolButton" name="rmRuleButton">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="toolTip">
                  <string>Borrar regla</string>
                 </property>
                 <property name="text">
-                 <string> - R</string>
+                 <string> Borrar
+Regla</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QToolButton" name="addCategoryButton">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="toolTip">
                  <string>Agregar categoría</string>
                 </property>
                 <property name="text">
-                 <string>+C</string>
+                 <string>Agregar
+Categoría</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QToolButton" name="rmCategoryButton">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="toolTip">
                  <string>Borrar categoría</string>
                 </property>
                 <property name="text">
-                 <string>-C</string>
+                 <string>Borrar
+Categoría</string>
                 </property>
                </widget>
               </item>
@@ -153,6 +130,9 @@
              <widget class="QLabel" name="ifUserWritesLabel">
               <property name="text">
                <string>Si el usuario escribe:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
               </property>
              </widget>
             </item>
@@ -178,6 +158,13 @@
               <property name="plainText">
                <string>Cual es tu nombre?
 Como te llamas?</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" rowspan="5" colspan="2">
+             <widget class="QTreeView" name="categoriesTree">
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -333,8 +320,21 @@ Como te llamas?</string>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="0">
            <layout class="QGridLayout" name="conversationTabGridLayout" columnstretch="2,3">
+            <item row="0" column="0" colspan="2">
+             <widget class="QLabel" name="conversationHeaderLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Conversaciones mantenidas con el chatbot:</string>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
-             <widget class="QTableWidget" name="conversationContactsTable">
+             <widget class="QTableView" name="conversationContactsTable">
               <property name="font">
                <font>
                 <pointsize>8</pointsize>
@@ -349,69 +349,16 @@ Como te llamas?</string>
               <property name="sortingEnabled">
                <bool>true</bool>
               </property>
-              <attribute name="horizontalHeaderStretchLastSection">
+              <attribute name="verticalHeaderCascadingSectionResizes">
                <bool>true</bool>
               </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>0</number>
               </attribute>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Fecha/Hora</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Contacto</string>
-               </property>
-              </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>10/02/12 12:22</string>
-               </property>
-              </item>
-              <item row="0" column="1">
-               <property name="text">
-                <string>paglian@gmail.com</string>
-               </property>
-              </item>
-              <item row="1" column="0">
-               <property name="text">
-                <string>09/02/12 16:55</string>
-               </property>
-              </item>
-              <item row="1" column="1">
-               <property name="text">
-                <string>pablo@pablopda.com.ar</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="2">
-             <widget class="QLabel" name="conversationHeaderLabel">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Conversaciones mantenidas con el chatbot:</string>
-              </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QTableWidget" name="conversationTable">
+             <widget class="QTableView" name="conversationTable">
               <property name="font">
                <font>
                 <pointsize>8</pointsize>
@@ -432,182 +379,12 @@ Como te llamas?</string>
               <property name="sortingEnabled">
                <bool>true</bool>
               </property>
-              <attribute name="horizontalHeaderStretchLastSection">
+              <attribute name="verticalHeaderCascadingSectionResizes">
                <bool>true</bool>
               </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>0</number>
               </attribute>
-              <row>
-               <property name="text">
-                <string>Contacto</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Chatbot</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Contacto</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Chatbot</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Contacto</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Chatbot</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Hora</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Conversación</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Estado</string>
-               </property>
-              </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>10:23:12</string>
-               </property>
-              </item>
-              <item row="0" column="1">
-               <property name="text">
-                <string>Hola</string>
-               </property>
-              </item>
-              <item row="0" column="2">
-               <property name="text">
-                <string/>
-               </property>
-              </item>
-              <item row="1" column="0">
-               <property name="text">
-                <string>10:23:23</string>
-               </property>
-              </item>
-              <item row="1" column="1">
-               <property name="text">
-                <string>Cuanto es 2+2?</string>
-               </property>
-              </item>
-              <item row="2" column="0">
-               <property name="text">
-                <string>10:23:20</string>
-               </property>
-              </item>
-              <item row="2" column="1">
-               <property name="text">
-                <string>MiBot</string>
-               </property>
-              </item>
-              <item row="2" column="2">
-               <property name="text">
-                <string>Ok</string>
-               </property>
-               <property name="textAlignment">
-                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>85</red>
-                  <green>170</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="3" column="0">
-               <property name="text">
-                <string>10:23:19</string>
-               </property>
-              </item>
-              <item row="3" column="1">
-               <property name="text">
-                <string>Como te llamas?</string>
-               </property>
-              </item>
-              <item row="4" column="0">
-               <property name="text">
-                <string>10:23:14</string>
-               </property>
-              </item>
-              <item row="4" column="1">
-               <property name="text">
-                <string>Hola!</string>
-               </property>
-              </item>
-              <item row="4" column="2">
-               <property name="text">
-                <string>Ok</string>
-               </property>
-               <property name="textAlignment">
-                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>85</red>
-                  <green>170</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="5" column="0">
-               <property name="text">
-                <string>10:23:27</string>
-               </property>
-              </item>
-              <item row="5" column="1">
-               <property name="text">
-                <string>No entiendo tu pregunta</string>
-               </property>
-              </item>
-              <item row="5" column="2">
-               <property name="text">
-                <string>Falló</string>
-               </property>
-               <property name="textAlignment">
-                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-               </property>
-               <property name="background">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
              </widget>
             </item>
            </layout>

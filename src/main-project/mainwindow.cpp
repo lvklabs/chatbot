@@ -43,7 +43,7 @@ void MainWindow::clear()
     ui->rightSideTabWidget->setCurrentIndex(0);
 
     // train tab widgets
-    ui->categoriesTree->clear();
+    // TODO clear ui->categoriesTree
     ui->ruleInputText->clear();
     ui->ruleOutputText->clear();
 
@@ -53,12 +53,8 @@ void MainWindow::clear()
     ui->passwordText->clear();
 
     // conversation tab widgets
-    ui->conversationContactsTable->clear();
-    ui->conversationContactsTable->setRowCount(0);
-    ui->conversationTable->clear();
-    ui->conversationTable->setRowCount(0);
-    ui->conversationTable->setColumnWidth(0, 60);
-    ui->conversationTable->setColumnWidth(1, 300);
+    // TODO clear ui->conversationContactsTable
+    // TODO clear ui->conversationTable
 
     // help tab widgets
     ui->helpLabel->clear();
