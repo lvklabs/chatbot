@@ -25,8 +25,8 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="90"/>
-        <location filename="mainwindow.cpp" line="137"/>
-        <location filename="mainwindow.cpp" line="147"/>
+        <location filename="mainwindow.cpp" line="142"/>
+        <location filename="mainwindow.cpp" line="152"/>
         <source>Add category</source>
         <translation>Agregar categoría</translation>
     </message>
@@ -115,31 +115,33 @@
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="138"/>
+        <location filename="mainwindow.cpp" line="143"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="148"/>
+        <location filename="mainwindow.cpp" line="153"/>
         <source>The category name cannot be empty</source>
         <translation>No se puede agregar una categoría sin nombre</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="166"/>
+        <location filename="mainwindow.cpp" line="171"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
-        <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?\nTodas las reglas que pertenecen a esta categoría también serán borradas</translation>
+        <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
+Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="170"/>
-        <location filename="mainwindow.cpp" line="177"/>
+        <location filename="mainwindow.cpp" line="175"/>
+        <location filename="mainwindow.cpp" line="182"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="178"/>
-        <source>Please select a category</source>
-        <translation>Borrar categoría</translation>
+        <location filename="mainwindow.cpp" line="183"/>
+        <source>Select the category you want to remove</source>
+        <oldsource>Select a category</oldsource>
+        <translation>Seleccione la categoría que desea borrar</translation>
     </message>
 </context>
 </TS>

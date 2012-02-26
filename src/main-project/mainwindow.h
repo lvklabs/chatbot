@@ -30,6 +30,7 @@ namespace Ui {
 
 class QStandardItem;
 class QStandardItemModel;
+class QItemSelectionModel;
 
 class MainWindow : public QMainWindow
 {
@@ -50,6 +51,7 @@ private:
     Ui::MainWindow *ui;
 
     QStandardItemModel *m_categoriesTreeModel;
+    QItemSelectionModel *m_categoriesSelectionModel;
 
     void initModels();
 

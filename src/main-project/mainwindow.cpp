@@ -82,6 +82,9 @@ void MainWindow::initModels()
 
     ui->categoriesTree->setModel(m_categoriesTreeModel);
 
+    m_categoriesSelectionModel = ui->categoriesTree->selectionModel();
+
+    ////////////////////////////////////////////////////////////////////////
     // TODO read from file:
 
     QStandardItem *catGreetings    = addCategory("Saludos");
@@ -98,13 +101,15 @@ void MainWindow::initModels()
     addRule("Chau!", catGoodbye);
     addRule("Nos vemos!", catGoodbye);
     addRule("Me voy", catGoodbye);
+
+    ////////////////////////////////////////////////////////////////////////
 }
 
 QStandardItem *MainWindow::addCategory(const QString &name)
 {
     const QIcon CATEGORY_ICON(":/icons/category_16x16.png");
 
-    QStandardItem *category = new QStandardItem(CATEGORY_ICON, tr(name.toAscii()));
+    QStandardItem *category = new QStandardItem(CATEGORY_ICON, name);
 
     m_categoriesTreeModel->invisibleRootItem()->appendRow(category);
 
@@ -118,7 +123,7 @@ void MainWindow::removeCategory(int row)
 
 QStandardItem *MainWindow::addRule(const QString &name, QStandardItem *category)
 {
-    QStandardItem *rule = new QStandardItem(tr(name.toAscii()));
+    QStandardItem *rule = new QStandardItem(name);
 
     category->appendRow(rule);
 
@@ -141,8 +146,8 @@ void MainWindow::addCategoryWithInputDialog()
     if (ok) {
         if (!name.isEmpty()) {
             QStandardItem *category = addCategory(name);
-            ui->categoriesTree->selectionModel()->setCurrentIndex
-                    (category->index(), QItemSelectionModel::ClearAndSelect);
+            m_categoriesSelectionModel->setCurrentIndex(category->index(),
+                                                        QItemSelectionModel::ClearAndSelect);
         } else {
             QMessageBox msg(QMessageBox::Critical, tr("Add category"),
                             tr("The category name cannot be empty"), QMessageBox::Ok, this);
@@ -158,7 +163,7 @@ void MainWindow::addRuleWithInputDialog()
 
 void MainWindow::removeSelectedCategory()
 {
-    QModelIndexList selectedRows = ui->categoriesTree->selectionModel()->selectedRows();
+    QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
     if (selectedRows.size() > 0) {
         QModelIndex selectedIndex = selectedRows[0];
@@ -175,7 +180,7 @@ void MainWindow::removeSelectedCategory()
         }
     } else {
         QMessageBox msg(QMessageBox::Critical, tr("Remove category"),
-                        tr("Please select a category"), QMessageBox::Ok, this);
+                        tr("Select the category you want to remove"), QMessageBox::Ok, this);
         msg.exec();
     }
 }
