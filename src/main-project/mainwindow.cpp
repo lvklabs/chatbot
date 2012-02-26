@@ -141,11 +141,11 @@ void MainWindow::addCategoryWithInputDialog()
     if (ok) {
         if (!name.isEmpty()) {
             QStandardItem *category = addCategory(name);
-            ui->categoriesTree->selectionModel()->setCurrentIndex(category->index(),
-                                                                  QItemSelectionModel::ClearAndSelect);
+            ui->categoriesTree->selectionModel()->setCurrentIndex
+                    (category->index(), QItemSelectionModel::ClearAndSelect);
         } else {
-            QMessageBox msg(QMessageBox::Critical, "Add category",
-                            "The category name cannot be empty", QMessageBox::Ok, this);
+            QMessageBox msg(QMessageBox::Critical, tr("Add category"),
+                            tr("The category name cannot be empty"), QMessageBox::Ok, this);
             msg.exec();
         }
     }
@@ -163,19 +163,19 @@ void MainWindow::removeSelectedCategory()
     if (selectedRows.size() > 0) {
         QModelIndex selectedIndex = selectedRows[0];
 
-        QString text = QString("Are you sure you want to remove the category '%0'?\n"
-                               "All rules belonging to that category will be also removed")
+        QString text = QString(tr("Are you sure you want to remove the category '%0'?\n"
+                                  "All rules belonging to that category will be also removed"))
                 .arg(selectedIndex.data(Qt::DisplayRole).toString());
 
-        QMessageBox msg(QMessageBox::Critical, "Remove category",
+        QMessageBox msg(QMessageBox::Critical, tr("Remove category"),
                         text, QMessageBox::Yes | QMessageBox::No, this);
 
         if (msg.exec() == QMessageBox::Yes) {
             removeCategory(selectedIndex.row());
         }
     } else {
-        QMessageBox msg(QMessageBox::Critical, "Remove category",
-                        "Please select a category", QMessageBox::Ok, this);
+        QMessageBox msg(QMessageBox::Critical, tr("Remove category"),
+                        tr("Please select a category"), QMessageBox::Ok, this);
         msg.exec();
     }
 }

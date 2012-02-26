@@ -6,4 +6,7 @@
         <file alias="remove_category_32x32.png">res/remove_category_32x32.png</file>
         <file alias="remove_32x32.png">res/remove_32x32.png</file>
     </qresource>
+    <qresource prefix="/strings">
+        <file alias="strings_es.qm">strings_es.qm</file>
+    </qresource>
 </RCC>

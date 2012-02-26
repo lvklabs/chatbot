@@ -20,7 +20,7 @@
       <item row="0" column="0">
        <widget class="QTabWidget" name="mainTabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="trainTab">
          <attribute name="title">
@@ -57,10 +57,6 @@
                 <property name="toolTip">
                  <string>Add rule</string>
                 </property>
-                <property name="text">
-                 <string>Agregar
-Regla</string>
-                </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
                   <normaloff>:/icons/add_32x32.png</normaloff>:/icons/add_32x32.png</iconset>
@@ -76,10 +72,6 @@ Regla</string>
                 </property>
                 <property name="toolTip">
                  <string>Remove rule</string>
-                </property>
-                <property name="text">
-                 <string> Borrar
-Regla</string>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
@@ -97,10 +89,6 @@ Regla</string>
                 <property name="toolTip">
                  <string>Add category</string>
                 </property>
-                <property name="text">
-                 <string>Agregar
-Categoría</string>
-                </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
                   <normaloff>:/icons/add_category_32x32.png</normaloff>:/icons/add_category_32x32.png</iconset>
@@ -116,10 +104,6 @@ Categoría</string>
                 </property>
                 <property name="toolTip">
                  <string>Remove Category</string>
-                </property>
-                <property name="text">
-                 <string>Borrar
-Categoría</string>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
@@ -254,9 +238,6 @@ Categoría</string>
                 <height>16777215</height>
                </size>
               </property>
-              <property name="text">
-               <string>andres.pagliano</string>
-              </property>
              </widget>
             </item>
             <item row="5" column="0">
@@ -282,9 +263,6 @@ Categoría</string>
                 <width>150</width>
                 <height>16777215</height>
                </size>
-              </property>
-              <property name="text">
-               <string>xxxxx</string>
               </property>
               <property name="echoMode">
                <enum>QLineEdit::Password</enum>
@@ -450,56 +428,6 @@ Categoría</string>
     </item>
    </layout>
   </widget>
-  <action name="actionAbrir">
-   <property name="text">
-    <string>Abrir...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
-  </action>
-  <action name="actionGuardar">
-   <property name="text">
-    <string>Guardar</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionSalir">
-   <property name="text">
-    <string>Salir</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionGuardar_como">
-   <property name="text">
-    <string>Guardar como...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
-   </property>
-  </action>
-  <action name="actionMostrar_ayuda">
-   <property name="text">
-    <string>Mostrar ayuda</string>
-   </property>
-   <property name="shortcut">
-    <string>F1</string>
-   </property>
-  </action>
-  <action name="actionReportar_un_error">
-   <property name="text">
-    <string>Reportar un error</string>
-   </property>
-  </action>
-  <action name="actionAcerca_de">
-   <property name="text">
-    <string>Acerca de...</string>
-   </property>
-  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>

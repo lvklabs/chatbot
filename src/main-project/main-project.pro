@@ -16,15 +16,5 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
-
-
-
-
-
-
-
-
-
-
-
+TRANSLATIONS = strings_es.ts
 
