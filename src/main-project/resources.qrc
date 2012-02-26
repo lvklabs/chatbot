@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="category_16x16.png">res/category_16x16.png</file>
+        <file alias="add_32x32.png">res/add_32x32.png</file>
+        <file alias="add_category_32x32.png">res/add_category_32x32.png</file>
+        <file alias="remove_category_32x32.png">res/remove_category_32x32.png</file>
+        <file alias="remove_32x32.png">res/remove_32x32.png</file>
+    </qresource>
+</RCC>

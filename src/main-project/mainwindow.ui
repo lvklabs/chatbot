@@ -24,7 +24,7 @@
         </property>
         <widget class="QWidget" name="trainTab">
          <attribute name="title">
-          <string>Enseñar</string>
+          <string>Teach</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="2">
@@ -55,11 +55,15 @@
                  </font>
                 </property>
                 <property name="toolTip">
-                 <string>Agregar regla</string>
+                 <string>Add rule</string>
                 </property>
                 <property name="text">
                  <string>Agregar
 Regla</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/icons/add_32x32.png</normaloff>:/icons/add_32x32.png</iconset>
                 </property>
                </widget>
               </item>
@@ -71,11 +75,15 @@ Regla</string>
                  </font>
                 </property>
                 <property name="toolTip">
-                 <string>Borrar regla</string>
+                 <string>Remove rule</string>
                 </property>
                 <property name="text">
                  <string> Borrar
 Regla</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
                 </property>
                </widget>
               </item>
@@ -87,11 +95,15 @@ Regla</string>
                  </font>
                 </property>
                 <property name="toolTip">
-                 <string>Agregar categoría</string>
+                 <string>Add category</string>
                 </property>
                 <property name="text">
                  <string>Agregar
 Categoría</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/icons/add_category_32x32.png</normaloff>:/icons/add_category_32x32.png</iconset>
                 </property>
                </widget>
               </item>
@@ -103,11 +115,15 @@ Categoría</string>
                  </font>
                 </property>
                 <property name="toolTip">
-                 <string>Borrar categoría</string>
+                 <string>Remove Category</string>
                 </property>
                 <property name="text">
                  <string>Borrar
 Categoría</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/icons/remove_category_32x32.png</normaloff>:/icons/remove_category_32x32.png</iconset>
                 </property>
                </widget>
               </item>
@@ -129,7 +145,7 @@ Categoría</string>
             <item row="0" column="3">
              <widget class="QLabel" name="ifUserWritesLabel">
               <property name="text">
-               <string>Si el usuario escribe:</string>
+               <string>If user writes:</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -139,7 +155,7 @@ Categoría</string>
             <item row="2" column="3">
              <widget class="QLabel" name="chatbotRepliesLabel">
               <property name="text">
-               <string>El chatbot responde:</string>
+               <string>Chatbot replies:</string>
               </property>
              </widget>
             </item>
@@ -148,18 +164,10 @@ Categoría</string>
               <property name="mouseTracking">
                <bool>true</bool>
               </property>
-              <property name="plainText">
-               <string>Mi nombre es MiBot</string>
-              </property>
              </widget>
             </item>
             <item row="1" column="3">
-             <widget class="QPlainTextEdit" name="ruleInputText">
-              <property name="plainText">
-               <string>Cual es tu nombre?
-Como te llamas?</string>
-              </property>
-             </widget>
+             <widget class="QPlainTextEdit" name="ruleInputText"/>
             </item>
             <item row="1" column="0" rowspan="5" colspan="2">
              <widget class="QTreeView" name="categoriesTree">
@@ -174,7 +182,7 @@ Como te llamas?</string>
         </widget>
         <widget class="QWidget" name="chatTab">
          <attribute name="title">
-          <string>Conectar con chat</string>
+          <string>Connect with chat</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="1">
@@ -182,20 +190,7 @@ Como te llamas?</string>
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
-            <item row="0" column="1">
-             <spacer name="chatTabSpacer1">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="0">
+            <item row="0" column="0">
              <widget class="QLabel" name="connectWithChatLabel">
               <property name="font">
                <font>
@@ -204,7 +199,7 @@ Como te llamas?</string>
                </font>
               </property>
               <property name="text">
-               <string>Conectar con chat:</string>
+               <string>Connect with chat:</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -224,7 +219,7 @@ Como te llamas?</string>
             <item row="2" column="1">
              <widget class="QRadioButton" name="gtalkChatRadio">
               <property name="text">
-               <string>Gmail o Google Talk</string>
+               <string>Gmail or Google Talk</string>
               </property>
              </widget>
             </item>
@@ -244,7 +239,7 @@ Como te llamas?</string>
             <item row="4" column="0">
              <widget class="QLabel" name="usernameLabel">
               <property name="text">
-               <string>Usuario:</string>
+               <string>Username:</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -273,7 +268,7 @@ Como te llamas?</string>
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Contraseña:</string>
+               <string>Password:</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -305,7 +300,7 @@ Como te llamas?</string>
                </size>
               </property>
               <property name="text">
-               <string>Conectar</string>
+               <string>Connect</string>
               </property>
              </widget>
             </item>
@@ -315,7 +310,7 @@ Como te llamas?</string>
         </widget>
         <widget class="QWidget" name="conversationsTab">
          <attribute name="title">
-          <string>Ver conversaciones</string>
+          <string>Conversations</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="0">
@@ -329,7 +324,7 @@ Como te llamas?</string>
                </font>
               </property>
               <property name="text">
-               <string>Conversaciones mantenidas con el chatbot:</string>
+               <string>Conversations held with the chatbot:</string>
               </property>
              </widget>
             </item>
@@ -398,11 +393,11 @@ Como te llamas?</string>
     <item row="1" column="1">
      <widget class="QTabWidget" name="rightSideTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="helpTab">
        <attribute name="title">
-        <string>Ayuda</string>
+        <string>Help</string>
        </attribute>
        <widget class="QLabel" name="helpLabel">
         <property name="geometry">
@@ -414,7 +409,7 @@ Como te llamas?</string>
          </rect>
         </property>
         <property name="text">
-         <string>La ayuda se actualiza en esta zona a medida que el usuario mueve el mouse sobre los controles</string>
+         <string>Help is displayed here while user moves the mouse over controls</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -426,13 +421,13 @@ Como te llamas?</string>
       </widget>
       <widget class="QWidget" name="testTab">
        <attribute name="title">
-        <string>Prueba tu chatbot</string>
+        <string>Test your chatbot</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QLabel" name="testLabel">
           <property name="text">
-           <string>Prueba:</string>
+           <string>Test:</string>
           </property>
          </widget>
         </item>
@@ -441,24 +436,13 @@ Como te llamas?</string>
           <property name="readOnly">
            <bool>true</bool>
           </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt; - Hola&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#550000;&quot;&gt;Hola!&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt; - ¿Como te llamas?&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#550000;&quot;&gt;Mi nombre es MiBot&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <property name="overwriteMode">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="testInputText">
-          <property name="text">
-           <string>Cuantos años tie</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="testInputText"/>
         </item>
        </layout>
       </widget>
@@ -517,6 +501,8 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

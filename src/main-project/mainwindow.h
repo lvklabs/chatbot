@@ -28,6 +28,9 @@ namespace Ui {
     class MainWindow;
 }
 
+class QStandardItem;
+class QStandardItemModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,8 +41,23 @@ public:
 
     void clear();
 
+    QStandardItem *addCategory(const QString &name);
+    QStandardItem *addRule(const QString &name, QStandardItem *category);
+    void removeCategory(int row);
+    void removeRule(int row, QStandardItem *category);
+
 private:
     Ui::MainWindow *ui;
+
+    QStandardItemModel *m_categoriesTreeModel;
+
+    void initModels();
+
+private slots:
+    void addCategoryWithInputDialog();
+    void addRuleWithInputDialog();
+    void removeSelectedCategory();
+    void removeSelectedRule();
 };
 
 #endif // MAINWINDOW_H
