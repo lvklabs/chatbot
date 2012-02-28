@@ -44,8 +44,6 @@ public:
 
     QStandardItem *addCategory(const QString &name);
     QStandardItem *addRule(const QString &name, QStandardItem *category);
-    void removeCategory(int row);
-    void removeRule(int row, QStandardItem *category);
 
 private:
     Ui::MainWindow *ui;
@@ -58,8 +56,7 @@ private:
 private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
-    void removeSelectedCategory();
-    void removeSelectedRule();
+    void removeSelectedItem();
 };
 
 #endif // MAINWINDOW_H

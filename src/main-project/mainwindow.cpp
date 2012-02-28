@@ -36,8 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
-    connect(ui->rmCategoryButton,  SIGNAL(clicked()), SLOT(removeSelectedCategory()));
-    connect(ui->rmRuleButton,      SIGNAL(clicked()), SLOT(removeSelectedRule()));
+    connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
 
     clear();
     initModels();
@@ -116,31 +115,23 @@ QStandardItem *MainWindow::addCategory(const QString &name)
     return category;
 }
 
-void MainWindow::removeCategory(int row)
-{
-    m_categoriesTreeModel->invisibleRootItem()->removeRow(row);
-}
 
 QStandardItem *MainWindow::addRule(const QString &name, QStandardItem *category)
 {
-    QStandardItem *rule = new QStandardItem(name);
+    const QIcon RULE_ICON(":/icons/rule_16x16.png");
+
+    QStandardItem *rule = new QStandardItem(RULE_ICON, name);
 
     category->appendRow(rule);
 
     return rule;
 }
 
-void MainWindow::removeRule(int row, QStandardItem *category)
-{
-    category->removeRow(row);
-}
-
 
 void MainWindow::addCategoryWithInputDialog()
 {
     bool ok;
-    QString name = QInputDialog::getText(this, tr("Add category"),
-                                         tr("Category name:"),
+    QString name = QInputDialog::getText(this, tr("Add category"), tr("Category name:"),
                                          QLineEdit::Normal, "", &ok);
 
     if (ok) {
@@ -158,35 +149,72 @@ void MainWindow::addCategoryWithInputDialog()
 
 void MainWindow::addRuleWithInputDialog()
 {
-    // TODO
-}
+    QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
-void MainWindow::removeSelectedCategory()
+    if (selectedRows.size() > 0) {
+        QModelIndex selectedIndex = selectedRows[0];
+
+        QString dialogText;
+        QString dialogTitle;
+
+        // If category or rule
+        if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
+            dialogTitle = tr("Remove category");
+            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
+                                    "All rules belonging to that category will be also removed"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        } else {
+            dialogTitle = tr("Remove rule");
+            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        }
+
+        QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
+                        QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msg.exec() == QMessageBox::Yes) {
+            m_categoriesTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        }
+
+    } else {
+        QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
+                        tr("Select the category you want to remove"), QMessageBox::Ok, this);
+        msg.exec();
+    }}
+
+void MainWindow::removeSelectedItem()
 {
     QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
     if (selectedRows.size() > 0) {
         QModelIndex selectedIndex = selectedRows[0];
 
-        QString text = QString(tr("Are you sure you want to remove the category '%0'?\n"
-                                  "All rules belonging to that category will be also removed"))
-                .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        QString dialogText;
+        QString dialogTitle;
 
-        QMessageBox msg(QMessageBox::Critical, tr("Remove category"),
-                        text, QMessageBox::Yes | QMessageBox::No, this);
+        // If category or rule
+        if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
+            dialogTitle = tr("Remove category");
+            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
+                                    "All rules belonging to that category will be also removed"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        } else {
+            dialogTitle = tr("Remove rule");
+            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        }
+
+        QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
+                        QMessageBox::Yes | QMessageBox::No, this);
 
         if (msg.exec() == QMessageBox::Yes) {
-            removeCategory(selectedIndex.row());
+            m_categoriesTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
         }
+
     } else {
-        QMessageBox msg(QMessageBox::Critical, tr("Remove category"),
-                        tr("Select the category you want to remove"), QMessageBox::Ok, this);
+        QMessageBox msg(QMessageBox::Critical, tr("Remove rule or category"),
+                        tr("Select the rule or category you want to remove"),
+                        QMessageBox::Ok, this);
         msg.exec();
     }
 }
-
-void MainWindow::removeSelectedRule()
-{
-    // TODO
-}
-

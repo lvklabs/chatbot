@@ -20,7 +20,7 @@
       <item row="0" column="0">
        <widget class="QTabWidget" name="mainTabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="trainTab">
          <attribute name="title">
@@ -48,38 +48,6 @@
             <item row="0" column="0" colspan="2">
              <layout class="QHBoxLayout" name="rulesToolbarLayout">
               <item>
-               <widget class="QToolButton" name="addRuleButton">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Add rule</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/icons/add_32x32.png</normaloff>:/icons/add_32x32.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="rmRuleButton">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Remove rule</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QToolButton" name="addCategoryButton">
                 <property name="font">
                  <font>
@@ -96,18 +64,34 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="rmCategoryButton">
+               <widget class="QToolButton" name="addRuleButton">
                 <property name="font">
                  <font>
                   <pointsize>8</pointsize>
                  </font>
                 </property>
                 <property name="toolTip">
-                 <string>Remove Category</string>
+                 <string>Add rule</string>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/icons/remove_category_32x32.png</normaloff>:/icons/remove_category_32x32.png</iconset>
+                  <normaloff>:/icons/add_rule_32x32.png</normaloff>:/icons/add_rule_32x32.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="rmItemButton">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Remove rule or category</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
                 </property>
                </widget>
               </item>

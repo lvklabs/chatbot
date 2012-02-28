@@ -5,6 +5,8 @@
         <file alias="add_category_32x32.png">res/add_category_32x32.png</file>
         <file alias="remove_category_32x32.png">res/remove_category_32x32.png</file>
         <file alias="remove_32x32.png">res/remove_32x32.png</file>
+        <file alias="rule_16x16.png">res/rule_16x16.png</file>
+        <file alias="add_rule_32x32.png">res/add_rule_32x32.png</file>
     </qresource>
     <qresource prefix="/strings">
         <file alias="strings_es.qm">strings_es.qm</file>
