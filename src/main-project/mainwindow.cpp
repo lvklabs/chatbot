@@ -154,31 +154,28 @@ void MainWindow::addRuleWithInputDialog()
     if (selectedRows.size() > 0) {
         QModelIndex selectedIndex = selectedRows[0];
 
-        QString dialogText;
-        QString dialogTitle;
+        QString emptyRuleName = tr("(Empty rule)");
+        QStandardItem *rule;
 
-        // If category or rule
+        // If selected index is a category or rule
         if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
-            dialogTitle = tr("Remove category");
-            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
-                                    "All rules belonging to that category will be also removed"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+            rule = addRule(emptyRuleName, m_categoriesTreeModel->itemFromIndex(selectedIndex));
         } else {
-            dialogTitle = tr("Remove rule");
-            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+            rule = addRule(emptyRuleName, m_categoriesTreeModel->itemFromIndex(selectedIndex.parent()));
         }
 
-        QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
-                        QMessageBox::Yes | QMessageBox::No, this);
+        QFont italicFont = rule->font();
+        italicFont.setItalic(true);
+        rule->setFont(italicFont);
 
-        if (msg.exec() == QMessageBox::Yes) {
-            m_categoriesTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
-        }
+        ui->categoriesTree->setExpanded(rule->parent()->index(), true);
+        ui->ruleInputText->setFocus();
+
+        m_categoriesSelectionModel->select(rule->index(), QItemSelectionModel::ClearAndSelect);
 
     } else {
         QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
-                        tr("Select the category you want to remove"), QMessageBox::Ok, this);
+                        tr("Select the category where the rule will belong to"), QMessageBox::Ok, this);
         msg.exec();
     }}
 
@@ -192,7 +189,7 @@ void MainWindow::removeSelectedItem()
         QString dialogText;
         QString dialogTitle;
 
-        // If category or rule
+        // If selected index is a category or rule
         if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
             dialogTitle = tr("Remove category");
             dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"

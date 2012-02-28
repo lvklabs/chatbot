@@ -15,13 +15,12 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="74"/>
-        <location filename="mainwindow.cpp" line="180"/>
+        <location filename="mainwindow.cpp" line="177"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="167"/>
-        <location filename="mainwindow.cpp" line="202"/>
+        <location filename="mainwindow.cpp" line="199"/>
         <source>Remove rule</source>
         <translation>Borrar regla</translation>
     </message>
@@ -38,7 +37,7 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="90"/>
-        <location filename="mainwindow.cpp" line="215"/>
+        <location filename="mainwindow.cpp" line="212"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
@@ -132,35 +131,42 @@
         <translation>No se puede agregar una categoría sin nombre</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="163"/>
-        <location filename="mainwindow.cpp" line="198"/>
+        <location filename="mainwindow.cpp" line="157"/>
+        <source>(Empty rule)</source>
+        <translation>(Regla vacía)</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="178"/>
+        <source>Select the category where the rule will belong to</source>
+        <oldsource>Select the category where the rule belongs to</oldsource>
+        <translation>Seleccione la categoría a la cual pertenecerá la regla</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="195"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
         <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
 Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="216"/>
+        <location filename="mainwindow.cpp" line="213"/>
         <source>Select the rule or category you want to remove</source>
         <translation>Seleccione la regla o categoría que desea borrar</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="162"/>
-        <location filename="mainwindow.cpp" line="197"/>
+        <location filename="mainwindow.cpp" line="194"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="168"/>
-        <location filename="mainwindow.cpp" line="203"/>
+        <location filename="mainwindow.cpp" line="200"/>
         <source>Are you sure you want to remove the rule &apos;%0&apos;?</source>
         <translation>Esta seguro que desea borrar la regla &apos;%0&apos;?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="181"/>
         <source>Select the category you want to remove</source>
         <oldsource>Select a category</oldsource>
-        <translation>Seleccione la categoría que desea borrar</translation>
+        <translation type="obsolete">Seleccione la categoría que desea borrar</translation>
     </message>
 </context>
 </TS>
