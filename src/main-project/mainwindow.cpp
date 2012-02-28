@@ -79,9 +79,12 @@ void MainWindow::initModels()
 {
     m_categoriesTreeModel = new QStandardItemModel();
 
+    m_categoriesTreeModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Rules")));
+
     ui->categoriesTree->setModel(m_categoriesTreeModel);
 
     m_categoriesSelectionModel = ui->categoriesTree->selectionModel();
+
 
     ////////////////////////////////////////////////////////////////////////
     // TODO read from file:
@@ -177,7 +180,8 @@ void MainWindow::addRuleWithInputDialog()
         QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
                         tr("Select the category where the rule will belong to"), QMessageBox::Ok, this);
         msg.exec();
-    }}
+    }
+}
 
 void MainWindow::removeSelectedItem()
 {
