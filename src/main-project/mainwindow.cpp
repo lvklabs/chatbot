@@ -226,6 +226,7 @@ void MainWindow::removeSelectedItem()
             QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
                             tr("The rule/category could not be removed because of an internal error"),
                             QMessageBox::Ok, this);
+            msg.exec();
         }
     }
 }
