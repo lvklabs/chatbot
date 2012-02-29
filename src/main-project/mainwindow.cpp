@@ -93,18 +93,30 @@ Lvk::RuleItem *MainWindow::addCategory(const QString &name)
 
     category->setType(Lvk::RuleItem::CategoryRule);
 
-    m_ruleTreeModel->appendItem(category);
+    bool appended = m_ruleTreeModel->appendItem(category);
 
-    return category;
+    if (appended) {
+        return category;
+    } else {
+        delete category;
+
+        return 0;
+    }
 }
 
 Lvk::RuleItem *MainWindow::addRule(const QString &name, Lvk::RuleItem *category)
 {
     Lvk::RuleItem *rule = new Lvk::RuleItem(name, category);
 
-    m_ruleTreeModel->appendItem(rule);
+    bool appended = m_ruleTreeModel->appendItem(rule);
 
-    return rule;
+    if (appended) {
+        return rule;
+    } else {
+        delete rule;
+
+        return 0;
+    }
 }
 
 void MainWindow::addCategoryWithInputDialog()
@@ -116,9 +128,17 @@ void MainWindow::addCategoryWithInputDialog()
     if (ok) {
         if (!name.isEmpty()) {
             Lvk::RuleItem *category = addCategory(name);
-            QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
-            m_categoriesSelectionModel->setCurrentIndex(categoryIndex,
-                                                        QItemSelectionModel::ClearAndSelect);
+
+            if (category) {
+                QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
+                m_categoriesSelectionModel->setCurrentIndex(categoryIndex,
+                                                            QItemSelectionModel::ClearAndSelect);
+            } else {
+                QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
+                                tr("The category could not be added because of an internal error"),
+                                QMessageBox::Ok, this);
+                msg.exec();
+            }
         } else {
             QMessageBox msg(QMessageBox::Critical, tr("Add category"),
                             tr("The category name cannot be empty"), QMessageBox::Ok, this);
@@ -154,9 +174,16 @@ void MainWindow::addRuleWithInputDialog()
 
     Lvk::RuleItem *emptyRule = addRule(tr("(Empty rule)"), parentCategory);
 
-    m_categoriesSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
-                                       QItemSelectionModel::ClearAndSelect);
-    ui->ruleInputText->setFocus();
+    if (emptyRule) {
+        m_categoriesSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
+                                           QItemSelectionModel::ClearAndSelect);
+        ui->ruleInputText->setFocus();
+    } else {
+        QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
+                        tr("The rule could not be added because of an internal error"),
+                        QMessageBox::Ok, this);
+        msg.exec();
+    }
 }
 
 void MainWindow::removeSelectedItem()
@@ -193,6 +220,12 @@ void MainWindow::removeSelectedItem()
                     QMessageBox::Yes | QMessageBox::No, this);
 
     if (msg.exec() == QMessageBox::Yes) {
-        m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+
+        if (!removed) {
+            QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
+                            tr("The rule/category could not be removed because of an internal error"),
+                            QMessageBox::Ok, this);
+        }
     }
 }

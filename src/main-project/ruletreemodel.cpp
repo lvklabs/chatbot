@@ -50,10 +50,6 @@ QModelIndex Lvk::RuleTreeModel::parent(const QModelIndex &index) const
 
 int Lvk::RuleTreeModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.column() > 0) {
-        return 0;
-    }
-
     Lvk::RuleItem *parentItem = parent.isValid() ?
                 static_cast<Lvk::RuleItem *>(parent.internalPointer()) : m_rootItem;
 

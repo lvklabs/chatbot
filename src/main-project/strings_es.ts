@@ -15,18 +15,18 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="74"/>
-        <location filename="mainwindow.cpp" line="177"/>
+        <location filename="mainwindow.cpp" line="155"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="199"/>
+        <location filename="mainwindow.cpp" line="214"/>
         <source>Remove rule</source>
         <translation>Borrar regla</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="58"/>
-        <location filename="mainwindow.cpp" line="134"/>
+        <location filename="mainwindow.cpp" line="125"/>
         <location filename="mainwindow.cpp" line="143"/>
         <source>Add category</source>
         <translation>Agregar categoría</translation>
@@ -37,7 +37,7 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="90"/>
-        <location filename="mainwindow.cpp" line="212"/>
+        <location filename="mainwindow.cpp" line="194"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
@@ -121,7 +121,7 @@
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="134"/>
+        <location filename="mainwindow.cpp" line="125"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
@@ -131,37 +131,64 @@
         <translation>No se puede agregar una categoría sin nombre</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="157"/>
+        <location filename="mainwindow.cpp" line="175"/>
         <source>(Empty rule)</source>
         <translation>(Regla vacía)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="178"/>
+        <location filename="mainwindow.cpp" line="156"/>
         <source>Select the category where the rule will belong to</source>
         <oldsource>Select the category where the rule belongs to</oldsource>
         <translation>Seleccione la categoría a la cual pertenecerá la regla</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="195"/>
+        <location filename="mainwindow.cpp" line="210"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
         <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
 Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="213"/>
+        <location filename="mainwindow.cpp" line="195"/>
         <source>Select the rule or category you want to remove</source>
         <translation>Seleccione la regla o categoría que desea borrar</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="194"/>
+        <location filename="mainwindow.cpp" line="83"/>
+        <source>Rules</source>
+        <translation>Reglas</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="137"/>
+        <location filename="mainwindow.cpp" line="182"/>
+        <location filename="mainwindow.cpp" line="226"/>
+        <source>Internal error</source>
+        <translation>Error interno</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="138"/>
+        <source>The category could not be added because of an internal error</source>
+        <translation>La categoría no se pudo agregar debido a un error interno de la aplicación</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="183"/>
+        <source>The rule could not be added because of an internal error</source>
+        <translation>La regla no se pudo agregar debido a un error interno de la aplicación</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="209"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="200"/>
+        <location filename="mainwindow.cpp" line="215"/>
         <source>Are you sure you want to remove the rule &apos;%0&apos;?</source>
         <translation>Esta seguro que desea borrar la regla &apos;%0&apos;?</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="227"/>
+        <source>The rule/category could not be removed because of an internal error</source>
+        <translation>La regla/categoría no se pudo borrar debido a un error interno</translation>
     </message>
     <message>
         <source>Select the category you want to remove</source>
