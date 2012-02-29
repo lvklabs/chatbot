@@ -28,8 +28,11 @@ namespace Ui {
     class MainWindow;
 }
 
-class QStandardItem;
-class QStandardItemModel;
+namespace Lvk {
+    class RuleTreeModel;
+    class RuleItem;
+}
+
 class QItemSelectionModel;
 
 class MainWindow : public QMainWindow
@@ -42,13 +45,13 @@ public:
 
     void clear();
 
-    QStandardItem *addCategory(const QString &name);
-    QStandardItem *addRule(const QString &name, QStandardItem *category);
+    Lvk::RuleItem *addCategory(const QString &name);
+    Lvk::RuleItem *addRule(const QString &name, Lvk::RuleItem *category);
 
 private:
     Ui::MainWindow *ui;
 
-    QStandardItemModel *m_categoriesTreeModel;
+    Lvk::RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_categoriesSelectionModel;
 
     void initModels();

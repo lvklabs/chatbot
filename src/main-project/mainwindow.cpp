@@ -20,6 +20,7 @@
  */
 
 #include "mainwindow.h"
+#include "ruletreemodel.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -30,7 +31,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), m_categoriesTreeModel(0)
+    ui(new Ui::MainWindow), m_ruleTreeModel(0)
 {
     ui->setupUi(this);
 
@@ -77,59 +78,34 @@ void MainWindow::clear()
 
 void MainWindow::initModels()
 {
-    m_categoriesTreeModel = new QStandardItemModel();
+    m_ruleTreeModel = new Lvk::RuleTreeModel("FIXME", this);
 
-    m_categoriesTreeModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Rules")));
+    m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
 
-    ui->categoriesTree->setModel(m_categoriesTreeModel);
+    ui->categoriesTree->setModel(m_ruleTreeModel);
 
     m_categoriesSelectionModel = ui->categoriesTree->selectionModel();
-
-
-    ////////////////////////////////////////////////////////////////////////
-    // TODO read from file:
-
-    QStandardItem *catGreetings    = addCategory("Saludos");
-    QStandardItem *catPersonalInfo = addCategory("Informacion personal");
-    QStandardItem *catGoodbye      = addCategory("Despedidas");
-
-    addRule("Hola", catGreetings);
-    addRule("Buenas", catGreetings);
-
-    addRule("Quien eres?", catPersonalInfo);
-    addRule("Como te llamas?", catPersonalInfo);
-    addRule("Donde naciste?", catPersonalInfo);
-
-    addRule("Chau!", catGoodbye);
-    addRule("Nos vemos!", catGoodbye);
-    addRule("Me voy", catGoodbye);
-
-    ////////////////////////////////////////////////////////////////////////
 }
 
-QStandardItem *MainWindow::addCategory(const QString &name)
+Lvk::RuleItem *MainWindow::addCategory(const QString &name)
 {
-    const QIcon CATEGORY_ICON(":/icons/category_16x16.png");
+    Lvk::RuleItem *category = new Lvk::RuleItem(name, m_ruleTreeModel->invisibleRootItem());
 
-    QStandardItem *category = new QStandardItem(CATEGORY_ICON, name);
+    category->setType(Lvk::RuleItem::CategoryRule);
 
-    m_categoriesTreeModel->invisibleRootItem()->appendRow(category);
+    m_ruleTreeModel->appendItem(category);
 
     return category;
 }
 
-
-QStandardItem *MainWindow::addRule(const QString &name, QStandardItem *category)
+Lvk::RuleItem *MainWindow::addRule(const QString &name, Lvk::RuleItem *category)
 {
-    const QIcon RULE_ICON(":/icons/rule_16x16.png");
+    Lvk::RuleItem *rule = new Lvk::RuleItem(name, category);
 
-    QStandardItem *rule = new QStandardItem(RULE_ICON, name);
-
-    category->appendRow(rule);
+    m_ruleTreeModel->appendItem(rule);
 
     return rule;
 }
-
 
 void MainWindow::addCategoryWithInputDialog()
 {
@@ -139,8 +115,9 @@ void MainWindow::addCategoryWithInputDialog()
 
     if (ok) {
         if (!name.isEmpty()) {
-            QStandardItem *category = addCategory(name);
-            m_categoriesSelectionModel->setCurrentIndex(category->index(),
+            Lvk::RuleItem *category = addCategory(name);
+            QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
+            m_categoriesSelectionModel->setCurrentIndex(categoryIndex,
                                                         QItemSelectionModel::ClearAndSelect);
         } else {
             QMessageBox msg(QMessageBox::Critical, tr("Add category"),
@@ -154,68 +131,68 @@ void MainWindow::addRuleWithInputDialog()
 {
     QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
-    if (selectedRows.size() > 0) {
-        QModelIndex selectedIndex = selectedRows[0];
-
-        QString emptyRuleName = tr("(Empty rule)");
-        QStandardItem *rule;
-
-        // If selected index is a category or rule
-        if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
-            rule = addRule(emptyRuleName, m_categoriesTreeModel->itemFromIndex(selectedIndex));
-        } else {
-            rule = addRule(emptyRuleName, m_categoriesTreeModel->itemFromIndex(selectedIndex.parent()));
-        }
-
-        QFont italicFont = rule->font();
-        italicFont.setItalic(true);
-        rule->setFont(italicFont);
-
-        ui->categoriesTree->setExpanded(rule->parent()->index(), true);
-        ui->ruleInputText->setFocus();
-
-        m_categoriesSelectionModel->select(rule->index(), QItemSelectionModel::ClearAndSelect);
-
-    } else {
+    if (selectedRows.size() <= 0) {
         QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
-                        tr("Select the category where the rule will belong to"), QMessageBox::Ok, this);
+                        tr("Select the category where the rule will belong to"),
+                        QMessageBox::Ok, this);
         msg.exec();
+
+        return;
     }
+
+    QModelIndex selectedIndex = selectedRows[0];
+    Lvk::RuleItem *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
+    Lvk::RuleItem *parentCategory = 0;
+
+    if (selectedItem->type() == Lvk::RuleItem::CategoryRule) {
+        parentCategory = selectedItem;
+        ui->categoriesTree->setExpanded(selectedIndex, true);
+    } else {
+        parentCategory =  m_ruleTreeModel->itemFromIndex(selectedIndex.parent());
+        ui->categoriesTree->setExpanded(selectedIndex.parent(), true);
+    }
+
+    Lvk::RuleItem *emptyRule = addRule(tr("(Empty rule)"), parentCategory);
+
+    m_categoriesSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
+                                       QItemSelectionModel::ClearAndSelect);
+    ui->ruleInputText->setFocus();
 }
 
 void MainWindow::removeSelectedItem()
 {
     QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
-    if (selectedRows.size() > 0) {
-        QModelIndex selectedIndex = selectedRows[0];
-
-        QString dialogText;
-        QString dialogTitle;
-
-        // If selected index is a category or rule
-        if (selectedIndex.parent() == m_categoriesTreeModel->invisibleRootItem()->index()) {
-            dialogTitle = tr("Remove category");
-            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
-                                    "All rules belonging to that category will be also removed"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
-        } else {
-            dialogTitle = tr("Remove rule");
-            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
-        }
-
-        QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
-                        QMessageBox::Yes | QMessageBox::No, this);
-
-        if (msg.exec() == QMessageBox::Yes) {
-            m_categoriesTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
-        }
-
-    } else {
+    if (selectedRows.size() <= 0) {
         QMessageBox msg(QMessageBox::Critical, tr("Remove rule or category"),
                         tr("Select the rule or category you want to remove"),
                         QMessageBox::Ok, this);
         msg.exec();
+
+        return;
+    }
+
+    QModelIndex selectedIndex = selectedRows[0];
+    Lvk::RuleItem *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
+
+    QString dialogText;
+    QString dialogTitle;
+
+    if (selectedItem->type() == Lvk::RuleItem::CategoryRule) {
+        dialogTitle = tr("Remove category");
+        dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
+                                "All rules belonging to that category will be also removed"))
+                .arg(selectedIndex.data(Qt::DisplayRole).toString());
+    } else {
+        dialogTitle = tr("Remove rule");
+        dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
+                .arg(selectedIndex.data(Qt::DisplayRole).toString());
+    }
+
+    QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
+                    QMessageBox::Yes | QMessageBox::No, this);
+
+    if (msg.exec() == QMessageBox::Yes) {
+        m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
     }
 }

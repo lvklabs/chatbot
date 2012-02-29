@@ -4,11 +4,17 @@ QT += ui
 TEMPLATE = app
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    rule.h \
+    ruletreemodel.h \
+    ruleitem.h
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    rule.cpp \
+    ruletreemodel.cpp \
+    ruleitem.cpp
 
 FORMS += \
     mainwindow.ui
