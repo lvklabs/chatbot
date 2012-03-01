@@ -34,6 +34,7 @@ namespace Lvk {
 }
 
 class QItemSelectionModel;
+class QItemSelection;
 
 class MainWindow : public QMainWindow
 {
@@ -60,6 +61,8 @@ private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
     void removeSelectedItem();
+    void handleRuleSelectionChanged(const QItemSelection &selected,
+                                    const QItemSelection &deselected);
 };
 
 #endif // MAINWINDOW_H

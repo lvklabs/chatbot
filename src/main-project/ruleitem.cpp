@@ -14,8 +14,8 @@ Lvk::RuleItem::RuleItem(const QString &name, RuleItem *parent /*= 0*/)
 {
 }
 
-Lvk::RuleItem::RuleItem(const QString &name, const QList<QVariant> &input,
-                        const QList<QVariant> &ouput, RuleItem *parent /*= 0*/)
+Lvk::RuleItem::RuleItem(const QString &name, const QList<QString> &input,
+                        const QList<QString> &ouput, RuleItem *parent /*= 0*/)
     : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(Rule)
 {
 }
@@ -61,12 +61,6 @@ QVariant Lvk::RuleItem::data(int column, int role) const
         case Qt::DecorationRole:
             return m_type == Rule ? QIcon(":/icons/rule_16x16.png")
                                   : QIcon(":/icons/category_16x16.png");
-        case InputRole:
-            return m_input;
-
-        case OutputRole:
-            return m_ouput;
-
         default:
             return QVariant();
         }
@@ -88,14 +82,6 @@ bool Lvk::RuleItem::setData(const QVariant &value, int column, int role)
 
         case Qt::DecorationRole:
             return false;
-
-        case InputRole:
-            m_input = value.toList();
-            return true;
-
-        case OutputRole:
-            m_ouput = value.toList();
-            return true;
 
         default:
             return false;
@@ -163,4 +149,26 @@ bool Lvk::RuleItem::removeChildren(int position, int count)
 
     return true;
 }
+
+QList<QString> Lvk::RuleItem::input() const
+{
+    return m_input;
+}
+
+QList<QString> Lvk::RuleItem::output() const
+{
+    return m_ouput;
+}
+
+void Lvk::RuleItem::setInput(const QList<QString> &input)
+{
+    m_input = input;
+}
+
+void Lvk::RuleItem::setOutput(const QList<QString> &output)
+{
+    m_ouput = output;
+}
+
+
 

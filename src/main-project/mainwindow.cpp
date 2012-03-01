@@ -35,12 +35,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    clear();
+
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
 
-    clear();
     initModels();
+
+    connect(ui->categoriesTree->selectionModel(),
+            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(handleRuleSelectionChanged(QItemSelection,QItemSelection)));
 }
 
 MainWindow::~MainWindow()
@@ -227,6 +232,53 @@ void MainWindow::removeSelectedItem()
                             tr("The rule/category could not be removed because of an internal error"),
                             QMessageBox::Ok, this);
             msg.exec();
+        }
+    }
+}
+
+void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
+                                            const QItemSelection &deselected)
+{
+    if (deselected.indexes().size() > 0) {
+        Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(deselected.indexes()[0].internalPointer());
+
+        if (item->type() == Lvk::RuleItem::Rule) {
+            QStringList input = ui->ruleInputText->toPlainText().split("\n", QString::SkipEmptyParts);
+            QStringList output = ui->ruleOutputText->toPlainText().split("\n", QString::SkipEmptyParts);
+
+            item->setInput(input);
+            item->setOutput(output);
+        } else {
+            // nothing to do
+        }
+    }
+
+    if (selected.indexes().size() > 0) {
+        Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(selected.indexes()[0].internalPointer());
+
+        if (item->type() == Lvk::RuleItem::Rule) {
+            ui->ruleInputText->setEnabled(true);
+            ui->ruleOutputText->setEnabled(true);
+
+            QString input, output;
+
+            for (int i = 0; i < item->input().size(); ++i) {
+                input += item->input()[i] + "\n";
+            }
+
+            for (int i = 0; i < item->output().size(); ++i) {
+                output += item->output()[i] + "\n";
+            }
+
+            ui->ruleInputText->setPlainText(input);
+            ui->ruleOutputText->setPlainText(output);
+
+        } else {
+            ui->ruleInputText->setPlainText("");
+            ui->ruleOutputText->setPlainText("");
+
+            ui->ruleInputText->setEnabled(false);
+            ui->ruleOutputText->setEnabled(false);
         }
     }
 }

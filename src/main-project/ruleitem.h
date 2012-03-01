@@ -13,13 +13,11 @@ class RuleItem
 public:
     enum ItemType { Rule, CategoryRule };
 
-    enum RuleRole { InputRole = Qt::UserRole, OutputRole};
-
     RuleItem(RuleItem *parent = 0);
 
     RuleItem(const QString &name, RuleItem *parent = 0);
 
-    RuleItem(const QString &name, const QList<QVariant> &input, const QList<QVariant> &ouput,
+    RuleItem(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
              RuleItem *parent = 0);
 
     ~RuleItem();
@@ -50,11 +48,19 @@ public:
 
     bool removeChildren(int position, int count);
 
+    QList<QString> input() const;
+
+    void setInput(const QList<QString> &input);
+
+    QList<QString> output() const;
+
+    void setOutput(const QList<QString> &output);
+
 private:
     QList<RuleItem*> m_childItems;
     QString m_name;
-    QList<QVariant> m_input;
-    QList<QVariant> m_ouput;
+    QList<QString> m_input;
+    QList<QString> m_ouput;
     RuleItem *m_parentItem;
     ItemType m_type;
 };
