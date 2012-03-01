@@ -373,19 +373,19 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLabel" name="testLabel">
-          <property name="text">
-           <string>Test:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QTextEdit" name="testConversationText">
           <property name="readOnly">
            <bool>true</bool>
           </property>
           <property name="overwriteMode">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="testLabel">
+          <property name="text">
+           <string>Test:</string>
           </property>
          </widget>
         </item>
