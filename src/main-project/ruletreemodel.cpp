@@ -1,5 +1,8 @@
 #include "ruletreemodel.h"
 
+#include <QIcon>
+
+
 //--------------------------------------------------------------------------------------------------
 // Constructors & Destructors
 //--------------------------------------------------------------------------------------------------
@@ -45,7 +48,7 @@ QModelIndex Lvk::RuleTreeModel::parent(const QModelIndex &index) const
         return QModelIndex();
     }
 
-    return createIndex(parentItem->row(), 0, parentItem);
+    return createIndex(rowForItem(parentItem), 0, parentItem);
 }
 
 int Lvk::RuleTreeModel::rowCount(const QModelIndex &parent) const
@@ -61,7 +64,7 @@ int Lvk::RuleTreeModel::columnCount(const QModelIndex &parent) const
     Lvk::RuleItem *parentItem = parent.isValid() ?
                 static_cast<Lvk::RuleItem *>(parent.internalPointer()) : m_rootItem;
 
-    return parentItem->columnCount();
+    return columnCountForItem(parentItem);
 }
 
 QVariant Lvk::RuleTreeModel::data(const QModelIndex &index, int role) const
@@ -72,13 +75,13 @@ QVariant Lvk::RuleTreeModel::data(const QModelIndex &index, int role) const
 
     Lvk::RuleItem *item = static_cast<Lvk::RuleItem*>(index.internalPointer());
 
-    return item->data(index.column(), role);
+    return dataForItem(item, index.column(), role);
 }
 
-QVariant Lvk::RuleTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant Lvk::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        return m_rootItem->data(section);
+        return m_rootItem->name();
     }
 
     return QVariant();
@@ -93,7 +96,7 @@ bool Lvk::RuleTreeModel::setData(const QModelIndex &index, const QVariant &value
     Lvk::RuleItem *item = itemFromIndex(index);
 
     if (item) {
-        if (item->setData(value, 0, role)) {
+        if (setDataForItem(item, value, 0, role)) {
             emit dataChanged(index, index);
 
             return true;
@@ -106,7 +109,7 @@ bool Lvk::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientation,
                                        const QVariant &value, int role)
 {
     if (orientation == Qt::Horizontal) {
-        if (m_rootItem->setData(value, 0, role)) {
+        if (setDataForItem(m_rootItem, value, 0, role)) {
             emit headerDataChanged(orientation, section, section);
 
             return true;
@@ -181,7 +184,7 @@ QModelIndex Lvk::RuleTreeModel::index(int row, int column, Lvk::RuleItem *parent
 
 QModelIndex Lvk::RuleTreeModel::indexFromItem(Lvk::RuleItem *item)
 {
-    return item != m_rootItem ? createIndex(item->row(), 0, item) : QModelIndex();
+    return item != m_rootItem ? createIndex(rowForItem(item), 0, item) : QModelIndex();
 }
 
 bool Lvk::RuleTreeModel::appendItem(Lvk::RuleItem *item)
@@ -199,6 +202,81 @@ bool Lvk::RuleTreeModel::appendItem(Lvk::RuleItem *item)
 
     return appended;
 }
+
+//--------------------------------------------------------------------------------------------------
+// helpers
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::RuleTreeModel::rowForItem(const Lvk::RuleItem *item) const
+{
+    if (item->parent()) {
+        return item->parent()->children().indexOf((Lvk::RuleItem *)item);
+    }
+
+    return 0;
+}
+
+int Lvk::RuleTreeModel::columnCountForItem(const Lvk::RuleItem */*item*/) const
+{
+    return 1;
+}
+
+QVariant Lvk::RuleTreeModel::dataForItem(const Lvk::RuleItem *item, int column, int role) const
+{
+    switch (column) {
+    case 0:
+        switch (role) {
+        case Qt::EditRole:
+        case Qt::DisplayRole:
+            if (item->type() == Lvk::RuleItem::Rule) {
+                return item->input().size() == 0 ? QString("") : item->input()[0];
+            } else {
+                return item->name();
+            }
+
+        case Qt::DecorationRole:
+            return item->type() == Lvk::RuleItem::Rule ? QIcon(":/icons/rule_16x16.png")
+                                                       : QIcon(":/icons/category_16x16.png");
+        default:
+            return QVariant();
+        }
+
+    default:
+        return QVariant();
+    }
+}
+
+bool Lvk::RuleTreeModel::setDataForItem(Lvk::RuleItem *item, const QVariant &value, int column,
+                                        int role)
+{
+    switch (column) {
+    case 0:
+        switch (role) {
+        case Qt::EditRole:
+        case Qt::DisplayRole:
+            if (item->type() == Lvk::RuleItem::Rule) {
+                if (item->input().size() == 0) {
+                    item->input().append(value.toString());
+                } else {
+                    item->input()[0] = value.toString();
+                }
+            } else {
+                item->setName(value.toString());
+            }
+            return true;
+
+        default:
+            return false;
+        }
+
+    default:
+        return false;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// load data
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::RuleTreeModel::setupModelData()
 {
@@ -229,4 +307,3 @@ void Lvk::RuleTreeModel::setupModelData()
 
     ////////////////////////////////////////////////////////////////////////
 }
-

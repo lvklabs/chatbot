@@ -25,81 +25,7 @@ Lvk::RuleItem::~RuleItem()
     qDeleteAll(m_childItems);
 }
 
-Lvk::RuleItem * Lvk::RuleItem::child(int row)
-{
-    return m_childItems.value(row);
-}
-
-int Lvk::RuleItem::childCount() const
-{
-    return m_childItems.count();
-}
-
-int Lvk::RuleItem::row() const
-{
-    if (m_parentItem) {
-        return m_parentItem->m_childItems.indexOf(const_cast<Lvk::RuleItem *>(this));
-    }
-
-    return 0;
-}
-
-int Lvk::RuleItem::columnCount() const
-{
-    return 1;
-}
-
-QVariant Lvk::RuleItem::data(int column, int role) const
-{
-    switch (column) {
-    case 0:
-        switch (role) {
-        case Qt::EditRole:
-        case Qt::DisplayRole:
-            if (m_type == Rule) {
-                return m_input.size() == 0 ? QString("") : m_input[0];
-            } else {
-                return m_name;
-            }
-
-        case Qt::DecorationRole:
-            return m_type == Rule ? QIcon(":/icons/rule_16x16.png")
-                                  : QIcon(":/icons/category_16x16.png");
-        default:
-            return QVariant();
-        }
-
-    default:
-        return QVariant();
-    }
-}
-
-bool Lvk::RuleItem::setData(const QVariant &value, int column, int role)
-{
-    switch (column) {
-    case 0:
-        switch (role) {
-        case Qt::EditRole:
-        case Qt::DisplayRole:
-            if (m_type == Rule) {
-                if (m_input.size() == 0) {
-                    m_input.append(value.toString());
-                } else {
-                    m_input[0] = value.toString();
-                }
-            } else {
-                m_name = value.toString();
-            }
-            return true;
-
-        default:
-            return false;
-        }
-
-    default:
-        return false;
-    }
-}
+//--------------------------------------------------------------------------------------------------
 
 Lvk::RuleItem * Lvk::RuleItem::parent()
 {
@@ -111,14 +37,16 @@ const Lvk::RuleItem * Lvk::RuleItem::parent() const
     return m_parentItem;
 }
 
-void Lvk::RuleItem::setType(Lvk::RuleItem::ItemType type)
+//--------------------------------------------------------------------------------------------------
+
+QList<Lvk::RuleItem *> & Lvk::RuleItem::children()
 {
-    m_type = type;
+    return m_childItems;
 }
 
-Lvk::RuleItem::ItemType Lvk::RuleItem::type() const
+const QList<Lvk::RuleItem *> & Lvk::RuleItem::children() const
 {
-    return m_type;
+    return m_childItems;
 }
 
 bool Lvk::RuleItem::appendChild(Lvk::RuleItem *item)
@@ -159,14 +87,38 @@ bool Lvk::RuleItem::removeChildren(int position, int count)
     return true;
 }
 
-QList<QString> Lvk::RuleItem::input() const
+Lvk::RuleItem * Lvk::RuleItem::child(int row)
+{
+    return m_childItems.value(row);
+}
+
+int Lvk::RuleItem::childCount() const
+{
+    return m_childItems.count();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::RuleItem::setType(Lvk::RuleItem::ItemType type)
+{
+    m_type = type;
+}
+
+Lvk::RuleItem::ItemType Lvk::RuleItem::type() const
+{
+    return m_type;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QList<QString> &Lvk::RuleItem::input()
 {
     return m_input;
 }
 
-QList<QString> Lvk::RuleItem::output() const
+const QList<QString> &Lvk::RuleItem::input() const
 {
-    return m_ouput;
+    return m_input;
 }
 
 void Lvk::RuleItem::setInput(const QList<QString> &input)
@@ -174,9 +126,39 @@ void Lvk::RuleItem::setInput(const QList<QString> &input)
     m_input = input;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+QList<QString> &Lvk::RuleItem::output()
+{
+    return m_ouput;
+}
+
+const QList<QString> &Lvk::RuleItem::output() const
+{
+    return m_ouput;
+}
+
 void Lvk::RuleItem::setOutput(const QList<QString> &output)
 {
     m_ouput = output;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString &Lvk::RuleItem::name()
+{
+    return m_name;
+}
+
+const QString &Lvk::RuleItem::name() const
+
+{
+    return m_name;
+}
+
+void Lvk::RuleItem::setName(const QString &name)
+{
+    m_name = name;
 }
 
 

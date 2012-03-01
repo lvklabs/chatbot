@@ -22,25 +22,15 @@ public:
 
     ~RuleItem();
 
-    RuleItem *child(int row);
-
-    int childCount() const;
-
-    int columnCount() const;
-
-    int row() const;
 
     RuleItem *parent();
 
     const RuleItem *parent() const;
 
-    QVariant data(int column, int role = Qt::DisplayRole) const;
 
-    bool setData(const QVariant &value, int column, int role = Qt::DisplayRole);
+    QList<RuleItem*> &children();
 
-    ItemType type() const;
-
-    void setType(ItemType type);
+    const QList<RuleItem*> &children() const;
 
     bool appendChild(RuleItem *child);
 
@@ -48,11 +38,33 @@ public:
 
     bool removeChildren(int position, int count);
 
-    QList<QString> input() const;
+    int childCount() const;
+
+    RuleItem *child(int number);
+
+
+    ItemType type() const;
+
+    void setType(ItemType type);
+
+
+    QString &name();
+
+    const QString &name() const;
+
+    void setName(const QString &name);
+
+
+    QList<QString> &input();
+
+    const QList<QString> &input() const;
 
     void setInput(const QList<QString> &input);
 
-    QList<QString> output() const;
+
+    QList<QString> &output();
+
+    const QList<QString> &output() const;
 
     void setOutput(const QList<QString> &output);
 

@@ -302,7 +302,7 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
         } else {
             setUiMode(EditCategoryUiMode);
 
-            ui->ruleInputText->setText(item->data(0).toString());
+            ui->ruleInputText->setText(item->name());
             ui->ruleInputVariantsText->setPlainText("");
             ui->ruleOutputText->setPlainText("");
         }

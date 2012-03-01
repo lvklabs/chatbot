@@ -57,6 +57,12 @@ public:
 private:
     void setupModelData();
 
+    // helpers
+    int rowForItem(const Lvk::RuleItem *item) const;
+    int columnCountForItem(const Lvk::RuleItem *item) const;
+    QVariant dataForItem(const Lvk::RuleItem *item, int column, int role) const;
+    bool setDataForItem(Lvk::RuleItem *item, const QVariant &value, int column, int role);
+
     RuleItem *m_rootItem;
 };
 
