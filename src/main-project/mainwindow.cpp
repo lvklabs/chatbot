@@ -73,9 +73,6 @@ void MainWindow::clear()
     // TODO clear ui->conversationContactsTable
     // TODO clear ui->conversationTable
 
-    // help tab widgets
-    ui->helpLabel->clear();
-
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();

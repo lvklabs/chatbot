@@ -355,32 +355,8 @@
     <item row="1" column="1">
      <widget class="QTabWidget" name="rightSideTabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="helpTab">
-       <attribute name="title">
-        <string>Help</string>
-       </attribute>
-       <widget class="QLabel" name="helpLabel">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>221</width>
-          <height>221</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Help is displayed here while user moves the mouse over controls</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
       <widget class="QWidget" name="testTab">
        <attribute name="title">
         <string>Test your chatbot</string>
