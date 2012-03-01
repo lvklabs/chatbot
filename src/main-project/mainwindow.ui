@@ -113,7 +113,7 @@
             <item row="0" column="3">
              <widget class="QLabel" name="ifUserWritesLabel">
               <property name="text">
-               <string>If user writes:</string>
+               <string>If user writes/category name:</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>

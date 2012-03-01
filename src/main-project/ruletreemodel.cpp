@@ -151,7 +151,7 @@ Qt::ItemFlags Lvk::RuleTreeModel::flags(const QModelIndex &index) const
         return 0;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -206,16 +206,10 @@ void Lvk::RuleTreeModel::setupModelData()
     // TODO read from file:
 
     Lvk::RuleItem *catGreetings    = new Lvk::RuleItem("Saludos");
-    Lvk::RuleItem *catPersonalInfo = new Lvk::RuleItem("Informacion personal");
-    Lvk::RuleItem *catGoodbye      = new Lvk::RuleItem("Despedidas");
 
     catGreetings->setType(Lvk::RuleItem::CategoryRule);
-    catPersonalInfo->setType(Lvk::RuleItem::CategoryRule);
-    catGoodbye->setType(Lvk::RuleItem::CategoryRule);
 
     m_rootItem->appendChild(catGreetings);
-    m_rootItem->appendChild(catPersonalInfo);
-    m_rootItem->appendChild(catGoodbye);
 
     QList<QString> rule1InputList;
     QList<QString> rule1OutputList;
@@ -227,25 +221,11 @@ void Lvk::RuleTreeModel::setupModelData()
     rule2InputList << QString("Buenas") << QString("Buena dia") << QString("Buena dia");
     rule2OutputList << QString("Buen dia $USERNAME");
 
-    Lvk::RuleItem * rule1 = new Lvk::RuleItem("Hola", rule1InputList, rule1OutputList);
-    Lvk::RuleItem * rule2 = new Lvk::RuleItem("Buenas", rule2InputList, rule2OutputList);
-    Lvk::RuleItem * rule3 = new Lvk::RuleItem("Quien eres?");
-    Lvk::RuleItem * rule4 = new Lvk::RuleItem("Como te llamas?");
-    Lvk::RuleItem * rule5 = new Lvk::RuleItem("Donde naciste?");
-    Lvk::RuleItem * rule6 = new Lvk::RuleItem("Chau!");
-    Lvk::RuleItem * rule7 = new Lvk::RuleItem("Nos vemos");
-    Lvk::RuleItem * rule8 = new Lvk::RuleItem("Me voy");
+    Lvk::RuleItem * rule1 = new Lvk::RuleItem("", rule1InputList, rule1OutputList);
+    Lvk::RuleItem * rule2 = new Lvk::RuleItem("", rule2InputList, rule2OutputList);
 
     catGreetings->appendChild(rule1);
     catGreetings->appendChild(rule2);
-
-    catPersonalInfo->appendChild(rule3);
-    catPersonalInfo->appendChild(rule4);
-    catPersonalInfo->appendChild(rule5);
-
-    catGoodbye->appendChild(rule6);
-    catGoodbye->appendChild(rule7);
-    catGoodbye->appendChild(rule8);
 
     ////////////////////////////////////////////////////////////////////////
 }

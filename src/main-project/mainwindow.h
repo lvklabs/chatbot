@@ -49,11 +49,15 @@ public:
     Lvk::RuleItem *addCategory(const QString &name);
     Lvk::RuleItem *addRule(const QString &name, Lvk::RuleItem *category);
 
+    enum UiMode { DefaultUiMode, EditCategoryUiMode, EditRuleUiMode };
+
+    void setUiMode(UiMode mode);
+
 private:
     Ui::MainWindow *ui;
 
     Lvk::RuleTreeModel *m_ruleTreeModel;
-    QItemSelectionModel *m_categoriesSelectionModel;
+    QItemSelectionModel *m_ruleTreeSelectionModel;
 
     void initModels();
 
@@ -61,6 +65,7 @@ private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
     void removeSelectedItem();
+    void handleRuleInputChanged(const QString& ruleInput);
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
 };

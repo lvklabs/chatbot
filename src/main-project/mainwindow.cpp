@@ -46,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(handleRuleSelectionChanged(QItemSelection,QItemSelection)));
+
+    connect(ui->ruleInputText,
+            SIGNAL(textEdited(QString)),
+            SLOT(handleRuleInputChanged(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +59,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::clear()
 {
+    setUiMode(DefaultUiMode);
+
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
     ui->rightSideTabWidget->setCurrentIndex(0);
@@ -64,6 +70,7 @@ void MainWindow::clear()
     ui->ruleInputText->clear();
     ui->ruleInputVariantsText->clear();
     ui->ruleOutputText->clear();
+    ui->ifUserWritesLabel->clear();
 
     // chat tab widgets
     //ui->fbChatRadio->
@@ -87,7 +94,7 @@ void MainWindow::initModels()
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
-    m_categoriesSelectionModel = ui->categoriesTree->selectionModel();
+    m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 }
 
 Lvk::RuleItem *MainWindow::addCategory(const QString &name)
@@ -134,7 +141,7 @@ void MainWindow::addCategoryWithInputDialog()
 
             if (category) {
                 QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
-                m_categoriesSelectionModel->setCurrentIndex(categoryIndex,
+                m_ruleTreeSelectionModel->setCurrentIndex(categoryIndex,
                                                             QItemSelectionModel::ClearAndSelect);
             } else {
                 QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
@@ -152,7 +159,7 @@ void MainWindow::addCategoryWithInputDialog()
 
 void MainWindow::addRuleWithInputDialog()
 {
-    QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
+    QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
     if (selectedRows.size() <= 0) {
         QMessageBox msg(QMessageBox::Information, tr("Add rule"),
@@ -178,7 +185,7 @@ void MainWindow::addRuleWithInputDialog()
     Lvk::RuleItem *emptyRule = addRule("", parentCategory);
 
     if (emptyRule) {
-        m_categoriesSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
+        m_ruleTreeSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
                                            QItemSelectionModel::ClearAndSelect);
         ui->ruleInputText->setFocus();
     } else {
@@ -191,7 +198,7 @@ void MainWindow::addRuleWithInputDialog()
 
 void MainWindow::removeSelectedItem()
 {
-    QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
+    QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
     if (selectedRows.size() <= 0) {
         QMessageBox msg(QMessageBox::Critical, tr("Remove rule or category"),
@@ -234,6 +241,15 @@ void MainWindow::removeSelectedItem()
     }
 }
 
+
+void MainWindow::handleRuleInputChanged(const QString &ruleInput)
+{
+    if (m_ruleTreeSelectionModel->selectedIndexes().size() > 0) {
+        QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes()[0];
+        m_ruleTreeModel->setData(selectedIndex, ruleInput, Qt::EditRole);
+    }
+}
+
 void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
 {
@@ -249,7 +265,7 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
             item->setInput(input);
             item->setOutput(output);
         } else {
-            // nothing to do
+           // nothing to do
         }
     }
 
@@ -257,14 +273,6 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
         Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(selected.indexes()[0].internalPointer());
 
         if (item->type() == Lvk::RuleItem::Rule) {
-            ui->ruleInputText->setVisible(true);
-            ui->ruleInputVariantsText->setVisible(true);
-            ui->ruleOutputText->setVisible(true);
-
-            ui->ifUserWritesLabel->setVisible(true);
-            ui->orVariantsLabel->setVisible(true);
-            ui->chatbotRepliesLabel->setVisible(true);
-
             QString input, inputVariants, output;
 
             for (int i = 0; i < item->input().size(); ++i) {
@@ -285,22 +293,66 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
                 }
             }
 
+            setUiMode(EditRuleUiMode);
+
             ui->ruleInputText->setText(input);
             ui->ruleInputVariantsText->setPlainText(inputVariants);
             ui->ruleOutputText->setPlainText(output);
 
         } else {
-            ui->ruleInputText->setText("");
+            setUiMode(EditCategoryUiMode);
+
+            ui->ruleInputText->setText(item->data(0).toString());
             ui->ruleInputVariantsText->setPlainText("");
             ui->ruleOutputText->setPlainText("");
-
-            ui->ruleInputText->setVisible(false);
-            ui->ruleInputVariantsText->setVisible(false);
-            ui->ruleOutputText->setVisible(false);
-
-            ui->ifUserWritesLabel->setVisible(false);
-            ui->orVariantsLabel->setVisible(false);
-            ui->chatbotRepliesLabel->setVisible(false);
         }
+    } else {
+        setUiMode(DefaultUiMode);
+
+        ui->ruleInputText->setText("");
+        ui->ruleInputVariantsText->setPlainText("");
+        ui->ruleOutputText->setPlainText("");
     }
 }
+
+void MainWindow::setUiMode(MainWindow::UiMode mode)
+{
+    switch (mode) {
+    case DefaultUiMode:
+        ui->ruleInputText->setVisible(false);
+        ui->ruleInputVariantsText->setVisible(false);
+        ui->ruleOutputText->setVisible(false);
+
+        ui->ifUserWritesLabel->setVisible(false);
+        ui->orVariantsLabel->setVisible(false);
+        ui->chatbotRepliesLabel->setVisible(false);
+
+        ui->ifUserWritesLabel->setText("");
+        break;
+
+    case EditCategoryUiMode:
+        ui->ruleInputText->setVisible(true);
+        ui->ruleInputVariantsText->setVisible(false);
+        ui->ruleOutputText->setVisible(false);
+
+        ui->ifUserWritesLabel->setVisible(true);
+        ui->orVariantsLabel->setVisible(false);
+        ui->chatbotRepliesLabel->setVisible(false);
+
+        ui->ifUserWritesLabel->setText(tr("Category name:"));
+        break;
+
+    case EditRuleUiMode:
+        ui->ruleInputText->setVisible(true);
+        ui->ruleInputVariantsText->setVisible(true);
+        ui->ruleOutputText->setVisible(true);
+
+        ui->ifUserWritesLabel->setVisible(true);
+        ui->orVariantsLabel->setVisible(true);
+        ui->chatbotRepliesLabel->setVisible(true);
+
+        ui->ifUserWritesLabel->setText(tr("If user writes:"));
+        break;
+    }
+}
+
