@@ -56,7 +56,11 @@ QVariant Lvk::RuleItem::data(int column, int role) const
         switch (role) {
         case Qt::EditRole:
         case Qt::DisplayRole:
-            return m_name;
+            if (m_type == Rule) {
+                return m_input.size() == 0 ? QString("(Empty Rule)") : m_input[0];
+            } else {
+                return m_name;
+            }
 
         case Qt::DecorationRole:
             return m_type == Rule ? QIcon(":/icons/rule_16x16.png")
@@ -77,7 +81,15 @@ bool Lvk::RuleItem::setData(const QVariant &value, int column, int role)
         switch (role) {
         case Qt::EditRole:
         case Qt::DisplayRole:
-            m_name = value.toString();
+            if (m_type == Rule) {
+                if (m_input.size() == 0) {
+                    m_input.append(value.toString());
+                } else {
+                    m_input[0] = value.toString();
+                }
+            } else {
+                m_name = value.toString();
+            }
             return true;
 
         case Qt::DecorationRole:

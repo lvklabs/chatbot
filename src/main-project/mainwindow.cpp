@@ -62,6 +62,7 @@ void MainWindow::clear()
     // train tab widgets
     // TODO clear ui->categoriesTree
     ui->ruleInputText->clear();
+    ui->ruleInputVariantsText->clear();
     ui->ruleOutputText->clear();
 
     // chat tab widgets
@@ -154,7 +155,7 @@ void MainWindow::addRuleWithInputDialog()
     QModelIndexList selectedRows = m_categoriesSelectionModel->selectedRows();
 
     if (selectedRows.size() <= 0) {
-        QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
+        QMessageBox msg(QMessageBox::Information, tr("Add rule"),
                         tr("Select the category where the rule will belong to"),
                         QMessageBox::Ok, this);
         msg.exec();
@@ -174,7 +175,7 @@ void MainWindow::addRuleWithInputDialog()
         ui->categoriesTree->setExpanded(selectedIndex.parent(), true);
     }
 
-    Lvk::RuleItem *emptyRule = addRule(tr("(Empty rule)"), parentCategory);
+    Lvk::RuleItem *emptyRule = addRule("", parentCategory);
 
     if (emptyRule) {
         m_categoriesSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
@@ -218,7 +219,7 @@ void MainWindow::removeSelectedItem()
                 .arg(selectedIndex.data(Qt::DisplayRole).toString());
     }
 
-    QMessageBox msg(QMessageBox::Critical, dialogTitle, dialogText,
+    QMessageBox msg(QMessageBox::Question, dialogTitle, dialogText,
                     QMessageBox::Yes | QMessageBox::No, this);
 
     if (msg.exec() == QMessageBox::Yes) {
@@ -240,8 +241,10 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
         Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(deselected.indexes()[0].internalPointer());
 
         if (item->type() == Lvk::RuleItem::Rule) {
-            QStringList input = ui->ruleInputText->toPlainText().split("\n", QString::SkipEmptyParts);
+            QStringList input = ui->ruleInputVariantsText->toPlainText().split("\n", QString::SkipEmptyParts);
             QStringList output = ui->ruleOutputText->toPlainText().split("\n", QString::SkipEmptyParts);
+
+            input.prepend(ui->ruleInputText->text());
 
             item->setInput(input);
             item->setOutput(output);
@@ -254,28 +257,50 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
         Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(selected.indexes()[0].internalPointer());
 
         if (item->type() == Lvk::RuleItem::Rule) {
-            ui->ruleInputText->setEnabled(true);
-            ui->ruleOutputText->setEnabled(true);
+            ui->ruleInputText->setVisible(true);
+            ui->ruleInputVariantsText->setVisible(true);
+            ui->ruleOutputText->setVisible(true);
 
-            QString input, output;
+            ui->ifUserWritesLabel->setVisible(true);
+            ui->orVariantsLabel->setVisible(true);
+            ui->chatbotRepliesLabel->setVisible(true);
+
+            QString input, inputVariants, output;
 
             for (int i = 0; i < item->input().size(); ++i) {
-                input += item->input()[i] + "\n";
+                QString trimmed = item->input()[i].trimmed();
+                if (!trimmed.isEmpty()) {
+                    if (i == 0) {
+                        input = trimmed;
+                    } else {
+                        inputVariants += trimmed + "\n";
+                    }
+                }
             }
 
             for (int i = 0; i < item->output().size(); ++i) {
-                output += item->output()[i] + "\n";
+                QString trimmed = item->output()[i].trimmed();
+                if (!trimmed.isEmpty()) {
+                    output += trimmed + "\n";
+                }
             }
 
-            ui->ruleInputText->setPlainText(input);
+            ui->ruleInputText->setText(input);
+            ui->ruleInputVariantsText->setPlainText(inputVariants);
             ui->ruleOutputText->setPlainText(output);
 
         } else {
-            ui->ruleInputText->setPlainText("");
+            ui->ruleInputText->setText("");
+            ui->ruleInputVariantsText->setPlainText("");
             ui->ruleOutputText->setPlainText("");
 
-            ui->ruleInputText->setEnabled(false);
-            ui->ruleOutputText->setEnabled(false);
+            ui->ruleInputText->setVisible(false);
+            ui->ruleInputVariantsText->setVisible(false);
+            ui->ruleOutputText->setVisible(false);
+
+            ui->ifUserWritesLabel->setVisible(false);
+            ui->orVariantsLabel->setVisible(false);
+            ui->chatbotRepliesLabel->setVisible(false);
         }
     }
 }

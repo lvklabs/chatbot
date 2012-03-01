@@ -29,7 +29,7 @@
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="2">
            <layout class="QGridLayout" name="trainTabGridLayout" columnstretch="2,0,0,3">
-            <item row="0" column="2" rowspan="6">
+            <item row="0" column="2" rowspan="8">
              <spacer name="trainTabSpacer1">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -120,27 +120,37 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="3">
+            <item row="4" column="3">
              <widget class="QLabel" name="chatbotRepliesLabel">
               <property name="text">
                <string>Chatbot replies:</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="3" rowspan="3">
+            <item row="5" column="3" rowspan="3">
              <widget class="QPlainTextEdit" name="ruleOutputText">
               <property name="mouseTracking">
                <bool>true</bool>
               </property>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QPlainTextEdit" name="ruleInputText"/>
+            <item row="3" column="3">
+             <widget class="QPlainTextEdit" name="ruleInputVariantsText"/>
             </item>
-            <item row="1" column="0" rowspan="5" colspan="2">
+            <item row="1" column="0" rowspan="7" colspan="2">
              <widget class="QTreeView" name="categoriesTree">
               <property name="mouseTracking">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="ruleInputText"/>
+            </item>
+            <item row="2" column="3">
+             <widget class="QLabel" name="orVariantsLabel">
+              <property name="text">
+               <string>Or any of these variants:</string>
               </property>
              </widget>
             </item>
