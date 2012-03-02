@@ -8,31 +8,34 @@
 namespace Lvk
 {
 
-class RuleItem
+namespace BE
+{
+
+class Rule
 {
 public:
-    enum ItemType { Rule, CategoryRule };
+    enum RuleType { FinalRule, ContainerRule };
 
-    RuleItem(RuleItem *parent = 0);
+    Rule(Rule *parent = 0);
 
-    RuleItem(const QString &name, RuleItem *parent = 0);
+    Rule(const QString &name, Rule *parent = 0);
 
-    RuleItem(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
-             RuleItem *parent = 0);
+    Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
+             Rule *parent = 0);
 
-    ~RuleItem();
-
-
-    RuleItem *parent();
-
-    const RuleItem *parent() const;
+    ~Rule();
 
 
-    QList<RuleItem*> &children();
+    Rule *parent();
 
-    const QList<RuleItem*> &children() const;
+    const Rule *parent() const;
 
-    bool appendChild(RuleItem *child);
+
+    QList<Rule*> &children();
+
+    const QList<Rule*> &children() const;
+
+    bool appendChild(Rule *child);
 
     bool insertChildren(int position, int count);
 
@@ -40,12 +43,12 @@ public:
 
     int childCount() const;
 
-    RuleItem *child(int number);
+    Rule *child(int number);
 
 
-    ItemType type() const;
+    RuleType type() const;
 
-    void setType(ItemType type);
+    void setType(RuleType type);
 
 
     QString &name();
@@ -69,13 +72,15 @@ public:
     void setOutput(const QList<QString> &output);
 
 private:
-    QList<RuleItem*> m_childItems;
+    QList<Rule*> m_childItems;
     QString m_name;
     QList<QString> m_input;
     QList<QString> m_ouput;
-    RuleItem *m_parentItem;
-    ItemType m_type;
+    Rule *m_parentItem;
+    RuleType m_type;
 };
+
+} // namespace BE
 
 } // namespace Lvk
 

@@ -21,6 +21,7 @@
 
 #include "mainwindow.h"
 #include "ruletreemodel.h"
+#include "ruleitem.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -29,7 +30,7 @@
 #include <QMessageBox>
 
 
-MainWindow::MainWindow(QWidget *parent) :
+Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), m_ruleTreeModel(0)
 {
@@ -52,12 +53,12 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(handleRuleInputChanged(QString)));
 }
 
-MainWindow::~MainWindow()
+Lvk::FE::MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::clear()
+void Lvk::FE::MainWindow::clear()
 {
     setUiMode(DefaultUiMode);
 
@@ -86,9 +87,9 @@ void MainWindow::clear()
     ui->testInputText->clear();
 }
 
-void MainWindow::initModels()
+void Lvk::FE::MainWindow::initModels()
 {
-    m_ruleTreeModel = new Lvk::RuleTreeModel("FIXME", this);
+    m_ruleTreeModel = new FE::RuleTreeModel("FIXME", this);
 
     m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
 
@@ -97,11 +98,11 @@ void MainWindow::initModels()
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 }
 
-Lvk::RuleItem *MainWindow::addCategory(const QString &name)
+Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 {
-    Lvk::RuleItem *category = new Lvk::RuleItem(name, m_ruleTreeModel->invisibleRootItem());
+    BE::Rule *category = new BE::Rule(name, m_ruleTreeModel->invisibleRootItem());
 
-    category->setType(Lvk::RuleItem::CategoryRule);
+    category->setType(BE::Rule::ContainerRule);
 
     bool appended = m_ruleTreeModel->appendItem(category);
 
@@ -114,9 +115,9 @@ Lvk::RuleItem *MainWindow::addCategory(const QString &name)
     }
 }
 
-Lvk::RuleItem *MainWindow::addRule(const QString &name, Lvk::RuleItem *category)
+Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *category)
 {
-    Lvk::RuleItem *rule = new Lvk::RuleItem(name, category);
+    BE::Rule *rule = new BE::Rule(name, category);
 
     bool appended = m_ruleTreeModel->appendItem(rule);
 
@@ -129,7 +130,7 @@ Lvk::RuleItem *MainWindow::addRule(const QString &name, Lvk::RuleItem *category)
     }
 }
 
-void MainWindow::addCategoryWithInputDialog()
+void Lvk::FE::MainWindow::addCategoryWithInputDialog()
 {
     bool ok;
     QString name = QInputDialog::getText(this, tr("Add category"), tr("Category name:"),
@@ -137,7 +138,7 @@ void MainWindow::addCategoryWithInputDialog()
 
     if (ok) {
         if (!name.isEmpty()) {
-            Lvk::RuleItem *category = addCategory(name);
+            BE::Rule *category = addCategory(name);
 
             if (category) {
                 QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
@@ -157,7 +158,7 @@ void MainWindow::addCategoryWithInputDialog()
     }
 }
 
-void MainWindow::addRuleWithInputDialog()
+void Lvk::FE::MainWindow::addRuleWithInputDialog()
 {
     QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
@@ -171,10 +172,10 @@ void MainWindow::addRuleWithInputDialog()
     }
 
     QModelIndex selectedIndex = selectedRows[0];
-    Lvk::RuleItem *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
-    Lvk::RuleItem *parentCategory = 0;
+    BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
+    BE::Rule *parentCategory = 0;
 
-    if (selectedItem->type() == Lvk::RuleItem::CategoryRule) {
+    if (selectedItem->type() == BE::Rule::ContainerRule) {
         parentCategory = selectedItem;
         ui->categoriesTree->setExpanded(selectedIndex, true);
     } else {
@@ -182,7 +183,7 @@ void MainWindow::addRuleWithInputDialog()
         ui->categoriesTree->setExpanded(selectedIndex.parent(), true);
     }
 
-    Lvk::RuleItem *emptyRule = addRule("", parentCategory);
+    BE::Rule *emptyRule = addRule("", parentCategory);
 
     if (emptyRule) {
         m_ruleTreeSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
@@ -196,7 +197,7 @@ void MainWindow::addRuleWithInputDialog()
     }
 }
 
-void MainWindow::removeSelectedItem()
+void Lvk::FE::MainWindow::removeSelectedItem()
 {
     QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
@@ -210,12 +211,12 @@ void MainWindow::removeSelectedItem()
     }
 
     QModelIndex selectedIndex = selectedRows[0];
-    Lvk::RuleItem *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
+    BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
 
     QString dialogText;
     QString dialogTitle;
 
-    if (selectedItem->type() == Lvk::RuleItem::CategoryRule) {
+    if (selectedItem->type() == BE::Rule::ContainerRule) {
         dialogTitle = tr("Remove category");
         dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
                                 "All rules belonging to that category will be also removed"))
@@ -242,7 +243,7 @@ void MainWindow::removeSelectedItem()
 }
 
 
-void MainWindow::handleRuleInputChanged(const QString &ruleInput)
+void Lvk::FE::MainWindow::handleRuleInputChanged(const QString &ruleInput)
 {
     if (m_ruleTreeSelectionModel->selectedIndexes().size() > 0) {
         QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes()[0];
@@ -250,13 +251,13 @@ void MainWindow::handleRuleInputChanged(const QString &ruleInput)
     }
 }
 
-void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
+void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
 {
     if (deselected.indexes().size() > 0) {
-        Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(deselected.indexes()[0].internalPointer());
+        BE::Rule *item = static_cast<BE::Rule *>(deselected.indexes()[0].internalPointer());
 
-        if (item->type() == Lvk::RuleItem::Rule) {
+        if (item->type() == BE::Rule::FinalRule) {
             QStringList input = ui->ruleInputVariantsText->toPlainText().split("\n", QString::SkipEmptyParts);
             QStringList output = ui->ruleOutputText->toPlainText().split("\n", QString::SkipEmptyParts);
 
@@ -270,9 +271,9 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
     }
 
     if (selected.indexes().size() > 0) {
-        Lvk::RuleItem *item = static_cast<Lvk::RuleItem *>(selected.indexes()[0].internalPointer());
+        BE::Rule *item = static_cast<BE::Rule *>(selected.indexes()[0].internalPointer());
 
-        if (item->type() == Lvk::RuleItem::Rule) {
+        if (item->type() == BE::Rule::FinalRule) {
             QString input, inputVariants, output;
 
             for (int i = 0; i < item->input().size(); ++i) {
@@ -315,7 +316,7 @@ void MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
     }
 }
 
-void MainWindow::setUiMode(MainWindow::UiMode mode)
+void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
     switch (mode) {
     case DefaultUiMode:

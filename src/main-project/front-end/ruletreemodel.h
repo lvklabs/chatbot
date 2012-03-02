@@ -2,9 +2,16 @@
 #define RULETREEMODEL_H
 
 #include <QAbstractItemModel>
-#include "ruleitem.h"
 
 namespace Lvk
+{
+
+namespace BE
+{
+    class Rule;
+}
+
+namespace FE
 {
 
 class RuleTreeModel : public QAbstractItemModel
@@ -44,27 +51,29 @@ public:
 
     // RuleTreeModel
 
-    RuleItem *invisibleRootItem();
+    BE::Rule *invisibleRootItem();
 
-    RuleItem *itemFromIndex(const QModelIndex &index);
+    BE::Rule *itemFromIndex(const QModelIndex &index);
 
-    QModelIndex index(int row, int column, RuleItem *parentItem) const;
+    QModelIndex index(int row, int column, BE::Rule *parentItem) const;
 
-    QModelIndex indexFromItem(RuleItem *item);
+    QModelIndex indexFromItem(BE::Rule *item);
 
-    bool appendItem(RuleItem *item);
+    bool appendItem(BE::Rule *item);
 
 private:
     void setupModelData();
 
     // helpers
-    int rowForItem(const Lvk::RuleItem *item) const;
-    int columnCountForItem(const Lvk::RuleItem *item) const;
-    QVariant dataForItem(const Lvk::RuleItem *item, int column, int role) const;
-    bool setDataForItem(Lvk::RuleItem *item, const QVariant &value, int column, int role);
+    int rowForItem(const BE::Rule *item) const;
+    int columnCountForItem(const BE::Rule *item) const;
+    QVariant dataForItem(const BE::Rule *item, int column, int role) const;
+    bool setDataForItem(BE::Rule *item, const QVariant &value, int column, int role);
 
-    RuleItem *m_rootItem;
+    BE::Rule *m_rootItem;
 };
+
+} // namespace FE
 
 } // namespace Lvk
 

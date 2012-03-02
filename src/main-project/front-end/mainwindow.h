@@ -24,17 +24,27 @@
 
 #include <QMainWindow>
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
-}
-
-namespace Lvk {
-    class RuleTreeModel;
-    class RuleItem;
 }
 
 class QItemSelectionModel;
 class QItemSelection;
+
+namespace Lvk
+{
+
+namespace BE
+{
+    class Rule;
+}
+
+namespace FE
+{
+
+class RuleTreeModel;
+
 
 class MainWindow : public QMainWindow
 {
@@ -46,8 +56,8 @@ public:
 
     void clear();
 
-    Lvk::RuleItem *addCategory(const QString &name);
-    Lvk::RuleItem *addRule(const QString &name, Lvk::RuleItem *category);
+    BE::Rule *addCategory(const QString &name);
+    BE::Rule *addRule(const QString &name, BE::Rule *category);
 
     enum UiMode { DefaultUiMode, EditCategoryUiMode, EditRuleUiMode };
 
@@ -56,7 +66,7 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    Lvk::RuleTreeModel *m_ruleTreeModel;
+    RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
 
     void initModels();
@@ -69,5 +79,10 @@ private slots:
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
 };
+
+} // namespace Lvk
+
+} // namespace FE
+
 
 #endif // MAINWINDOW_H

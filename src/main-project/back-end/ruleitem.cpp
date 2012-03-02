@@ -4,52 +4,52 @@
 #include <QIcon>
 #include <assert.h>
 
-Lvk::RuleItem::RuleItem(RuleItem *parent /*= 0*/)
-    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(Rule)
+Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
+    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(FinalRule)
 {
 }
 
-Lvk::RuleItem::RuleItem(const QString &name, RuleItem *parent /*= 0*/)
-    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(Rule)
+Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
+    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(FinalRule)
 {
 }
 
-Lvk::RuleItem::RuleItem(const QString &name, const QList<QString> &input,
-                        const QList<QString> &ouput, RuleItem *parent /*= 0*/)
-    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(Rule)
+Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
+                        const QList<QString> &ouput, Rule *parent /*= 0*/)
+    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(FinalRule)
 {
 }
 
-Lvk::RuleItem::~RuleItem()
+Lvk::BE::Rule::~Rule()
 {
     qDeleteAll(m_childItems);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::RuleItem * Lvk::RuleItem::parent()
+Lvk::BE::Rule * Lvk::BE::Rule::parent()
 {
     return m_parentItem;
 }
 
-const Lvk::RuleItem * Lvk::RuleItem::parent() const
+const Lvk::BE::Rule * Lvk::BE::Rule::parent() const
 {
     return m_parentItem;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<Lvk::RuleItem *> & Lvk::RuleItem::children()
+QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children()
 {
     return m_childItems;
 }
 
-const QList<Lvk::RuleItem *> & Lvk::RuleItem::children() const
+const QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children() const
 {
     return m_childItems;
 }
 
-bool Lvk::RuleItem::appendChild(Lvk::RuleItem *item)
+bool Lvk::BE::Rule::appendChild(Rule *item)
 {
     assert(item->m_parentItem == 0 || item->m_parentItem == this);
 
@@ -60,21 +60,21 @@ bool Lvk::RuleItem::appendChild(Lvk::RuleItem *item)
     return true;
 }
 
-bool Lvk::RuleItem::insertChildren(int position, int count)
+bool Lvk::BE::Rule::insertChildren(int position, int count)
 {
     if (position < 0 || position > m_childItems.size()) {
         return false;
     }
 
     for (int i = 0; i < count; ++i) {
-        Lvk::RuleItem *rule = new Lvk::RuleItem(this);
+        Rule *rule = new Rule(this);
         m_childItems.insert(position, rule);
     }
 
     return true;
 }
 
-bool Lvk::RuleItem::removeChildren(int position, int count)
+bool Lvk::BE::Rule::removeChildren(int position, int count)
 {
     if (position < 0 || position + count > m_childItems.size()) {
         return false;
@@ -87,76 +87,76 @@ bool Lvk::RuleItem::removeChildren(int position, int count)
     return true;
 }
 
-Lvk::RuleItem * Lvk::RuleItem::child(int row)
+Lvk::BE::Rule * Lvk::BE::Rule::child(int row)
 {
     return m_childItems.value(row);
 }
 
-int Lvk::RuleItem::childCount() const
+int Lvk::BE::Rule::childCount() const
 {
     return m_childItems.count();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::RuleItem::setType(Lvk::RuleItem::ItemType type)
+void Lvk::BE::Rule::setType(Rule::RuleType type)
 {
     m_type = type;
 }
 
-Lvk::RuleItem::ItemType Lvk::RuleItem::type() const
+Lvk::BE::Rule::RuleType Lvk::BE::Rule::type() const
 {
     return m_type;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> &Lvk::RuleItem::input()
+QList<QString> &Lvk::BE::Rule::input()
 {
     return m_input;
 }
 
-const QList<QString> &Lvk::RuleItem::input() const
+const QList<QString> &Lvk::BE::Rule::input() const
 {
     return m_input;
 }
 
-void Lvk::RuleItem::setInput(const QList<QString> &input)
+void Lvk::BE::Rule::setInput(const QList<QString> &input)
 {
     m_input = input;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> &Lvk::RuleItem::output()
+QList<QString> &Lvk::BE::Rule::output()
 {
     return m_ouput;
 }
 
-const QList<QString> &Lvk::RuleItem::output() const
+const QList<QString> &Lvk::BE::Rule::output() const
 {
     return m_ouput;
 }
 
-void Lvk::RuleItem::setOutput(const QList<QString> &output)
+void Lvk::BE::Rule::setOutput(const QList<QString> &output)
 {
     m_ouput = output;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QString &Lvk::RuleItem::name()
+QString &Lvk::BE::Rule::name()
 {
     return m_name;
 }
 
-const QString &Lvk::RuleItem::name() const
+const QString &Lvk::BE::Rule::name() const
 
 {
     return m_name;
 }
 
-void Lvk::RuleItem::setName(const QString &name)
+void Lvk::BE::Rule::setName(const QString &name)
 {
     m_name = name;
 }

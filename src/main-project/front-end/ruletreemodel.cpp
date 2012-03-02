@@ -1,4 +1,5 @@
 #include "ruletreemodel.h"
+#include "ruleitem.h"
 
 #include <QIcon>
 
@@ -7,13 +8,13 @@
 // Constructors & Destructors
 //--------------------------------------------------------------------------------------------------
 
-Lvk::RuleTreeModel::RuleTreeModel(const QString &/*data*/, QObject *parent)
-    : QAbstractItemModel(parent), m_rootItem(new Lvk::RuleItem())
+Lvk::FE::RuleTreeModel::RuleTreeModel(const QString &/*data*/, QObject *parent)
+    : QAbstractItemModel(parent), m_rootItem(new BE::Rule())
 {
     setupModelData();
 }
 
-Lvk::RuleTreeModel::~RuleTreeModel()
+Lvk::FE::RuleTreeModel::~RuleTreeModel()
 {
     delete m_rootItem;
 }
@@ -22,27 +23,27 @@ Lvk::RuleTreeModel::~RuleTreeModel()
 // QAbstractItemModel - read only models
 //--------------------------------------------------------------------------------------------------
 
-QModelIndex Lvk::RuleTreeModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent)) {
         return QModelIndex();
     }
 
-    Lvk::RuleItem *parentItem = parent.isValid() ?
-                static_cast<Lvk::RuleItem *>(parent.internalPointer()) : m_rootItem;
+    BE::Rule *parentItem = parent.isValid() ?
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
 
     return index(row, column, parentItem);
 }
 
 
-QModelIndex Lvk::RuleTreeModel::parent(const QModelIndex &index) const
+QModelIndex Lvk::FE::RuleTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid()) {
         return QModelIndex();
     }
 
-    Lvk::RuleItem *childItem = static_cast<Lvk::RuleItem*>(index.internalPointer());
-    Lvk::RuleItem *parentItem = childItem->parent();
+    BE::Rule *childItem = static_cast<BE::Rule*>(index.internalPointer());
+    BE::Rule *parentItem = childItem->parent();
 
     if (!parentItem) {
         return QModelIndex();
@@ -51,34 +52,34 @@ QModelIndex Lvk::RuleTreeModel::parent(const QModelIndex &index) const
     return createIndex(rowForItem(parentItem), 0, parentItem);
 }
 
-int Lvk::RuleTreeModel::rowCount(const QModelIndex &parent) const
+int Lvk::FE::RuleTreeModel::rowCount(const QModelIndex &parent) const
 {
-    Lvk::RuleItem *parentItem = parent.isValid() ?
-                static_cast<Lvk::RuleItem *>(parent.internalPointer()) : m_rootItem;
+    BE::Rule *parentItem = parent.isValid() ?
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
 
     return parentItem->childCount();
 }
 
-int Lvk::RuleTreeModel::columnCount(const QModelIndex &parent) const
+int Lvk::FE::RuleTreeModel::columnCount(const QModelIndex &parent) const
 {
-    Lvk::RuleItem *parentItem = parent.isValid() ?
-                static_cast<Lvk::RuleItem *>(parent.internalPointer()) : m_rootItem;
+    BE::Rule *parentItem = parent.isValid() ?
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
 
     return columnCountForItem(parentItem);
 }
 
-QVariant Lvk::RuleTreeModel::data(const QModelIndex &index, int role) const
+QVariant Lvk::FE::RuleTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
         return QVariant();
     }
 
-    Lvk::RuleItem *item = static_cast<Lvk::RuleItem*>(index.internalPointer());
+    BE::Rule *item = static_cast<BE::Rule*>(index.internalPointer());
 
     return dataForItem(item, index.column(), role);
 }
 
-QVariant Lvk::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
+QVariant Lvk::FE::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return m_rootItem->name();
@@ -91,9 +92,9 @@ QVariant Lvk::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orienta
 // QAbstractItemModel - editable models
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::RuleTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool Lvk::FE::RuleTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Lvk::RuleItem *item = itemFromIndex(index);
+    BE::Rule *item = itemFromIndex(index);
 
     if (item) {
         if (setDataForItem(item, value, 0, role)) {
@@ -105,7 +106,7 @@ bool Lvk::RuleTreeModel::setData(const QModelIndex &index, const QVariant &value
     return false;
 }
 
-bool Lvk::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientation,
+bool Lvk::FE::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientation,
                                        const QVariant &value, int role)
 {
     if (orientation == Qt::Horizontal) {
@@ -118,9 +119,9 @@ bool Lvk::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientation,
     return false;
 }
 
-bool Lvk::RuleTreeModel::insertRows(int position, int rows, const QModelIndex &parent)
+bool Lvk::FE::RuleTreeModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
-    Lvk::RuleItem *parentItem = itemFromIndex(parent);
+    BE::Rule *parentItem = itemFromIndex(parent);
 
     bool inserted = false;
 
@@ -133,9 +134,9 @@ bool Lvk::RuleTreeModel::insertRows(int position, int rows, const QModelIndex &p
     return inserted;
 }
 
-bool Lvk::RuleTreeModel::removeRows(int position, int rows, const QModelIndex &parent)
+bool Lvk::FE::RuleTreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
-    Lvk::RuleItem *parentItem = itemFromIndex(parent);
+    BE::Rule *parentItem = itemFromIndex(parent);
 
     bool removed = false;
 
@@ -148,7 +149,7 @@ bool Lvk::RuleTreeModel::removeRows(int position, int rows, const QModelIndex &p
     return removed;
 }
 
-Qt::ItemFlags Lvk::RuleTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid()) {
         return 0;
@@ -161,35 +162,35 @@ Qt::ItemFlags Lvk::RuleTreeModel::flags(const QModelIndex &index) const
 // RuleTreeMode
 //--------------------------------------------------------------------------------------------------
 
-Lvk::RuleItem * Lvk::RuleTreeModel::invisibleRootItem()
+Lvk::BE::Rule * Lvk::FE::RuleTreeModel::invisibleRootItem()
 {
     return m_rootItem;
 }
 
-Lvk::RuleItem * Lvk::RuleTreeModel::itemFromIndex(const QModelIndex &index)
+Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
 {
     if (!index.isValid()) {
         return 0;
     }
 
-    return static_cast<Lvk::RuleItem *>(index.internalPointer());
+    return static_cast<BE::Rule *>(index.internalPointer());
 }
 
-QModelIndex Lvk::RuleTreeModel::index(int row, int column, Lvk::RuleItem *parentItem) const
+QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, BE::Rule *parentItem) const
 {
-    Lvk::RuleItem *childItem = parentItem->child(row);
+    BE::Rule *childItem = parentItem->child(row);
 
     return childItem ? createIndex(row, column, childItem) : QModelIndex();
 }
 
-QModelIndex Lvk::RuleTreeModel::indexFromItem(Lvk::RuleItem *item)
+QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(BE::Rule *item)
 {
     return item != m_rootItem ? createIndex(rowForItem(item), 0, item) : QModelIndex();
 }
 
-bool Lvk::RuleTreeModel::appendItem(Lvk::RuleItem *item)
+bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
 {
-    Lvk::RuleItem *parentItem = item->parent();
+    BE::Rule *parentItem = item->parent();
 
     bool appended = false;
 
@@ -207,36 +208,36 @@ bool Lvk::RuleTreeModel::appendItem(Lvk::RuleItem *item)
 // helpers
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::RuleTreeModel::rowForItem(const Lvk::RuleItem *item) const
+int Lvk::FE::RuleTreeModel::rowForItem(const BE::Rule *item) const
 {
     if (item->parent()) {
-        return item->parent()->children().indexOf((Lvk::RuleItem *)item);
+        return item->parent()->children().indexOf((BE::Rule *)item);
     }
 
     return 0;
 }
 
-int Lvk::RuleTreeModel::columnCountForItem(const Lvk::RuleItem */*item*/) const
+int Lvk::FE::RuleTreeModel::columnCountForItem(const BE::Rule */*item*/) const
 {
     return 1;
 }
 
-QVariant Lvk::RuleTreeModel::dataForItem(const Lvk::RuleItem *item, int column, int role) const
+QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, int role) const
 {
     switch (column) {
     case 0:
         switch (role) {
         case Qt::EditRole:
         case Qt::DisplayRole:
-            if (item->type() == Lvk::RuleItem::Rule) {
+            if (item->type() == BE::Rule::FinalRule) {
                 return item->input().size() == 0 ? QString("") : item->input()[0];
             } else {
                 return item->name();
             }
 
         case Qt::DecorationRole:
-            return item->type() == Lvk::RuleItem::Rule ? QIcon(":/icons/rule_16x16.png")
-                                                       : QIcon(":/icons/category_16x16.png");
+            return item->type() == BE::Rule::FinalRule ? QIcon(":/icons/rule_16x16.png")
+                                                      : QIcon(":/icons/category_16x16.png");
         default:
             return QVariant();
         }
@@ -246,15 +247,15 @@ QVariant Lvk::RuleTreeModel::dataForItem(const Lvk::RuleItem *item, int column, 
     }
 }
 
-bool Lvk::RuleTreeModel::setDataForItem(Lvk::RuleItem *item, const QVariant &value, int column,
-                                        int role)
+bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &value, int column,
+                                            int role)
 {
     switch (column) {
     case 0:
         switch (role) {
         case Qt::EditRole:
         case Qt::DisplayRole:
-            if (item->type() == Lvk::RuleItem::Rule) {
+            if (item->type() == BE::Rule::FinalRule) {
                 if (item->input().size() == 0) {
                     item->input().append(value.toString());
                 } else {
@@ -278,14 +279,14 @@ bool Lvk::RuleTreeModel::setDataForItem(Lvk::RuleItem *item, const QVariant &val
 // load data
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::RuleTreeModel::setupModelData()
+void Lvk::FE::RuleTreeModel::setupModelData()
 {
     ////////////////////////////////////////////////////////////////////////
     // TODO read from file:
 
-    Lvk::RuleItem *catGreetings    = new Lvk::RuleItem("Saludos");
+    BE::Rule *catGreetings    = new BE::Rule("Saludos");
 
-    catGreetings->setType(Lvk::RuleItem::CategoryRule);
+    catGreetings->setType(BE::Rule::ContainerRule);
 
     m_rootItem->appendChild(catGreetings);
 
@@ -299,8 +300,8 @@ void Lvk::RuleTreeModel::setupModelData()
     rule2InputList << QString("Buenas") << QString("Buena dia") << QString("Buena dia");
     rule2OutputList << QString("Buen dia $USERNAME");
 
-    Lvk::RuleItem * rule1 = new Lvk::RuleItem("", rule1InputList, rule1OutputList);
-    Lvk::RuleItem * rule2 = new Lvk::RuleItem("", rule2InputList, rule2OutputList);
+    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
+    BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
 
     catGreetings->appendChild(rule1);
     catGreetings->appendChild(rule2);

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     translator.load(":/strings/strings_es");
     app.installTranslator(&translator);
 
-    MainWindow window;
+    Lvk::FE::MainWindow window;
     window.show();
 
     return app.exec();
