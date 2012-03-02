@@ -2,9 +2,12 @@
 #include "rule.h"
 #include "nlpengine.h"
 #include "nlprule.h"
+#include "exactmatchengine.h"
+
+#include <QObject>
 
 Lvk::BE::CoreApp::CoreApp()
-    : m_rootRule(0), m_nlpEngine(0)
+    : m_rootRule(0), m_nlpEngine(new Lvk::Nlp::ExactMatchEngine())
 {
 }
 
@@ -35,12 +38,12 @@ bool Lvk::BE::CoreApp::load(const QString &/*filename*/)
     QList<QString> rule1InputList;
     QList<QString> rule1OutputList;
     rule1InputList << QString("Hola") << QString("Hola *");
-    rule1OutputList << QString("Hola $USERNAME");
+    rule1OutputList << QString("Hola!");
 
     QList<QString> rule2InputList;
     QList<QString> rule2OutputList;
     rule2InputList << QString("Buenas") << QString("Buena dia") << QString("Buena dia");
-    rule2OutputList << QString("Buen dia $USERNAME");
+    rule2OutputList << QString("Buen dia");
 
     BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
     BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
@@ -49,6 +52,8 @@ bool Lvk::BE::CoreApp::load(const QString &/*filename*/)
     catGreetings->appendChild(rule2);
 
     ////////////////////////////////////////////////////////////////////////
+
+    refreshNlpEngine();
 
     return true;
 }
@@ -65,6 +70,8 @@ bool Lvk::BE::CoreApp::save()
 
 void Lvk::BE::CoreApp::close()
 {
+    m_nlpEngine->setRules(Nlp::RuleList());
+
     delete m_rootRule;
     m_rootRule = 0;
 
@@ -81,7 +88,14 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &m
     matched.clear();
 
     if (m_nlpEngine) {
-        return m_nlpEngine->getResponse(input);
+        Nlp::RuleList nlpRulesMatched;
+        QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
+
+        if (nlpRulesMatched.size() > 0) {
+            return response;
+        } else {
+            return QObject::tr("Sorry, I don't understand that");
+        }
     } else {
         return "Not implemented";
     }

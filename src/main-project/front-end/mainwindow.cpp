@@ -77,6 +77,8 @@ Lvk::FE::MainWindow::~MainWindow()
     delete m_coreApp;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::clear()
 {
     setUiMode(DefaultUiMode);
@@ -105,6 +107,8 @@ void Lvk::FE::MainWindow::clear()
     ui->testConversationText->clear();
     ui->testInputText->clear();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 {
@@ -250,6 +254,7 @@ void Lvk::FE::MainWindow::removeSelectedItem()
     }
 }
 
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::handleRuleInputChanged(const QString &ruleInput)
 {
@@ -364,6 +369,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::refreshNlpEngine()
 {

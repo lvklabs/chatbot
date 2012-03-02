@@ -24,15 +24,11 @@ public:
 
     virtual void setRules(const RuleList &rules) = 0;
 
-    virtual void addRule(const Rule &rule) = 0;
-
-    virtual void removeRule(const Rule &rule) = 0;
-
-    virtual void updateRule(const Rule &rule) = 0;
-
     virtual QString getResponse(const QString &input) = 0;
 
     virtual QString getResponse(const QString &input, RuleList &matched) = 0;
+
+    virtual ~Engine() {}
 };
 
 } // namespace Nlp

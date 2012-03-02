@@ -13,14 +13,16 @@ HEADERS += \
     back-end/rule.h \
     back-end/coreapp.h \
     nlp-engine/nlpengine.h \
-    nlp-engine/nlprule.h
+    nlp-engine/nlprule.h \
+    nlp-engine/exactmatchengine.h
 
 SOURCES += \
     main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
     back-end/rule.cpp \
-    back-end/coreapp.cpp
+    back-end/coreapp.cpp \
+    nlp-engine/exactmatchengine.cpp
 
 FORMS += \
     front-end/mainwindow.ui
@@ -29,6 +31,8 @@ RESOURCES += \
     resources.qrc
 
 TRANSLATIONS = strings_es.ts
+
+
 
 
 
