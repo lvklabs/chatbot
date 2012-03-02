@@ -18,12 +18,13 @@ Lvk::BE::CoreApp::~CoreApp()
 }
 
 
-bool Lvk::BE::CoreApp::load(const QString &/*filename*/)
+bool Lvk::BE::CoreApp::load(const QString &filename)
 {
     if (!m_filename.isEmpty()) {
         close();
     }
 
+    m_filename = filename;
     m_rootRule = new BE::Rule();
 
     ////////////////////////////////////////////////////////////////////////
@@ -92,6 +93,7 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &m
         QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
 
         if (nlpRulesMatched.size() > 0) {
+            matched.append(new BE::Rule()); // FIXME leak and use real rule
             return response;
         } else {
             return QObject::tr("Sorry, I don't understand that");

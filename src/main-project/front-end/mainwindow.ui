@@ -381,13 +381,6 @@
         <item>
          <layout class="QHBoxLayout" name="testToolbarLayout">
           <item>
-           <widget class="QToolButton" name="refreshEngineRulesButton">
-            <property name="text">
-             <string>Refresh</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QToolButton" name="clearTestConversationButton">
             <property name="text">
              <string>Clear</string>

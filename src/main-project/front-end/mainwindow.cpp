@@ -53,8 +53,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
 
-    connect(ui->refreshEngineRulesButton, SIGNAL(clicked()), SLOT(refreshNlpEngine()));
-
     connect(ui->clearTestConversationButton,
             SIGNAL(clicked()),
             ui->testConversationText,
@@ -372,32 +370,41 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::refreshNlpEngine()
-{
-    m_coreApp->refreshNlpEngine();
-}
-
 void Lvk::FE::MainWindow::testInputTextEntered()
 {
+    m_coreApp->refreshNlpEngine(); // FIXME not performant!
+
     QString input = ui->testInputText->text();
     QList<BE::Rule *> matched;
 
     QString response = m_coreApp->getResponse(input, matched);
 
-    appendTestConversation(input, response);
+    appendTestConversation(input, response, matched.size());
     ui->testInputText->setText("");
 }
 
-void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QString &response)
+void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QString &response_,
+                                                 bool match)
 {
-    const QString START_USER_SPAN = "<span style=\" color:#000088;\">";
-    const QString START_CHATBOT_SPAN = "<span style=\" color:#008800;\">";
-    const QString END_SPAN = "</span>";
-    const QString BR = "<br/>";
+    QString response = response_;
+
+    static const QString START_USER_SPAN = "<span style=\" color:#000088;\">";
+    static const QString START_CHATBOT_SPAN = "<span style=\" color:#008800;\">";
+    static const QString START_NOT_MATCH_SPAN = "<span style=\" color:#880000;\">";
+    static const QString END_SPAN = "</span>";
+    static const QString BR = "<br/>";
+    static const QString END_P_BODY_HTML = "</p></body></html>";
+
+    if (!match) {
+        response = START_NOT_MATCH_SPAN + response + END_SPAN;
+    }
 
     QString conversation = ui->testConversationText->toHtml();
+
+    conversation.remove(END_P_BODY_HTML);
     conversation += START_USER_SPAN + tr("You:") + " " + END_SPAN + input + BR;
     conversation += START_CHATBOT_SPAN + tr("Chatbot:") + " " + END_SPAN + response + BR;
+    conversation += END_P_BODY_HTML;
 
     ui->testConversationText->setHtml(conversation);
 }

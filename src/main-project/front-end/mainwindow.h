@@ -81,9 +81,8 @@ private slots:
     void handleRuleInputChanged(const QString &ruleInput);
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
-    void refreshNlpEngine();
     void testInputTextEntered();
-    void appendTestConversation(const QString &input, const QString &response);
+    void appendTestConversation(const QString &input, const QString &response, bool match);
 };
 
 } // namespace Lvk
