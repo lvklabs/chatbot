@@ -1,5 +1,5 @@
-#ifndef RULEITEM_H
-#define RULEITEM_H
+#ifndef ITEM_H
+#define ITEM_H
 
 #include <QList>
 #include <QString>
@@ -10,6 +10,10 @@ namespace Lvk
 
 namespace BE
 {
+
+/**
+ * \brief This class provides the abstraction of a pattern-template rule.
+ */
 
 class Rule
 {
@@ -84,4 +88,4 @@ private:
 
 } // namespace Lvk
 
-#endif // RULEITEM_H
+#endif // ITEM_H

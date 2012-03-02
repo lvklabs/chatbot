@@ -8,15 +8,13 @@
 // Constructors & Destructors
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::RuleTreeModel::RuleTreeModel(const QString &/*data*/, QObject *parent)
-    : QAbstractItemModel(parent), m_rootItem(new BE::Rule())
+Lvk::FE::RuleTreeModel::RuleTreeModel(BE::Rule *rootRule, QObject *parent)
+    : QAbstractItemModel(parent), m_rootRule(rootRule)
 {
-    setupModelData();
 }
 
 Lvk::FE::RuleTreeModel::~RuleTreeModel()
 {
-    delete m_rootItem;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -30,7 +28,7 @@ QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, const QModelIndex
     }
 
     BE::Rule *parentItem = parent.isValid() ?
-                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootRule;
 
     return index(row, column, parentItem);
 }
@@ -55,7 +53,7 @@ QModelIndex Lvk::FE::RuleTreeModel::parent(const QModelIndex &index) const
 int Lvk::FE::RuleTreeModel::rowCount(const QModelIndex &parent) const
 {
     BE::Rule *parentItem = parent.isValid() ?
-                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootRule;
 
     return parentItem->childCount();
 }
@@ -63,7 +61,7 @@ int Lvk::FE::RuleTreeModel::rowCount(const QModelIndex &parent) const
 int Lvk::FE::RuleTreeModel::columnCount(const QModelIndex &parent) const
 {
     BE::Rule *parentItem = parent.isValid() ?
-                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootItem;
+                static_cast<BE::Rule *>(parent.internalPointer()) : m_rootRule;
 
     return columnCountForItem(parentItem);
 }
@@ -82,7 +80,7 @@ QVariant Lvk::FE::RuleTreeModel::data(const QModelIndex &index, int role) const
 QVariant Lvk::FE::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        return m_rootItem->name();
+        return m_rootRule->name();
     }
 
     return QVariant();
@@ -110,7 +108,7 @@ bool Lvk::FE::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientat
                                        const QVariant &value, int role)
 {
     if (orientation == Qt::Horizontal) {
-        if (setDataForItem(m_rootItem, value, 0, role)) {
+        if (setDataForItem(m_rootRule, value, 0, role)) {
             emit headerDataChanged(orientation, section, section);
 
             return true;
@@ -164,7 +162,7 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 
 Lvk::BE::Rule * Lvk::FE::RuleTreeModel::invisibleRootItem()
 {
-    return m_rootItem;
+    return m_rootRule;
 }
 
 Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
@@ -185,7 +183,7 @@ QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, BE::Rule *parentI
 
 QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(BE::Rule *item)
 {
-    return item != m_rootItem ? createIndex(rowForItem(item), 0, item) : QModelIndex();
+    return item != m_rootRule ? createIndex(rowForItem(item), 0, item) : QModelIndex();
 }
 
 bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
@@ -273,38 +271,4 @@ bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &valu
     default:
         return false;
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-// load data
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::RuleTreeModel::setupModelData()
-{
-    ////////////////////////////////////////////////////////////////////////
-    // TODO read from file:
-
-    BE::Rule *catGreetings    = new BE::Rule("Saludos");
-
-    catGreetings->setType(BE::Rule::ContainerRule);
-
-    m_rootItem->appendChild(catGreetings);
-
-    QList<QString> rule1InputList;
-    QList<QString> rule1OutputList;
-    rule1InputList << QString("Hola") << QString("Hola *");
-    rule1OutputList << QString("Hola $USERNAME");
-
-    QList<QString> rule2InputList;
-    QList<QString> rule2OutputList;
-    rule2InputList << QString("Buenas") << QString("Buena dia") << QString("Buena dia");
-    rule2OutputList << QString("Buen dia $USERNAME");
-
-    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
-    BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
-
-    catGreetings->appendChild(rule1);
-    catGreetings->appendChild(rule2);
-
-    ////////////////////////////////////////////////////////////////////////
 }

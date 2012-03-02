@@ -38,6 +38,7 @@ namespace Lvk
 namespace BE
 {
     class Rule;
+    class CoreApp;
 }
 
 namespace FE
@@ -45,6 +46,10 @@ namespace FE
 
 class RuleTreeModel;
 
+
+/**
+ * \brief This class is the application main window
+ */
 
 class MainWindow : public QMainWindow
 {
@@ -65,11 +70,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    BE::CoreApp *m_coreApp;
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
-
-    void initModels();
 
 private slots:
     void addCategoryWithInputDialog();

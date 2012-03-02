@@ -20,6 +20,7 @@
  */
 
 #include "mainwindow.h"
+#include "coreapp.h"
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
@@ -31,18 +32,24 @@
 
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow), m_ruleTreeModel(0)
+    QMainWindow(parent), ui(new Ui::MainWindow), m_coreApp(new BE::CoreApp()), m_ruleTreeModel(0)
 {
     ui->setupUi(this);
 
     clear();
 
+    m_coreApp->load("FIXME");
+
+    m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
+    m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
+
+    ui->categoriesTree->setModel(m_ruleTreeModel);
+
+    m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
-
-    initModels();
 
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -56,6 +63,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 Lvk::FE::MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_coreApp;
 }
 
 void Lvk::FE::MainWindow::clear()
@@ -85,17 +93,6 @@ void Lvk::FE::MainWindow::clear()
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
-}
-
-void Lvk::FE::MainWindow::initModels()
-{
-    m_ruleTreeModel = new FE::RuleTreeModel("FIXME", this);
-
-    m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
-
-    ui->categoriesTree->setModel(m_ruleTreeModel);
-
-    m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 }
 
 Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)

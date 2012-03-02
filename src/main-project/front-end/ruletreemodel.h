@@ -14,12 +14,18 @@ namespace BE
 namespace FE
 {
 
+/**
+ * \brief This class implementes the abstract class QAbstractItemModel to display a tree of @class
+ *        Rule in a QTreeView class
+ */
+
 class RuleTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    RuleTreeModel(const QString &data, QObject *parent = 0);
+    RuleTreeModel(BE::Rule *rootRule, QObject *parent = 0);
+
     ~RuleTreeModel();
 
     // QAbstractItemModel - read only models
@@ -62,7 +68,6 @@ public:
     bool appendItem(BE::Rule *item);
 
 private:
-    void setupModelData();
 
     // helpers
     int rowForItem(const BE::Rule *item) const;
@@ -70,7 +75,7 @@ private:
     QVariant dataForItem(const BE::Rule *item, int column, int role) const;
     bool setDataForItem(BE::Rule *item, const QVariant &value, int column, int role);
 
-    BE::Rule *m_rootItem;
+    BE::Rule *m_rootRule;
 };
 
 } // namespace FE
