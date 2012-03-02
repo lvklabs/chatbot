@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LVK_FE_MAINWINDOW_H
+#define LVK_FE_MAINWINDOW_H
 
 #include <QMainWindow>
 
@@ -78,9 +78,12 @@ private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
     void removeSelectedItem();
-    void handleRuleInputChanged(const QString& ruleInput);
+    void handleRuleInputChanged(const QString &ruleInput);
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
+    void refreshNlpEngine();
+    void testInputTextEntered();
+    void appendTestConversation(const QString &input, const QString &response);
 };
 
 } // namespace Lvk
@@ -88,4 +91,4 @@ private slots:
 } // namespace FE
 
 
-#endif // MAINWINDOW_H
+#endif // LVK_FE_MAINWINDOW_H

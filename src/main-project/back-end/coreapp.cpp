@@ -1,14 +1,17 @@
 #include "coreapp.h"
 #include "rule.h"
+#include "nlpengine.h"
+#include "nlprule.h"
 
 Lvk::BE::CoreApp::CoreApp()
-    : m_rootRule(0)
+    : m_rootRule(0), m_nlpEngine(0)
 {
 }
 
 Lvk::BE::CoreApp::~CoreApp()
 {
     delete m_rootRule;
+    delete m_nlpEngine;
 }
 
 
@@ -73,9 +76,42 @@ Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
     return m_rootRule;
 }
 
-QString Lvk::BE::CoreApp::getResponse(const QString &/*input*/, QList<Lvk::BE::Rule> &matched)
+QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &matched)
 {
     matched.clear();
 
-    return "Not implemented";
+    if (m_nlpEngine) {
+        return m_nlpEngine->getResponse(input);
+    } else {
+        return "Not implemented";
+    }
 }
+
+void Lvk::BE::CoreApp::refreshNlpEngine()
+{
+    if (m_nlpEngine && m_rootRule) {
+        Nlp::RuleList nlpRules;
+        buildNlpRulesOf(m_rootRule, nlpRules);
+        m_nlpEngine->setRules(nlpRules);
+    }
+}
+
+void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList &nlpRules)
+{
+    if (!parentRule) {
+        return;
+    }
+
+    for (int i = 0; i < parentRule->childCount(); ++i) {
+        const BE::Rule *child = parentRule->child(i);
+
+        if (child->type() == Rule::FinalRule) {
+            Nlp::Rule nlpRule(0, child->input(), child->output());
+            nlpRules.append(nlpRule);
+        } else if (child->type() == Rule::ContainerRule) {
+            buildNlpRulesOf(child, nlpRules);
+        }
+    }
+}
+
+

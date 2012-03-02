@@ -92,6 +92,11 @@ Lvk::BE::Rule * Lvk::BE::Rule::child(int row)
     return m_childItems.value(row);
 }
 
+const Lvk::BE::Rule * Lvk::BE::Rule::child(int row) const
+{
+    return m_childItems.value(row);
+}
+
 int Lvk::BE::Rule::childCount() const
 {
     return m_childItems.count();

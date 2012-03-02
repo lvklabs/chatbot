@@ -1,10 +1,17 @@
-#ifndef COREAPP_H
-#define COREAPP_H
+#ifndef LVK_BE_COREAPP_H
+#define LVK_BE_COREAPP_H
 
 #include <QString>
 
+#include "nlprule.h"
+
 namespace Lvk
 {
+
+namespace Nlp
+{
+    class Engine;
+}
 
 namespace BE
 {
@@ -33,15 +40,20 @@ public:
 
     Rule *rootRule();
 
-    QString getResponse(const QString &input, QList<Rule>& matched);
+    QString getResponse(const QString &input, QList<Rule *> &matched);
+
+    void refreshNlpEngine();
 
 private:
     QString m_filename;
     Rule *m_rootRule;
+    Nlp::Engine *m_nlpEngine;
+
+    void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 };
 
 } // namespace BE
 
 } // namespace Lvk
 
-#endif // COREAPP_H
+#endif // LVK_BE_COREAPP_H

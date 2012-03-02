@@ -1,5 +1,5 @@
-#ifndef RULETREEMODEL_H
-#define RULETREEMODEL_H
+#ifndef LVK_FE_RULETREEMODEL_H
+#define LVK_FE_RULETREEMODEL_H
 
 #include <QAbstractItemModel>
 
@@ -82,4 +82,4 @@ private:
 
 } // namespace Lvk
 
-#endif // RULETREEMODEL_H
+#endif // LVK_FE_RULETREEMODEL_H

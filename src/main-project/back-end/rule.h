@@ -1,5 +1,5 @@
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef LVK_BE_ITEM_H
+#define LVK_BE_ITEM_H
 
 #include <QList>
 #include <QString>
@@ -47,7 +47,10 @@ public:
 
     int childCount() const;
 
+
     Rule *child(int number);
+
+    const Rule *child(int number) const;
 
 
     RuleType type() const;
@@ -88,4 +91,4 @@ private:
 
 } // namespace Lvk
 
-#endif // ITEM_H
+#endif // LVK_BE_ITEM_H

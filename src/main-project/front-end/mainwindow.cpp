@@ -51,6 +51,15 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
 
+    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
+
+    connect(ui->refreshEngineRulesButton, SIGNAL(clicked()), SLOT(refreshNlpEngine()));
+
+    connect(ui->clearTestConversationButton,
+            SIGNAL(clicked()),
+            ui->testConversationText,
+            SLOT(clear()));
+
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(handleRuleSelectionChanged(QItemSelection,QItemSelection)));
@@ -58,6 +67,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     connect(ui->ruleInputText,
             SIGNAL(textEdited(QString)),
             SLOT(handleRuleInputChanged(QString)));
+
+
 }
 
 Lvk::FE::MainWindow::~MainWindow()
@@ -352,5 +363,35 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ifUserWritesLabel->setText(tr("If user writes:"));
         break;
     }
+}
+
+void Lvk::FE::MainWindow::refreshNlpEngine()
+{
+    m_coreApp->refreshNlpEngine();
+}
+
+void Lvk::FE::MainWindow::testInputTextEntered()
+{
+    QString input = ui->testInputText->text();
+    QList<BE::Rule *> matched;
+
+    QString response = m_coreApp->getResponse(input, matched);
+
+    appendTestConversation(input, response);
+    ui->testInputText->setText("");
+}
+
+void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QString &response)
+{
+    const QString START_USER_SPAN = "<span style=\" color:#000088;\">";
+    const QString START_CHATBOT_SPAN = "<span style=\" color:#008800;\">";
+    const QString END_SPAN = "</span>";
+    const QString BR = "<br/>";
+
+    QString conversation = ui->testConversationText->toHtml();
+    conversation += START_USER_SPAN + tr("You:") + " " + END_SPAN + input + BR;
+    conversation += START_CHATBOT_SPAN + tr("Chatbot:") + " " + END_SPAN + response + BR;
+
+    ui->testConversationText->setHtml(conversation);
 }
 
