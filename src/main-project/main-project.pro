@@ -3,19 +3,22 @@ TARGET = main
 QT += ui
 TEMPLATE = app
 
+INCLUDEPATH += front-end\
+               back-end
+
 HEADERS += \
-    mainwindow.h \
-    ruletreemodel.h \
-    ruleitem.h
+    front-end/mainwindow.h \
+    front-end/ruletreemodel.h \
+    back-end/ruleitem.h
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
-    ruletreemodel.cpp \
-    ruleitem.cpp
+    front-end/mainwindow.cpp \
+    front-end/ruletreemodel.cpp \
+    back-end/ruleitem.cpp
 
 FORMS += \
-    mainwindow.ui
+    front-end/mainwindow.ui
 
 RESOURCES += \
     resources.qrc
