@@ -21,7 +21,7 @@
 
 #include "mainwindow.h"
 #include "ruletreemodel.h"
-#include "ruleitem.h"
+#include "rule.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>

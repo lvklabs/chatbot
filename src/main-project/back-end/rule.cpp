@@ -1,4 +1,4 @@
-#include "ruleitem.h"
+#include "rule.h"
 
 #include <QtAlgorithms>
 #include <QIcon>

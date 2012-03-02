@@ -1,5 +1,5 @@
 #include "ruletreemodel.h"
-#include "ruleitem.h"
+#include "rule.h"
 
 #include <QIcon>
 
