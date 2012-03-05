@@ -8,10 +8,11 @@
 RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
-    m_inputLabel(new QLabel(tr("If user writes:"))),
-    m_input(new QLineEdit()),
-    m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"))),
-    m_inputVariants(new QTextEdit())
+    m_inputLabel(new QLabel(tr("If user writes:"), this)),
+    m_input(new QLineEdit(this)),
+    m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
+    m_inputVariants(new QTextEdit(this)),
+    m_eventFilter(0)
 {
     m_layout->setMargin(0);
 
@@ -23,6 +24,29 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     setLayout(m_layout);
 
     connect (m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
+
+    m_input->installEventFilter(this);
+    m_inputVariants->installEventFilter(this);
+}
+
+RuleInputWidget::~RuleInputWidget()
+{
+}
+
+void RuleInputWidget::installEventFilter(QObject *eventFilter)
+{
+    m_eventFilter = eventFilter;
+}
+
+bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
+{
+    if (m_eventFilter) {
+        if (!m_eventFilter->eventFilter(this, event)) {
+            return false;
+        }
+    }
+
+    return QWidget::eventFilter(this, event);
 }
 
 void RuleInputWidget::clear()

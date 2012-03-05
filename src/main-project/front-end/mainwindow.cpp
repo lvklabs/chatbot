@@ -67,9 +67,12 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
 
-
     ui->testInputText->installEventFilter(this);
+    ui->ruleInputWidget->installEventFilter(this);
+    ui->ruleOutputWidget->installEventFilter(this);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::FE::MainWindow::~MainWindow()
 {
@@ -81,15 +84,50 @@ Lvk::FE::MainWindow::~MainWindow()
 
 bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::FocusOut)
-    {
-        if (object == ui->testInputText)
-        {
+    if (event->type() == QEvent::FocusOut) {
+        if (object == ui->testInputText) {
             ui->ruleInputWidget->clearHighlight();
+        }
+        else if (object == ui->ruleInputWidget) {
+            handleRuleInputEditingFinished();
+        }
+        else if (object == ui->ruleOutputWidget) {
+            handleRuleOutputEditingFinished();
         }
     }
 
-    return object->eventFilter(object, event);
+    return QMainWindow::eventFilter(object, event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setUiMode(UiMode mode)
+{
+    switch (mode) {
+    case DefaultUiMode:
+        ui->categoryNameLabel->setVisible(false);
+        ui->categoryNameTextEdit->setVisible(false);
+        ui->ruleInputWidget->setVisible(false);
+        ui->ruleOutputWidget->setVisible(false);
+        ui->chatbotRepliesLabel->setVisible(false);
+        break;
+
+    case EditCategoryUiMode:
+        ui->categoryNameLabel->setVisible(true);
+        ui->categoryNameTextEdit->setVisible(true);
+        ui->ruleInputWidget->setVisible(false);
+        ui->ruleOutputWidget->setVisible(false);
+        ui->chatbotRepliesLabel->setVisible(false);
+        break;
+
+    case EditRuleUiMode:
+        ui->categoryNameLabel->setVisible(false);
+        ui->categoryNameTextEdit->setVisible(false);
+        ui->ruleInputWidget->setVisible(true);
+        ui->ruleOutputWidget->setVisible(true);
+        ui->chatbotRepliesLabel->setVisible(true);
+        break;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -140,6 +178,8 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *category)
 {
     BE::Rule *rule = new BE::Rule(name, category);
@@ -154,6 +194,8 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
         return 0;
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::addCategoryWithInputDialog()
 {
@@ -182,6 +224,8 @@ void Lvk::FE::MainWindow::addCategoryWithInputDialog()
         }
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::addRuleWithInputDialog()
 {
@@ -221,6 +265,8 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
         msg.exec();
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::removeSelectedItem()
 {
@@ -269,6 +315,19 @@ void Lvk::FE::MainWindow::removeSelectedItem()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::BE::Rule * Lvk::FE::MainWindow::selectedRule()
+{
+    if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
+        QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
+        if (selectedIndex.isValid()) {
+            return m_ruleTreeModel->itemFromIndex(selectedIndex);
+        }
+    }
+    return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::handleRuleInputEdited(const QString &ruleInput)
 {
     if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
@@ -276,6 +335,28 @@ void Lvk::FE::MainWindow::handleRuleInputEdited(const QString &ruleInput)
         m_ruleTreeModel->setData(selectedIndex, ruleInput, Qt::EditRole);
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::handleRuleOutputEditingFinished()
+{
+    BE::Rule *rule = selectedRule();
+    if (rule) {
+        rule->setOutput(ui->ruleOutputWidget->outputList());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::handleRuleInputEditingFinished()
+{
+    BE::Rule *rule = selectedRule();
+    if (rule) {
+        rule->setInput(ui->ruleInputWidget->inputList());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
@@ -314,35 +395,6 @@ void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selec
     }
 }
 
-void Lvk::FE::MainWindow::setUiMode(UiMode mode)
-{
-    switch (mode) {
-    case DefaultUiMode:
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        break;
-
-    case EditCategoryUiMode:
-        ui->categoryNameLabel->setVisible(true);
-        ui->categoryNameTextEdit->setVisible(true);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        break;
-
-    case EditRuleUiMode:
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(true);
-        ui->ruleOutputWidget->setVisible(true);
-        ui->chatbotRepliesLabel->setVisible(true);
-        break;
-    }
-}
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::testInputTextEntered()
@@ -359,6 +411,8 @@ void Lvk::FE::MainWindow::testInputTextEntered()
 
     highlightMatchedRules(matches);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &matches)
 {
@@ -383,3 +437,4 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
 
     ui->ruleInputWidget->highlightInput(ruleNumber);
 }
+

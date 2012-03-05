@@ -20,6 +20,8 @@ class RuleInputWidget : public QWidget
 public:
     explicit RuleInputWidget(QWidget *parent = 0);
 
+    ~RuleInputWidget();
+
     void clear();
 
     QStringList inputList();
@@ -29,6 +31,10 @@ public:
     void setFocusOnInput();
 
     void setFocusOnInputVariants();
+
+    void installEventFilter(QObject *eventFilter);
+
+    bool eventFilter(QObject *object, QEvent *event);
 
 public slots:
 
@@ -45,6 +51,7 @@ private:
     QLineEdit *m_input;
     QLabel    *m_inputVariantsLabel;
     QTextEdit *m_inputVariants;
+    QObject   *m_eventFilter;
 };
 
 #endif // RULEINPUTWIDGET_H

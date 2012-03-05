@@ -81,7 +81,10 @@ private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
     void removeSelectedItem();
+    BE::Rule *selectedRule();
     void handleRuleInputEdited(const QString &ruleInput);
+    void handleRuleInputEditingFinished();
+    void handleRuleOutputEditingFinished();
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
     void testInputTextEntered();
