@@ -397,8 +397,15 @@
           <layout class="QHBoxLayout" name="testToolbarLayout">
            <item>
             <widget class="QToolButton" name="clearTestConversationButton">
+             <property name="toolTip">
+              <string>Clean test conversation</string>
+             </property>
              <property name="text">
               <string>Clear</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/icons/clear_32x32.png</normaloff>:/icons/clear_32x32.png</iconset>
              </property>
             </widget>
            </item>

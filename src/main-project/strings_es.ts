@@ -93,13 +93,13 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="374"/>
+        <location filename="front-end/mainwindow.cpp" line="367"/>
         <source>You:</source>
         <oldsource>You: </oldsource>
         <translation>Vos:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="375"/>
+        <location filename="front-end/mainwindow.cpp" line="368"/>
         <source>Chatbot:</source>
         <oldsource>Chatbot: </oldsource>
         <translation>Chatbot:</translation>
@@ -113,12 +113,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Chatbot</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="27"/>
+        <location filename="front-end/mainwindow.ui" line="32"/>
         <source>Teach</source>
         <translation>Enseñar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="69"/>
+        <location filename="front-end/mainwindow.ui" line="74"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
@@ -127,7 +127,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Borrar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="53"/>
+        <location filename="front-end/mainwindow.ui" line="58"/>
         <source>Add category</source>
         <translation>Agregar categoría</translation>
     </message>
@@ -136,7 +136,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="85"/>
+        <location filename="front-end/mainwindow.ui" line="90"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
@@ -145,7 +145,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="145"/>
+        <location filename="front-end/mainwindow.ui" line="150"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
@@ -154,49 +154,54 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="177"/>
+        <location filename="front-end/mainwindow.ui" line="182"/>
         <source>Connect with chat</source>
         <translation>Conectar con chat</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="200"/>
+        <location filename="front-end/mainwindow.ui" line="205"/>
         <source>Connect with chat:</source>
         <translation>Conectar con chat:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="210"/>
+        <location filename="front-end/mainwindow.ui" line="215"/>
         <source>Facebook</source>
         <translation>Facebook</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="220"/>
+        <location filename="front-end/mainwindow.ui" line="225"/>
         <source>Gmail or Google Talk</source>
         <translation>Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="240"/>
+        <location filename="front-end/mainwindow.ui" line="245"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="266"/>
+        <location filename="front-end/mainwindow.ui" line="271"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="295"/>
+        <location filename="front-end/mainwindow.ui" line="300"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="305"/>
+        <location filename="front-end/mainwindow.ui" line="310"/>
         <source>Conversations</source>
         <translation>Conversaciones</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="319"/>
+        <location filename="front-end/mainwindow.ui" line="324"/>
         <source>Conversations held with the chatbot:</source>
         <translation>Conversaciones mantenidas con el chatbot:</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="401"/>
+        <source>Clean test conversation</source>
+        <translation>Limpiar conversación de prueba</translation>
     </message>
     <message>
         <source>Help</source>
@@ -207,7 +212,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La ayuda se muestra acá mientras el usuario mueve el mouse sobre los contoles</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="392"/>
+        <location filename="front-end/mainwindow.ui" line="393"/>
         <source>Test your chatbot</source>
         <translation>Prueba tu chatbot</translation>
     </message>
@@ -216,12 +221,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="400"/>
+        <location filename="front-end/mainwindow.ui" line="404"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="432"/>
+        <location filename="front-end/mainwindow.ui" line="440"/>
         <source>Test:</source>
         <translation>Prueba:</translation>
     </message>
@@ -230,7 +235,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="125"/>
+        <location filename="front-end/mainwindow.ui" line="130"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>

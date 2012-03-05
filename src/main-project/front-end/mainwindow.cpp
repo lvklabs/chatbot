@@ -29,7 +29,7 @@
 #include <QItemDelegate>
 #include <QInputDialog>
 #include <QMessageBox>
-
+#include <QScrollBar>
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow), m_coreApp(new BE::CoreApp()), m_ruleTreeModel(0)
@@ -67,8 +67,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
-
-
 }
 
 Lvk::FE::MainWindow::~MainWindow()
@@ -369,6 +367,9 @@ void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QSt
     conversation += END_P_BODY_HTML;
 
     ui->testConversationText->setHtml(conversation);
+
+    QScrollBar *vsb = ui->testConversationText->verticalScrollBar();
+    vsb->setValue(vsb->maximum());
 }
 
 void Lvk::FE::MainWindow::highlightMatchedRules(const QList<BE::Rule *> &matched)
