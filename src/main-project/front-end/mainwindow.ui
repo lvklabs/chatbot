@@ -26,135 +26,149 @@
          <attribute name="title">
           <string>Teach</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="2">
-           <layout class="QGridLayout" name="trainTabGridLayout" columnstretch="2,0,0,3">
-            <item row="0" column="2" rowspan="8">
-             <spacer name="trainTabSpacer1">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>10</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="0" colspan="2">
-             <layout class="QHBoxLayout" name="rulesToolbarLayout">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QSplitter" name="teachTabsplitter">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="handleWidth">
+             <number>10</number>
+            </property>
+            <widget class="QWidget" name="verticalLayoutWidget">
+             <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
-               <widget class="QToolButton" name="addCategoryButton">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
+               <layout class="QHBoxLayout" name="rulesToolbarLayout">
+                <item>
+                 <widget class="QToolButton" name="addCategoryButton">
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>Add category</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../resources.qrc">
+                    <normaloff>:/icons/add_category_32x32.png</normaloff>:/icons/add_category_32x32.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="addRuleButton">
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>Add rule</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../resources.qrc">
+                    <normaloff>:/icons/add_rule_32x32.png</normaloff>:/icons/add_rule_32x32.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="rmItemButton">
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>Remove rule or category</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../resources.qrc">
+                    <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="rulesToolbarSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::MinimumExpanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTreeView" name="categoriesTree">
+                <property name="mouseTracking">
+                 <bool>true</bool>
                 </property>
-                <property name="toolTip">
-                 <string>Add category</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../resources.qrc">
-                  <normaloff>:/icons/add_category_32x32.png</normaloff>:/icons/add_category_32x32.png</iconset>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="verticalLayoutWidget_2">
+             <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,1,0">
+              <item>
+               <widget class="QLabel" name="categoryNameLabel">
+                <property name="text">
+                 <string>Category name:</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="addRuleButton">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Add rule</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../resources.qrc">
-                  <normaloff>:/icons/add_rule_32x32.png</normaloff>:/icons/add_rule_32x32.png</iconset>
+               <widget class="QLineEdit" name="categoryNameTextEdit"/>
+              </item>
+              <item>
+               <widget class="RuleInputWidget" name="ruleInputWidget" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="rmItemButton">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Remove rule or category</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../resources.qrc">
-                  <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
+               <widget class="QLabel" name="chatbotRepliesLabel">
+                <property name="text">
+                 <string>Chatbot replies:</string>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="rulesToolbarSpacer">
+               <widget class="RuleOutputWidget" name="ruleOutputWidget">
+                <property name="mouseTracking">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>0</height>
                  </size>
                 </property>
                </spacer>
               </item>
              </layout>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="ifUserWritesLabel">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="3">
-             <widget class="QLabel" name="chatbotRepliesLabel">
-              <property name="text">
-               <string>Chatbot replies:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="3" rowspan="3">
-             <widget class="QPlainTextEdit" name="ruleOutputText">
-              <property name="mouseTracking">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="3">
-             <widget class="QPlainTextEdit" name="ruleInputVariantsText"/>
-            </item>
-            <item row="1" column="0" rowspan="7" colspan="2">
-             <widget class="QTreeView" name="categoriesTree">
-              <property name="mouseTracking">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QLineEdit" name="ruleInputText"/>
-            </item>
-            <item row="2" column="3">
-             <widget class="QLabel" name="orVariantsLabel">
-              <property name="text">
-               <string>Or any of these variants:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+            </widget>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -429,6 +443,19 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RuleOutputWidget</class>
+   <extends>QPlainTextEdit</extends>
+   <header>ruleoutputwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>RuleInputWidget</class>
+   <extends>QWidget</extends>
+   <header>ruleinputwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

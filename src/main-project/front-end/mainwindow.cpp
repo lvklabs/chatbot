@@ -36,6 +36,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
+
     clear();
 
     m_coreApp->load("FIXME");
@@ -53,18 +55,18 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
 
-    connect(ui->clearTestConversationButton,
-            SIGNAL(clicked()),
-            ui->testConversationText,
-            SLOT(clear()));
+    connect(ui->clearTestConversationButton, SIGNAL(clicked()),
+            ui->testConversationText, SLOT(clear()));
 
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(handleRuleSelectionChanged(QItemSelection,QItemSelection)));
 
-    connect(ui->ruleInputText,
-            SIGNAL(textEdited(QString)),
-            SLOT(handleRuleInputChanged(QString)));
+    connect(ui->categoryNameTextEdit, SIGNAL(textEdited(QString)),
+            SLOT(handleRuleInputEdited(QString)));
+
+    connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
+            SLOT(handleRuleInputEdited(QString)));
 
 
 }
@@ -87,10 +89,8 @@ void Lvk::FE::MainWindow::clear()
 
     // train tab widgets
     // TODO clear ui->categoriesTree
-    ui->ruleInputText->clear();
-    ui->ruleInputVariantsText->clear();
-    ui->ruleOutputText->clear();
-    ui->ifUserWritesLabel->clear();
+    ui->ruleInputWidget->clear();
+    ui->ruleOutputWidget->clear();
 
     // chat tab widgets
     //ui->fbChatRadio->
@@ -181,7 +181,7 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
         return;
     }
 
-    QModelIndex selectedIndex = selectedRows[0];
+    QModelIndex selectedIndex = selectedRows.first();
     BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
     BE::Rule *parentCategory = 0;
 
@@ -198,7 +198,7 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
     if (emptyRule) {
         m_ruleTreeSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
                                            QItemSelectionModel::ClearAndSelect);
-        ui->ruleInputText->setFocus();
+        ui->ruleInputWidget->setFocusOnInput();
     } else {
         QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
                         tr("The rule could not be added because of an internal error"),
@@ -254,10 +254,10 @@ void Lvk::FE::MainWindow::removeSelectedItem()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleRuleInputChanged(const QString &ruleInput)
+void Lvk::FE::MainWindow::handleRuleInputEdited(const QString &ruleInput)
 {
-    if (m_ruleTreeSelectionModel->selectedIndexes().size() > 0) {
-        QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes()[0];
+    if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
+        QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
         m_ruleTreeModel->setData(selectedIndex, ruleInput, Qt::EditRole);
     }
 }
@@ -265,65 +265,37 @@ void Lvk::FE::MainWindow::handleRuleInputChanged(const QString &ruleInput)
 void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
 {
-    if (deselected.indexes().size() > 0) {
-        BE::Rule *item = static_cast<BE::Rule *>(deselected.indexes()[0].internalPointer());
+    if (!deselected.indexes().isEmpty()) {
+        BE::Rule *item = static_cast<BE::Rule *>(deselected.indexes().first().internalPointer());
 
         if (item->type() == BE::Rule::FinalRule) {
-            QStringList input = ui->ruleInputVariantsText->toPlainText().split("\n", QString::SkipEmptyParts);
-            QStringList output = ui->ruleOutputText->toPlainText().split("\n", QString::SkipEmptyParts);
-
-            input.prepend(ui->ruleInputText->text());
-
-            item->setInput(input);
-            item->setOutput(output);
+            item->setInput(ui->ruleInputWidget->inputList());
+            item->setOutput(ui->ruleOutputWidget->outputList());
         } else {
            // nothing to do
         }
     }
 
-    if (selected.indexes().size() > 0) {
-        BE::Rule *item = static_cast<BE::Rule *>(selected.indexes()[0].internalPointer());
+    if (!selected.indexes().isEmpty()) {
+        BE::Rule *item = static_cast<BE::Rule *>(selected.indexes().first().internalPointer());
 
         if (item->type() == BE::Rule::FinalRule) {
-            QString input, inputVariants, output;
-
-            for (int i = 0; i < item->input().size(); ++i) {
-                QString trimmed = item->input()[i].trimmed();
-                if (!trimmed.isEmpty()) {
-                    if (i == 0) {
-                        input = trimmed;
-                    } else {
-                        inputVariants += trimmed + "\n";
-                    }
-                }
-            }
-
-            for (int i = 0; i < item->output().size(); ++i) {
-                QString trimmed = item->output()[i].trimmed();
-                if (!trimmed.isEmpty()) {
-                    output += trimmed + "\n";
-                }
-            }
-
             setUiMode(EditRuleUiMode);
-
-            ui->ruleInputText->setText(input);
-            ui->ruleInputVariantsText->setPlainText(inputVariants);
-            ui->ruleOutputText->setPlainText(output);
+            ui->categoryNameTextEdit->clear();
+            ui->ruleInputWidget->setInputList(item->input());
+            ui->ruleOutputWidget->setOutputList(item->output());
 
         } else {
             setUiMode(EditCategoryUiMode);
-
-            ui->ruleInputText->setText(item->name());
-            ui->ruleInputVariantsText->setPlainText("");
-            ui->ruleOutputText->setPlainText("");
+            ui->categoryNameTextEdit->setText(item->name());
+            ui->ruleInputWidget->clear();
+            ui->ruleOutputWidget->clear();
         }
     } else {
         setUiMode(DefaultUiMode);
-
-        ui->ruleInputText->setText("");
-        ui->ruleInputVariantsText->setPlainText("");
-        ui->ruleOutputText->setPlainText("");
+        ui->categoryNameLabel->clear();
+        ui->ruleInputWidget->clear();
+        ui->ruleOutputWidget->clear();
     }
 }
 
@@ -331,39 +303,27 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
     switch (mode) {
     case DefaultUiMode:
-        ui->ruleInputText->setVisible(false);
-        ui->ruleInputVariantsText->setVisible(false);
-        ui->ruleOutputText->setVisible(false);
-
-        ui->ifUserWritesLabel->setVisible(false);
-        ui->orVariantsLabel->setVisible(false);
+        ui->categoryNameLabel->setVisible(false);
+        ui->categoryNameTextEdit->setVisible(false);
+        ui->ruleInputWidget->setVisible(false);
+        ui->ruleOutputWidget->setVisible(false);
         ui->chatbotRepliesLabel->setVisible(false);
-
-        ui->ifUserWritesLabel->setText("");
         break;
 
     case EditCategoryUiMode:
-        ui->ruleInputText->setVisible(true);
-        ui->ruleInputVariantsText->setVisible(false);
-        ui->ruleOutputText->setVisible(false);
-
-        ui->ifUserWritesLabel->setVisible(true);
-        ui->orVariantsLabel->setVisible(false);
+        ui->categoryNameLabel->setVisible(true);
+        ui->categoryNameTextEdit->setVisible(true);
+        ui->ruleInputWidget->setVisible(false);
+        ui->ruleOutputWidget->setVisible(false);
         ui->chatbotRepliesLabel->setVisible(false);
-
-        ui->ifUserWritesLabel->setText(tr("Category name:"));
         break;
 
     case EditRuleUiMode:
-        ui->ruleInputText->setVisible(true);
-        ui->ruleInputVariantsText->setVisible(true);
-        ui->ruleOutputText->setVisible(true);
-
-        ui->ifUserWritesLabel->setVisible(true);
-        ui->orVariantsLabel->setVisible(true);
+        ui->categoryNameLabel->setVisible(false);
+        ui->categoryNameTextEdit->setVisible(false);
+        ui->ruleInputWidget->setVisible(true);
+        ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
-
-        ui->ifUserWritesLabel->setText(tr("If user writes:"));
         break;
     }
 }
