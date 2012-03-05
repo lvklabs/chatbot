@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QHash>
+#include <QPair>
 
 #include "nlprule.h"
 
@@ -41,7 +42,9 @@ public:
 
     Rule *rootRule();
 
-    QString getResponse(const QString &input, QList<Rule *> &matched);
+    typedef QList< QPair<Rule *, int> > MatchList;
+
+    QString getResponse(const QString &input, MatchList &matches);
 
     void refreshNlpEngine();
 

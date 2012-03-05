@@ -66,12 +66,30 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
+
+
+    ui->testInputText->installEventFilter(this);
 }
 
 Lvk::FE::MainWindow::~MainWindow()
 {
     delete ui;
     delete m_coreApp;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::FocusOut)
+    {
+        if (object == ui->testInputText)
+        {
+            ui->ruleInputWidget->clearHighlight();
+        }
+    }
+
+    return object->eventFilter(object, event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -332,25 +350,28 @@ void Lvk::FE::MainWindow::testInputTextEntered()
     m_coreApp->refreshNlpEngine(); // FIXME not performant!
 
     QString input = ui->testInputText->text();
-    QList<BE::Rule *> matched;
+    BE::CoreApp::MatchList matches;
 
-    QString response = m_coreApp->getResponse(input, matched);
+    QString response = m_coreApp->getResponse(input, matches);
 
-    ui->testConversationText->appendConversation(input, response, matched.size());
+    ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
 
-    highlightMatchedRules(matched);
+    highlightMatchedRules(matches);
 }
 
-void Lvk::FE::MainWindow::highlightMatchedRules(const QList<BE::Rule *> &matched)
+void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &matches)
 {
-    if (matched.empty()) {
+    ui->ruleInputWidget->clearHighlight();
+
+    if (matches.empty()) {
         return;
     }
 
     // Assuming only one match
 
-    BE::Rule *rule = matched.first();
+    BE::Rule *rule = matches.first().first;
+    int ruleNumber = matches.first().second;
 
     QModelIndex ruleIndex = m_ruleTreeModel->indexFromItem(rule);
 
@@ -359,4 +380,6 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const QList<BE::Rule *> &matched
 
         ui->categoriesTree->setExpanded(ruleIndex.parent(), true);
     }
+
+    ui->ruleInputWidget->highlightInput(ruleNumber);
 }

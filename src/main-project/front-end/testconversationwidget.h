@@ -5,7 +5,7 @@
 #include <QString>
 
 /**
- * Custom widget to display test local conversations with the bot
+ * Custom widget to display local conversations with the chatbot
  */
 
 class TestConversationWidget : public QTextEdit

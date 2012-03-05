@@ -29,6 +29,8 @@ void RuleInputWidget::clear()
 {
     m_input->clear();
     m_inputVariants->clear();
+
+    clearHighlight();
 }
 
 QStringList RuleInputWidget::inputList()
@@ -66,4 +68,23 @@ void RuleInputWidget::setFocusOnInput()
 void RuleInputWidget::setFocusOnInputVariants()
 {
     m_inputVariants->setFocus();
+}
+
+void RuleInputWidget::highlightInput(int number)
+{
+    static const QString HIGHLIGHT_INPUT_CSS = "background-color: rgba(0,128,0,128);";
+
+    if (number == 0) {
+        m_input->setStyleSheet(HIGHLIGHT_INPUT_CSS);
+        m_inputVariants->setStyleSheet("");
+    } else {
+        m_input->setStyleSheet("");
+        m_inputVariants->setStyleSheet(HIGHLIGHT_INPUT_CSS);
+    }
+}
+
+void RuleInputWidget::clearHighlight()
+{
+    m_inputVariants->setStyleSheet("");
+    m_input->setStyleSheet("");
 }

@@ -24,6 +24,8 @@
 
 #include <QMainWindow>
 
+#include "coreapp.h"
+
 namespace Ui
 {
     class MainWindow;
@@ -38,7 +40,6 @@ namespace Lvk
 namespace BE
 {
     class Rule;
-    class CoreApp;
 }
 
 namespace FE
@@ -68,6 +69,8 @@ public:
 
     void setUiMode(UiMode mode);
 
+    virtual bool eventFilter(QObject *object, QEvent *event);
+
 private:
     Ui::MainWindow *ui;
     BE::CoreApp *m_coreApp;
@@ -82,7 +85,7 @@ private slots:
     void handleRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
     void testInputTextEntered();
-    void highlightMatchedRules(const QList<BE::Rule *> &matched);
+    void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
 
 };
 

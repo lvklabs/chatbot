@@ -47,8 +47,8 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
     QList<QString> rule2InputList;
     QList<QString> rule2OutputList;
-    rule2InputList << QString("Buenas") << QString("Buena dia") << QString("Buena dia");
-    rule2OutputList << QString("Buen dia");
+    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes");
+    rule2OutputList << QString("Buenas, Como estas?");
 
     BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
     BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
@@ -91,9 +91,9 @@ Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
     return m_rootRule;
 }
 
-QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &matched)
+QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList  &matches)
 {
-    matched.clear();
+    matches.clear();
 
     if (m_nlpEngine) {
         Nlp::Engine::MatchList nlpRulesMatched;
@@ -101,7 +101,8 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &m
 
         if (nlpRulesMatched.size() > 0) {
             Nlp::RuleId ruleId = nlpRulesMatched[0].first;
-            matched.append(m_rulesHash[ruleId]);
+            int inputNumber = nlpRulesMatched[0].second;
+            matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
 
             return response;
         } else {

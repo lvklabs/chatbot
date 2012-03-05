@@ -30,6 +30,12 @@ public:
 
     void setFocusOnInputVariants();
 
+public slots:
+
+    void clearHighlight();
+
+    void highlightInput(int number);
+
 signals:
     void inputTextEdited(const QString &);
 
