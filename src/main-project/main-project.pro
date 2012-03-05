@@ -17,6 +17,7 @@ HEADERS += \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
+    front-end/testconversationwidget.h
 
 
 SOURCES += \
@@ -27,7 +28,8 @@ SOURCES += \
     front-end/ruleinputwidget.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
-    nlp-engine/exactmatchengine.cpp
+    nlp-engine/exactmatchengine.cpp \
+    front-end/testconversationwidget.cpp
 
 FORMS += \
     front-end/mainwindow.ui
@@ -36,6 +38,8 @@ RESOURCES += \
     resources.qrc
 
 TRANSLATIONS = strings_es.ts
+
+
 
 
 

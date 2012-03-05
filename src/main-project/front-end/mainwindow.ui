@@ -425,7 +425,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTextEdit" name="testConversationText">
+          <widget class="TestConversationWidget" name="testConversationText">
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -463,6 +463,11 @@
    <extends>QWidget</extends>
    <header>ruleinputwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TestConversationWidget</class>
+   <extends>QTextEdit</extends>
+   <header>testconversationwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

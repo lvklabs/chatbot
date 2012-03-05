@@ -29,7 +29,6 @@
 #include <QItemDelegate>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QScrollBar>
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow), m_coreApp(new BE::CoreApp()), m_ruleTreeModel(0)
@@ -337,39 +336,10 @@ void Lvk::FE::MainWindow::testInputTextEntered()
 
     QString response = m_coreApp->getResponse(input, matched);
 
-    appendTestConversation(input, response, matched.size());
+    ui->testConversationText->appendConversation(input, response, matched.size());
     ui->testInputText->setText("");
 
     highlightMatchedRules(matched);
-}
-
-void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QString &response_,
-                                                 bool match)
-{
-    QString response = response_;
-
-    static const QString START_USER_SPAN = "<span style=\" color:#000088;\">";
-    static const QString START_CHATBOT_SPAN = "<span style=\" color:#008800;\">";
-    static const QString START_NOT_MATCH_SPAN = "<span style=\" color:#880000;\">";
-    static const QString END_SPAN = "</span>";
-    static const QString BR = "<br/>";
-    static const QString END_P_BODY_HTML = "</p></body></html>";
-
-    if (!match) {
-        response = START_NOT_MATCH_SPAN + response + END_SPAN;
-    }
-
-    QString conversation = ui->testConversationText->toHtml();
-
-    conversation.remove(END_P_BODY_HTML);
-    conversation += START_USER_SPAN + tr("You:") + " " + END_SPAN + input + BR;
-    conversation += START_CHATBOT_SPAN + tr("Chatbot:") + " " + END_SPAN + response + BR;
-    conversation += END_P_BODY_HTML;
-
-    ui->testConversationText->setHtml(conversation);
-
-    QScrollBar *vsb = ui->testConversationText->verticalScrollBar();
-    vsb->setValue(vsb->maximum());
 }
 
 void Lvk::FE::MainWindow::highlightMatchedRules(const QList<BE::Rule *> &matched)
