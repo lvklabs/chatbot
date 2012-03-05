@@ -6,8 +6,12 @@
 
 #include <QObject>
 
+//--------------------------------------------------------------------------------------------------
+// Lvk::BE::CoreApp
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::CoreApp::CoreApp()
-    : m_rootRule(0), m_nlpEngine(new Lvk::Nlp::ExactMatchEngine())
+    : m_rootRule(0), m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()), m_nextRuleId(0)
 {
 }
 
@@ -77,6 +81,9 @@ void Lvk::BE::CoreApp::close()
     m_rootRule = 0;
 
     m_filename = "";
+
+    m_nextRuleId = 0;
+    m_rulesHash.clear();
 }
 
 Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
@@ -89,11 +96,13 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &m
     matched.clear();
 
     if (m_nlpEngine) {
-        Nlp::RuleList nlpRulesMatched;
+        Nlp::Engine::MatchList nlpRulesMatched;
         QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
 
         if (nlpRulesMatched.size() > 0) {
-            matched.append(new BE::Rule()); // FIXME leak and use real rule
+            Nlp::RuleId ruleId = nlpRulesMatched[0].first;
+            matched.append(m_rulesHash[ruleId]);
+
             return response;
         } else {
             return QObject::tr("Sorry, I don't understand that");
@@ -105,24 +114,32 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, QList<BE::Rule *> &m
 
 void Lvk::BE::CoreApp::refreshNlpEngine()
 {
-    if (m_nlpEngine && m_rootRule) {
+    m_nextRuleId = 0;
+    m_rulesHash.clear();
+
+    if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
-        buildNlpRulesOf(m_rootRule, nlpRules);
+
+        if (m_rootRule) {
+            buildNlpRulesOf(m_rootRule, nlpRules);
+        }
+
         m_nlpEngine->setRules(nlpRules);
     }
 }
 
-void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList &nlpRules)
+void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpRules)
 {
     if (!parentRule) {
         return;
     }
 
     for (int i = 0; i < parentRule->childCount(); ++i) {
-        const BE::Rule *child = parentRule->child(i);
+        BE::Rule *child = parentRule->child(i);
 
         if (child->type() == Rule::FinalRule) {
-            Nlp::Rule nlpRule(0, child->input(), child->output());
+            m_rulesHash[m_nextRuleId] = child;
+            Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
             nlpRules.append(nlpRule);
         } else if (child->type() == Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);

@@ -381,6 +381,8 @@ void Lvk::FE::MainWindow::testInputTextEntered()
 
     appendTestConversation(input, response, matched.size());
     ui->testInputText->setText("");
+
+    highlightMatchedRules(matched);
 }
 
 void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QString &response_,
@@ -409,3 +411,21 @@ void Lvk::FE::MainWindow::appendTestConversation(const QString &input, const QSt
     ui->testConversationText->setHtml(conversation);
 }
 
+void Lvk::FE::MainWindow::highlightMatchedRules(const QList<BE::Rule *> &matched)
+{
+    if (matched.empty()) {
+        return;
+    }
+
+    // Assuming only one match
+
+    BE::Rule *rule = matched.first();
+
+    QModelIndex ruleIndex = m_ruleTreeModel->indexFromItem(rule);
+
+    if (ruleIndex.isValid()) {
+        m_ruleTreeSelectionModel->setCurrentIndex(ruleIndex, QItemSelectionModel::ClearAndSelect);
+
+        ui->categoriesTree->setExpanded(ruleIndex.parent(), true);
+    }
+}

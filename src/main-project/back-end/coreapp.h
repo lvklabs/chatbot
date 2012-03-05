@@ -2,6 +2,7 @@
 #define LVK_BE_COREAPP_H
 
 #include <QString>
+#include <QHash>
 
 #include "nlprule.h"
 
@@ -48,8 +49,10 @@ private:
     QString m_filename;
     Rule *m_rootRule;
     Nlp::Engine *m_nlpEngine;
+    Nlp::RuleId m_nextRuleId;
+    QHash<Nlp::RuleId, Rule *> m_rulesHash;
 
-    void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
+    void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);
 };
 
 } // namespace BE

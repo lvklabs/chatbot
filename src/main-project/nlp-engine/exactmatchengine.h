@@ -22,9 +22,9 @@ public:
 
     virtual void setRules(const RuleList &rules);
 
-    virtual QString getResponse(const QString &input);
+    virtual QString getResponse(const QString &input, MatchList &matches);
 
-    virtual QString getResponse(const QString &input, RuleList &matched);
+    virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
 
 private:
 

@@ -83,6 +83,8 @@ private slots:
                                     const QItemSelection &deselected);
     void testInputTextEntered();
     void appendTestConversation(const QString &input, const QString &response, bool match);
+    void highlightMatchedRules(const QList<BE::Rule *> &matched);
+
 };
 
 } // namespace Lvk

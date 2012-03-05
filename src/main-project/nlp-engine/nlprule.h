@@ -11,6 +11,11 @@ namespace Lvk
 namespace Nlp
 {
 
+/**
+ * \brief Rule ID
+ */
+
+typedef unsigned long RuleId;
 
 /**
  * \brief NLP Rule abstraction
@@ -20,15 +25,15 @@ class Rule
 {
 public:
 
-    Rule(int id = 0) : m_id(id) {}
+    Rule(RuleId id = 0) : m_id(id) {}
 
-    Rule(int id, const QStringList &input, const QStringList &output)
+    Rule(RuleId id, const QStringList &input, const QStringList &output)
         : m_id(id), m_input(input), m_output(output) {}
 
 
-    int id() { return m_id; }
+    RuleId id() { return m_id; }
 
-    void setId(int id) { m_id = id; }
+    void setId(RuleId id) { m_id = id; }
 
 
     const QStringList &input() const { return m_input; }
@@ -46,7 +51,7 @@ public:
 
 private:
 
-    int m_id;
+    RuleId m_id;
     QStringList m_input;
     QStringList m_output;
 };
