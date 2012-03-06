@@ -18,9 +18,11 @@ public:
 
     void setOutputList(const QStringList &outputList);
 
-signals:
-
 public slots:
+
+    void clearHighlight();
+
+    void highlightOuput(int number);
 
 };
 

@@ -4,105 +4,127 @@
 <context>
     <name>Lvk::FE::MainWindow</name>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="46"/>
+        <location filename="front-end/mainwindow.cpp" line="45"/>
         <source>Rules</source>
         <translation>Reglas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="146"/>
-        <location filename="front-end/mainwindow.cpp" line="164"/>
+        <location filename="front-end/mainwindow.cpp" line="129"/>
+        <source>Chatbot replies:</source>
+        <translation>El chatbot responde:</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="138"/>
+        <source>If chatbot does not understand, it replies:</source>
+        <translation>Si el chatbot no entiende la pregunta responde:</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="213"/>
+        <location filename="front-end/mainwindow.cpp" line="231"/>
         <source>Add category</source>
         <translation>Agregar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="146"/>
+        <location filename="front-end/mainwindow.cpp" line="213"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="158"/>
-        <location filename="front-end/mainwindow.cpp" line="203"/>
-        <location filename="front-end/mainwindow.cpp" line="247"/>
+        <location filename="front-end/mainwindow.cpp" line="225"/>
+        <location filename="front-end/mainwindow.cpp" line="272"/>
+        <location filename="front-end/mainwindow.cpp" line="320"/>
         <source>Internal error</source>
         <translation>Error interno</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="159"/>
+        <location filename="front-end/mainwindow.cpp" line="226"/>
         <source>The category could not be added because of an internal error</source>
         <translation>La categoría no se pudo agregar debido a un error interno de la aplicación</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="165"/>
+        <location filename="front-end/mainwindow.cpp" line="232"/>
         <source>The category name cannot be empty</source>
         <translation>No se puede agregar una categoría sin nombre</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="176"/>
+        <location filename="front-end/mainwindow.cpp" line="245"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="177"/>
+        <location filename="front-end/mainwindow.cpp" line="246"/>
         <source>Select the category where the rule will belong to</source>
         <translation>Seleccione la categoría a la cual pertenecerá la regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="204"/>
+        <location filename="front-end/mainwindow.cpp" line="273"/>
         <source>The rule could not be added because of an internal error</source>
         <translation>La regla no se pudo agregar debido a un error interno de la aplicación</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="215"/>
+        <location filename="front-end/mainwindow.cpp" line="286"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="216"/>
+        <location filename="front-end/mainwindow.cpp" line="287"/>
         <source>Select the rule or category you want to remove</source>
         <translation>Seleccione la regla o categoría que desea borrar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="230"/>
+        <location filename="front-end/mainwindow.cpp" line="303"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="231"/>
+        <location filename="front-end/mainwindow.cpp" line="304"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
         <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
 Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="235"/>
+        <location filename="front-end/mainwindow.cpp" line="308"/>
         <source>Remove rule</source>
         <translation>Borrar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="236"/>
+        <location filename="front-end/mainwindow.cpp" line="309"/>
         <source>Are you sure you want to remove the rule &apos;%0&apos;?</source>
         <translation>Esta seguro que desea borrar la regla &apos;%0&apos;?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="248"/>
-        <source>The rule/category could not be removed because of an internal error</source>
+        <location filename="front-end/mainwindow.cpp" line="321"/>
+        <source>The rule/category could not be removed because of an internalerror</source>
         <translation>La regla/categoría no se pudo borrar debido a un error interno</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="327"/>
+        <source>Cannot remove</source>
+        <translation>Borrar categoría</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="328"/>
+        <source>The selected category cannot be removed because is mandatory</source>
+        <translation>La categoría seleccionada no puede ser borrada porque es obligatoria para el funcionamiento del programa</translation>
+    </message>
+    <message>
+        <source>The rule/category could not be removed because of an internal error</source>
+        <translation type="obsolete">La regla/categoría no se pudo borrar debido a un error interno</translation>
     </message>
     <message>
         <source>If user writes:</source>
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="367"/>
         <source>You:</source>
         <oldsource>You: </oldsource>
-        <translation>Vos:</translation>
+        <translation type="obsolete">Vos:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="368"/>
         <source>Chatbot:</source>
         <oldsource>Chatbot: </oldsource>
-        <translation>Chatbot:</translation>
+        <translation type="obsolete">Chatbot:</translation>
     </message>
 </context>
 <context>
@@ -118,7 +140,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Enseñar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="74"/>
+        <location filename="front-end/mainwindow.ui" line="80"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
@@ -136,7 +158,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="90"/>
+        <location filename="front-end/mainwindow.ui" line="102"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
@@ -145,7 +167,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="150"/>
+        <location filename="front-end/mainwindow.ui" line="184"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
@@ -154,52 +176,52 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="182"/>
+        <location filename="front-end/mainwindow.ui" line="219"/>
         <source>Connect with chat</source>
         <translation>Conectar con chat</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="205"/>
+        <location filename="front-end/mainwindow.ui" line="242"/>
         <source>Connect with chat:</source>
         <translation>Conectar con chat:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="215"/>
+        <location filename="front-end/mainwindow.ui" line="252"/>
         <source>Facebook</source>
         <translation>Facebook</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="225"/>
+        <location filename="front-end/mainwindow.ui" line="262"/>
         <source>Gmail or Google Talk</source>
         <translation>Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="245"/>
+        <location filename="front-end/mainwindow.ui" line="282"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="271"/>
+        <location filename="front-end/mainwindow.ui" line="308"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="300"/>
+        <location filename="front-end/mainwindow.ui" line="337"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="310"/>
+        <location filename="front-end/mainwindow.ui" line="347"/>
         <source>Conversations</source>
         <translation>Conversaciones</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="324"/>
+        <location filename="front-end/mainwindow.ui" line="361"/>
         <source>Conversations held with the chatbot:</source>
         <translation>Conversaciones mantenidas con el chatbot:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="401"/>
+        <location filename="front-end/mainwindow.ui" line="438"/>
         <source>Clean test conversation</source>
         <translation>Limpiar conversación de prueba</translation>
     </message>
@@ -212,7 +234,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La ayuda se muestra acá mientras el usuario mueve el mouse sobre los contoles</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="393"/>
+        <location filename="front-end/mainwindow.ui" line="430"/>
         <source>Test your chatbot</source>
         <translation>Prueba tu chatbot</translation>
     </message>
@@ -221,12 +243,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="404"/>
+        <location filename="front-end/mainwindow.ui" line="441"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="440"/>
+        <location filename="front-end/mainwindow.ui" line="483"/>
         <source>Test:</source>
         <translation>Prueba:</translation>
     </message>
@@ -235,7 +257,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="130"/>
+        <location filename="front-end/mainwindow.ui" line="164"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
@@ -299,7 +321,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
 <context>
     <name>QObject</name>
     <message>
-        <location filename="back-end/coreapp.cpp" line="108"/>
+        <location filename="back-end/coreapp.cpp" line="149"/>
         <source>Sorry, I don&apos;t understand that</source>
         <translation>Lo siento, no entiendo eso</translation>
     </message>
@@ -315,6 +337,19 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <location filename="front-end/ruleinputwidget.cpp" line="13"/>
         <source>Or any of these variants:</source>
         <translation>O cualquiera de las variantes:</translation>
+    </message>
+</context>
+<context>
+    <name>TestConversationWidget</name>
+    <message>
+        <location filename="front-end/testconversationwidget.cpp" line="30"/>
+        <source>You:</source>
+        <translation>Vos:</translation>
+    </message>
+    <message>
+        <location filename="front-end/testconversationwidget.cpp" line="31"/>
+        <source>Chatbot:</source>
+        <translation>Chatbot:</translation>
     </message>
 </context>
 </TS>

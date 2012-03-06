@@ -23,3 +23,15 @@ void RuleOutputWidget::setOutputList(const QStringList &outputList)
 
     setPlainText(output);
 }
+
+void RuleOutputWidget::highlightOuput(int /*number*/)
+{
+    static const QString HIGHLIGHT_INPUT_CSS = "background-color: rgba(255,128,128,128);";
+
+    setStyleSheet(HIGHLIGHT_INPUT_CSS);
+}
+
+void RuleOutputWidget::clearHighlight()
+{
+    setStyleSheet("");
+}

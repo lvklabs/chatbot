@@ -65,7 +65,7 @@ public:
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
-    enum UiMode { DefaultUiMode, EditCategoryUiMode, EditRuleUiMode };
+    enum UiMode { DefaultUiMode, EditCategoryUiMode, EditRuleUiMode, EditEvasivesUiMode };
 
     void setUiMode(UiMode mode);
 
@@ -81,7 +81,9 @@ private slots:
     void addCategoryWithInputDialog();
     void addRuleWithInputDialog();
     void removeSelectedItem();
+    void selectRule(BE::Rule *rule);
     BE::Rule *selectedRule();
+    BE::Rule *evasiveRule();
     void handleRuleInputEdited(const QString &ruleInput);
     void handleRuleInputEditingFinished();
     void handleRuleOutputEditingFinished();

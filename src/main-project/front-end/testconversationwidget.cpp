@@ -21,7 +21,7 @@ void TestConversationWidget::appendConversation(const QString &userInput, const 
     static const QString END_P_BODY_HTML = "</p></body></html>";
 
     if (!match) {
-        botOuput = START_NOT_MATCH_SPAN + botOuput + END_SPAN;
+        //botOuput = START_NOT_MATCH_SPAN + botOuput + END_SPAN;
     }
 
     QString conversation = toHtml();

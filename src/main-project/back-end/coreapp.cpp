@@ -3,8 +3,10 @@
 #include "nlpengine.h"
 #include "nlprule.h"
 #include "exactmatchengine.h"
+#include "random.h"
 
 #include <QObject>
+
 
 //--------------------------------------------------------------------------------------------------
 // Lvk::BE::CoreApp
@@ -15,12 +17,15 @@ Lvk::BE::CoreApp::CoreApp()
 {
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::CoreApp::~CoreApp()
 {
     delete m_rootRule;
     delete m_nlpEngine;
 }
 
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::CoreApp::load(const QString &filename)
 {
@@ -40,13 +45,13 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
     m_rootRule->appendChild(catGreetings);
 
-    QList<QString> rule1InputList;
-    QList<QString> rule1OutputList;
-    rule1InputList << QString("Hola") << QString("Hola *");
+    QStringList rule1InputList;
+    QStringList rule1OutputList;
+    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa");
     rule1OutputList << QString("Hola!");
 
-    QList<QString> rule2InputList;
-    QList<QString> rule2OutputList;
+    QStringList rule2InputList;
+    QStringList rule2OutputList;
     rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes");
     rule2OutputList << QString("Buenas, Como estas?");
 
@@ -56,6 +61,20 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
     catGreetings->appendChild(rule1);
     catGreetings->appendChild(rule2);
 
+    // evasives
+
+    BE::Rule *evasives    = new BE::Rule("Evasivas");
+    evasives->setType(BE::Rule::EvasiveRule);
+
+    m_rootRule->appendChild(evasives);
+
+    QStringList evasivesOutputList;
+    evasivesOutputList << QString("Perdon no entiendo eso")
+                       << QString("No entiendo, puedes explicarlo de otra manera?")
+                       << QString("No se que quieres decir con eso");
+
+    evasives->setOutput(evasivesOutputList);
+
     ////////////////////////////////////////////////////////////////////////
 
     refreshNlpEngine();
@@ -63,15 +82,25 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
     return true;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::BE::CoreApp::saveAs(const QString &/*filename*/)
 {
+    // TODO
+
     return false;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::BE::CoreApp::save()
 {
+    // TODO
+
     return false;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::CoreApp::close()
 {
@@ -84,39 +113,50 @@ void Lvk::BE::CoreApp::close()
 
     m_nextRuleId = 0;
     m_rulesHash.clear();
+
+    m_evasives.clear();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
 {
     return m_rootRule;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList  &matches)
 {
     matches.clear();
 
-    if (m_nlpEngine) {
-        Nlp::Engine::MatchList nlpRulesMatched;
-        QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
+    if (!m_nlpEngine) {
+        return "ERROR: NLP Engine Not implemented";
+    }
 
-        if (nlpRulesMatched.size() > 0) {
-            Nlp::RuleId ruleId = nlpRulesMatched[0].first;
-            int inputNumber = nlpRulesMatched[0].second;
-            matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
+    Nlp::Engine::MatchList nlpRulesMatched;
+    QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
 
-            return response;
-        } else {
-            return QObject::tr("Sorry, I don't understand that");
-        }
+    if (!nlpRulesMatched.isEmpty()) {
+        Nlp::RuleId ruleId = nlpRulesMatched.first().first;
+        int inputNumber = nlpRulesMatched.first().second;
+        matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
+
+        return response;
+    } else if (!m_evasives.isEmpty()) {
+        return m_evasives[Common::Random::getInt(0, m_evasives.size() - 1)];
     } else {
-        return "Not implemented";
+        return QObject::tr("Sorry, I don't understand that");
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::CoreApp::refreshNlpEngine()
 {
     m_nextRuleId = 0;
     m_rulesHash.clear();
+    m_evasives.clear();
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
@@ -129,6 +169,8 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpRules)
 {
     if (!parentRule) {
@@ -137,12 +179,13 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpR
 
     for (int i = 0; i < parentRule->childCount(); ++i) {
         BE::Rule *child = parentRule->child(i);
-
-        if (child->type() == Rule::FinalRule) {
+        if (child->type() == Rule::OrdinaryRule) {
             m_rulesHash[m_nextRuleId] = child;
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
             nlpRules.append(nlpRule);
-        } else if (child->type() == Rule::ContainerRule) {
+        } else if (child->type() == Rule::EvasiveRule) {
+            m_evasives = child->output(); // Design desicion: It can exist only one evasive rule
+        } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
     }

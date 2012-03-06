@@ -87,6 +87,7 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
     if (event->type() == QEvent::FocusOut) {
         if (object == ui->testInputText) {
             ui->ruleInputWidget->clearHighlight();
+            ui->ruleOutputWidget->clearHighlight();
         }
         else if (object == ui->ruleInputWidget) {
             handleRuleInputEditingFinished();
@@ -126,6 +127,16 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleInputWidget->setVisible(true);
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
+        ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
+        break;
+
+    case EditEvasivesUiMode:
+        ui->categoryNameLabel->setVisible(false);
+        ui->categoryNameTextEdit->setVisible(false);
+        ui->ruleInputWidget->setVisible(false);
+        ui->ruleOutputWidget->setVisible(true);
+        ui->chatbotRepliesLabel->setVisible(true);
+        ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
         break;
     }
 }
@@ -208,9 +219,7 @@ void Lvk::FE::MainWindow::addCategoryWithInputDialog()
             BE::Rule *category = addCategory(name);
 
             if (category) {
-                QModelIndex categoryIndex = m_ruleTreeModel->indexFromItem(category);
-                m_ruleTreeSelectionModel->setCurrentIndex(categoryIndex,
-                                                            QItemSelectionModel::ClearAndSelect);
+                selectRule(category);
             } else {
                 QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
                                 tr("The category could not be added because of an internal error"),
@@ -255,8 +264,7 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
     BE::Rule *emptyRule = addRule("", parentCategory);
 
     if (emptyRule) {
-        m_ruleTreeSelectionModel->select(m_ruleTreeModel->indexFromItem(emptyRule),
-                                           QItemSelectionModel::ClearAndSelect);
+        selectRule(emptyRule);
         ui->ruleInputWidget->setFocusOnInput();
     } else {
         QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
@@ -283,34 +291,60 @@ void Lvk::FE::MainWindow::removeSelectedItem()
 
     QModelIndex selectedIndex = selectedRows[0];
     BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
+    BE::Rule::RuleType ruleType = selectedItem->type();
 
     QString dialogText;
     QString dialogTitle;
 
-    if (selectedItem->type() == BE::Rule::ContainerRule) {
-        dialogTitle = tr("Remove category");
-        dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
-                                "All rules belonging to that category will be also removed"))
-                .arg(selectedIndex.data(Qt::DisplayRole).toString());
-    } else {
-        dialogTitle = tr("Remove rule");
-        dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
-                .arg(selectedIndex.data(Qt::DisplayRole).toString());
+    if (ruleType == BE::Rule::ContainerRule || ruleType == BE::Rule::OrdinaryRule) {
+        if (selectedItem->type() == BE::Rule::ContainerRule) {
+            dialogTitle = tr("Remove category");
+            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
+                                    "All rules belonging to that category will be also removed"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        } else {
+            dialogTitle = tr("Remove rule");
+            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
+                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+        }
+
+        QMessageBox msg(QMessageBox::Question, dialogTitle, dialogText,
+                        QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msg.exec() == QMessageBox::Yes) {
+            bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+
+            if (!removed) {
+                QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
+                                tr("The rule/category could not be removed because of an internal"
+                                   "error"), QMessageBox::Ok, this);
+                msg.exec();
+            }
+        }
+    } else if (ruleType == BE::Rule::EvasiveRule) {
+        dialogTitle = tr("Cannot remove");
+        dialogText = tr("The selected category cannot be removed because is mandatory");
+
+        QMessageBox msg(QMessageBox::Information, dialogTitle, dialogText, QMessageBox::Ok, this);
+
+        msg.exec();
+
+        return;
     }
+}
 
-    QMessageBox msg(QMessageBox::Question, dialogTitle, dialogText,
-                    QMessageBox::Yes | QMessageBox::No, this);
+//--------------------------------------------------------------------------------------------------
 
-    if (msg.exec() == QMessageBox::Yes) {
-        bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+Lvk::BE::Rule * Lvk::FE::MainWindow::evasiveRule()
+{
+    BE::Rule *root = m_ruleTreeModel->invisibleRootItem();
 
-        if (!removed) {
-            QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
-                            tr("The rule/category could not be removed because of an internal error"),
-                            QMessageBox::Ok, this);
-            msg.exec();
+    for (int i = 0; i < root->childCount(); ++i) {
+        if (root->child(i)->type() == BE::Rule::EvasiveRule) {
+            return root->child(i);
         }
     }
+    return 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -324,6 +358,23 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::selectedRule()
         }
     }
     return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::selectRule(BE::Rule *rule)
+{
+    if (!rule) {
+        return;
+    }
+
+    QModelIndex ruleIndex = m_ruleTreeModel->indexFromItem(rule);
+
+    if (ruleIndex.isValid()) {
+        m_ruleTreeSelectionModel->setCurrentIndex(ruleIndex, QItemSelectionModel::ClearAndSelect);
+
+        ui->categoriesTree->setExpanded(ruleIndex.parent(), true);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -364,10 +415,12 @@ void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selec
     if (!deselected.indexes().isEmpty()) {
         BE::Rule *item = static_cast<BE::Rule *>(deselected.indexes().first().internalPointer());
 
-        if (item->type() == BE::Rule::FinalRule) {
+        if (item->type() == BE::Rule::OrdinaryRule) {
             item->setInput(ui->ruleInputWidget->inputList());
             item->setOutput(ui->ruleOutputWidget->outputList());
-        } else {
+        } else if (item->type() == BE::Rule::EvasiveRule) {
+            item->setOutput(ui->ruleOutputWidget->outputList());
+        } else if (item->type() == BE::Rule::ContainerRule) {
            // nothing to do
         }
     }
@@ -375,20 +428,32 @@ void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selec
     if (!selected.indexes().isEmpty()) {
         BE::Rule *item = static_cast<BE::Rule *>(selected.indexes().first().internalPointer());
 
-        if (item->type() == BE::Rule::FinalRule) {
+        if (item->type() == BE::Rule::OrdinaryRule) {
+
             setUiMode(EditRuleUiMode);
+
             ui->categoryNameTextEdit->clear();
             ui->ruleInputWidget->setInputList(item->input());
             ui->ruleOutputWidget->setOutputList(item->output());
+        } else if (item->type() == BE::Rule::EvasiveRule) {
 
-        } else {
+            setUiMode(EditEvasivesUiMode);
+
+            ui->categoryNameTextEdit->clear();
+            ui->ruleInputWidget->clear();
+            ui->ruleOutputWidget->setOutputList(item->output());
+        } else if (item->type() == BE::Rule::ContainerRule) {
+
             setUiMode(EditCategoryUiMode);
+
             ui->categoryNameTextEdit->setText(item->name());
             ui->ruleInputWidget->clear();
             ui->ruleOutputWidget->clear();
         }
     } else {
+
         setUiMode(DefaultUiMode);
+
         ui->categoryNameLabel->clear();
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->clear();
@@ -417,24 +482,23 @@ void Lvk::FE::MainWindow::testInputTextEntered()
 void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &matches)
 {
     ui->ruleInputWidget->clearHighlight();
+    ui->ruleOutputWidget->clearHighlight();
 
-    if (matches.empty()) {
-        return;
+    if (!matches.empty()) {
+        // Assuming only one match
+
+        BE::Rule *rule = matches.first().first;
+        int ruleNumber = matches.first().second;
+
+        selectRule(rule);
+
+        ui->ruleInputWidget->highlightInput(ruleNumber);
+    } else {
+        selectRule(evasiveRule());
+
+        ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
     }
-
-    // Assuming only one match
-
-    BE::Rule *rule = matches.first().first;
-    int ruleNumber = matches.first().second;
-
-    QModelIndex ruleIndex = m_ruleTreeModel->indexFromItem(rule);
-
-    if (ruleIndex.isValid()) {
-        m_ruleTreeSelectionModel->setCurrentIndex(ruleIndex, QItemSelectionModel::ClearAndSelect);
-
-        ui->categoriesTree->setExpanded(ruleIndex.parent(), true);
-    }
-
-    ui->ruleInputWidget->highlightInput(ruleNumber);
 }
+
+
 

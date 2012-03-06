@@ -222,20 +222,31 @@ int Lvk::FE::RuleTreeModel::columnCountForItem(const BE::Rule */*item*/) const
 
 QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, int role) const
 {
-    switch (column) {
-    case 0:
-        switch (role) {
-        case Qt::EditRole:
-        case Qt::DisplayRole:
-            if (item->type() == BE::Rule::FinalRule) {
-                return item->input().size() == 0 ? QString("") : item->input()[0];
-            } else {
-                return item->name();
-            }
+    if (column != 0) {
+        return false;
+    }
 
-        case Qt::DecorationRole:
-            return item->type() == BE::Rule::FinalRule ? QIcon(":/icons/rule_16x16.png")
-                                                      : QIcon(":/icons/category_16x16.png");
+    switch (role) {
+    case Qt::EditRole:
+    case Qt::DisplayRole:
+        switch (item->type()) {
+        case BE::Rule::OrdinaryRule:
+            return item->input().size() == 0 ? QString("") : item->input()[0];
+        case BE::Rule::ContainerRule:
+        case BE::Rule::EvasiveRule:
+            return item->name();
+        default:
+            return QVariant();
+        }
+
+    case Qt::DecorationRole:
+        switch (item->type()) {
+        case BE::Rule::OrdinaryRule:
+            return QIcon(":/icons/rule_16x16.png");
+        case BE::Rule::ContainerRule:
+            return QIcon(":/icons/category_16x16.png");
+        case BE::Rule::EvasiveRule:
+            return QIcon(":/icons/category_locked_16x16.png");
         default:
             return QVariant();
         }
@@ -248,20 +259,30 @@ QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, i
 bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &value, int column,
                                             int role)
 {
-    switch (column) {
-    case 0:
-        switch (role) {
-        case Qt::EditRole:
-        case Qt::DisplayRole:
-            if (item->type() == BE::Rule::FinalRule) {
-                if (item->input().size() == 0) {
-                    item->input().append(value.toString());
-                } else {
-                    item->input()[0] = value.toString();
-                }
+    if (column != 0) {
+        return false;
+    }
+
+    switch (role) {
+    case Qt::EditRole:
+    case Qt::DisplayRole:
+
+        switch (item->type()) {
+
+        case BE::Rule::OrdinaryRule:
+            if (item->input().size() == 0) {
+                item->input().append(value.toString());
             } else {
-                item->setName(value.toString());
+                item->input()[0] = value.toString();
             }
+            return true;
+
+        case BE::Rule::ContainerRule:
+            item->setName(value.toString());
+            return true;
+
+        case BE::Rule::EvasiveRule:
+            item->setName(value.toString());
             return true;
 
         default:
@@ -271,4 +292,5 @@ bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &valu
     default:
         return false;
     }
+
 }

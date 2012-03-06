@@ -18,7 +18,7 @@ namespace BE
 class Rule
 {
 public:
-    enum RuleType { FinalRule, ContainerRule };
+    enum RuleType { OrdinaryRule, EvasiveRule, ContainerRule };
 
     Rule(Rule *parent = 0);
 

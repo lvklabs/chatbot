@@ -2,6 +2,7 @@
 #define LVK_BE_COREAPP_H
 
 #include <QString>
+#include <QStringList>
 #include <QHash>
 #include <QPair>
 
@@ -54,6 +55,7 @@ private:
     Nlp::Engine *m_nlpEngine;
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, Rule *> m_rulesHash;
+    QStringList m_evasives;
 
     void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);
 };

@@ -5,18 +5,18 @@
 #include <assert.h>
 
 Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
-    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(FinalRule)
+    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule)
 {
 }
 
 Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
-    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(FinalRule)
+    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule)
 {
 }
 
 Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
                         const QList<QString> &ouput, Rule *parent /*= 0*/)
-    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(FinalRule)
+    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(OrdinaryRule)
 {
 }
 
@@ -165,6 +165,4 @@ void Lvk::BE::Rule::setName(const QString &name)
 {
     m_name = name;
 }
-
-
 
