@@ -5,7 +5,8 @@ TEMPLATE = app
 
 INCLUDEPATH += front-end\
                back-end\
-               nlp-engine
+               nlp-engine\
+               common
 
 HEADERS += \
     front-end/mainwindow.h \
@@ -17,7 +18,8 @@ HEADERS += \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
-    front-end/testconversationwidget.h
+    front-end/testconversationwidget.h \
+    common/random.h
 
 
 SOURCES += \
@@ -29,7 +31,8 @@ SOURCES += \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     nlp-engine/exactmatchengine.cpp \
-    front-end/testconversationwidget.cpp
+    front-end/testconversationwidget.cpp \
+    common/random.cpp
 
 FORMS += \
     front-end/mainwindow.ui
@@ -38,6 +41,8 @@ RESOURCES += \
     resources.qrc
 
 TRANSLATIONS = strings_es.ts
+
+
 
 
 

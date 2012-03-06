@@ -1,7 +1,9 @@
 #include "exactmatchengine.h"
 #include "nlprule.h"
+#include "random.h"
+
 #include <QStringList>
-#include <assert.h>
+#include <cassert>
 
 Lvk::Nlp::ExactMatchEngine::ExactMatchEngine()
 {
@@ -53,7 +55,9 @@ QList<QString> Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input,
 
         for (int j = 0; j < ruleInput.size() && !ruleOuput.empty() ; ++j) {
             if (QString::compare(ruleInput[j], input, Qt::CaseInsensitive) == 0) {
-                responses.append(ruleOuput[0]); // always returning first output
+                int randomOutput = Common::Random::getInt(0, ruleOuput.size() - 1);
+                responses.append(ruleOuput[randomOutput]);
+
                 matches.append(qMakePair(m_rules[i].id(), j));
             }
         }
