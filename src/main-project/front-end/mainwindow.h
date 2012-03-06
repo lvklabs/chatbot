@@ -84,6 +84,7 @@ private slots:
     void selectRule(BE::Rule *rule);
     BE::Rule *selectedRule();
     BE::Rule *evasiveRule();
+    BE::Rule *rootRule();
     void handleRuleInputEdited(const QString &ruleInput);
     void handleRuleInputEditingFinished();
     void handleRuleOutputEditingFinished();

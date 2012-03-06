@@ -48,6 +48,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
+    // connect signals and slots
+
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
@@ -67,9 +69,27 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
 
+    // set event filters
+
     ui->testInputText->installEventFilter(this);
     ui->ruleInputWidget->installEventFilter(this);
     ui->ruleOutputWidget->installEventFilter(this);
+
+
+    // select first rule (if any) and set focus
+
+    if (rootRule()) {
+        if (rootRule()->childCount() > 0) {
+            BE::Rule *child = rootRule()->child(0);
+            if (child->childCount() > 0) {
+                selectRule(child->child(0));
+            } else {
+                selectRule(child);
+            }
+        }
+    }
+
+    ui->categoriesTree->setFocus();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -335,15 +355,23 @@ void Lvk::FE::MainWindow::removeSelectedItem()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
+{
+    return m_ruleTreeModel->invisibleRootItem();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Rule * Lvk::FE::MainWindow::evasiveRule()
 {
-    BE::Rule *root = m_ruleTreeModel->invisibleRootItem();
-
-    for (int i = 0; i < root->childCount(); ++i) {
-        if (root->child(i)->type() == BE::Rule::EvasiveRule) {
-            return root->child(i);
+    if (rootRule()) {
+        for (int i = 0; i < rootRule()->childCount(); ++i) {
+            if (rootRule()->child(i)->type() == BE::Rule::EvasiveRule) {
+                return rootRule()->child(i);
+            }
         }
     }
+
     return 0;
 }
 
@@ -499,6 +527,7 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
         ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
     }
 }
+
 
 
 
