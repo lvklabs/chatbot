@@ -77,14 +77,20 @@ private:
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
 
-private slots:
-    void addCategoryWithInputDialog();
-    void addRuleWithInputDialog();
-    void removeSelectedItem();
+    void initCoreAndModels();
+    void connectSignals();
+
+    void selectFirstRule();
+
     void selectRule(BE::Rule *rule);
     BE::Rule *selectedRule();
     BE::Rule *evasiveRule();
     BE::Rule *rootRule();
+
+private slots:
+    void addCategoryWithInputDialog();
+    void addRuleWithInputDialog();
+    void removeSelectedItem();
     void handleRuleInputEdited(const QString &ruleInput);
     void handleRuleInputEditingFinished();
     void handleRuleOutputEditingFinished();

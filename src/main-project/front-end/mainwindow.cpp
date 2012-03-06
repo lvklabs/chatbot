@@ -34,11 +34,35 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow), m_coreApp(new BE::CoreApp()), m_ruleTreeModel(0)
 {
     ui->setupUi(this);
-
     ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
 
     clear();
 
+    initCoreAndModels();
+
+    connectSignals();
+
+    ui->testInputText->installEventFilter(this);
+    ui->ruleInputWidget->installEventFilter(this);
+    ui->ruleOutputWidget->installEventFilter(this);
+
+    selectFirstRule();
+
+    ui->categoriesTree->setFocus();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::FE::MainWindow::~MainWindow()
+{
+    delete ui;
+    delete m_coreApp;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::initCoreAndModels()
+{
     m_coreApp->load("FIXME");
 
     m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
@@ -47,9 +71,12 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+}
 
-    // connect signals and slots
+//--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::connectSignals()
+{
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
@@ -68,16 +95,12 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
+}
 
-    // set event filters
+//--------------------------------------------------------------------------------------------------
 
-    ui->testInputText->installEventFilter(this);
-    ui->ruleInputWidget->installEventFilter(this);
-    ui->ruleOutputWidget->installEventFilter(this);
-
-
-    // select first rule (if any) and set focus
-
+void Lvk::FE::MainWindow::selectFirstRule()
+{
     if (rootRule()) {
         if (rootRule()->childCount() > 0) {
             BE::Rule *child = rootRule()->child(0);
@@ -88,16 +111,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
             }
         }
     }
-
-    ui->categoriesTree->setFocus();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::FE::MainWindow::~MainWindow()
-{
-    delete ui;
-    delete m_coreApp;
 }
 
 //--------------------------------------------------------------------------------------------------
