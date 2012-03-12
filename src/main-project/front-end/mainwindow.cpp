@@ -289,21 +289,28 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
     if (selectedItem->type() == BE::Rule::ContainerRule) {
         parentCategory = selectedItem;
         ui->categoriesTree->setExpanded(selectedIndex, true);
-    } else {
+    } else if (selectedItem->type() == BE::Rule::OrdinaryRule) {
         parentCategory =  m_ruleTreeModel->itemFromIndex(selectedIndex.parent());
         ui->categoriesTree->setExpanded(selectedIndex.parent(), true);
-    }
-
-    BE::Rule *emptyRule = addRule("", parentCategory);
-
-    if (emptyRule) {
-        selectRule(emptyRule);
-        ui->ruleInputWidget->setFocusOnInput();
-    } else {
-        QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
-                        tr("The rule could not be added because of an internal error"),
+    } else if (selectedItem->type() == BE::Rule::EvasiveRule) {
+        QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
+                        tr("Evasives is an special category that cannot contain rules"),
                         QMessageBox::Ok, this);
         msg.exec();
+    }
+
+    if (parentCategory) {
+        BE::Rule *emptyRule = addRule("", parentCategory);
+
+        if (emptyRule) {
+            selectRule(emptyRule);
+            ui->ruleInputWidget->setFocusOnInput();
+        } else {
+            QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
+                            tr("The rule could not be added because of an internal error"),
+                            QMessageBox::Ok, this);
+            msg.exec();
+        }
     }
 }
 
