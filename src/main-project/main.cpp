@@ -21,6 +21,8 @@
 
 #include <QApplication>
 #include <QTranslator>
+#include <QDesktopWidget>
+#include <algorithm>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -31,9 +33,14 @@ int main(int argc, char *argv[])
     translator.load(":/strings/strings_es");
     app.installTranslator(&translator);
 
+    QRect scrGeo = app.desktop()->availableGeometry(0);
+
     Lvk::FE::MainWindow window;
+    window.resize(std::min<int>(scrGeo.width()*0.8, window.width()),
+                  std::min<int>(scrGeo.height()*0.8, window.height()));
+    window.move((scrGeo.width() - window.width())/2,
+                (scrGeo.height() - window.height())/2);
     window.show();
 
     return app.exec();
-
 }
