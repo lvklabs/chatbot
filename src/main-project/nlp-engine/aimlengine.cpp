@@ -5,12 +5,16 @@
 #include "ProgramQ/aimlparser.h"
 
 #include <QStringList>
+#include <QFile>
 #include <cassert>
 
 
 Lvk::Nlp::AimlEngine::AimlEngine()
-    : m_aimlParser(new AIMLParser())
+    : m_aimlParser(0)
 {
+    QFile *logfile = new QFile("aiml_parser.log");
+    logfile->open(QFile::WriteOnly);
+    m_aimlParser = new AIMLParser(logfile);
 }
 
 Lvk::Nlp::AimlEngine::~AimlEngine()

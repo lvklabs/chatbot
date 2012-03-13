@@ -19,7 +19,7 @@
 #include <qfile.h>
 #include <qdatetime.h>
 #include <qxml.h>
-#include <QDebug> //lvk for qDebug()
+#include <QIODevice> // lvk
 
 //For windows system execution
 #ifdef _WIN32
@@ -165,15 +165,15 @@ bool Node::match(QStringList::const_iterator input, const QStringList &inputWord
     return false;
 }
 
-void Node::debug(uint indent)
+void Node::debug(QDataStream &logStream, uint indent)
 {
     QString indentStr = QString().fill('\t', indent);
-    qDebug() << indentStr << word << " :\n";
+    logStream << indentStr << word << " :\n";
     for (Node* child = childs.first(); child; child = childs.next())
-        child->debug(indent + 1);
+        child->debug(logStream, indent + 1);
     indentStr = QString().fill('\t', indent + 1);
     for (Leaf* leaf = leafs.first(); leaf; leaf = leafs.next())
-        qDebug() << indentStr << "<topic-" << leaf->topic << " that-" << leaf->that << ">\n";
+        logStream << indentStr << "<topic-" << leaf->topic << " that-" << leaf->that << ">\n";
 }
 
 void AIMLParser::runRegression()
@@ -185,12 +185,12 @@ void AIMLParser::runRegression()
     if ( !doc.setContent( &file ) )
     {
         file.close();
-        qDebug() << QString("Error while parsing %1\n").arg(file.name().ascii());
+        logStream << QString("Error while parsing %1\n").arg(file.name().ascii());
         return;
     }
     file.close();
 
-    qDebug() << "Regression running:\n";
+    logStream << "Regression running:\n";
 
     loadAiml("utils/TestSuite.aiml");
 
@@ -210,20 +210,20 @@ void AIMLParser::runRegression()
                expectedAnswer += child.toText().nodeValue();
             child = child.nextSibling();
         }
-        qDebug() << "===========================================================================\n";
-        qDebug() << "::Description: " + description + "\n";
-        qDebug() << "::Expected answer: " + expectedAnswer + "\n";
+        logStream << "===========================================================================\n";
+        logStream << "::Description: " + description + "\n";
+        logStream << "::Expected answer: " + expectedAnswer + "\n";
         QString answer = getResponse(input);
         if (answer.simplifyWhiteSpace().lower() == expectedAnswer.simplifyWhiteSpace().lower())
-           qDebug() << "=> Pass\n";
+           logStream << "=> Pass\n";
         else
-           qDebug() << "=> Fail\n";
+           logStream << "=> Fail\n";
     }
 }
 
 void AIMLParser::displayTree()
 {
-    root.debug();
+    root.debug(logStream);
 }
 
 void AIMLParser::normalizeString(QString &str)
@@ -238,13 +238,17 @@ void AIMLParser::normalizeString(QString &str)
     str = newStr;
 }
 
-AIMLParser::AIMLParser()
+AIMLParser::AIMLParser(QIODevice *logDevice)
 {
     indent = 0;
     root.parent = NULL;
     QTime currentTime = QTime::currentTime();
     int val = currentTime.msec() + currentTime.second() + currentTime.minute();
     srand(val);
+
+    // start lvk
+    logStream.setDevice(logDevice);
+    // end lvk
 }
 
 AIMLParser::~AIMLParser()
@@ -259,7 +263,7 @@ bool AIMLParser::loadSubstitutions(const QString &filename)
     if ( !doc.setContent( &file ) )
     {
         file.close();
-        qDebug() << QString("Error while parsing %1\n").arg(filename.ascii());
+        logStream << QString("Error while parsing %1\n").arg(filename.ascii());
         return false;
     }
     file.close();
@@ -284,7 +288,7 @@ bool AIMLParser::loadVars(const QString &filename, const bool &bot)
     if ( !doc.setContent( &file ) )
     {
         file.close();
-        qDebug() << QString("Error while parsing %1\n").arg(filename.ascii());
+        logStream << QString("Error while parsing %1\n").arg(filename.ascii());
         return false;
     }
     file.close();
@@ -355,7 +359,7 @@ bool AIMLParser::loadAiml(const QString &filename)
     if ( !doc.setContent( &src, &reader, &msg, &line, &col ) )
     {
         file.close();
-        qDebug() << QString("Error while parsing %1: %2 (line %3 - col %4)\n").arg(filename).arg(msg).arg(line).arg(col);
+        logStream << QString("Error while parsing %1: %2 (line %3 - col %4)\n").arg(filename).arg(msg).arg(line).arg(col);
         return false;
     }
     file.close();
@@ -379,7 +383,7 @@ bool AIMLParser::loadAimlFromString(const QString &xml)
     int line, col;
     if ( !doc.setContent( xml, true, &msg, &line, &col ) )
     {
-        qDebug() << QString("Error while parsing %2 (line %3 - col %4)\n").arg(msg).arg(line).arg(col);
+        logStream << QString("Error while parsing %2 (line %3 - col %4)\n").arg(msg).arg(line).arg(col);
         return false;
     }
 
@@ -604,7 +608,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
             else if (nodeName == "li")
                 ;
             else
-                qDebug() << "Warning: unknown tag \"" + nodeName + "\"\n";
+                logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
         }
         //the following just to avoid warnings !
         else if ((nodeName == "template") || (nodeName == "pattern") || (nodeName == "li")
@@ -612,7 +616,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                  || (nodeName == "parsedCondition"))
             ;
         else
-            qDebug() << "Warning: unknown tag \"" + nodeName + "\"\n";
+            logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
     }
     return result;
 }
@@ -623,7 +627,7 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
     if (srai)
         indent ++;
     QString indentSpace = QString().fill(' ', 2*indent);
-    qDebug() << (!srai ? "\n" : "") + indentSpace + (srai ? "::SRAI: " : "::User Input: ") +
+    logStream << (!srai ? "\n" : "") + indentSpace + (srai ? "::SRAI: " : "::User Input: ") +
         input + "\n";
     //perform substitutions for input string
     QVALUELIST_CLASSNAME<QRegExp>::Iterator itOld = subOld.begin();
@@ -660,12 +664,12 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
             parentNode = parentNode->parent;
             matchedPattern = parentNode->word + " " + matchedPattern;
         }
-        qDebug() << indentSpace + "::Matched pattern: [" + matchedPattern + "]";
+        logStream << indentSpace + "::Matched pattern: [" + matchedPattern + "]";
         if (!leaf->that.isEmpty())
-           qDebug() << " - Matched that: [" + leaf->that + "]";
+           logStream << " - Matched that: [" + leaf->that + "]";
         if (!leaf->topic.isEmpty())
-           qDebug() << " - Matched topic: [" + leaf->topic + "]";
-        qDebug() << "\n";
+           logStream << " - Matched topic: [" + leaf->topic + "]";
+        logStream << "\n";
         capturedTexts.clear();
         exactMatch(matchedPattern, *sentence, capturedTexts);
         //strip whitespaces from the beggining and the end of result
@@ -704,7 +708,7 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
         visitedNodeList.clear();
     }
     //debug
-    qDebug() << indentSpace + "::Result: " + result + "\n";
+    logStream << indentSpace + "::Result: " + result + "\n";
     if (srai)
         indent --;
 
@@ -715,7 +719,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
 {
     QString returnString("");
     QString spaceIndent = QString().fill(' ', 2*indent);
-    qDebug() << spaceIndent + "Executing \"" + commandStr + "\" ...\n";
+    logStream << spaceIndent + "Executing \"" + commandStr + "\" ...\n";
 #ifdef _WIN32
 
     STARTUPINFO si;
@@ -743,7 +747,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
     /* Create a new pipe with system's default buffer size */
     if (!CreatePipe(&read_pipe, &write_pipe, &sa, 0))
     {
-        qDebug() << spaceIndent + "Execution failed !\n";
+        logStream << spaceIndent + "Execution failed !\n";
         return "";
     }
 
@@ -769,7 +773,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
 
     if (!create)
     {
-        qDebug() << spaceIndent + "Execution failed !\n";
+        logStream << spaceIndent + "Execution failed !\n";
         return "";
     }
 
@@ -781,7 +785,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
 
     if (!fd)
     {
-        qDebug() << spaceIndent + "Execution failed !\n";
+        logStream << spaceIndent + "Execution failed !\n";
         return "";
     }
 
@@ -790,7 +794,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
 
     if(!file)
     {
-        qDebug() << spaceIndent + "Execution failed !\n";
+        logStream << spaceIndent + "Execution failed !\n";
         return "";
     }
 #else
@@ -798,7 +802,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
     FILE *file = popen(commandStr, "r");
     if (!file)
     {
-        qDebug() << spaceIndent + "Execution failed !\n";
+        logStream << spaceIndent + "Execution failed !\n";
         return "";
     }
 #endif
@@ -814,7 +818,7 @@ QString AIMLParser::executeCommand(const QString &commandStr)
 
     fclose(file);
 
-    qDebug() << spaceIndent + "Execution succeeded with result: \"" + returnString + "\"\n";
+    logStream << spaceIndent + "Execution succeeded with result: \"" + returnString + "\"\n";
 
     return returnString;
 }

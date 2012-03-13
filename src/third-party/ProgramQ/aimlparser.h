@@ -34,6 +34,8 @@
 #include <qstringlist.h>
 #include <qregexp.h>
 
+#include <QDataStream> // lvk
+
 #define MAX_LIST_LENGTH 50
 
 /**
@@ -58,7 +60,7 @@ struct Node
   Node();
   QPTRLIST_CLASSNAME<Node> childs;
   QPTRLIST_CLASSNAME<Leaf> leafs;
-  void debug(uint indent = 0);
+  void debug(QDataStream &logStream, uint indent = 0);
   bool match(QStringList::const_iterator, const QStringList&,
              const QString&, const QString&, QStringList &, QStringList &, Leaf *&);
 };
@@ -66,7 +68,7 @@ struct Node
 class AIMLParser
 {
 public:
-  AIMLParser();
+  AIMLParser(QIODevice *logDevice);
   virtual ~AIMLParser();
   bool loadAiml(const QString&);
 
@@ -96,6 +98,7 @@ private:
   Node root;
   int indent;
   QVALUELIST_CLASSNAME<QDomNode*> visitedNodeList;
+  QDataStream logStream; //lvk
 };
 
 #endif
