@@ -41,7 +41,7 @@ TestMainWindow::TestMainWindow()
 
 #define RULE_1_INPUT_1                      "Hello"
 #define RULE_1_INPUT_2                      "Hi"
-#define RULE_1_INPUT_3                      "Hi *"
+#define RULE_1_INPUT_3                      "Hello *"
 #define RULE_1_OUTPUT_1                     "Hi!"
 
 #define RULE_2_INPUT_1                      "What is your name?"
@@ -55,8 +55,9 @@ TestMainWindow::TestMainWindow()
 #define USER_INPUT_2                        "Hi"
 #define USER_INPUT_3                        "Hey there!"
 #define USER_INPUT_4a                       "What is your name?"
-#define USER_INPUT_6b                       "What is your name"
+#define USER_INPUT_4b                       "What is your name"
 #define USER_INPUT_5                        "Hello there!"
+#define USER_INPUT_6                        "Hello how are you!!"
 
 #define CONVERSATION_ENTRY                  "You: %1\nChatbot: %2\n"
 
@@ -82,7 +83,7 @@ void TestMainWindow::buildTestRuleHierarchy()
     Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule, rootRule);
 
     Lvk::BE::Rule *rule1 = new Lvk::BE::Rule("",
-                                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2,
+                                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
                                              QStringList() << RULE_1_OUTPUT_1,
                                              cat1);
 
@@ -115,8 +116,9 @@ void TestMainWindow::testTestTabConversation_data()
     QTest::newRow("exact match 6") << USER_INPUT_4a << RULE_2_OUTPUT_1;
 
     // AIML
-    //QTest::newRow("AIML 1")        << USER_INPUT_5 << RULE_1_OUTPUT_1;
-    //QTest::newRow("AIML 2")        << USER_INPUT_6 << RULE_2_OUTPUT_1;
+    QTest::newRow("AIML 1")        << USER_INPUT_4b << RULE_2_OUTPUT_1;
+    QTest::newRow("AIML 2")        << USER_INPUT_5  << RULE_1_OUTPUT_1;
+    QTest::newRow("AIML 3")        << USER_INPUT_6  << RULE_1_OUTPUT_1;
 }
 
 void TestMainWindow::testTestTabConversation()

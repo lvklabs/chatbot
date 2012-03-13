@@ -24,6 +24,7 @@
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
+#include "aimlengine.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -31,7 +32,14 @@
 #include <QMessageBox>
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow), m_coreApp(new BE::CoreApp()), m_ruleTreeModel(0)
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+#ifdef USE_AIML_ENGINE
+    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine())),
+#else
+    m_coreApp(new BE::CoreApp()),
+#endif
+    m_ruleTreeModel(0)
 {
     ui->setupUi(this);
     ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);

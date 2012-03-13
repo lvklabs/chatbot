@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += testlib ui
+QT       += testlib ui xml qt3support
 
 TARGET = testmainwindow
 CONFIG   += console
@@ -16,7 +16,8 @@ INCLUDEPATH += \
     ../main-project/front-end \
     ../main-project/back-end \
     ../main-project/nlp-engine \
-    ../main-project/common
+    ../main-project/common \
+    ../third-party
 
 HEADERS += \
     ../main-project/front-end/mainwindow.h \
@@ -27,7 +28,9 @@ HEADERS += \
     ../main-project/back-end/rule.h \
     ../main-project/back-end/coreapp.h \
     ../main-project/nlp-engine/exactmatchengine.h \
-    ../main-project/common/random.h
+    ../main-project/nlp-engine/aimlengine.h \
+    ../main-project/common/random.h \
+    ../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
     testmainwindow.cpp\
@@ -39,7 +42,10 @@ SOURCES += \
     ../main-project/back-end/rule.cpp \
     ../main-project/back-end/coreapp.cpp \
     ../main-project/nlp-engine/exactmatchengine.cpp \
-    ../main-project/common/random.cpp
+    ../main-project/nlp-engine/aimlengine.cpp \
+    ../main-project/common/random.cpp \
+    ../third-party/ProgramQ/aimlparser.cpp
+
 
 FORMS += \
     ../main-project/front-end/mainwindow.ui

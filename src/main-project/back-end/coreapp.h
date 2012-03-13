@@ -29,7 +29,10 @@ class Rule;
 class CoreApp
 {
 public:
+
     CoreApp();
+
+    CoreApp(Nlp::Engine *nlpEngine);
 
     ~CoreApp();
 

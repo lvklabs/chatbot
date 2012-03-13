@@ -19,6 +19,13 @@ Lvk::BE::CoreApp::CoreApp()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine)
+    : m_rootRule(0), m_nlpEngine(nlpEngine), m_nextRuleId(0)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::CoreApp::~CoreApp()
 {
     delete m_rootRule;
@@ -114,7 +121,9 @@ bool Lvk::BE::CoreApp::save()
 
 void Lvk::BE::CoreApp::close()
 {
-    m_nlpEngine->setRules(Nlp::RuleList());
+    if (m_nlpEngine) {
+        m_nlpEngine->setRules(Nlp::RuleList());
+    }
 
     delete m_rootRule;
     m_rootRule = 0;
