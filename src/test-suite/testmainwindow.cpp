@@ -18,8 +18,8 @@ public:
 
 private Q_SLOTS:
     void initTestCase();
-    void testTestTabExactMatch_data();
-    void testTestTabExactMatch();
+    void testTestTabConversation_data();
+    void testTestTabConversation();
     void cleanupTestCase();
 
 private:
@@ -41,16 +41,22 @@ TestMainWindow::TestMainWindow()
 
 #define RULE_1_INPUT_1                      "Hello"
 #define RULE_1_INPUT_2                      "Hi"
+#define RULE_1_INPUT_3                      "Hi *"
 #define RULE_1_OUTPUT_1                     "Hi!"
 
-#define RULE_2_INPUT_1                      "What's your name?"
+#define RULE_2_INPUT_1                      "What is your name?"
 #define RULE_2_OUTPUT_1                     "R2D2"
 
 #define RULE_EVASIVE_1                      "I don't understand"
 
-#define USER_INPUT_1                        "Hello"
+#define USER_INPUT_1a                       "Hello"
+#define USER_INPUT_1b                       "hello"
+#define USER_INPUT_1c                       "HELLO"
 #define USER_INPUT_2                        "Hi"
 #define USER_INPUT_3                        "Hey there!"
+#define USER_INPUT_4a                       "What is your name?"
+#define USER_INPUT_6b                       "What is your name"
+#define USER_INPUT_5                        "Hello there!"
 
 #define CONVERSATION_ENTRY                  "You: %1\nChatbot: %2\n"
 
@@ -95,17 +101,25 @@ void TestMainWindow::buildTestRuleHierarchy()
     m_window->m_ruleTreeModel->appendItem(evasives);
 }
 
-void TestMainWindow::testTestTabExactMatch_data()
+void TestMainWindow::testTestTabConversation_data()
 {
     QTest::addColumn<QString>("userInput");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("exact match 1") << USER_INPUT_1 << RULE_1_OUTPUT_1;
-    QTest::newRow("exact match 2") << USER_INPUT_2 << RULE_1_OUTPUT_1;
-    QTest::newRow("exact match 2") << USER_INPUT_3 << RULE_EVASIVE_1;
+    // Case insensitive exact match
+    QTest::newRow("exact match 1") << USER_INPUT_1a << RULE_1_OUTPUT_1;
+    QTest::newRow("exact match 2") << USER_INPUT_1b << RULE_1_OUTPUT_1;
+    QTest::newRow("exact match 3") << USER_INPUT_1c << RULE_1_OUTPUT_1;
+    QTest::newRow("exact match 4") << USER_INPUT_2  << RULE_1_OUTPUT_1;
+    QTest::newRow("exact match 5") << USER_INPUT_3  << RULE_EVASIVE_1;
+    QTest::newRow("exact match 6") << USER_INPUT_4a << RULE_2_OUTPUT_1;
+
+    // AIML
+    //QTest::newRow("AIML 1")        << USER_INPUT_5 << RULE_1_OUTPUT_1;
+    //QTest::newRow("AIML 2")        << USER_INPUT_6 << RULE_2_OUTPUT_1;
 }
 
-void TestMainWindow::testTestTabExactMatch()
+void TestMainWindow::testTestTabConversation()
 {
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
