@@ -34,11 +34,7 @@
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-#ifdef USE_AIML_ENGINE
     m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine())),
-#else
-    m_coreApp(new BE::CoreApp()),
-#endif
     m_ruleTreeModel(0)
 {
     ui->setupUi(this);
