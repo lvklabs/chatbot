@@ -168,7 +168,7 @@ Lvk::BE::Rule * Lvk::FE::RuleTreeModel::invisibleRootItem()
 Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
 {
     if (!index.isValid()) {
-        return 0;
+        return m_rootRule;
     }
 
     return static_cast<BE::Rule *>(index.internalPointer());
@@ -200,6 +200,21 @@ bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
     }
 
     return appended;
+}
+
+void Lvk::FE::RuleTreeModel::removeAllRows(const QModelIndex &parent)
+{
+    removeRows(0, rowCount(parent), parent);
+}
+
+void Lvk::FE::RuleTreeModel::removeAllRows(BE::Rule *parent)
+{
+    removeAllRows(indexFromItem(parent));
+}
+
+void Lvk::FE::RuleTreeModel::clear()
+{
+    removeAllRows(m_rootRule);
 }
 
 //--------------------------------------------------------------------------------------------------

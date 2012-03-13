@@ -14,6 +14,11 @@ Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
 {
 }
 
+Lvk::BE::Rule::Rule(const QString &name, RuleType type, Rule *parent /*= 0*/)
+    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(type)
+{
+}
+
 Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
                         const QList<QString> &ouput, Rule *parent /*= 0*/)
     : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(OrdinaryRule)
@@ -85,6 +90,11 @@ bool Lvk::BE::Rule::removeChildren(int position, int count)
     }
 
     return true;
+}
+
+void Lvk::BE::Rule::removeAllChild()
+{
+    removeChildren(0, childCount());
 }
 
 Lvk::BE::Rule * Lvk::BE::Rule::child(int row)
@@ -165,4 +175,5 @@ void Lvk::BE::Rule::setName(const QString &name)
 {
     m_name = name;
 }
+
 

@@ -24,6 +24,8 @@ public:
 
     Rule(const QString &name, Rule *parent = 0);
 
+    Rule(const QString &name, RuleType type, Rule *parent = 0);
+
     Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
              Rule *parent = 0);
 
@@ -44,6 +46,8 @@ public:
     bool insertChildren(int position, int count);
 
     bool removeChildren(int position, int count);
+
+    void removeAllChild();
 
     int childCount() const;
 

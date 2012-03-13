@@ -13,12 +13,12 @@ HEADERS += \
     front-end/ruletreemodel.h \
     front-end/ruleoutputwidget.h \
     front-end/ruleinputwidget.h \
+    front-end/testconversationwidget.h \
     back-end/rule.h \
     back-end/coreapp.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
-    front-end/testconversationwidget.h \
     common/random.h
 
 
@@ -28,10 +28,10 @@ SOURCES += \
     front-end/ruletreemodel.cpp \
     front-end/ruleoutputwidget.cpp \
     front-end/ruleinputwidget.cpp \
+    front-end/testconversationwidget.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     nlp-engine/exactmatchengine.cpp \
-    front-end/testconversationwidget.cpp \
     common/random.cpp
 
 FORMS += \

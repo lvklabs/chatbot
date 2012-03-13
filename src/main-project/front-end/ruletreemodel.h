@@ -67,6 +67,12 @@ public:
 
     bool appendItem(BE::Rule *item);
 
+    void removeAllRows(const QModelIndex &parent = QModelIndex());
+
+    void removeAllRows(BE::Rule *parent);
+
+    void clear();
+
 private:
 
     // helpers

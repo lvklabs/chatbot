@@ -207,9 +207,7 @@ void Lvk::FE::MainWindow::clear()
 
 Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 {
-    BE::Rule *category = new BE::Rule(name, m_ruleTreeModel->invisibleRootItem());
-
-    category->setType(BE::Rule::ContainerRule);
+    BE::Rule *category = new BE::Rule(name, BE::Rule::ContainerRule, m_ruleTreeModel->invisibleRootItem());
 
     bool appended = m_ruleTreeModel->appendItem(category);
 
