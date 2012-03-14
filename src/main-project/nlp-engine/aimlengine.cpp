@@ -81,7 +81,7 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
         const QStringList &input = m_rules[i].input();
         const QStringList &output = m_rules[i].output();
 
-        for (int j = 0; j < input.size(); j++) {
+        for (int j = 0; j < input.size(); ++j) {
             if (output.size() == 1) {
                 aiml += "<category>";
                 aiml += "<pattern>" + input[j] + "</pattern>";
@@ -91,7 +91,7 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
                 aiml += "<category>";
                 aiml += "<pattern>" + input[j] + "</pattern>";
                 aiml += "<template><random>";
-                for (int k = 0; k < output.size(); ++ k) {
+                for (int k = 0; k < output.size(); ++k) {
                     aiml += "<li>" + output[k] + "</li>";
                 }
                 aiml += "</random></template>";
