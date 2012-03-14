@@ -28,3 +28,10 @@ SOURCES += \
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
+OTHER_FILES += \
+    AimlParserRegression.xml \
+    AimlParserRegression.aiml \
+    AimlParserRegressionSkipList.txt
+
+
+

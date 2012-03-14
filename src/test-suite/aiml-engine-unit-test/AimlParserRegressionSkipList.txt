@@ -1,0 +1,53 @@
+### List of AIML parser regression tests to be skipped:
+random (12)
+that (15)
+multisentence that array (16)
+bot properties (17)
+javascript (19)
+system (19a)
+version (22)
+id, size, date (27)
+gender (31) [000]
+gender (31) [001]
+gender (31) [002]
+gender (31) [003]
+gender (31) [004]
+gender (31) [005]
+gender (31) [006]
+gender (31) [007]
+gender (31) [008]
+gender (31) [009]
+gender (31) [010]
+gender (31) [011]
+gender (31) [012]
+gender (31) [013]
+gender (31) [014]
+person (38) [000]
+person (38) [001]
+person (38) [002]
+person (38) [003]
+person (38) [004]
+person (38) [005]
+person (38) [006]
+person (38) [007]
+person (38) [008]
+person2 (39) [000]
+person2 (39) [001]
+person2 (39) [002]
+person2 (39) [003]
+person2 (39) [004]
+person2 (39) [005]
+person2 (39) [006]
+person2 (39) [007]
+person2 (39) [008]
+person2 (39) [009]
+person2 (39) [010]
+person2 (39) [011]
+person2 (39) [012]
+person2 (39) [013]
+person2 (39) [014]
+person2 (39) [015]
+person2 (39) [016]
+person2 (39) [017]
+return name when set (40)
+infinite loop (41)
