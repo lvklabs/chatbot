@@ -46,24 +46,28 @@ struct Node;
 
 struct Leaf
 {
-  Node *parent;
-  QDomNode tmplate;
-  QString topic;
-  QString that;
-  Leaf();
+    Leaf();
+
+    long id; // lvk extension
+    Node *parent;
+    QDomNode tmplate;
+    QString topic;
+    QString that;
 };
 
 struct Node
 {
-  Node *parent;
-  QString word;
-  Node();
-  QPTRLIST_CLASSNAME<Node> childs;
-  QPTRLIST_CLASSNAME<Leaf> leafs;
-  void debug(QDataStream &logStream, uint indent = 0);
-  bool match(QStringList::const_iterator input, const QStringList &inputWords,
-             const QString &currentThat, const QString &currentTopic, QStringList &capturedThatTexts,
-             QStringList &capturedTopicTexts, Leaf *&leaf);
+    Node();
+
+    Node *parent;
+    QString word;
+    QPTRLIST_CLASSNAME<Node> childs;
+    QPTRLIST_CLASSNAME<Leaf> leafs;
+    void debug(QDataStream &logStream, uint indent = 0);
+    bool match(QStringList::const_iterator input, const QStringList &inputWords,
+               const QString &currentThat, const QString &currentTopic,
+               QStringList &capturedThatTexts, QStringList &capturedTopicTexts,
+               QList<long> &categoriesId, Leaf **leaf);
 };
 
 class AIMLParser
@@ -74,19 +78,23 @@ public:
   virtual ~AIMLParser();
   bool loadAiml(const QString&);
 
-  // lvk start
+  // lvk extension: load aiml from string
   bool loadAimlFromString(const QString& xml);
-  // lvk end
 
   bool loadSubstitutions(const QString&);
   bool loadVars(const QString&, const bool&);
   bool saveVars(const QString &);
   QString getResponse(QString, const bool &srai = false);
+
+  // lvk extension: return also the list of ids that matched
+  QString getResponse(QString, QList<long> &categoriesId, const bool &srai = false);
+
   void displayTree();
 
 private:
-  QString resolveNode(QDomNode*, const QStringList & = QStringList(),
+  QString resolveNode(QDomNode*, QList<long> &categoriesId, const QStringList & = QStringList(),
      const QStringList & = QStringList(), const QStringList & = QStringList());
+  void parseCategories(QDomDocument &doc);
   void parseCategory(QDomNode*);
   void normalizeString(QString &);
 

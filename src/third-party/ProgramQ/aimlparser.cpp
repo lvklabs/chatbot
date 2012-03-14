@@ -19,18 +19,8 @@
 #include <qfile.h>
 #include <qdatetime.h>
 #include <qxml.h>
-#include <QIODevice> // lvk
-
-//For windows system execution
-#ifdef _WIN32
-#include <windows.h>
-#include <errno.h>
-#include <io.h>
-#include <fcntl.h> 
-#include <ctype.h>
-#else
+#include <QIODevice>
 #include <stdlib.h>
-#endif
 
 //A much faster replacement of regExp.exactMatch(str)
 //it also captures the words corresponding to the wildcards * & _
@@ -104,19 +94,27 @@ QVALUELIST_CLASSNAME<QDomNode> elementsByTagName(QDomNode *node, const QString& 
     return list;
 }
 
+//--------------------------------------------------------------------------------------------------
+// Leaf
+//--------------------------------------------------------------------------------------------------
+
 Leaf::Leaf()
+    :  id(-1), topic(""), that("")
 {
-    topic = that = "";
 }
 
+//--------------------------------------------------------------------------------------------------
+// Node
+//--------------------------------------------------------------------------------------------------
+
 Node::Node()
+    : word("")
 {
-    word = "";
 }
 
 bool Node::match(QStringList::const_iterator input, const QStringList &inputWords,
     const QString &currentThat, const QString &currentTopic, QStringList &capturedThatTexts,
-    QStringList &capturedTopicTexts, Leaf *&leaf)
+    QStringList &capturedTopicTexts, QList<long> &categoriesId, Leaf **leaf)
 {
     if (input == inputWords.end())
        return false;
@@ -129,14 +127,14 @@ bool Node::match(QStringList::const_iterator input, const QStringList &inputWord
 		    for (Node *child = childs.first(); child; child = childs.next())
 		    {
 		        if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
-		            capturedTopicTexts, leaf))
+                            capturedTopicTexts, categoriesId, leaf))
 		            return true;
 		    }
 	    }
     }
     else
     {
-	    if (!word.isEmpty())
+            if (!word.isEmpty())
 	    {
 		   if (word != *input)        
 	          return false;
@@ -145,18 +143,18 @@ bool Node::match(QStringList::const_iterator input, const QStringList &inputWord
 	    for (Node *child = childs.first(); child; child = childs.next())
 	    {
 	        if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
-	            capturedTopicTexts, leaf))
+                    capturedTopicTexts, categoriesId, leaf))
 	            return true;
 	    }
     }
     if (input == inputWords.end())
     {
-        for (leaf = leafs.first(); leaf; leaf = leafs.next())
+        for (*leaf = leafs.first(); *leaf; *leaf = leafs.next())
         {
             capturedThatTexts.clear();
             capturedTopicTexts.clear();
-            if ( (!leaf->that.isEmpty() && !exactMatch(leaf->that, currentThat, capturedThatTexts)) ||
-                    (!leaf->topic.isEmpty() && !exactMatch(leaf->topic, currentTopic, capturedTopicTexts)) )
+            if ( (!(*leaf)->that.isEmpty() && !exactMatch((*leaf)->that, currentThat, capturedThatTexts)) ||
+                    (!(*leaf)->topic.isEmpty() && !exactMatch((*leaf)->topic, currentTopic, capturedTopicTexts)) )
                 continue;
             return true;
         }
@@ -169,12 +167,19 @@ void Node::debug(QDataStream &logStream, uint indent)
 {
     QString indentStr = QString().fill('\t', indent);
     logStream << indentStr << word << " :\n";
+
     for (Node* child = childs.first(); child; child = childs.next())
         child->debug(logStream, indent + 1);
+
     indentStr = QString().fill('\t', indent + 1);
+
     for (Leaf* leaf = leafs.first(); leaf; leaf = leafs.next())
         logStream << indentStr << "<topic-" << leaf->topic << " that-" << leaf->that << ">\n";
 }
+
+//--------------------------------------------------------------------------------------------------
+// AIMLParser
+//--------------------------------------------------------------------------------------------------
 
 void AIMLParser::displayTree()
 {
@@ -319,17 +324,11 @@ bool AIMLParser::loadAiml(const QString &filename)
     }
     file.close();
 
-    QDomElement docElem = doc.documentElement();
-    QDomNodeList categoryList = docElem.elementsByTagName ("category");
-    for (int i = 0; i < categoryList.count(); i++)
-    {
-        QDomNode n = categoryList.item(i);
-        parseCategory(&n);
-    }
+    parseCategories(doc);
+
     return true;
 }
 
-// lvk start
 bool AIMLParser::loadAimlFromString(const QString &xml)
 {
     QDomDocument doc( "mydocument" );
@@ -342,6 +341,13 @@ bool AIMLParser::loadAimlFromString(const QString &xml)
         return false;
     }
 
+    parseCategories(doc);
+
+    return true;
+}
+
+void AIMLParser::parseCategories(QDomDocument &doc)
+{
     QDomElement docElem = doc.documentElement();
     QDomNodeList categoryList = docElem.elementsByTagName ("category");
     for (int i = 0; i < categoryList.count(); i++)
@@ -349,19 +355,22 @@ bool AIMLParser::loadAimlFromString(const QString &xml)
         QDomNode n = categoryList.item(i);
         parseCategory(&n);
     }
-    return true;
 }
-// lvk end
 
 //parses a category and creates a correspondant element
 void AIMLParser::parseCategory(QDomNode* categoryNode)
 {
     QDomNode patternNode = categoryNode->namedItem("pattern");
-    QString pattern = resolveNode(&patternNode);
+
+    QList<long> categoriesId;
+    QString pattern = resolveNode(&patternNode, categoriesId);
     normalizeString(pattern);
+
     //find where to insert the new node
-    QStringList words = QStringList::split(' ', pattern);
+
     Node *whereToInsert = &_root;
+    QStringList words = QStringList::split(' ', pattern);
+
     for ( QStringList::ConstIterator it = words.begin(); it != words.end(); ++it )
     {
         bool found = false;
@@ -395,21 +404,34 @@ void AIMLParser::parseCategory(QDomNode* categoryNode)
     }
 
     //Now insert the leaf
+
     Leaf *leaf = new Leaf;
     leaf->parent = whereToInsert;
+
+    // lvk extension
+    QDomNode idNode = categoryNode->namedItem("id");
+    if (!idNode.isNull())
+    {
+        leaf->id = idNode.firstChild().toText().nodeValue().toInt();
+    }
+    // end lvk extension
+
     QDomNode thatNode = categoryNode->namedItem("that");
     if (!thatNode.isNull())
     {
         leaf->that = thatNode.firstChild().toText().nodeValue();
         normalizeString(leaf->that);
     }
+
     leaf->tmplate = categoryNode->namedItem("template");
+
     QDomNode parentNode = categoryNode->parentNode();
     if (!parentNode.isNull() && (parentNode.nodeName() == "topic"))
     {
         leaf->topic = parentNode.toElement().attribute("name");
         normalizeString(leaf->topic);
     }
+
     int index = 0;
     int leafWeight = !leaf->that.isEmpty() + !leaf->topic.isEmpty() * 2;
     for (Leaf* childLeaf = whereToInsert->leafs.first(); childLeaf;
@@ -424,7 +446,7 @@ void AIMLParser::parseCategory(QDomNode* categoryNode)
 }
 
 //recursively replace all the values & return the QString result
-QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts,
+QString AIMLParser::resolveNode(QDomNode* node, QList<long> &categoriesId, const QStringList &capturedTexts,
     const QStringList &capturedThatTexts, const QStringList &capturedTopicTexts)
 {
     QString result("");
@@ -436,7 +458,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
         uint childCount = childNodes.count();
         uint random = rand() % childCount;
         QDomNode child = childNodes[random];
-        result = resolveNode(&child, capturedTexts, capturedThatTexts, capturedTopicTexts);
+        result = resolveNode(&child, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts);
     }
     else if (nodeName == "condition")
     {
@@ -455,7 +477,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                 {
                     //dirty trick to avoid infinite loop !
                     element.setTagName("parsedCondition");
-                    result = resolveNode(&element, capturedTexts, capturedThatTexts, capturedTopicTexts);
+                    result = resolveNode(&element, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts);
                     element.setTagName("condition");
                 }
             }
@@ -474,13 +496,13 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                     QStringList dummy;
                     if (exactMatch(value, _parameterValue[name].upper(), dummy))
                     {
-                        result = resolveNode(&n, capturedTexts, capturedThatTexts, capturedTopicTexts);
+                        result = resolveNode(&n, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts);
                         break;
                     }
                 }
                 else
                 {
-                    result = resolveNode(&n, capturedTexts, capturedThatTexts, capturedTopicTexts);
+                    result = resolveNode(&n, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts);
                     break;
                 }
             }
@@ -491,7 +513,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
         QDomNode n = node->firstChild();
         while (!n.isNull())
         {
-            result += resolveNode(&n, capturedTexts, capturedThatTexts, capturedTopicTexts);
+            result += resolveNode(&n, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts);
             n = n.nextSibling();
         }
         if (node->isText())
@@ -499,7 +521,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
         else if (nodeName == "set")
             _parameterValue[element.attribute("name")] = result.stripWhiteSpace();
         else if (nodeName == "srai")
-            result = getResponse(result, true);
+            result = getResponse(result, categoriesId, true);
         else if (nodeName == "think")
             result = "";
         else if (nodeName == "system")
@@ -547,7 +569,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                    _thatList[index1][index2] : QString("");
             }
             else if (nodeName == "sr")
-                result = getResponse(capturedTexts.count() ? capturedTexts[0] : QString(""), true);
+                result = getResponse(capturedTexts.count() ? capturedTexts[0] : QString(""), categoriesId, true);
             else if ( (nodeName == "br") || (nodeName == "html:br") )
                 result = "\n";
             else if ( nodeName == "get" )
@@ -580,9 +602,16 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
 
 QString AIMLParser::getResponse(QString input, const bool &srai)
 {
+    QList<long> categoriesId;
+    return getResponse(input, categoriesId, srai);
+}
+
+QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const bool &srai)
+{
     //debug
     if (srai)
         _indent ++;
+
     QString indentSpace = QString().fill(' ', 2*_indent);
     _logStream << (!srai ? "\n" : "") + indentSpace + (srai ? "::SRAI: " : "::User Input: ") +
         input + "\n";
@@ -592,6 +621,7 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
     QStringList::Iterator itNew = _subNew.begin();
     for (; itOld != _subOld.end(); ++itOld, ++itNew )
         input.replace(*itOld, *itNew);
+
     if (!srai)
     {
         _inputList.prepend(input);
@@ -606,28 +636,35 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
     QString result("");
     QStringList sentences = QStringList::split(QRegExp("[\\.\\?!;\\x061f]"), input);
     QStringList::Iterator sentence = sentences.begin();
+
     while (true)
     {
         //normalizeString(*sentence);
         *sentence = (*sentence).lower();
         QStringList inputWords = QStringList::split(' ', *sentence);
         QStringList::ConstIterator it = inputWords.begin();
+
         if (!_root.match(it, inputWords, _thatList.count() && _thatList[0].count() ?
-            _thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, leaf))
+            _thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, categoriesId, &leaf))
             return "Internal Error!";
+
         Node *parentNode = leaf->parent;
         QString matchedPattern = parentNode->word;
+
         while (parentNode->parent->parent)
         {
             parentNode = parentNode->parent;
             matchedPattern = parentNode->word + " " + matchedPattern;
         }
+
         _logStream << indentSpace + "::Matched pattern: [" + matchedPattern + "]";
+
         if (!leaf->that.isEmpty())
            _logStream << " - Matched that: [" + leaf->that + "]";
         if (!leaf->topic.isEmpty())
            _logStream << " - Matched topic: [" + leaf->topic + "]";
         _logStream << "\n";
+
         capturedTexts.clear();
         exactMatch(matchedPattern, *sentence, capturedTexts);
 
@@ -637,7 +674,8 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
         else
         {
             _visitedNodeList.append(&leaf->tmplate);
-            result += resolveNode(&leaf->tmplate, capturedTexts, capturedThatTexts, capturedTopicTexts).stripWhiteSpace();
+            categoriesId.append(leaf->id);
+            result += resolveNode(&leaf->tmplate, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts).stripWhiteSpace();
         }
         sentence++;
         if (sentence != sentences.end())

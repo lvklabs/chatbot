@@ -8,6 +8,43 @@
 #include <cassert>
 
 
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+// getCategoryId provide a simple way to map two numbers in one unique number
+// getRuleId and getInputNumber retrieve the original values
+
+// Asumming sizeof(long) == 8, that's true for most modern archs
+// 2^12 = 4K input rules should be far enough and we have 2^52 different rules ids
+const int  INPUT_NUMBER_BITS = 12; 
+const long INPUT_NUMBER_MASK = 0xfffl;
+
+long getCategoryId(Lvk::Nlp::RuleId ruleId, int inputNumber)
+{
+    return ((long)ruleId << INPUT_NUMBER_BITS) | (long)inputNumber;
+}
+
+Lvk::Nlp::RuleId getRuleId(long categoryId)
+{
+    return categoryId >> INPUT_NUMBER_BITS;
+}
+
+int getInputNumber(long categoryId)
+{
+    return categoryId & INPUT_NUMBER_MASK;
+}
+
+} // namespace
+
+
+//--------------------------------------------------------------------------------------------------
+// AimlEngine
+//--------------------------------------------------------------------------------------------------
+
 Lvk::Nlp::AimlEngine::AimlEngine()
     : m_aimlParser(0)
 {
@@ -59,17 +96,21 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &match
 
 QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
-    QString response = m_aimlParser->getResponse(input);
+    QList<long> categoriesId;
+    QString response = m_aimlParser->getResponse(input, categoriesId);
 
     QList<QString> responses;
 
-    if (response != "Internal Error!") {
+    if (response != "Internal Error!" && categoriesId.size() > 0) { // FIXME harcoded string
         responses.append(response);
-        matches.append(QPair<RuleId, int>(0, 0)); // FIXME
+
+        long catId = categoriesId.last();
+        matches.append(QPair<RuleId, int>(getRuleId(catId), getInputNumber(catId)));
     }
 
     return responses;
 }
+
 
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 {
@@ -81,21 +122,23 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
         const QStringList &output = m_rules[i].output();
 
         for (int j = 0; j < input.size(); ++j) {
+            QString categoryId = QString::number(getCategoryId(m_rules[i].id(), j));
+
+            aiml += "<category>";
+            aiml += "<id>" + categoryId + "</id>";
+            aiml += "<pattern>" + input[j] + "</pattern>";
+
             if (output.size() == 1) {
-                aiml += "<category>";
-                aiml += "<pattern>" + input[j] + "</pattern>";
                 aiml += "<template>" + output[0] + "</template>";
-                aiml += "</category>";
             } else if (output.size() > 1) {
-                aiml += "<category>";
-                aiml += "<pattern>" + input[j] + "</pattern>";
                 aiml += "<template><random>";
                 for (int k = 0; k < output.size(); ++k) {
                     aiml += "<li>" + output[k] + "</li>";
                 }
                 aiml += "</random></template>";
-                aiml += "</category>";
             }
+
+            aiml += "</category>";
         }
     }
 
