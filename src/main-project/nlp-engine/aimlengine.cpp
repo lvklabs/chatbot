@@ -80,15 +80,22 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
     for (int i = 0; i < m_rules.size(); ++i) {
         const QStringList &input = m_rules[i].input();
         const QStringList &output = m_rules[i].output();
+
         for (int j = 0; j < input.size(); j++) {
             if (output.size() == 1) {
-                aiml += QString("<category><pattern>%1</pattern><template>%2</template></category>")
-                        .arg(input[j])
-                        .arg(output[0]);
+                aiml += "<category>";
+                aiml += "<pattern>" + input[j] + "</pattern>";
+                aiml += "<template>" + output[0] + "</template>";
+                aiml += "</category>";
             } else if (output.size() > 1) {
-                aiml += QString("<category><pattern>%1</pattern><template>%2</template></category>")
-                        .arg(input[j])
-                        .arg(output[0]); // FIXME
+                aiml += "<category>";
+                aiml += "<pattern>" + input[j] + "</pattern>";
+                aiml += "<template><random>";
+                for (int k = 0; k < output.size(); ++ k) {
+                    aiml += "<li>" + output[k] + "</li>";
+                }
+                aiml += "</random></template>";
+                aiml += "</category>";
             }
         }
     }
