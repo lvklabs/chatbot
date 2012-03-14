@@ -176,54 +176,9 @@ void Node::debug(QDataStream &logStream, uint indent)
         logStream << indentStr << "<topic-" << leaf->topic << " that-" << leaf->that << ">\n";
 }
 
-void AIMLParser::runRegression()
-{
-    QDomDocument doc;
-    QFile file( "utils/TestSuite.xml" );
-    if ( !file.open( IO_ReadOnly ) )
-        return;
-    if ( !doc.setContent( &file ) )
-    {
-        file.close();
-        logStream << QString("Error while parsing %1\n").arg(file.name().ascii());
-        return;
-    }
-    file.close();
-
-    logStream << "Regression running:\n";
-
-    loadAiml("utils/TestSuite.aiml");
-
-    QDomElement docElem = doc.documentElement();
-    QDomNodeList testCaseList = docElem.elementsByTagName ("TestCase");
-    for (int i = 0; i < testCaseList.count(); i++)
-    {
-        QDomElement n = testCaseList.item(i).toElement();
-        QString description = n.namedItem("Description").firstChild().nodeValue();
-        QString input = n.namedItem("Input").firstChild().nodeValue();
-
-        QString expectedAnswer = "";
-        QDomNode child = n.namedItem("ExpectedAnswer").firstChild();
-        while (!child.isNull())
-        {
-            if (child.isText())
-               expectedAnswer += child.toText().nodeValue();
-            child = child.nextSibling();
-        }
-        logStream << "===========================================================================\n";
-        logStream << "::Description: " + description + "\n";
-        logStream << "::Expected answer: " + expectedAnswer + "\n";
-        QString answer = getResponse(input);
-        if (answer.simplifyWhiteSpace().lower() == expectedAnswer.simplifyWhiteSpace().lower())
-           logStream << "=> Pass\n";
-        else
-           logStream << "=> Fail\n";
-    }
-}
-
 void AIMLParser::displayTree()
 {
-    root.debug(logStream);
+    _root.debug(_logStream);
 }
 
 void AIMLParser::normalizeString(QString &str)
@@ -240,14 +195,14 @@ void AIMLParser::normalizeString(QString &str)
 
 AIMLParser::AIMLParser(QIODevice *logDevice)
 {
-    indent = 0;
-    root.parent = NULL;
+    _indent = 0;
+    _root.parent = NULL;
     QTime currentTime = QTime::currentTime();
     int val = currentTime.msec() + currentTime.second() + currentTime.minute();
     srand(val);
 
     // start lvk
-    logStream.setDevice(logDevice);
+    _logStream.setDevice(logDevice);
     // end lvk
 }
 
@@ -263,7 +218,7 @@ bool AIMLParser::loadSubstitutions(const QString &filename)
     if ( !doc.setContent( &file ) )
     {
         file.close();
-        logStream << QString("Error while parsing %1\n").arg(filename.ascii());
+        _logStream << QString("Error while parsing %1\n").arg(filename.ascii());
         return false;
     }
     file.close();
@@ -273,8 +228,8 @@ bool AIMLParser::loadSubstitutions(const QString &filename)
     for (int i = 0; i < subsList.count(); i++)
     {
         QDomElement n = subsList.item(i).toElement();
-        subOld.append(QRegExp(n.namedItem("old").firstChild().nodeValue(), 0));
-        subNew.append(n.namedItem("new").firstChild().nodeValue());
+        _subOld.append(QRegExp(n.namedItem("old").firstChild().nodeValue(), 0));
+        _subNew.append(n.namedItem("new").firstChild().nodeValue());
     }
     return true;
 }
@@ -288,7 +243,7 @@ bool AIMLParser::loadVars(const QString &filename, const bool &bot)
     if ( !doc.setContent( &file ) )
     {
         file.close();
-        logStream << QString("Error while parsing %1\n").arg(filename.ascii());
+        _logStream << QString("Error while parsing %1\n").arg(filename.ascii());
         return false;
     }
     file.close();
@@ -301,9 +256,9 @@ bool AIMLParser::loadVars(const QString &filename, const bool &bot)
         QString name = n.attribute("name");
         QString value = n.firstChild().nodeValue();
         if (bot)
-            botVarValue[name] = value;
+            _botVarValue[name] = value;
         else
-            parameterValue[name] = value;
+            _parameterValue[name] = value;
     }
     return true;
 }
@@ -315,7 +270,7 @@ bool AIMLParser::saveVars(const QString &filename)
     doc.appendChild(root);
 
     QMap<QString, QString>::ConstIterator it;
-    for ( it = parameterValue.begin(); it != parameterValue.end(); ++it )
+    for ( it = _parameterValue.begin(); it != _parameterValue.end(); ++it )
     {
         QDomElement setElem = doc.createElement("set");
         setElem.setAttribute("name", it.key());
@@ -359,7 +314,7 @@ bool AIMLParser::loadAiml(const QString &filename)
     if ( !doc.setContent( &src, &reader, &msg, &line, &col ) )
     {
         file.close();
-        logStream << QString("Error while parsing %1: %2 (line %3 - col %4)\n").arg(filename).arg(msg).arg(line).arg(col);
+        _logStream << QString("Error while parsing %1: %2 (line %3 - col %4)\n").arg(filename).arg(msg).arg(line).arg(col);
         return false;
     }
     file.close();
@@ -383,7 +338,7 @@ bool AIMLParser::loadAimlFromString(const QString &xml)
     int line, col;
     if ( !doc.setContent( xml, true, &msg, &line, &col ) )
     {
-        logStream << QString("Error while parsing %2 (line %3 - col %4)\n").arg(msg).arg(line).arg(col);
+        _logStream << QString("Error while parsing %2 (line %3 - col %4)\n").arg(msg).arg(line).arg(col);
         return false;
     }
 
@@ -406,7 +361,7 @@ void AIMLParser::parseCategory(QDomNode* categoryNode)
     normalizeString(pattern);
     //find where to insert the new node
     QStringList words = QStringList::split(' ', pattern);
-    Node *whereToInsert = &root;
+    Node *whereToInsert = &_root;
     for ( QStringList::ConstIterator it = words.begin(); it != words.end(); ++it )
     {
         bool found = false;
@@ -496,7 +451,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                 condType = 0;
                 QString value = element.attribute("value").upper();
                 QStringList dummy;
-                if (exactMatch(value, parameterValue[name].upper(), dummy))
+                if (exactMatch(value, _parameterValue[name].upper(), dummy))
                 {
                     //dirty trick to avoid infinite loop !
                     element.setTagName("parsedCondition");
@@ -517,7 +472,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                         name = n.toElement().attribute("name");
                     QString value = n.toElement().attribute("value").upper();
                     QStringList dummy;
-                    if (exactMatch(value, parameterValue[name].upper(), dummy))
+                    if (exactMatch(value, _parameterValue[name].upper(), dummy))
                     {
                         result = resolveNode(&n, capturedTexts, capturedThatTexts, capturedTopicTexts);
                         break;
@@ -542,13 +497,15 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
         if (node->isText())
             result = node->toText().nodeValue();
         else if (nodeName == "set")
-            parameterValue[element.attribute("name")] = result.stripWhiteSpace();
+            _parameterValue[element.attribute("name")] = result.stripWhiteSpace();
         else if (nodeName == "srai")
             result = getResponse(result, true);
         else if (nodeName == "think")
             result = "";
         else if (nodeName == "system")
-            result = executeCommand(result);
+            //lvk: Remvoved for security reasons
+            //result = executeCommand(result);
+            ;
         else if (nodeName == "learn")
         {
             loadAiml(result);
@@ -586,29 +543,29 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                    indexStr = "1," + indexStr;
                 int index1 = indexStr.section(',', 0, 0).toInt()-1;
                 int index2 = indexStr.section(',', 1, 1).toInt()-1;
-                result = (index1 < thatList.count()) && (index2 < thatList[index1].count()) ?
-                   thatList[index1][index2] : QString("");
+                result = (index1 < _thatList.count()) && (index2 < _thatList[index1].count()) ?
+                   _thatList[index1][index2] : QString("");
             }
             else if (nodeName == "sr")
                 result = getResponse(capturedTexts.count() ? capturedTexts[0] : QString(""), true);
             else if ( (nodeName == "br") || (nodeName == "html:br") )
                 result = "\n";
             else if ( nodeName == "get" )
-                result = parameterValue[element.attribute("name")];
+                result = _parameterValue[element.attribute("name")];
             else if ( nodeName == "bot")
-                result = botVarValue[element.attribute("name")];
+                result = _botVarValue[element.attribute("name")];
             else if ( (nodeName == "person") || (nodeName == "person2") || (nodeName == "gender") )
                 result = capturedTexts.count() ? capturedTexts[0] : QString("");
             else if (nodeName == "input")
             {
                 int index = element.attribute("index", "1").toUInt() - 1;
-                result = index < inputList.count() ? inputList[index] : QString("");
+                result = index < _inputList.count() ? _inputList[index] : QString("");
             }
             //the following just to avoid warnings !
             else if (nodeName == "li")
                 ;
             else
-                logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
+                _logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
         }
         //the following just to avoid warnings !
         else if ((nodeName == "template") || (nodeName == "pattern") || (nodeName == "li")
@@ -616,7 +573,7 @@ QString AIMLParser::resolveNode(QDomNode* node, const QStringList &capturedTexts
                  || (nodeName == "parsedCondition"))
             ;
         else
-            logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
+            _logStream << "Warning: unknown tag \"" + nodeName + "\"\n";
     }
     return result;
 }
@@ -625,24 +582,25 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
 {
     //debug
     if (srai)
-        indent ++;
-    QString indentSpace = QString().fill(' ', 2*indent);
-    logStream << (!srai ? "\n" : "") + indentSpace + (srai ? "::SRAI: " : "::User Input: ") +
+        _indent ++;
+    QString indentSpace = QString().fill(' ', 2*_indent);
+    _logStream << (!srai ? "\n" : "") + indentSpace + (srai ? "::SRAI: " : "::User Input: ") +
         input + "\n";
+
     //perform substitutions for input string
-    QVALUELIST_CLASSNAME<QRegExp>::Iterator itOld = subOld.begin();
-    QStringList::Iterator itNew = subNew.begin();
-    for (; itOld != subOld.end(); ++itOld, ++itNew )
+    QVALUELIST_CLASSNAME<QRegExp>::Iterator itOld = _subOld.begin();
+    QStringList::Iterator itNew = _subNew.begin();
+    for (; itOld != _subOld.end(); ++itOld, ++itNew )
         input.replace(*itOld, *itNew);
     if (!srai)
     {
-        inputList.prepend(input);
-        if (inputList.count() > MAX_LIST_LENGTH)
-            inputList.pop_back();
+        _inputList.prepend(input);
+        if (_inputList.count() > MAX_LIST_LENGTH)
+            _inputList.pop_back();
     }
 
     QStringList capturedTexts, capturedThatTexts, capturedTopicTexts;
-    QString curTopic = parameterValue["topic"];
+    QString curTopic = _parameterValue["topic"];
     normalizeString(curTopic);
     Leaf *leaf = NULL;
     QString result("");
@@ -654,8 +612,8 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
         *sentence = (*sentence).lower();
         QStringList inputWords = QStringList::split(' ', *sentence);
         QStringList::ConstIterator it = inputWords.begin();
-        if (!root.match(it, inputWords, thatList.count() && thatList[0].count() ?
-            thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, leaf))
+        if (!_root.match(it, inputWords, _thatList.count() && _thatList[0].count() ?
+            _thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, leaf))
             return "Internal Error!";
         Node *parentNode = leaf->parent;
         QString matchedPattern = parentNode->word;
@@ -664,20 +622,21 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
             parentNode = parentNode->parent;
             matchedPattern = parentNode->word + " " + matchedPattern;
         }
-        logStream << indentSpace + "::Matched pattern: [" + matchedPattern + "]";
+        _logStream << indentSpace + "::Matched pattern: [" + matchedPattern + "]";
         if (!leaf->that.isEmpty())
-           logStream << " - Matched that: [" + leaf->that + "]";
+           _logStream << " - Matched that: [" + leaf->that + "]";
         if (!leaf->topic.isEmpty())
-           logStream << " - Matched topic: [" + leaf->topic + "]";
-        logStream << "\n";
+           _logStream << " - Matched topic: [" + leaf->topic + "]";
+        _logStream << "\n";
         capturedTexts.clear();
         exactMatch(matchedPattern, *sentence, capturedTexts);
+
         //strip whitespaces from the beggining and the end of result
-        if (visitedNodeList.contains(&leaf->tmplate))
+        if (_visitedNodeList.contains(&leaf->tmplate))
         	result += "ProgramQ: Infinite loop detected!";
         else
         {
-            visitedNodeList.append(&leaf->tmplate);
+            _visitedNodeList.append(&leaf->tmplate);
             result += resolveNode(&leaf->tmplate, capturedTexts, capturedThatTexts, capturedTopicTexts).stripWhiteSpace();
         }
         sentence++;
@@ -686,6 +645,7 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
         else
             break;
     }
+
     if (!srai)
     {
         QString tempResult = result.simplifyWhiteSpace();
@@ -695,130 +655,23 @@ QString AIMLParser::getResponse(QString input, const bool &srai)
         for (QStringList::Iterator it = thatSentencesList.begin(); it != thatSentencesList.end(); ++it)
         {
 	        //perform substitutions for that string
-	        itOld = subOld.begin();
-	        itNew = subNew.begin();
-	        for (; itOld != subOld.end(); ++itOld, ++itNew )
+                itOld = _subOld.begin();
+                itNew = _subNew.begin();
+                for (; itOld != _subOld.end(); ++itOld, ++itNew )
 	            tempResult.replace(*itOld, *itNew);
         	normalizeString(*it);
             inversedList.prepend(*it);
         }
-      	thatList.prepend(inversedList);
-        if (thatList.count() > MAX_LIST_LENGTH)
-            thatList.pop_back();
-        visitedNodeList.clear();
+        _thatList.prepend(inversedList);
+        if (_thatList.count() > MAX_LIST_LENGTH)
+            _thatList.pop_back();
+        _visitedNodeList.clear();
     }
+
     //debug
-    logStream << indentSpace + "::Result: " + result + "\n";
+    _logStream << indentSpace + "::Result: " + result + "\n";
     if (srai)
-        indent --;
+        _indent --;
 
     return result;
-}
-
-QString AIMLParser::executeCommand(const QString &commandStr)
-{
-    QString returnString("");
-    QString spaceIndent = QString().fill(' ', 2*indent);
-    logStream << spaceIndent + "Executing \"" + commandStr + "\" ...\n";
-#ifdef _WIN32
-
-    STARTUPINFO si;
-    SECURITY_ATTRIBUTES sa;
-    SECURITY_DESCRIPTOR sd;
-    PROCESS_INFORMATION pi;
-    HANDLE read_pipe, write_pipe;
-    sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-    sa.bInheritHandle = TRUE;
-    int fd, create;
-    OSVERSIONINFO osv;
-    osv.dwOSVersionInfoSize = sizeof(osv);
-
-    GetVersionEx(&osv);
-
-    if (osv.dwPlatformId == VER_PLATFORM_WIN32_NT)
-    {
-        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
-        SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
-        sa.lpSecurityDescriptor = &sd;
-    }
-    else /* Pipe will use ACLs from default descriptor */
-        sa.lpSecurityDescriptor = NULL;
-
-    /* Create a new pipe with system's default buffer size */
-    if (!CreatePipe(&read_pipe, &write_pipe, &sa, 0))
-    {
-        logStream << spaceIndent + "Execution failed !\n";
-        return "";
-    }
-
-    GetStartupInfo(&si);
-
-    /* Sets the standard output handle for the process to the
-    handle specified in hStdOutput */
-    si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
-
-    si.hStdOutput = write_pipe;
-    si.hStdError  = (HANDLE) _get_osfhandle (2);
-    si.wShowWindow = 0;
-    create = CreateProcess(NULL,                                   // The full path of app to launch
-                           (unsigned short*)QString("cmd.exe /c \"%1\"").arg(commandStr).ucs2(),  // Command line parameters
-                           NULL,                                   // Default process security attributes
-                           NULL,                                   // Default thread security attributes
-                           TRUE,                                   // Inherit handles from the parent
-                           0,                                      // Normal priority
-                           NULL,                                   // Use the same environment as the parent
-                           NULL,                                   // Use app's directory as current
-                           &si,                                    // Startup Information
-                           &pi);                                   // Process information stored upon return
-
-    if (!create)
-    {
-        logStream << spaceIndent + "Execution failed !\n";
-        return "";
-    }
-
-    /* Associates a file descriptor with the stdout pipe */
-    fd = _open_osfhandle(/*(intptr_t)*/(long int)read_pipe, _O_BINARY);
-
-    /* Close the handle that we're not going to use */
-    CloseHandle(write_pipe);
-
-    if (!fd)
-    {
-        logStream << spaceIndent + "Execution failed !\n";
-        return "";
-    }
-
-    /* Open the pipe stream using its file descriptor */
-    FILE *file = fdopen(fd, "r");
-
-    if(!file)
-    {
-        logStream << spaceIndent + "Execution failed !\n";
-        return "";
-    }
-#else
-
-    FILE *file = popen(commandStr, "r");
-    if (!file)
-    {
-        logStream << spaceIndent + "Execution failed !\n";
-        return "";
-    }
-#endif
-
-    char c = 0;
-    while (c != EOF)
-    {
-        c = (char)getc(file);
-
-        if (isascii(c))
-            returnString += c;
-    }
-
-    fclose(file);
-
-    logStream << spaceIndent + "Execution succeeded with result: \"" + returnString + "\"\n";
-
-    return returnString;
 }

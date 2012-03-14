@@ -61,12 +61,14 @@ struct Node
   QPTRLIST_CLASSNAME<Node> childs;
   QPTRLIST_CLASSNAME<Leaf> leafs;
   void debug(QDataStream &logStream, uint indent = 0);
-  bool match(QStringList::const_iterator, const QStringList&,
-             const QString&, const QString&, QStringList &, QStringList &, Leaf *&);
+  bool match(QStringList::const_iterator input, const QStringList &inputWords,
+             const QString &currentThat, const QString &currentTopic, QStringList &capturedThatTexts,
+             QStringList &capturedTopicTexts, Leaf *&leaf);
 };
 
 class AIMLParser
 {
+
 public:
   AIMLParser(QIODevice *logDevice);
   virtual ~AIMLParser();
@@ -81,24 +83,26 @@ public:
   bool saveVars(const QString &);
   QString getResponse(QString, const bool &srai = false);
   void displayTree();
-  void runRegression();
+
 private:
   QString resolveNode(QDomNode*, const QStringList & = QStringList(),
      const QStringList & = QStringList(), const QStringList & = QStringList());
   void parseCategory(QDomNode*);
   void normalizeString(QString &);
-  QString executeCommand(const QString&);
-private:
-  QMap<QString, QString> parameterValue;
-  QMap<QString, QString> botVarValue;
-  QVALUELIST_CLASSNAME<QRegExp> subOld;
-  QStringList subNew;
-  QStringList inputList;
-  QVALUELIST_CLASSNAME<QStringList> thatList;
-  Node root;
-  int indent;
-  QVALUELIST_CLASSNAME<QDomNode*> visitedNodeList;
-  QDataStream logStream; //lvk
+
+  // lvk: removed for security reasons
+  //QString executeCommand(const QString&);
+
+  QMap<QString, QString> _parameterValue;
+  QMap<QString, QString> _botVarValue;
+  QVALUELIST_CLASSNAME<QRegExp> _subOld;
+  QStringList _subNew;
+  QStringList _inputList;
+  QVALUELIST_CLASSNAME<QStringList> _thatList;
+  Node _root;
+  int _indent;
+  QVALUELIST_CLASSNAME<QDomNode*> _visitedNodeList;
+  QDataStream _logStream; //lvk
 };
 
 #endif
