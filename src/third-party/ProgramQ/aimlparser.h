@@ -63,10 +63,14 @@ struct Node
     QString word;
     QPTRLIST_CLASSNAME<Node> childs;
     QPTRLIST_CLASSNAME<Leaf> leafs;
+
     void debug(QDataStream &logStream, uint indent = 0);
+
     bool match(QStringList::const_iterator input, const QStringList &inputWords,
-               const QString &currentThat, const QString &currentTopic,
-               QStringList &capturedThatTexts, QStringList &capturedTopicTexts,
+               const QString &currentThat,
+               const QString &currentTopic,
+               QStringList &capturedThatTexts,
+               QStringList &capturedTopicTexts,
                QList<long> &categoriesId, Leaf **leaf);
 };
 
@@ -92,8 +96,12 @@ public:
   void displayTree();
 
 private:
-  QString resolveNode(QDomNode*, QList<long> &categoriesId, const QStringList & = QStringList(),
-     const QStringList & = QStringList(), const QStringList & = QStringList());
+
+  QString resolveNode(QDomNode* node, QList<long> &categoriesId,
+                      const QStringList & capturedTexts = QStringList(),
+                      const QStringList & capturedThatTexts = QStringList(),
+                      const QStringList & captureTopicText = QStringList());
+
   void parseCategories(QDomDocument &doc);
   void parseCategory(QDomNode*);
   void normalizeString(QString &);
