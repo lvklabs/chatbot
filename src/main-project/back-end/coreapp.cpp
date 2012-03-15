@@ -4,23 +4,30 @@
 #include "nlprule.h"
 #include "exactmatchengine.h"
 #include "random.h"
-
-#include <QObject>
-
+#include "fbchatclient.h"
+#include "gtalkclient.h"
 
 //--------------------------------------------------------------------------------------------------
 // Lvk::BE::CoreApp
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::CoreApp()
-    : m_rootRule(0), m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()), m_nextRuleId(0)
+Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
+    : QObject(parent),
+      m_rootRule(0),
+      m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()),
+      m_nextRuleId(0),
+      m_chatClient(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine)
-    : m_rootRule(0), m_nlpEngine(nlpEngine), m_nextRuleId(0)
+Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
+    : QObject(parent),
+      m_rootRule(0),
+      m_nlpEngine(nlpEngine),
+      m_nextRuleId(0),
+      m_chatClient(0)
 {
 }
 
@@ -28,6 +35,7 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine)
 
 Lvk::BE::CoreApp::~CoreApp()
 {
+    delete m_chatClient;
     delete m_rootRule;
     delete m_nlpEngine;
 }
@@ -125,6 +133,12 @@ void Lvk::BE::CoreApp::close()
         m_nlpEngine->setRules(Nlp::RuleList());
     }
 
+    if (m_chatClient) {
+        m_chatClient->disconnectFromServer();
+        delete m_chatClient;
+        m_chatClient = 0;
+    }
+
     delete m_rootRule;
     m_rootRule = 0;
 
@@ -210,4 +224,71 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpR
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatServer chatServer, const QString &user, const QString &passwd)
+{
+    if (m_chatClient) {
+        m_chatClient->disconnectFromServer();
+
+        if (m_currentChatServer != chatServer) {
+            disconnectChatClientSignals();
+            delete m_chatClient;
+            m_chatClient = 0;
+        }
+    }
+
+    if (chatServer == FbChatServer) {
+
+        if (!m_chatClient) {
+            m_chatClient = new CA::FbChatClient();
+            m_currentChatServer = FbChatServer;
+            connectChatClientSignals();
+        }
+
+        dynamic_cast<CA::FbChatClient *>(m_chatClient)->connectToServer(user, passwd);
+    } else if (chatServer == GTalkChatServer) {
+
+        if (!m_chatClient) {
+            m_chatClient = new CA::GTalkClient();
+            m_currentChatServer = GTalkChatServer;
+            connectChatClientSignals();
+        }
+
+        dynamic_cast<CA::GTalkClient *>(m_chatClient)->connectToServer(user, passwd);
+    } else {
+        //FIXME emit connectionError(UnknownServerError);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::disconnectFromChat()
+{
+    if (m_chatClient) {
+        m_chatClient->disconnectFromServer();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::connectChatClientSignals()
+{
+    connect(m_chatClient, SIGNAL(connected()),    SIGNAL(connected()));
+    connect(m_chatClient, SIGNAL(disconnected()), SIGNAL(disconnected()));
+    connect(m_chatClient, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::disconnectChatClientSignals()
+{
+    if (!m_chatClient) {
+        return;
+    }
+
+    disconnect(m_chatClient, SIGNAL(connected()));
+    disconnect(m_chatClient, SIGNAL(disconnected()));
+    disconnect(m_chatClient, SIGNAL(error(int)));
+}
 

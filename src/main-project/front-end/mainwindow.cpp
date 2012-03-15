@@ -34,8 +34,9 @@
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine())),
-    m_ruleTreeModel(0)
+    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine(), parent)),
+    m_ruleTreeModel(0),
+    m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
     ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
@@ -81,11 +82,12 @@ void Lvk::FE::MainWindow::initCoreAndModels()
 
 void Lvk::FE::MainWindow::connectSignals()
 {
+    // Edit rules tabs
+
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
-
-    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
+    connect(ui->connectButton,     SIGNAL(clicked()), SLOT(toggleChatConnection()));
 
     connect(ui->clearTestConversationButton, SIGNAL(clicked()),
             ui->testConversationText, SLOT(clear()));
@@ -99,6 +101,18 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(handleRuleInputEdited(QString)));
+
+
+    // Chat connetion tab
+
+    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
+
+    connect(m_coreApp, SIGNAL(connected()),    SLOT(handleConnectionOk()));
+    connect(m_coreApp, SIGNAL(disconnected()), SLOT(handleDisconnection()));
+
+    connect(m_coreApp,
+            SIGNAL(connectionError(int)),
+            SLOT(handleConnectionError(int)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -142,7 +156,10 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
 void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
     switch (mode) {
-    case DefaultUiMode:
+
+    // Edit rules tab /////////////////////////////////////////
+
+    case RuleSelectionEmptyUiMode:
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(false);
@@ -175,6 +192,56 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->chatbotRepliesLabel->setVisible(true);
         ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
         break;
+
+    // Chat connection tab ////////////////////////////////////
+
+    case ChatDisconnectedUiMode:
+        ui->fbChatRadio->setEnabled(true);
+        ui->gtalkChatRadio->setEnabled(true);
+        ui->usernameText->setEnabled(true);
+        ui->passwordText->setEnabled(true);
+        ui->connectButton->setText(tr("Connect"));
+        ui->connectionProgressBar->setVisible(false);
+        ui->connectionStatusLabel->setVisible(true);
+        ui->connectionStatusLabel->setText(tr("Status: Disconnected"));
+        ui->connectionStatusLabel->setStyleSheet("color:black");
+        break;
+
+    case ChatConnectingUiMode:
+        ui->fbChatRadio->setEnabled(false);
+        ui->gtalkChatRadio->setEnabled(false);
+        ui->usernameText->setEnabled(false);
+        ui->passwordText->setEnabled(false);
+        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectionProgressBar->setVisible(true);
+        ui->connectionStatusLabel->setVisible(true);
+        ui->connectionStatusLabel->setText(tr("Status: Connecting..."));
+        ui->connectionStatusLabel->setStyleSheet("color:black");
+        break;
+
+    case ChatConnectionOkUiMode:
+        ui->fbChatRadio->setEnabled(false);
+        ui->gtalkChatRadio->setEnabled(false);
+        ui->usernameText->setEnabled(false);
+        ui->passwordText->setEnabled(false);
+        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectionProgressBar->setVisible(false);
+        ui->connectionStatusLabel->setVisible(true);
+        ui->connectionStatusLabel->setText(tr("Status: Connection sucessful!"));
+        ui->connectionStatusLabel->setStyleSheet("color:green");
+        break;
+
+    case ChatConnectionFailedUiMode:
+        ui->fbChatRadio->setEnabled(true);
+        ui->gtalkChatRadio->setEnabled(true);
+        ui->usernameText->setEnabled(true);
+        ui->passwordText->setEnabled(true);
+        ui->connectButton->setText(tr("Connect"));
+        ui->connectionProgressBar->setVisible(false);
+        ui->connectionStatusLabel->setVisible(true);
+        ui->connectionStatusLabel->setText(tr("Status: Connection error"));
+        ui->connectionStatusLabel->setStyleSheet("color:red");
+        break;
     }
 }
 
@@ -182,7 +249,6 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 void Lvk::FE::MainWindow::clear()
 {
-    setUiMode(DefaultUiMode);
 
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
@@ -190,11 +256,17 @@ void Lvk::FE::MainWindow::clear()
 
     // train tab widgets
     // TODO clear ui->categoriesTree
+    setUiMode(RuleSelectionEmptyUiMode);
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
 
     // chat tab widgets
     //ui->fbChatRadio->
+    m_connectionStatus = DisconnectedFromChat;
+    m_coreApp->disconnectFromChat();
+
+    setUiMode(ChatDisconnectedUiMode);
+    ui->connectionStatusLabel->setVisible(false);
     ui->usernameText->clear();
     ui->passwordText->clear();
 
@@ -502,7 +574,7 @@ void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selec
         }
     } else {
 
-        setUiMode(DefaultUiMode);
+        setUiMode(RuleSelectionEmptyUiMode);
 
         ui->categoryNameLabel->clear();
         ui->ruleInputWidget->clear();
@@ -550,6 +622,57 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
     }
 }
 
+//--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::toggleChatConnection()
+{
+    if (m_connectionStatus == DisconnectedFromChat || ConnectionError) {
+        if (!ui->usernameText->text().isEmpty()) {
+            BE::CoreApp::ChatServer server = ui->gtalkChatRadio->isChecked() ?
+                        BE::CoreApp::GTalkChatServer :
+                        BE::CoreApp::FbChatServer;
+
+            m_connectionStatus =  ConnectingToChat;
+            setUiMode(ChatConnectingUiMode);
+
+            m_coreApp->connectToChat(server, ui->usernameText->text(), ui->passwordText->text());
+        } else {
+            QMessageBox msg(QMessageBox::Critical,
+                            tr("Invalid username"), tr("Please provide a username"),
+                            QMessageBox::Ok, this);
+            msg.exec();
+
+            ui->usernameText->setFocus();
+        }
+    } else {
+        m_connectionStatus = DisconnectedFromChat;
+        setUiMode(ChatDisconnectedUiMode);
+
+        m_coreApp->disconnectFromChat();
+    }
+}
+
+void Lvk::FE::MainWindow::handleConnectionOk()
+{
+    m_connectionStatus = ConnectedToChat;
+    setUiMode(ChatConnectionOkUiMode);
+}
+
+void Lvk::FE::MainWindow::handleConnectionError(int err)
+{
+    m_connectionStatus = ConnectionError;
+    setUiMode(ChatConnectionFailedUiMode);
+
+    ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
+                                       QString::number(err));
+}
+
+void Lvk::FE::MainWindow::handleDisconnection()
+{
+    if (m_connectionStatus != ConnectionError) {
+        m_connectionStatus = DisconnectedFromChat;
+        setUiMode(ChatDisconnectedUiMode);
+    }
+}
 
 

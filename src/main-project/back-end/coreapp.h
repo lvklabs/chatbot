@@ -1,6 +1,7 @@
 #ifndef LVK_BE_COREAPP_H
 #define LVK_BE_COREAPP_H
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QHash>
@@ -16,6 +17,11 @@ namespace Nlp
     class Engine;
 }
 
+namespace CA
+{
+    class ChatClient;
+}
+
 namespace BE
 {
 
@@ -26,13 +32,15 @@ class Rule;
  * \brief This class provides the core functionality of the application.
  */
 
-class CoreApp
+class CoreApp : public QObject
 {
+    Q_OBJECT
+
 public:
 
-    CoreApp();
+    CoreApp(QObject *parent = 0);
 
-    CoreApp(Nlp::Engine *nlpEngine);
+    CoreApp(Nlp::Engine *nlpEngine, QObject *parent = 0);
 
     ~CoreApp();
 
@@ -52,6 +60,25 @@ public:
 
     void refreshNlpEngine();
 
+    enum ChatServer { FbChatServer, GTalkChatServer };
+
+    enum ConnectionError {
+        SocketError,        ///< Error due to TCP socket
+        KeepAliveError,     ///< Error due to no response to a keep alive
+        XmppStreamError,    ///< Error due to XML stream
+        UnknownServerError  ///< Error due to unknown server
+    };
+
+    void connectToChat(ChatServer chatServer, const QString &user, const QString &passwd);
+
+    void disconnectFromChat();
+
+signals:
+
+    void connected();
+    void disconnected();
+    void connectionError(int err);
+
 private:
     QString m_filename;
     Rule *m_rootRule;
@@ -59,8 +86,12 @@ private:
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, Rule *> m_rulesHash;
     QStringList m_evasives;
+    CA::ChatClient *m_chatClient;
+    ChatServer m_currentChatServer;
 
     void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);
+    void connectChatClientSignals();
+    void disconnectChatClientSignals();
 };
 
 } // namespace BE

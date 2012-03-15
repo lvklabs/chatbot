@@ -3,16 +3,35 @@ TARGET = main
 QT += \
     ui \
     xml \           #required for ProgramQ
-    qt3support      #required for ProgramQ
+    qt3support \    #required for ProgramQ
+    network         #required for QXmpp
 
 TEMPLATE = app
+
+THIRD_PARTY_PATH      = $$PWD/../third-party
+
+PRGRAMQ_BASE_PATH     = $$THIRD_PARTY_PATH/ProgramQ
+PRGRAMQ_INCLUDE_PATH  = $$PRGRAMQ_BASE_PATH
+PRGRAMQ_SRC_PATH      = $$PRGRAMQ_BASE_PATH
+
+QXMPP_BASE_PATH       = $$THIRD_PARTY_PATH/QXmpp
+QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include
+QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
+
+CONFIG(debug, debug|release) {
+    QXMPP_LIBRARY_NAME = qxmpp_d
+} else {
+    QXMPP_LIBRARY_NAME = qxmpp
+}
 
 INCLUDEPATH += \
     front-end \
     back-end \
     nlp-engine \
+    chat-adapter \
     common \
-    $$PWD/../third-party
+    $$THIRD_PARTY_PATH \
+    $$QXMPP_INCLUDE_PATH
 
 HEADERS += \
     front-end/mainwindow.h \
@@ -26,8 +45,13 @@ HEADERS += \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
+    chat-adapter/xmmpclient.h \
+    chat-adapter/chatclient.h \
+    chat-adapter/chatvirtualuser.h \
+    chat-adapter/fbchatclient.h \
+    chat-adapter/gtalkclient.h \
     common/random.h\
-    $$PWD/../third-party/ProgramQ/aimlparser.h
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
 
 SOURCES += \
     main.cpp \
@@ -40,8 +64,12 @@ SOURCES += \
     back-end/coreapp.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
+    chat-adapter/xmmpclient.cpp \
+    chat-adapter/fbchatclient.cpp \
+    chat-adapter/gtalkclient.cpp \
+    chat-adapter/chatclient.cpp \
     common/random.cpp\
-    $$PWD/../third-party/ProgramQ/aimlparser.cpp
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
 
 FORMS += \
     front-end/mainwindow.ui
@@ -51,25 +79,7 @@ RESOURCES += \
 
 TRANSLATIONS = strings_es.ts
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 
 

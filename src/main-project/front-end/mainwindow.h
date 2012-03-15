@@ -69,7 +69,16 @@ public:
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
-    enum UiMode { DefaultUiMode, EditCategoryUiMode, EditRuleUiMode, EditEvasivesUiMode };
+    enum UiMode {
+        RuleSelectionEmptyUiMode,
+        EditCategoryUiMode,
+        EditRuleUiMode,
+        EditEvasivesUiMode,
+        ChatDisconnectedUiMode,
+        ChatConnectingUiMode,
+        ChatConnectionFailedUiMode,
+        ChatConnectionOkUiMode
+    };
 
     void setUiMode(UiMode mode);
 
@@ -80,6 +89,13 @@ private:
     BE::CoreApp *m_coreApp;
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
+
+    enum {
+        DisconnectedFromChat,
+        ConnectingToChat,
+        ConnectedToChat,
+        ConnectionError
+    } m_connectionStatus;
 
     void initCoreAndModels();
     void connectSignals();
@@ -102,6 +118,11 @@ private slots:
                                     const QItemSelection &deselected);
     void testInputTextEntered();
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
+
+    void toggleChatConnection();
+    void handleConnectionOk();
+    void handleConnectionError(int err);
+    void handleDisconnection();
 
 };
 
