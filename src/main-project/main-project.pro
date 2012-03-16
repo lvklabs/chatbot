@@ -66,12 +66,12 @@ SOURCES += \
     back-end/defaultvirtualuser.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
-    chat-adapter/chatclient.cpp \
     chat-adapter/xmmpchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
     common/random.cpp \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    chat-adapter/chatbot.cpp
 
 FORMS += \
     front-end/mainwindow.ui
@@ -82,6 +82,8 @@ RESOURCES += \
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+
 
 
 
