@@ -157,7 +157,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
     switch (mode) {
 
-    // Edit rules tab /////////////////////////////////////////
+    // Edit rules tab //////////////////////////////////////////////////////
 
     case RuleSelectionEmptyUiMode:
         ui->categoryNameLabel->setVisible(false);
@@ -193,7 +193,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
         break;
 
-    // Chat connection tab ////////////////////////////////////
+    // Chat connection tab /////////////////////////////////////////////////
 
     case ChatDisconnectedUiMode:
         ui->fbChatRadio->setEnabled(true);
@@ -202,8 +202,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Status: Disconnected"));
+        ui->connectionStatusLabel->setText(tr("Disconnected"));
         ui->connectionStatusLabel->setStyleSheet("color:black");
         break;
 
@@ -214,8 +213,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText->setEnabled(false);
         ui->connectButton->setText(tr("Disconnect"));
         ui->connectionProgressBar->setVisible(true);
-        ui->connectionStatusLabel->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Status: Connecting..."));
+        ui->connectionStatusLabel->setText(tr("Connecting..."));
         ui->connectionStatusLabel->setStyleSheet("color:black");
         break;
 
@@ -226,8 +224,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText->setEnabled(false);
         ui->connectButton->setText(tr("Disconnect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Status: Connection sucessful!"));
+        ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
         ui->connectionStatusLabel->setStyleSheet("color:green");
         break;
 
@@ -238,8 +235,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Status: Connection error"));
+        ui->connectionStatusLabel->setText(tr("Connection error"));
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
     }
@@ -266,7 +262,6 @@ void Lvk::FE::MainWindow::clear()
     m_coreApp->disconnectFromChat();
 
     setUiMode(ChatDisconnectedUiMode);
-    ui->connectionStatusLabel->setVisible(false);
     ui->usernameText->clear();
     ui->passwordText->clear();
 
