@@ -5,7 +5,7 @@
 #include <QFile>
 #include <QDateTime>
 
-#define LOG_FILENAME            "/tmp/chat_conversations.log"
+#define LOG_FILENAME            "chat_conversations.log"
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
 //--------------------------------------------------------------------------------------------------

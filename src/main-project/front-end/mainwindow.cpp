@@ -245,7 +245,6 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 void Lvk::FE::MainWindow::clear()
 {
-
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
     ui->rightSideTabWidget->setCurrentIndex(0);
