@@ -48,6 +48,8 @@ public:
 
     virtual void setVirtualUser(VirtualUser *virtualUser);
 
+    virtual VirtualUser *virtualUser();
+
 public slots:
     void messageReceived(const QXmppMessage&);
 
@@ -64,6 +66,9 @@ private slots:
     void emitLocalError(QXmppClient::Error);
 
 private:
+    XmppClient(XmppClient&);
+    XmppClient& operator=(XmppClient&);
+
     QXmppClient *m_xmppClient;
     //QString m_nickname;
     //QXmppMessage m_queuedMessage;

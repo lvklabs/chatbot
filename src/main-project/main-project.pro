@@ -41,6 +41,7 @@ HEADERS += \
     front-end/testconversationwidget.h \
     back-end/rule.h \
     back-end/coreapp.h \
+    back-end/defaultvirtualuser.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
@@ -62,6 +63,7 @@ SOURCES += \
     front-end/testconversationwidget.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
+    back-end/defaultvirtualuser.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     chat-adapter/xmmpclient.cpp \
@@ -69,7 +71,7 @@ SOURCES += \
     chat-adapter/gtalkclient.cpp \
     chat-adapter/chatclient.cpp \
     common/random.cpp\
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
 
 FORMS += \
     front-end/mainwindow.ui
@@ -80,6 +82,8 @@ RESOURCES += \
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+
 
 
 

@@ -74,8 +74,9 @@ public:
     void clear();
 
 private:
+    RuleTreeModel(RuleTreeModel&);
+    RuleTreeModel& operator=(RuleTreeModel&);
 
-    // helpers
     int rowForItem(const BE::Rule *item) const;
     int columnCountForItem(const BE::Rule *item) const;
     QVariant dataForItem(const BE::Rule *item, int column, int role) const;

@@ -11,6 +11,10 @@ namespace Lvk
 namespace Nlp
 {
 
+/**
+ * \brief NLP Engine based on AIML (Artificial Intelligence Markup Language)
+ */
+
 class AimlEngine : public Engine
 {
 public:
@@ -29,9 +33,10 @@ public:
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
 
 private:
+    AimlEngine(AimlEngine&);
+    AimlEngine& operator=(AimlEngine&);
 
     RuleList m_rules;
-
     AIMLParser *m_aimlParser;
 
     void buildAiml(QString &aiml);

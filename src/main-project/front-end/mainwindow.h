@@ -85,6 +85,9 @@ public:
     virtual bool eventFilter(QObject *object, QEvent *event);
 
 private:
+    MainWindow(MainWindow&);
+    MainWindow& operator=(MainWindow&);
+
     Ui::MainWindow *ui;
     BE::CoreApp *m_coreApp;
     RuleTreeModel *m_ruleTreeModel;

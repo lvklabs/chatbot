@@ -21,11 +21,10 @@ Lvk::CA::XmppClient::XmppClient(QObject *parent)
     connect(&m_xmppClient->vCardManager(), SIGNAL(vCardReceived(const QXmppVCardIq&)),
             this, SLOT(vCardReceived(const QXmppVCardIq&)));
 
-    connect(m_xmppClient, SIGNAL(connected()),               SIGNAL(connected()));
-    connect(m_xmppClient, SIGNAL(disconnected()),            SIGNAL(disconnected()));
+    connect(m_xmppClient, SIGNAL(connected()),    SIGNAL(connected()));
+    connect(m_xmppClient, SIGNAL(disconnected()), SIGNAL(disconnected()));
 
-    connect(m_xmppClient,
-            SIGNAL(error(QXmppClient::Error)),
+    connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
 }
 
@@ -47,11 +46,15 @@ void Lvk::CA::XmppClient::messageReceived(const QXmppMessage& message)
     if (!m_virtualUser) {
         return;
     }
+    if (message.body().isEmpty()) {
+        return;
+    }
 
     QString from = message.from();
     QString body = message.body();
+    QString bareJid = from.split("/").at(0);
 
-    QString response = m_virtualUser->getResponse(body);
+    QString response = m_virtualUser->getResponse(body, bareJid);
 
     //    if (body.contains(VAR_NICKNAME)) {
     //        if (m_nickname.isEmpty()) {
@@ -121,6 +124,13 @@ void Lvk::CA::XmppClient::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
         delete m_virtualUser;
         m_virtualUser = virtualUser;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::CA::VirtualUser * Lvk::CA::XmppClient::virtualUser()
+{
+    return m_virtualUser;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -6,9 +6,10 @@
 #include "random.h"
 #include "fbchatclient.h"
 #include "gtalkclient.h"
+#include "defaultvirtualuser.h"
 
 //--------------------------------------------------------------------------------------------------
-// Lvk::BE::CoreApp
+// Constructors & destructor
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
@@ -16,7 +17,7 @@ Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
       m_rootRule(0),
       m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()),
       m_nextRuleId(0),
-      m_chatClient(0)
+      m_chatbot(0)
 {
 }
 
@@ -27,7 +28,7 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_rootRule(0),
       m_nlpEngine(nlpEngine),
       m_nextRuleId(0),
-      m_chatClient(0)
+      m_chatbot(0)
 {
 }
 
@@ -35,11 +36,13 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 
 Lvk::BE::CoreApp::~CoreApp()
 {
-    delete m_chatClient;
+    delete m_chatbot;
     delete m_rootRule;
     delete m_nlpEngine;
 }
 
+//--------------------------------------------------------------------------------------------------
+// Load, save, save as, close file
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::CoreApp::load(const QString &filename)
@@ -65,18 +68,18 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
     QStringList rule1InputList;
     QStringList rule1OutputList;
-    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa");
+    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa") << QString("Hola *");
     rule1OutputList << QString("Hola!");
 
     QStringList rule2InputList;
     QStringList rule2OutputList;
-    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes");
+    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes") << QString("Que haces *");
     rule2OutputList << QString("Buenas, Como estas?");
 
     QStringList rule3InputList;
     QStringList rule3OutputList;
-    rule3InputList << QString("Cual es tu nombre?") << QString("Como te llamas?") ;
-    rule3OutputList << QString("Buenas, Como estas?");
+    rule3InputList << QString("Cual es tu nombre?") << QString("Como te llamas?") << QString("Quien sos?");
+    rule3OutputList << QString("Andres");
 
     BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
     BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
@@ -94,9 +97,8 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
     m_rootRule->appendChild(evasives);
 
     QStringList evasivesOutputList;
-    evasivesOutputList << QString("Perdon no entiendo eso")
-                       << QString("No entiendo, puedes explicarlo de otra manera?")
-                       << QString("No se que quieres decir con eso");
+    evasivesOutputList << QString("Perdon, no entiendo")
+                       << QString("Soy un Chatbot, le avisare a Andres que me ensen~e como responder eso");
 
     evasives->setOutput(evasivesOutputList);
 
@@ -133,10 +135,10 @@ void Lvk::BE::CoreApp::close()
         m_nlpEngine->setRules(Nlp::RuleList());
     }
 
-    if (m_chatClient) {
-        m_chatClient->disconnectFromServer();
-        delete m_chatClient;
-        m_chatClient = 0;
+    if (m_chatbot) {
+        m_chatbot->disconnectFromServer();
+        delete m_chatbot;
+        m_chatbot = 0;
     }
 
     delete m_rootRule;
@@ -151,6 +153,9 @@ void Lvk::BE::CoreApp::close()
 }
 
 //--------------------------------------------------------------------------------------------------
+// Nlp Engine methods
+//--------------------------------------------------------------------------------------------------
+
 
 Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
 {
@@ -217,7 +222,8 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpR
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
             nlpRules.append(nlpRule);
         } else if (child->type() == Rule::EvasiveRule) {
-            m_evasives = child->output(); // Design desicion: It can exist only one evasive rule
+            m_evasives = child->output(); // Design decision: It can exist only one evasive rule
+            setEvasivesToChatbot(child->output());
         } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
@@ -225,48 +231,90 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpR
 }
 
 //--------------------------------------------------------------------------------------------------
+// Chat methods
+//--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatServer chatServer, const QString &user, const QString &passwd)
+void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatType type, const QString &user,
+                                     const QString &passwd)
 {
-    if (m_chatClient) {
-        m_chatClient->disconnectFromServer();
+    if (m_chatbot && m_currentChatbotType != type) {
+        m_chatbot->disconnectFromServer();
 
-        if (m_currentChatServer != chatServer) {
-            disconnectChatClientSignals();
-            delete m_chatClient;
-            m_chatClient = 0;
-        }
+        deleteCurrentChatbot();
     }
 
-    if (chatServer == FbChatServer) {
+    if (!m_chatbot) {
+        createChatbot(type);
+    }
 
-        if (!m_chatClient) {
-            m_chatClient = new CA::FbChatClient();
-            m_currentChatServer = FbChatServer;
-            connectChatClientSignals();
-        }
-
-        dynamic_cast<CA::FbChatClient *>(m_chatClient)->connectToServer(user, passwd);
-    } else if (chatServer == GTalkChatServer) {
-
-        if (!m_chatClient) {
-            m_chatClient = new CA::GTalkClient();
-            m_currentChatServer = GTalkChatServer;
-            connectChatClientSignals();
-        }
-
-        dynamic_cast<CA::GTalkClient *>(m_chatClient)->connectToServer(user, passwd);
+    if (type == FbChat) {
+        dynamic_cast<CA::FbChatClient *>(m_chatbot)->connectToServer(user, passwd);
+    } else if (type == GTalkChat) {
+        dynamic_cast<CA::GTalkClient *>(m_chatbot)->connectToServer(user, passwd);
     } else {
-        //FIXME emit connectionError(UnknownServerError);
+        // TODO handle error
     }
+
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::CoreApp::disconnectFromChat()
 {
-    if (m_chatClient) {
-        m_chatClient->disconnectFromServer();
+    if (m_chatbot) {
+        m_chatbot->disconnectFromServer();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::createChatbot(ChatType type)
+{
+    if (type != FbChat && type != GTalkChat) {
+        return;
+    }
+
+    if (type == FbChat) {
+        m_chatbot = new CA::FbChatClient();
+    } else if (type == GTalkChat) {
+        m_chatbot = new CA::GTalkClient();
+    }
+
+    m_currentChatbotType = type;
+
+    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_nlpEngine);
+    virtualUser->setEvasives(m_evasives);
+
+    m_chatbot->setVirtualUser(virtualUser);
+
+    connectChatClientSignals();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::deleteCurrentChatbot()
+{
+    if (!m_chatbot) {
+        return;
+    }
+
+    disconnectChatClientSignals();
+
+    delete m_chatbot;
+    m_chatbot = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::setEvasivesToChatbot(const QStringList &evasives)
+{
+    if (m_chatbot && m_chatbot->virtualUser()) {
+        DefaultVirtualUser *virtualUser =
+                dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
+
+        if (virtualUser) {
+            virtualUser->setEvasives(evasives);
+        }
     }
 }
 
@@ -274,21 +322,22 @@ void Lvk::BE::CoreApp::disconnectFromChat()
 
 void Lvk::BE::CoreApp::connectChatClientSignals()
 {
-    connect(m_chatClient, SIGNAL(connected()),    SIGNAL(connected()));
-    connect(m_chatClient, SIGNAL(disconnected()), SIGNAL(disconnected()));
-    connect(m_chatClient, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+    connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
+    connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
+    connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::CoreApp::disconnectChatClientSignals()
 {
-    if (!m_chatClient) {
+    if (!m_chatbot) {
         return;
     }
 
-    disconnect(m_chatClient, SIGNAL(connected()));
-    disconnect(m_chatClient, SIGNAL(disconnected()));
-    disconnect(m_chatClient, SIGNAL(error(int)));
+    disconnect(m_chatbot, SIGNAL(connected()));
+    disconnect(m_chatbot, SIGNAL(disconnected()));
+    disconnect(m_chatbot, SIGNAL(error(int)));
 }
+
 

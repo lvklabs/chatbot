@@ -46,6 +46,9 @@ signals:
     void inputTextEdited(const QString &);
 
 private:
+    RuleInputWidget(RuleInputWidget&);
+    RuleInputWidget& operator=(RuleInputWidget&);
+
     QLayout   *m_layout;
     QLabel    *m_inputLabel;
     QLineEdit *m_input;

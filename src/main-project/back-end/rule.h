@@ -83,6 +83,9 @@ public:
     void setOutput(const QList<QString> &output);
 
 private:
+    Rule(Rule&);
+    Rule& operator=(Rule&);
+
     QList<Rule*> m_childItems;
     QString m_name;
     QList<QString> m_input;

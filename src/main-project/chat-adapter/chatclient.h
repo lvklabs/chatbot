@@ -30,6 +30,7 @@ public:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host) = 0;
     virtual void disconnectFromServer() = 0;
     virtual void setVirtualUser(VirtualUser *virtualUser) = 0;
+    virtual VirtualUser *virtualUser() = 0;
 
 signals:
     void connected();

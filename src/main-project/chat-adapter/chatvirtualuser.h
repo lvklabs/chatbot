@@ -11,14 +11,17 @@ namespace CA
 {
 
 /**
- * \brief VirtualUser is used by chat clients to get a response or to show a different avatar
+ * \brief VirtualUser class provides information to the chatbot to behave like a human being
+ *
+ * VirtualUser class provides two methods: one to get a response and another one
+ * to show a custom avatar
  */
 class VirtualUser
 {
 public:
     ~VirtualUser() {}
 
-    virtual QString getResponse(const QString &input) = 0;
+    virtual QString getResponse(const QString &input, const QString &from) = 0;
     virtual QPixmap getAvatar() = 0;
 };
 

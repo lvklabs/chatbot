@@ -60,7 +60,7 @@ public:
 
     void refreshNlpEngine();
 
-    enum ChatServer { FbChatServer, GTalkChatServer };
+    enum ChatType { FbChat, GTalkChat };
 
     enum ConnectionError {
         SocketError,        ///< Error due to TCP socket
@@ -69,7 +69,7 @@ public:
         UnknownServerError  ///< Error due to unknown server
     };
 
-    void connectToChat(ChatServer chatServer, const QString &user, const QString &passwd);
+    void connectToChat(ChatType chatType, const QString &user, const QString &passwd);
 
     void disconnectFromChat();
 
@@ -80,16 +80,23 @@ signals:
     void connectionError(int err);
 
 private:
+    CoreApp(CoreApp&);
+    CoreApp& operator=(CoreApp&);
+
     QString m_filename;
     Rule *m_rootRule;
     Nlp::Engine *m_nlpEngine;
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, Rule *> m_rulesHash;
     QStringList m_evasives;
-    CA::ChatClient *m_chatClient;
-    ChatServer m_currentChatServer;
+    CA::ChatClient *m_chatbot;
+    ChatType m_currentChatbotType;
 
     void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);
+
+    void createChatbot(ChatType type);
+    void deleteCurrentChatbot();
+    void setEvasivesToChatbot(const QStringList &evasives);
     void connectChatClientSignals();
     void disconnectChatClientSignals();
 };

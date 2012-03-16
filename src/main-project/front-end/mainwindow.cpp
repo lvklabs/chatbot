@@ -626,11 +626,11 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
 
 void Lvk::FE::MainWindow::toggleChatConnection()
 {
-    if (m_connectionStatus == DisconnectedFromChat || ConnectionError) {
+    if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         if (!ui->usernameText->text().isEmpty()) {
-            BE::CoreApp::ChatServer server = ui->gtalkChatRadio->isChecked() ?
-                        BE::CoreApp::GTalkChatServer :
-                        BE::CoreApp::FbChatServer;
+            BE::CoreApp::ChatType server = ui->gtalkChatRadio->isChecked() ?
+                        BE::CoreApp::GTalkChat :
+                        BE::CoreApp::FbChat;
 
             m_connectionStatus =  ConnectingToChat;
             setUiMode(ChatConnectingUiMode);
@@ -652,11 +652,15 @@ void Lvk::FE::MainWindow::toggleChatConnection()
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::handleConnectionOk()
 {
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::handleConnectionError(int err)
 {
@@ -666,6 +670,8 @@ void Lvk::FE::MainWindow::handleConnectionError(int err)
     ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
                                        QString::number(err));
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::handleDisconnection()
 {
