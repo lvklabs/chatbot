@@ -637,8 +637,11 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
     QStringList sentences = QStringList::split(QRegExp("[\\.\\?!;\\x061f]"), input);
     QStringList::Iterator sentence = sentences.begin();
 
-    while (true)
+    while (sentence != sentences.end())
     {
+        if (sentence != sentences.begin())
+            result += " ";
+
         //normalizeString(*sentence);
         *sentence = (*sentence).lower();
         QStringList inputWords = QStringList::split(' ', *sentence);
@@ -677,11 +680,8 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
             categoriesId.append(leaf->id);
             result += resolveNode(&leaf->tmplate, categoriesId, capturedTexts, capturedThatTexts, capturedTopicTexts).stripWhiteSpace();
         }
-        sentence++;
-        if (sentence != sentences.end())
-            result += " ";
-        else
-            break;
+
+        ++sentence;
     }
 
     if (!srai)
