@@ -4,8 +4,8 @@
 #include "nlprule.h"
 #include "exactmatchengine.h"
 #include "random.h"
-#include "fbchatclient.h"
-#include "gtalkclient.h"
+#include "fbchatbot.h"
+#include "gtalkchatbot.h"
 #include "defaultvirtualuser.h"
 
 //--------------------------------------------------------------------------------------------------
@@ -248,9 +248,9 @@ void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatType type, const QStr
     }
 
     if (type == FbChat) {
-        dynamic_cast<CA::FbChatClient *>(m_chatbot)->connectToServer(user, passwd);
+        dynamic_cast<CA::FbChatbot *>(m_chatbot)->connectToServer(user, passwd);
     } else if (type == GTalkChat) {
-        dynamic_cast<CA::GTalkClient *>(m_chatbot)->connectToServer(user, passwd);
+        dynamic_cast<CA::GTalkChatbot *>(m_chatbot)->connectToServer(user, passwd);
     } else {
         // TODO handle error
     }
@@ -275,9 +275,9 @@ void Lvk::BE::CoreApp::createChatbot(ChatType type)
     }
 
     if (type == FbChat) {
-        m_chatbot = new CA::FbChatClient();
+        m_chatbot = new CA::FbChatbot();
     } else if (type == GTalkChat) {
-        m_chatbot = new CA::GTalkClient();
+        m_chatbot = new CA::GTalkChatbot();
     }
 
     m_currentChatbotType = type;

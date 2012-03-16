@@ -1,12 +1,12 @@
 
-#ifndef LVK_CA_XMPPCLIENT_H
-#define LVK_CA_XMPPCLIENT_H
+#ifndef LVK_CA_XMPPCHATBOT_H
+#define LVK_CA_XMPPCHATBOT_H
 
 #include <QObject>
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
-#include "chatclient.h"
+#include "chatbot.h"
 
 class QXmppVCardIq;
 
@@ -17,18 +17,17 @@ namespace CA
 {
 
 /**
- * \brief Implementation of the ChatClient interface to provide connection to XMPP chat servers
+ * \brief Chatbot for XMPP chat servers
  */
-//  TODO rename class to XmppChatbot
 
-class XmppClient : public ChatClient
+class XmppChatbot : public Chatbot
 {
     Q_OBJECT
 
 public:
-    XmppClient(QObject *parent = 0);
+    XmppChatbot(QObject *parent = 0);
 
-    ~XmppClient();
+    ~XmppChatbot();
 
     /**
      * \brief An enumeration for type of error.
@@ -66,8 +65,8 @@ private slots:
     void emitLocalError(QXmppClient::Error);
 
 private:
-    XmppClient(XmppClient&);
-    XmppClient& operator=(XmppClient&);
+    XmppChatbot(XmppChatbot&);
+    XmppChatbot& operator=(XmppChatbot&);
 
     QXmppClient *m_xmppClient;
     //QString m_nickname;
@@ -81,4 +80,4 @@ private:
 
 } //namespace Lvk
 
-#endif // LVK_CA_XMPPCLIENT_H
+#endif // LVK_CA_XMPPCHATBOT_H

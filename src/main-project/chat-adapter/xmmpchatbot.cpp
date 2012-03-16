@@ -1,4 +1,4 @@
-#include "xmmpclient.h"
+#include "xmmpchatbot.h"
 #include "chatvirtualuser.h"
 
 #include "QXmppClient.h"
@@ -12,7 +12,7 @@
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::XmppClient::XmppClient(QObject *parent)
+Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     : m_xmppClient(new QXmppClient(parent)), m_virtualUser(0)
 {
     connect(m_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
@@ -30,7 +30,7 @@ Lvk::CA::XmppClient::XmppClient(QObject *parent)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::XmppClient::~XmppClient()
+Lvk::CA::XmppChatbot::~XmppChatbot()
 {
     delete m_virtualUser;
     delete m_xmppClient;
@@ -38,7 +38,7 @@ Lvk::CA::XmppClient::~XmppClient()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::messageReceived(const QXmppMessage& message)
+void Lvk::CA::XmppChatbot::messageReceived(const QXmppMessage& message)
 {
     if (message.type() != QXmppMessage::Chat) {
         return;
@@ -73,7 +73,7 @@ void Lvk::CA::XmppClient::messageReceived(const QXmppMessage& message)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::vCardReceived(const QXmppVCardIq &/*vCard*/)
+void Lvk::CA::XmppChatbot::vCardReceived(const QXmppVCardIq &/*vCard*/)
 {
 //    std::cout << "============ vCARD ============" << std::endl;
 //    std::cout << "fullName:" << vCard.fullName().toStdString()  << std::endl;
@@ -103,7 +103,7 @@ void Lvk::CA::XmppClient::vCardReceived(const QXmppVCardIq &/*vCard*/)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::connectToServer(const QString &user, const QString &passwd,
+void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
                                           const QString &host)
 {
     m_xmppClient->connectToServer(user + "@" + host, passwd);
@@ -111,14 +111,14 @@ void Lvk::CA::XmppClient::connectToServer(const QString &user, const QString &pa
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::disconnectFromServer()
+void Lvk::CA::XmppChatbot::disconnectFromServer()
 {
     m_xmppClient->disconnectFromServer();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
+void Lvk::CA::XmppChatbot::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
 {
     if (m_virtualUser != virtualUser) {
         delete m_virtualUser;
@@ -128,30 +128,30 @@ void Lvk::CA::XmppClient::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::VirtualUser * Lvk::CA::XmppClient::virtualUser()
+Lvk::CA::VirtualUser * Lvk::CA::XmppChatbot::virtualUser()
 {
     return m_virtualUser;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppClient::emitLocalError(QXmppClient::Error err)
+void Lvk::CA::XmppChatbot::emitLocalError(QXmppClient::Error err)
 {
     emit error(convertToLocalError(err));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::XmppClient::Error Lvk::CA::XmppClient::convertToLocalError(QXmppClient::Error err)
+Lvk::CA::XmppChatbot::Error Lvk::CA::XmppChatbot::convertToLocalError(QXmppClient::Error err)
 {
     switch (err) {
     case QXmppClient::SocketError:
-        return XmppClient::SocketError;
+        return XmppChatbot::SocketError;
     case QXmppClient::KeepAliveError:
-        return XmppClient::KeepAliveError;
+        return XmppChatbot::KeepAliveError;
     case QXmppClient::XmppStreamError:
-        return XmppClient::XmppStreamError;
+        return XmppChatbot::XmppStreamError;
     default:
-        return XmppClient::InternalError;
+        return XmppChatbot::InternalError;
     }
 }

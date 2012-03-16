@@ -19,7 +19,7 @@ namespace Nlp
 
 namespace CA
 {
-    class ChatClient;
+    class Chatbot;
 }
 
 namespace BE
@@ -89,7 +89,7 @@ private:
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, Rule *> m_rulesHash;
     QStringList m_evasives;
-    CA::ChatClient *m_chatbot;
+    CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
 
     void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);

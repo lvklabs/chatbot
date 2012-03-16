@@ -1,5 +1,5 @@
-#include "chatclient.h"
+#include "chatbot.h"
 
-Lvk::CA::ChatClient::~ChatClient()
+Lvk::CA::Chatbot::~Chatbot()
 {
 }

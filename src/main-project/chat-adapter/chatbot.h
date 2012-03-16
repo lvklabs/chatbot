@@ -1,6 +1,6 @@
 
-#ifndef LVK_CA_CHATCLIENT_H
-#define LVK_CA_CHATCLIENT_H
+#ifndef LVK_CA_CHATBOT_H
+#define LVK_CA_CHATBOT_H
 
 #include <QObject>
 
@@ -15,17 +15,16 @@ namespace CA
 class VirtualUser;
 
 /**
- * \brief Abstract interface for all chat clients
+ * \brief Abstract interface for all chatbots
  *
  */
-//  TODO rename class to Chatbot
 
-class ChatClient : public QObject
+class Chatbot : public QObject
 {
     Q_OBJECT
 
 public:
-    virtual ~ChatClient();
+    virtual ~Chatbot();
 
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host) = 0;
     virtual void disconnectFromServer() = 0;
@@ -42,4 +41,4 @@ signals:
 
 } // namespace Lvk
 
-#endif // LVK_CA_CHATCLIENT_H
+#endif // LVK_CA_CHATBOT_H
