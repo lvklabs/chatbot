@@ -19,7 +19,7 @@ namespace CA
 class VirtualUser
 {
 public:
-    ~VirtualUser() {}
+    virtual ~VirtualUser() {}
 
     virtual QString getResponse(const QString &input, const QString &from) = 0;
     virtual QPixmap getAvatar() = 0;
