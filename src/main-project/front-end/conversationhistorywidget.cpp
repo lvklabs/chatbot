@@ -67,6 +67,8 @@ ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
     m_dateContactTable->setHorizontalHeaderLabels(QStringList()
                                                   << tr("Date")
                                                   << tr("Username"));
+    m_dateContactTable->setColumnWidth(DateColumnn, 60);
+
     // Conversation table
     m_conversationTable = new QTableWidget(this);
     m_conversationTable->setRowCount(0);
@@ -83,6 +85,7 @@ ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
                                                    << tr("Message")
                                                    << tr("Response")
                                                    << tr("Status"));
+    m_conversationTable->setColumnWidth(TimeColumnn, 60);
 
     setSizes(QList<int>() << 50 << 150);
 
