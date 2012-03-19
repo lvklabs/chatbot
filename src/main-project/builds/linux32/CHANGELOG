@@ -1,3 +1,9 @@
+v0.03
+ - Added QXmpp and ProgramQ as third-party dependencies
+ - Implemented AIML engine and integrated in UI
+ - Implemented connection to Facebook and GTalk chat servers and integrated in UI
+ - Implemented simple chatbots
+
 v0.02
  - Second UI design
  - Buttons to add/remove/edit rules working
