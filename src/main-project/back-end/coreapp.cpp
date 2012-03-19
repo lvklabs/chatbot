@@ -325,6 +325,11 @@ void Lvk::BE::CoreApp::connectChatClientSignals()
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+
+    // Hmmm this doesn't look nice. TODO consider some refactoring to avoid cast
+    connect(dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser()),
+            SIGNAL(newConversationEntry(BE::Conversation::Entry)),
+            SIGNAL(newConversationEntry(BE::Conversation::Entry)));
 }
 
 //--------------------------------------------------------------------------------------------------

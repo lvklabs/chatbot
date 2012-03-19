@@ -39,7 +39,7 @@ public:
     void setEvasives(const QStringList &evasives);
 
 signals:
-    void newConversationEntry(const Conversation::Entry &entry);
+    void newConversationEntry(const BE::Conversation::Entry &entry);
 
 private:
     DefaultVirtualUser(DefaultVirtualUser&);

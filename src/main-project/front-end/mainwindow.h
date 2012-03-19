@@ -25,6 +25,7 @@
 #include <QMainWindow>
 
 #include "coreapp.h"
+#include "conversation.h"
 
 class TestMainWindow;
 
@@ -127,6 +128,7 @@ private slots:
     void handleConnectionError(int err);
     void handleDisconnection();
 
+    void handleNewConversatioEntry(const BE::Conversation::Entry &entry);
 };
 
 } // namespace Lvk

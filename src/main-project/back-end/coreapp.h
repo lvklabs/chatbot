@@ -8,6 +8,7 @@
 #include <QPair>
 
 #include "nlprule.h"
+#include "conversation.h"
 
 namespace Lvk
 {
@@ -78,6 +79,8 @@ signals:
     void connected();
     void disconnected();
     void connectionError(int err);
+
+    void newConversationEntry(const BE::Conversation::Entry &entry);
 
 private:
     CoreApp(CoreApp&);
