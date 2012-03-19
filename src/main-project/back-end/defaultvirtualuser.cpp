@@ -10,8 +10,9 @@
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(Nlp::Engine *engine /*= 0*/)
-    : m_engine(engine), m_logFile(new QFile(LOG_FILENAME))
+Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(Nlp::Engine *engine /*= 0*/,
+                                                QObject *parent /*= 0*/)
+    : QObject(parent), m_engine(engine), m_logFile(new QFile(LOG_FILENAME))
 {
     m_logFile->open(QFile::WriteOnly | QFile::Append);
 }
@@ -46,7 +47,12 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input, const QSt
         }
     }
 
-    logConversation(input, from, response, matched);
+    QDateTime dateTime = QDateTime::currentDateTime();
+    Conversation::Entry entry(dateTime, from, "Default", input, response, matched);
+
+    logConversationEntry(entry);
+
+    emit newConversationEntry(entry);
 
     return response;
 }
@@ -74,16 +80,9 @@ void Lvk::BE::DefaultVirtualUser::setEvasives(const QStringList &evasives)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::DefaultVirtualUser::logConversation(const QString &input, const QString &from,
-                                                  const QString &response, bool matched)
+void Lvk::BE::DefaultVirtualUser::logConversationEntry(const Conversation::Entry &entry)
 {
-    m_logFile->write(QDateTime::currentDateTime().toString(DATE_TIME_LOG_FORMAT).toUtf8());
-    m_logFile->write(" ");
-    m_logFile->write(from.toUtf8());
-    m_logFile->write(": ");
-    m_logFile->write(input.toUtf8());
-    m_logFile->write(matched ? " +--> " : " !--> ");
-    m_logFile->write(response.toUtf8());
+    m_logFile->write(entry.toString().toUtf8());
     m_logFile->write("\n");
     m_logFile->flush();
 }
