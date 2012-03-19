@@ -19,9 +19,17 @@ QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include
 QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
 
 CONFIG(debug, debug|release) {
-    QXMPP_LIBRARY_NAME = qxmpp_d
+    win32 {
+        QXMPP_LIBRARY_NAME = qxmpp_win32_d
+    } else {
+        QXMPP_LIBRARY_NAME = qxmpp_d
+    }
 } else {
-    QXMPP_LIBRARY_NAME = qxmpp
+    win32 {
+        QXMPP_LIBRARY_NAME = qxmpp_win32
+    } else {
+        QXMPP_LIBRARY_NAME = qxmpp
+    }
 }
 
 INCLUDEPATH += \
