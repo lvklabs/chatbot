@@ -262,7 +262,7 @@ void Lvk::FE::MainWindow::clear()
     ui->ruleOutputWidget->clear();
 
     // chat tab widgets
-    //ui->fbChatRadio->
+    ui->fbChatRadio->setChecked(true);
     m_connectionStatus = DisconnectedFromChat;
     m_coreApp->disconnectFromChat();
 
@@ -271,8 +271,7 @@ void Lvk::FE::MainWindow::clear()
     ui->passwordText->clear();
 
     // conversation tab widgets
-    // TODO clear ui->conversationContactsTable
-    // TODO clear ui->conversationTable
+    ui->conversationHistory->clear();
 
     // test tab widgets
     ui->testConversationText->clear();
@@ -685,7 +684,7 @@ void Lvk::FE::MainWindow::handleDisconnection()
 
 void Lvk::FE::MainWindow::handleNewConversatioEntry(const BE::Conversation::Entry &entry)
 {
-    ui->conversationHistory->addConversatioEntry(entry);
+    ui->conversationHistory->addConversationEntry(entry);
 }
 
 

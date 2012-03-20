@@ -35,3 +35,4 @@ void TestConversationWidget::appendConversation(const QString &userInput, const 
 
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }
+
