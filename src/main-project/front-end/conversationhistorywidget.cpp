@@ -3,9 +3,13 @@
 #include <QSplitter>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QIcon>
 
 #define DATE_FORMAT     "dd/MM/yy"
 #define TIME_FORMAT     "hh:mm:ss"
+
+#define MATCH_ICON      ":/icons/match_16x16.png"
+#define NO_MATCH_ICON   ":/icons/no_match_16x16.png"
 
 enum DateContactTableColumns
 {
@@ -70,7 +74,7 @@ ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
     m_conversationTable->setSortingEnabled(true);
     m_conversationTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_conversationTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_conversationTable->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_conversationTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_conversationTable->setAlternatingRowColors(true);
     m_conversationTable->horizontalHeader()->setStretchLastSection(true);
     m_conversationTable->verticalHeader()->hide();
@@ -154,7 +158,7 @@ void ConversationHistoryWidget::currentRowChanged(const QModelIndex &current,
 void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
-    QString match = entry.match ? "Match" : "No Match";
+    QString match = entry.match ? tr("Ok") : tr("Fail!");
 
     int nextRow = m_conversationTable->rowCount();
     m_conversationTable->insertRow(nextRow);
@@ -162,6 +166,12 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
     m_conversationTable->setItem(nextRow, MessageColumn,  new QTableWidgetItem(entry.msg));
     m_conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.responseMsg));
     m_conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
+
+    if (entry.match) {
+        m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
+    } else {
+        m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(NO_MATCH_ICON));
+    }
 }
 
 void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)

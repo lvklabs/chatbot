@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="trainTab">
         <attribute name="title">
@@ -249,7 +249,11 @@
            <item row="0" column="1">
             <widget class="QRadioButton" name="fbChatRadio">
              <property name="text">
-              <string>Facebook</string>
+              <string> Facebook</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/icons/facebook_24x24.png</normaloff>:/icons/facebook_24x24.png</iconset>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -259,7 +263,11 @@
            <item row="1" column="1">
             <widget class="QRadioButton" name="gtalkChatRadio">
              <property name="text">
-              <string>Gmail or Google Talk</string>
+              <string> Gmail or Google Talk</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/icons/gmail_24x24.png</normaloff>:/icons/gmail_24x24.png</iconset>
              </property>
             </widget>
            </item>

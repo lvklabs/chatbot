@@ -1,15 +1,16 @@
 <RCC>
     <qresource prefix="/icons">
         <file alias="category_16x16.png">res/category_16x16.png</file>
-        <file alias="add_32x32.png">res/add_32x32.png</file>
         <file alias="add_category_32x32.png">res/add_category_32x32.png</file>
-        <file alias="remove_category_32x32.png">res/remove_category_32x32.png</file>
         <file alias="remove_32x32.png">res/remove_32x32.png</file>
         <file alias="rule_16x16.png">res/rule_16x16.png</file>
         <file alias="add_rule_32x32.png">res/add_rule_32x32.png</file>
         <file alias="clear_32x32.png">res/clear_32x32.png</file>
-        <file>res/category_locked_2_16x16.png</file>
         <file alias="category_locked_16x16.png">res/category_locked_16x16.png</file>
+        <file alias="no_match_16x16.png">res/no_match_16x16.png</file>
+        <file alias="match_16x16.png">res/match_16x16.png</file>
+        <file alias="facebook_24x24.png">res/facebook_24x24.png</file>
+        <file alias="gmail_24x24.png">res/gmail_24x24.png</file>
     </qresource>
     <qresource prefix="/strings">
         <file alias="strings_es.qm">strings_es.qm</file>
