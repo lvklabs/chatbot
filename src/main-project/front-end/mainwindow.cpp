@@ -114,6 +114,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SIGNAL(connectionError(int)),
             SLOT(handleConnectionError(int)));
 
+    connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
+
     // Conversations tab
 
     connect(m_coreApp,
@@ -209,7 +211,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Disconnected"));
-        ui->connectionStatusLabel->setStyleSheet("color:black");
+        ui->connectionStatusLabel->setStyleSheet("");
         break;
 
     case ChatConnectingUiMode:
@@ -220,7 +222,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectButton->setText(tr("Disconnect"));
         ui->connectionProgressBar->setVisible(true);
         ui->connectionStatusLabel->setText(tr("Connecting..."));
-        ui->connectionStatusLabel->setStyleSheet("color:black");
+        ui->connectionStatusLabel->setStyleSheet("");
         break;
 
     case ChatConnectionOkUiMode:
