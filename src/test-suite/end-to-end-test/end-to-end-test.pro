@@ -51,6 +51,7 @@ HEADERS += \
     ../../main-project/front-end/ruleoutputwidget.h \
     ../../main-project/front-end/ruleinputwidget.h \
     ../../main-project/front-end/testconversationwidget.h \
+    ../../main-project/front-end/conversationhistorywidget.h \
     ../../main-project/back-end/rule.h \
     ../../main-project/back-end/coreapp.h \
     ../../main-project/back-end/defaultvirtualuser.h \
@@ -75,6 +76,7 @@ SOURCES += \
     ../../main-project/front-end/ruleoutputwidget.cpp \
     ../../main-project/front-end/ruleinputwidget.cpp \
     ../../main-project/front-end/testconversationwidget.cpp \
+    ../../main-project/front-end/conversationhistorywidget.cpp \
     ../../main-project/back-end/rule.cpp \
     ../../main-project/back-end/coreapp.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \

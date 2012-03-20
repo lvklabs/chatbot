@@ -685,17 +685,7 @@ void Lvk::FE::MainWindow::handleDisconnection()
 
 void Lvk::FE::MainWindow::handleNewConversatioEntry(const BE::Conversation::Entry &entry)
 {
-    int nextRow = ui->conversationTable->rowCount();
-    ui->conversationTable->insertRow(nextRow);
-    ui->conversationTable->setItem(nextRow, 0, new QTableWidgetItem(entry.dateTime.toString("hh:mm::ss")));
-    ui->conversationTable->setItem(nextRow, 1, new QTableWidgetItem(entry.msg));
-    ui->conversationTable->setItem(nextRow, 2, new QTableWidgetItem(entry.responseMsg));
-    ui->conversationTable->setItem(nextRow, 3, new QTableWidgetItem(entry.match ? "Match" : "NO Match"));
-
-    nextRow = ui->conversationContactsTable->rowCount();
-    ui->conversationContactsTable->insertRow(nextRow);
-    ui->conversationContactsTable->setItem(nextRow, 0, new QTableWidgetItem(entry.dateTime.toString("dd/MM/yy")));
-    ui->conversationContactsTable->setItem(nextRow, 1, new QTableWidgetItem(entry.from));
+    ui->conversationHistory->addConversatioEntry(entry);
 }
 
 

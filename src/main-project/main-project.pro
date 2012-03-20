@@ -47,6 +47,7 @@ HEADERS += \
     front-end/ruleoutputwidget.h \
     front-end/ruleinputwidget.h \
     front-end/testconversationwidget.h \
+    front-end/conversationhistorywidget.h \
     back-end/rule.h \
     back-end/coreapp.h \
     back-end/defaultvirtualuser.h \
@@ -70,6 +71,7 @@ SOURCES += \
     front-end/ruleoutputwidget.cpp \
     front-end/ruleinputwidget.cpp \
     front-end/testconversationwidget.cpp \
+    front-end/conversationhistorywidget.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -92,6 +94,8 @@ RESOURCES += \
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+
 
 
 
