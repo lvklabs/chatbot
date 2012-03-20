@@ -276,14 +276,6 @@ void Lvk::FE::MainWindow::clear()
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
-
-    //////////////////////////////////////////////////////////
-    // DO NOT COMIT! DO NOT COMIT! DO NOT COMIT! DO NOT COMIT!
-    ui->usernameText->setText("andres.xmpp");
-    ui->passwordText->setText("xmpp1234");
-    handleNewConversatioEntry(BE::Conversation::Entry(QDateTime(), "from", "to", "msg", "resp", false));
-    handleNewConversatioEntry(BE::Conversation::Entry(QDateTime(), "from", "to", "msg", "resp", true));
-    //////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
