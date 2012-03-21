@@ -114,24 +114,26 @@ private:
     BE::Rule *evasiveRule();
     BE::Rule *rootRule();
 
-private slots:
-    void addCategoryWithInputDialog();
-    void addRuleWithInputDialog();
-    void removeSelectedItem();
-    void handleRuleInputEdited(const QString &ruleInput);
-    void handleRuleInputEditingFinished();
-    void handleRuleOutputEditingFinished();
-    void handleRuleSelectionChanged(const QItemSelection &selected,
-                                    const QItemSelection &deselected);
-    void testInputTextEntered();
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
 
-    void toggleChatConnection();
-    void handleConnectionOk();
-    void handleConnectionError(int err);
-    void handleDisconnection();
+private slots:
+    void onAddCategoryButtonClicked();
+    void onAddRuleButtonClicked();
+    void onRemoveButtonClicked();
 
-    void handleNewConversatioEntry(const BE::Conversation::Entry &entry);
+    void onRuleInputEdited(const QString &ruleInput);
+    void onRuleInputEditingFinished();
+    void onRuleOutputEditingFinished();
+    void onRuleSelectionChanged(const QItemSelection &selected,
+                                    const QItemSelection &deselected);
+    void onTestInputTextEntered();
+
+    void onConnectButtonPressed();
+    void onConnectionOk();
+    void onConnectionError(int err);
+    void onDisconnection();
+
+    void onNewConversatioEntry(const BE::Conversation::Entry &entry);
 };
 
 } // namespace Lvk

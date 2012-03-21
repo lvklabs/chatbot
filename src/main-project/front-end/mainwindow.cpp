@@ -87,35 +87,35 @@ void Lvk::FE::MainWindow::connectSignals()
 {
     // Edit rules tabs
 
-    connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(addCategoryWithInputDialog()));
-    connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(addRuleWithInputDialog()));
-    connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(removeSelectedItem()));
-    connect(ui->connectButton,     SIGNAL(clicked()), SLOT(toggleChatConnection()));
+    connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(onAddCategoryButtonClicked()));
+    connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(onAddRuleButtonClicked()));
+    connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(onRemoveButtonClicked()));
+    connect(ui->connectButton,     SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
 
     connect(ui->clearTestConversationButton, SIGNAL(clicked()),
             ui->testConversationText, SLOT(clear()));
 
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(handleRuleSelectionChanged(QItemSelection,QItemSelection)));
+            SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
 
     connect(ui->categoryNameTextEdit, SIGNAL(textEdited(QString)),
-            SLOT(handleRuleInputEdited(QString)));
+            SLOT(onRuleInputEdited(QString)));
 
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
-            SLOT(handleRuleInputEdited(QString)));
+            SLOT(onRuleInputEdited(QString)));
 
 
     // Chat connetion tab
 
-    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(testInputTextEntered()));
+    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
 
-    connect(m_coreApp, SIGNAL(connected()),    SLOT(handleConnectionOk()));
-    connect(m_coreApp, SIGNAL(disconnected()), SLOT(handleDisconnection()));
+    connect(m_coreApp, SIGNAL(connected()),    SLOT(onConnectionOk()));
+    connect(m_coreApp, SIGNAL(disconnected()), SLOT(onDisconnection()));
 
     connect(m_coreApp,
             SIGNAL(connectionError(int)),
-            SLOT(handleConnectionError(int)));
+            SLOT(onConnectionError(int)));
 
     connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
 
@@ -123,7 +123,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(m_coreApp,
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
-            SLOT(handleNewConversatioEntry(BE::Conversation::Entry)));
+            SLOT(onNewConversatioEntry(BE::Conversation::Entry)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -152,10 +152,10 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
             ui->ruleOutputWidget->clearHighlight();
         }
         else if (object == ui->ruleInputWidget) {
-            handleRuleInputEditingFinished();
+            onRuleInputEditingFinished();
         }
         else if (object == ui->ruleOutputWidget) {
-            handleRuleOutputEditingFinished();
+            onRuleOutputEditingFinished();
         }
     }
 
@@ -338,7 +338,7 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::addCategoryWithInputDialog()
+void Lvk::FE::MainWindow::onAddCategoryButtonClicked()
 {
     bool ok;
     QString name = QInputDialog::getText(this, tr("Add category"), tr("Category name:"),
@@ -366,7 +366,7 @@ void Lvk::FE::MainWindow::addCategoryWithInputDialog()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::addRuleWithInputDialog()
+void Lvk::FE::MainWindow::onAddRuleButtonClicked()
 {
     QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
@@ -413,7 +413,7 @@ void Lvk::FE::MainWindow::addRuleWithInputDialog()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::removeSelectedItem()
+void Lvk::FE::MainWindow::onRemoveButtonClicked()
 {
     QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
 
@@ -524,7 +524,7 @@ void Lvk::FE::MainWindow::selectRule(BE::Rule *rule)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleRuleInputEdited(const QString &ruleInput)
+void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
 {
     if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
         QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
@@ -534,7 +534,7 @@ void Lvk::FE::MainWindow::handleRuleInputEdited(const QString &ruleInput)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleRuleOutputEditingFinished()
+void Lvk::FE::MainWindow::onRuleOutputEditingFinished()
 {
     BE::Rule *rule = selectedRule();
     if (rule) {
@@ -544,7 +544,7 @@ void Lvk::FE::MainWindow::handleRuleOutputEditingFinished()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleRuleInputEditingFinished()
+void Lvk::FE::MainWindow::onRuleInputEditingFinished()
 {
     BE::Rule *rule = selectedRule();
     if (rule) {
@@ -554,7 +554,7 @@ void Lvk::FE::MainWindow::handleRuleInputEditingFinished()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selected,
+void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
 {
     if (!deselected.indexes().isEmpty()) {
@@ -607,7 +607,7 @@ void Lvk::FE::MainWindow::handleRuleSelectionChanged(const QItemSelection &selec
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::testInputTextEntered()
+void Lvk::FE::MainWindow::onTestInputTextEntered()
 {
     m_coreApp->refreshNlpEngine(); // FIXME not performant!
 
@@ -647,7 +647,7 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::toggleChatConnection()
+void Lvk::FE::MainWindow::onConnectButtonPressed()
 {
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         if (!ui->usernameText->text().isEmpty()) {
@@ -677,7 +677,7 @@ void Lvk::FE::MainWindow::toggleChatConnection()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleConnectionOk()
+void Lvk::FE::MainWindow::onConnectionOk()
 {
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
@@ -685,7 +685,7 @@ void Lvk::FE::MainWindow::handleConnectionOk()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleConnectionError(int err)
+void Lvk::FE::MainWindow::onConnectionError(int err)
 {
     m_connectionStatus = ConnectionError;
     setUiMode(ChatConnectionFailedUiMode);
@@ -696,7 +696,7 @@ void Lvk::FE::MainWindow::handleConnectionError(int err)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleDisconnection()
+void Lvk::FE::MainWindow::onDisconnection()
 {
     if (m_connectionStatus != ConnectionError) {
         m_connectionStatus = DisconnectedFromChat;
@@ -706,7 +706,7 @@ void Lvk::FE::MainWindow::handleDisconnection()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::handleNewConversatioEntry(const BE::Conversation::Entry &entry)
+void Lvk::FE::MainWindow::onNewConversatioEntry(const BE::Conversation::Entry &entry)
 {
     ui->conversationHistory->addConversationEntry(entry);
 }
