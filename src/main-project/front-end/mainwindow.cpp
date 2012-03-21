@@ -30,6 +30,7 @@
 #include <QItemDelegate>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QCloseEvent>
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,7 +71,7 @@ Lvk::FE::MainWindow::~MainWindow()
 
 void Lvk::FE::MainWindow::initCoreAndModels()
 {
-    m_coreApp->load("FIXME");
+    m_coreApp->load("rules.dat");
 
     m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
     m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
@@ -159,6 +160,25 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
     }
 
     return QMainWindow::eventFilter(object, event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
+{
+    QMessageBox msg(QMessageBox::Question,
+                    tr("Save changes"), tr("Do you want to save the changes?"),
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+
+    int code = msg.exec();
+
+    if (code == QMessageBox::Yes) {
+        m_coreApp->save();
+    } else if (code == QMessageBox::Cancel) {
+        event->ignore();
+    } else {
+        QMainWindow::closeEvent(event);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -85,6 +85,9 @@ public:
 
     virtual bool eventFilter(QObject *object, QEvent *event);
 
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
 private:
     MainWindow(MainWindow&);
     MainWindow& operator=(MainWindow&);

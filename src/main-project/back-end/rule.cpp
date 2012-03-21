@@ -176,4 +176,51 @@ void Lvk::BE::Rule::setName(const QString &name)
     m_name = name;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+
+QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
+{
+    stream << rule.name();
+    stream << rule.input();
+    stream << rule.output();
+    stream << static_cast<int>(rule.type());
+    stream << rule.childCount();
+
+    for (int i = 0; i < rule.children().size(); ++i) {
+        stream << *(rule.children()[i]);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
+{
+    QString name;
+    QStringList input;
+    QStringList output;
+    int type;
+    int childCount;
+
+    stream >> name;
+    stream >> input;
+    stream >> output;
+    stream >> type;
+    stream >> childCount;
+
+    rule.setName(name);
+    rule.setInput(input);
+    rule.setOutput(output);
+    rule.setType(static_cast<Rule::RuleType>(type));
+
+    for (int i = 0; i < childCount; ++i) {
+        Rule *child = new Rule();
+        stream >> *child;
+        rule.appendChild(child);
+    }
+}
+
+
+
+
 

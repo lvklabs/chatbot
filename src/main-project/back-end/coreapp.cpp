@@ -8,6 +8,12 @@
 #include "gtalkchatbot.h"
 #include "defaultvirtualuser.h"
 
+#include <QFile>
+#include <QDataStream>
+
+#define MAGIC_NUMBER            (('l'<<0) | ('v'<<8) | ('k'<<16) | ('\0'<<24))
+#define FILE_FORMAT_VERSION     1
+
 //--------------------------------------------------------------------------------------------------
 // Constructors & destructor
 //--------------------------------------------------------------------------------------------------
@@ -52,77 +58,46 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
     }
 
     m_filename = filename;
-    m_rootRule = new BE::Rule();
 
-    ////////////////////////////////////////////////////////////////////////
-    // TODO read from file:
+    bool success = true;
 
-    BE::Rule *catGreetings    = new BE::Rule("Saludos");
-    BE::Rule *catPersonalInfo = new BE::Rule("Informacion Personal");
+    QFile file(m_filename);
 
-    catGreetings->setType(BE::Rule::ContainerRule);
-    catPersonalInfo->setType(BE::Rule::ContainerRule);
-
-    m_rootRule->appendChild(catGreetings);
-    m_rootRule->appendChild(catPersonalInfo);
-
-    QStringList rule1InputList;
-    QStringList rule1OutputList;
-    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa") << QString("Hola *");
-    rule1OutputList << QString("Hola!");
-
-    QStringList rule2InputList;
-    QStringList rule2OutputList;
-    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes") << QString("Que haces *");
-    rule2OutputList << QString("Buenas, Como estas?");
-
-    QStringList rule3InputList;
-    QStringList rule3OutputList;
-    rule3InputList << QString("Cual es tu nombre?") << QString("Como te llamas?") << QString("Quien sos?");
-    rule3OutputList << QString("Andres");
-
-    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
-    BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
-    BE::Rule * rule3 = new BE::Rule("", rule3InputList, rule3OutputList);
-
-    catGreetings->appendChild(rule1);
-    catGreetings->appendChild(rule2);
-    catPersonalInfo->appendChild(rule3);
-
-    // evasives
-
-    BE::Rule *evasives    = new BE::Rule("Evasivas");
-    evasives->setType(BE::Rule::EvasiveRule);
-
-    m_rootRule->appendChild(evasives);
-
-    QStringList evasivesOutputList;
-    evasivesOutputList << QString("Perdon, no entiendo")
-                       << QString("Soy un Chatbot, le avisare a Andres que me ensen~e como responder eso");
-
-    evasives->setOutput(evasivesOutputList);
-
-    ////////////////////////////////////////////////////////////////////////
+    if (file.exists() && file.open(QFile::ReadOnly)) {
+        success = read(file);
+    } else {
+        loadDefaultRules();
+    }
 
     refreshNlpEngine();
 
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::CoreApp::saveAs(const QString &/*filename*/)
-{
-    // TODO
-
-    return false;
+    return success;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::CoreApp::save()
 {
-    // TODO
+    bool success = true;
+
+    QFile file(m_filename);
+
+    if (file.open(QFile::WriteOnly)) {
+        success = write(file);
+    } else {
+        success = false;
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::saveAs(const QString &filename)
+{
+    m_filename = filename;
+
+    save();
 
     return false;
 }
@@ -147,9 +122,55 @@ void Lvk::BE::CoreApp::close()
     m_filename = "";
 
     m_nextRuleId = 0;
+
     m_rulesHash.clear();
 
     m_evasives.clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::read(QFile &file)
+{
+    QDataStream istream(&file);
+
+    quint32 magicNumber;
+    istream >> magicNumber;
+
+    if (magicNumber != MAGIC_NUMBER) {
+        return false;
+    }
+
+    qint32 version;
+    istream >> version;
+
+    if (version < FILE_FORMAT_VERSION) {
+        return false;
+    }
+
+    m_rootRule = new Rule();
+
+    istream >> *m_rootRule;
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::write(QFile &file)
+{
+    QDataStream ostream(&file);
+
+    ostream << (quint32)MAGIC_NUMBER;
+    ostream << (qint32)FILE_FORMAT_VERSION;
+
+    ostream.setVersion(QDataStream::Qt_4_0);
+
+    if (m_rootRule) {
+        ostream << *m_rootRule;
+    }
+
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -347,6 +368,60 @@ const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
         static Conversation nullConversation;
         return nullConversation;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Misc
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::loadDefaultRules()
+{
+    m_rootRule = new BE::Rule();
+
+    BE::Rule *catGreetings    = new BE::Rule("Saludos");
+    BE::Rule *catPersonalInfo = new BE::Rule("Informacion Personal");
+
+    catGreetings->setType(BE::Rule::ContainerRule);
+    catPersonalInfo->setType(BE::Rule::ContainerRule);
+
+    m_rootRule->appendChild(catGreetings);
+    m_rootRule->appendChild(catPersonalInfo);
+
+    QStringList rule1InputList;
+    QStringList rule1OutputList;
+    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa") << QString("Hola *");
+    rule1OutputList << QString("Hola!");
+
+    QStringList rule2InputList;
+    QStringList rule2OutputList;
+    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes") << QString("Que haces *");
+    rule2OutputList << QString("Buenas, Como estas?");
+
+    QStringList rule3InputList;
+    QStringList rule3OutputList;
+    rule3InputList << QString("Cual es tu nombre?") << QString("Como te llamas?") << QString("Quien sos?");
+    rule3OutputList << QString("Andres");
+
+    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
+    BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
+    BE::Rule * rule3 = new BE::Rule("", rule3InputList, rule3OutputList);
+
+    catGreetings->appendChild(rule1);
+    catGreetings->appendChild(rule2);
+    catPersonalInfo->appendChild(rule3);
+
+    // evasives
+
+    BE::Rule *evasives    = new BE::Rule("Evasivas");
+    evasives->setType(BE::Rule::EvasiveRule);
+
+    m_rootRule->appendChild(evasives);
+
+    QStringList evasivesOutputList;
+    evasivesOutputList << QString("Perdon, no entiendo")
+                       << QString("No entiendo, puedes explicarlo de otra manera?");
+
+    evasives->setOutput(evasivesOutputList);
 }
 
 

@@ -94,6 +94,9 @@ private:
     RuleType m_type;
 };
 
+QDataStream &operator<<(QDataStream &stream, const Rule &rule);
+QDataStream &operator>>(QDataStream &stream, Rule &rule);
+
 } // namespace BE
 
 } // namespace Lvk

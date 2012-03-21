@@ -10,6 +10,8 @@
 #include "nlprule.h"
 #include "conversation.h"
 
+class QFile;
+
 namespace Lvk
 {
 
@@ -103,6 +105,10 @@ private:
     void deleteCurrentChatbot();
     void setEvasivesToChatbot(const QStringList &evasives);
     void connectChatClientSignals();
+
+    bool read(QFile &file);
+    bool write(QFile &file);
+    void loadDefaultRules();
 };
 
 } // namespace BE
