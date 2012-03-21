@@ -20,8 +20,11 @@ class ConversationHistoryWidget : public QSplitter
     Q_OBJECT
 public:
     explicit ConversationHistoryWidget(QWidget *parent = 0);
+    explicit ConversationHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
 
     void clear();
+
+    void setConversation(const Lvk::BE::Conversation &conv);
 
     void addConversationEntry(const Lvk::BE::Conversation::Entry &entry);
 
@@ -31,6 +34,8 @@ private:
 
     typedef QList<Lvk::BE::Conversation::Entry> EntryList;
     QHash<QString, EntryList> m_entries;
+
+    void setupWidget();
 
     void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);

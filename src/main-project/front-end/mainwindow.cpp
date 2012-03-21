@@ -51,6 +51,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui->ruleInputWidget->installEventFilter(this);
     ui->ruleOutputWidget->installEventFilter(this);
 
+    ui->conversationHistory->setConversation(m_coreApp->conversationHistory());
+
     selectFirstRule();
 
     ui->categoriesTree->setFocus();

@@ -74,6 +74,8 @@ public:
 
     void disconnectFromChat();
 
+    const Conversation &conversationHistory();
+
 signals:
 
     void connected();
@@ -101,7 +103,6 @@ private:
     void deleteCurrentChatbot();
     void setEvasivesToChatbot(const QStringList &evasives);
     void connectChatClientSignals();
-    void disconnectChatClientSignals();
 };
 
 } // namespace BE

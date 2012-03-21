@@ -1,5 +1,5 @@
-#ifndef DEFAULTVIRTUALUSER_H
-#define DEFAULTVIRTUALUSER_H
+#ifndef LVK_BE_DEFAULTVIRTUALUSER_H
+#define LVK_BE_DEFAULTVIRTUALUSER_H
 
 #include <QObject>
 #include <QStringList>
@@ -35,6 +35,8 @@ public:
 
     virtual QPixmap getAvatar();
 
+    const Conversation &getConversationHistory() const;
+
     void setNlpEngine(Nlp::Engine *engine);
     void setEvasives(const QStringList &evasives);
 
@@ -47,6 +49,7 @@ private:
 
     Nlp::Engine *m_engine;
     QStringList m_evasives;
+    Conversation m_conversationHistory;
     QFile *m_logFile;
 
     void logConversationEntry(const Conversation::Entry &entry);
@@ -57,4 +60,4 @@ private:
 
 } //namespace Lvk
 
-#endif // DEFAULTVIRTUALUSER_H
+#endif // LVK_BE_DEFAULTVIRTUALUSER_H

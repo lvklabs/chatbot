@@ -53,6 +53,24 @@ QString hashKey(const Lvk::BE::Conversation::Entry &entry)
 ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
     : QSplitter(Qt::Horizontal, parent)
 {
+    setupWidget();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+ConversationHistoryWidget::ConversationHistoryWidget(const Lvk::BE::Conversation &conv,
+                                                     QWidget *parent)
+    : QSplitter(Qt::Horizontal, parent)
+{
+    setupWidget();
+
+    setConversation(conv);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ConversationHistoryWidget::setupWidget()
+{
     // Date-Contact table
     m_dateContactTable = new QTableWidget(this);
     m_dateContactTable->setRowCount(0);
@@ -94,6 +112,7 @@ ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
             SLOT(currentRowChanged(QModelIndex,QModelIndex)));
 }
 
+
 //--------------------------------------------------------------------------------------------------
 
 void ConversationHistoryWidget::clear()
@@ -102,6 +121,7 @@ void ConversationHistoryWidget::clear()
     m_dateContactTable->setRowCount(0);
     m_conversationTable->clearContents();
     m_conversationTable->setRowCount(0);
+    m_entries.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -167,7 +187,7 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
     m_conversationTable->insertRow(nextRow);
     m_conversationTable->setItem(nextRow, TimeColumnn,    new QTableWidgetItem(time));
     m_conversationTable->setItem(nextRow, MessageColumn,  new QTableWidgetItem(entry.msg));
-    m_conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.responseMsg));
+    m_conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.response));
     m_conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
 
     if (entry.match) {
@@ -177,6 +197,8 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString date = entry.dateTime.toString(DATE_FORMAT);
@@ -185,6 +207,17 @@ void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversati
     m_dateContactTable->insertRow(nextRow);
     m_dateContactTable->setItem(nextRow, DateColumnn,    new QTableWidgetItem(date));
     m_dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(entry.from));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ConversationHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
+{
+    clear();
+
+    for (int i = 0; i < conv.entries().size(); ++i) {
+        addConversationEntry(conv.entries()[i]);
+    }
 }
 
 

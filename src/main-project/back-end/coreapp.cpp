@@ -298,9 +298,7 @@ void Lvk::BE::CoreApp::deleteCurrentChatbot()
         return;
     }
 
-    disconnectChatClientSignals();
-
-    delete m_chatbot;
+    delete m_chatbot;   // TODO consider using deleteLater()
     m_chatbot = 0;
 }
 
@@ -334,15 +332,21 @@ void Lvk::BE::CoreApp::connectChatClientSignals()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::disconnectChatClientSignals()
+const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 {
     if (!m_chatbot) {
-        return;
+        createChatbot(FbChat);
     }
 
-    disconnect(m_chatbot, SIGNAL(connected()));
-    disconnect(m_chatbot, SIGNAL(disconnected()));
-    disconnect(m_chatbot, SIGNAL(error(int)));
+    DefaultVirtualUser *virtualUser =
+            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
+
+    if (virtualUser) {
+        return virtualUser->getConversationHistory();
+    } else {
+        static Conversation nullConversation;
+        return nullConversation;
+    }
 }
 
 

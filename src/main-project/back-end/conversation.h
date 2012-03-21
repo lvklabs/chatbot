@@ -38,8 +38,10 @@ public:
         QString from;
         QString to;
         QString msg;
-        QString responseMsg;
+        QString response;
         bool match;
+
+        bool isNull();
 
         QString toString() const;
     };
@@ -47,6 +49,8 @@ public:
     void setEntries(const QList<Entry> &entries);
     QList<Entry> &entries();
     const QList<Entry> &entries() const;
+
+    void append(const Entry &entry);
 
     QString toString() const;
 

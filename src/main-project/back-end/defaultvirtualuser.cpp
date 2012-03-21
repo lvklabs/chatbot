@@ -8,12 +8,23 @@
 #define LOG_FILENAME            "chat_conversations.log"
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
+// TODO verify race conditions. Add locks if nescessary
+
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(Nlp::Engine *engine /*= 0*/,
                                                 QObject *parent /*= 0*/)
     : QObject(parent), m_engine(engine), m_logFile(new QFile(LOG_FILENAME))
 {
+    m_logFile->open(QFile::ReadOnly);
+
+    if (m_logFile->isOpen()) {
+        QString content(m_logFile->readAll());
+
+        m_conversationHistory = BE::Conversation(content);
+    }
+
+    m_logFile->close();
     m_logFile->open(QFile::WriteOnly | QFile::Append);
 }
 
@@ -50,6 +61,8 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input, const QSt
     QDateTime dateTime = QDateTime::currentDateTime();
     Conversation::Entry entry(dateTime, from, "Default", input, response, matched);
 
+    m_conversationHistory.append(entry);
+
     logConversationEntry(entry);
 
     emit newConversationEntry(entry);
@@ -61,7 +74,14 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input, const QSt
 
 QPixmap Lvk::BE::DefaultVirtualUser::getAvatar()
 {
-    return QPixmap();
+    return QPixmap();   // For future usage
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::getConversationHistory() const
+{
+    return m_conversationHistory;
 }
 
 //--------------------------------------------------------------------------------------------------
