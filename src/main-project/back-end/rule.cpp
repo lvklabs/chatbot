@@ -190,6 +190,8 @@ QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
     for (int i = 0; i < rule.children().size(); ++i) {
         stream << *(rule.children()[i]);
     }
+
+    return stream;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -218,6 +220,8 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
         stream >> *child;
         rule.appendChild(child);
     }
+
+    return stream;
 }
 
 
