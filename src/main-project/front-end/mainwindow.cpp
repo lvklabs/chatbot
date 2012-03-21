@@ -123,7 +123,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(m_coreApp,
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
-            SLOT(onNewConversatioEntry(BE::Conversation::Entry)));
+            SLOT(onNewChatConversation(BE::Conversation::Entry)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -706,7 +706,7 @@ void Lvk::FE::MainWindow::onDisconnection()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onNewConversatioEntry(const BE::Conversation::Entry &entry)
+void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &entry)
 {
     ui->conversationHistory->addConversationEntry(entry);
 }

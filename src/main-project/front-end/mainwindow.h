@@ -133,7 +133,7 @@ private slots:
     void onConnectionError(int err);
     void onDisconnection();
 
-    void onNewConversatioEntry(const BE::Conversation::Entry &entry);
+    void onNewChatConversation(const BE::Conversation::Entry &entry);
 };
 
 } // namespace Lvk
