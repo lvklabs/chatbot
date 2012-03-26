@@ -34,7 +34,8 @@ void testDefaultSanitizer::testCase1_data()
         QFAIL("Cannot open test data file " TEST_DATA_FILE);
     }
 
-    QStringList ioData = QString(dataFile.readAll()).split(IO_SPLIT_TOKEN, QString::SkipEmptyParts);
+    QString fileContent = QString::fromUtf8(dataFile.readAll());
+    QStringList ioData = fileContent.split(IO_SPLIT_TOKEN, QString::SkipEmptyParts);
 
     QVERIFY2(ioData.size() == 2,
              "Invalid file format in test data file " TEST_DATA_FILE ". Error #1");

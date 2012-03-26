@@ -25,6 +25,7 @@
 #include "rule.h"
 #include "ui_mainwindow.h"
 #include "aimlengine.h"
+#include "defaultsanitizer.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -35,7 +36,7 @@
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine(), parent)),
+    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine(new Lvk::Nlp::DefaultSanitizer()), parent)),
     m_ruleTreeModel(0),
     m_connectionStatus(DisconnectedFromChat)
 {

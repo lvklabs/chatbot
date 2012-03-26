@@ -156,7 +156,7 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 
     for (int i = 0; i < m_rules.size(); ++i) {
         QStringList input = m_sanitizer->sanitize(m_rules[i].input());
-        QStringList output = m_sanitizer->sanitize(m_rules[i].output());
+        const QStringList &output = m_rules[i].output();
 
         for (int j = 0; j < input.size(); ++j) {
             QString categoryId = QString::number(getCategoryId(m_rules[i].id(), j));
