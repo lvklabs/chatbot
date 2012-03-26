@@ -412,7 +412,7 @@ void Lvk::BE::CoreApp::loadDefaultRules()
 
     // evasives
 
-    BE::Rule *evasives    = new BE::Rule("Evasivas");
+    BE::Rule *evasives    = new BE::Rule("Si no entiende");
     evasives->setType(BE::Rule::EvasiveRule);
 
     m_rootRule->appendChild(evasives);

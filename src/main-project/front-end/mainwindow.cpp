@@ -306,11 +306,20 @@ void Lvk::FE::MainWindow::clear()
 
 Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 {
-    BE::Rule *category = new BE::Rule(name, BE::Rule::ContainerRule, m_ruleTreeModel->invisibleRootItem());
+    //BE::Rule *category = new BE::Rule(name, BE::Rule::ContainerRule);
+    //bool appended = m_ruleTreeModel->appendItem(category);
 
-    bool appended = m_ruleTreeModel->appendItem(category);
+    int lastButOneRow = m_ruleTreeModel->rowCount() - 1;
+    if (lastButOneRow < 0) {
+        lastButOneRow = 0;
+    }
 
-    if (appended) {
+    bool added = m_ruleTreeModel->insertRows(lastButOneRow, 1, QModelIndex());
+    BE::Rule *category = m_ruleTreeModel->invisibleRootItem()->child(lastButOneRow);
+    category->setName(name);
+    category->setType(BE::Rule::ContainerRule);
+
+    if (added) {
         return category;
     } else {
         delete category;
