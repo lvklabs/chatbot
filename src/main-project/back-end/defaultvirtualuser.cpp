@@ -37,7 +37,8 @@ Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input, const QString &from)
+QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
+                                                 const CA::ContactInfo &contact)
 {
     if (!m_engine) {
         logError("No engine set!");
@@ -59,6 +60,7 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input, const QSt
     }
 
     QDateTime dateTime = QDateTime::currentDateTime();
+    QString from = !contact.fullname.isEmpty() ? contact.fullname : contact.username;
     Conversation::Entry entry(dateTime, from, "Default", input, response, matched);
 
     m_conversationHistory.append(entry);

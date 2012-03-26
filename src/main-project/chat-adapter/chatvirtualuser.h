@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QPixmap>
+#include "contactinfo.h"
 
 namespace Lvk
 {
@@ -19,9 +20,13 @@ namespace CA
 class VirtualUser
 {
 public:
+    /** Class destructor */
     virtual ~VirtualUser() {}
 
-    virtual QString getResponse(const QString &input, const QString &from) = 0;
+    /** Get a response for the given input and chat contact */
+    virtual QString getResponse(const QString &input, const ContactInfo &contact) = 0;
+
+    /** Virtual user custom avatar */
     virtual QPixmap getAvatar() = 0;
 };
 

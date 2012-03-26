@@ -31,7 +31,7 @@ public:
     DefaultVirtualUser(Nlp::Engine *engine = 0, QObject *parent = 0);
     ~DefaultVirtualUser();
 
-    virtual QString getResponse(const QString &input, const QString &from);
+    virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
 
     virtual QPixmap getAvatar();
 

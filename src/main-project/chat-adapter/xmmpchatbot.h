@@ -3,18 +3,23 @@
 #define LVK_CA_XMPPCHATBOT_H
 
 #include <QObject>
+#include <QHash>
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
 #include "chatbot.h"
 
 class QXmppVCardIq;
+class QMutex;
+class QWaitCondition;
 
 namespace Lvk
 {
 
 namespace CA
 {
+
+class ContactInfo;
 
 /**
  * \brief Chatbot for XMPP chat servers
@@ -69,10 +74,13 @@ private:
     XmppChatbot& operator=(XmppChatbot&);
 
     QXmppClient *m_xmppClient;
-    //QString m_nickname;
-    //QXmppMessage m_queuedMessage;
     VirtualUser *m_virtualUser;
+    QHash<QString, ContactInfo> m_contactInfo;
 
+    QMutex *m_contactInfoMutex;
+    QWaitCondition *m_waitVCard;
+
+    ContactInfo getContactInfo(const QString &bareJid);
     Error convertToLocalError(QXmppClient::Error err);
 };
 

@@ -2,7 +2,8 @@ v0.03
  - Added QXmpp and ProgramQ as third-party dependencies
  - Implemented AIML engine and integrated in UI
  - Implemented connection to Facebook and GTalk chat servers and integrated in UI
- - Implemented simple chatbots
+ - Basic implementation of conversation history
+ - Basic implementation to save rules and categories
 
 v0.02
  - Second UI design

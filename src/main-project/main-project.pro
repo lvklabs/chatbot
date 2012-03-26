@@ -61,6 +61,7 @@ HEADERS += \
     chat-adapter/xmmpchatbot.h \
     chat-adapter/fbchatbot.h \
     chat-adapter/gtalkchatbot.h \
+    chat-adapter/contactinfo.h \
     common/random.h\
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
 
@@ -94,6 +95,7 @@ RESOURCES += \
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
 
 
 
