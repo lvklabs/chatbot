@@ -1,5 +1,6 @@
 #include "aimlengine.h"
 #include "nlprule.h"
+#include "defaultsanitizer.h"
 
 #include "ProgramQ/aimlparser.h"
 
@@ -46,7 +47,7 @@ int getInputNumber(long categoryId)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine()
-    : m_aimlParser(0)
+    : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::DefaultSanitizer())
 {
     QFile *logfile = new QFile("aiml_parser.log");
     logfile->open(QFile::WriteOnly);
@@ -55,6 +56,7 @@ Lvk::Nlp::AimlEngine::AimlEngine()
 
 Lvk::Nlp::AimlEngine::~AimlEngine()
 {
+    delete m_sanitizer;
     delete m_aimlParser;
 }
 
@@ -96,8 +98,10 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &match
 
 QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
+    QString sanitizedInput = m_sanitizer->sanitize(input);
+
     QList<long> categoriesId;
-    QString response = m_aimlParser->getResponse(input, categoriesId);
+    QString response = m_aimlParser->getResponse(sanitizedInput, categoriesId);
 
     QList<QString> responses;
 
@@ -118,8 +122,8 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
     aiml += "<aiml>";
 
     for (int i = 0; i < m_rules.size(); ++i) {
-        const QStringList &input = m_rules[i].input();
-        const QStringList &output = m_rules[i].output();
+        QStringList input = m_sanitizer->sanitize(m_rules[i].input());
+        QStringList output = m_sanitizer->sanitize(m_rules[i].output());
 
         for (int j = 0; j < input.size(); ++j) {
             QString categoryId = QString::number(getCategoryId(m_rules[i].id(), j));

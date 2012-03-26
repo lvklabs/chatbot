@@ -11,6 +11,8 @@ namespace Lvk
 namespace Nlp
 {
 
+class Sanitizer;
+
 /**
  * \brief NLP Engine based on AIML (Artificial Intelligence Markup Language)
  */
@@ -38,6 +40,7 @@ private:
 
     RuleList m_rules;
     AIMLParser *m_aimlParser;
+    Sanitizer *m_sanitizer;
 
     void buildAiml(QString &aiml);
 };

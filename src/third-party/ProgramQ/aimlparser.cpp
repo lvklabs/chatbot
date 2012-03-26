@@ -634,7 +634,7 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
     normalizeString(curTopic);
     Leaf *leaf = NULL;
     QString result("");
-    QStringList sentences = QStringList::split(QRegExp("[\\.\\?!;\\x061f]"), input);
+    QStringList sentences = QStringList::split(QRegExp("[\\.\\?!,;\\x061f]"), input);
     QStringList::Iterator sentence = sentences.begin();
 
     while (sentence != sentences.end())

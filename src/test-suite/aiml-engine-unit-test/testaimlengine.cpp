@@ -32,7 +32,6 @@ private Q_SLOTS:
     void testMatchWithRandomOutput_data();
     void testMatchWithRandomOutput();
 
-
     void cleanupTestCase();
 
 private:
@@ -82,6 +81,8 @@ TestAimlEngine::TestAimlEngine()
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
+#define USER_INPUT_1d                       "HELLO,"
+#define USER_INPUT_1e                       "HELLO;!?"
 #define USER_INPUT_2                        "Hi"
 #define USER_INPUT_3                        "Hey there!"
 #define USER_INPUT_4a                       "What is your name?"
@@ -245,20 +246,22 @@ void TestAimlEngine::testMatchWithSingleOutput_data()
     QTest::addColumn<int>("ruleId");
     QTest::addColumn<int>("ruleInputNumber");
 
-//    QTest::newRow("AIML 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1 << 1 << 0;
-//    QTest::newRow("AIML 2")  << USER_INPUT_1b << RULE_1_OUTPUT_1 << 1 << 0;
-//    QTest::newRow("AIML 3")  << USER_INPUT_1c << RULE_1_OUTPUT_1 << 1 << 0;
-//    QTest::newRow("AIML 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1 << 1 << 1;
-//    QTest::newRow("AIML 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1 << 2 << 0;
-//    QTest::newRow("AIML 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1 << 2 << 0;
-//    QTest::newRow("AIML 7")  << USER_INPUT_5  << RULE_1_OUTPUT_1 << 1 << 2;
-//    QTest::newRow("AIML 8")  << USER_INPUT_6  << RULE_1_OUTPUT_1 << 1 << 2;
-//    QTest::newRow("AIML 9")  << USER_INPUT_7a << RULE_3_OUTPUT_1 << 3 << 0;
-//    QTest::newRow("AIML 10") << USER_INPUT_7b << RULE_3_OUTPUT_1 << 3 << 1;
-//    QTest::newRow("AIML 11") << USER_INPUT_7c << RULE_3_OUTPUT_1 << 3 << 2;
-//    QTest::newRow("AIML 12") << USER_INPUT_7d << RULE_3_OUTPUT_1 << 3 << 3;
+    QTest::newRow("AIML 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1 << 1 << 0;
+    QTest::newRow("AIML 2")  << USER_INPUT_1b << RULE_1_OUTPUT_1 << 1 << 0;
+    QTest::newRow("AIML 3")  << USER_INPUT_1c << RULE_1_OUTPUT_1 << 1 << 0;
+    QTest::newRow("AIML 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1 << 1 << 1;
+    QTest::newRow("AIML 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1 << 2 << 0;
+    QTest::newRow("AIML 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1 << 2 << 0;
+    QTest::newRow("AIML 7")  << USER_INPUT_5  << RULE_1_OUTPUT_1 << 1 << 2;
+    QTest::newRow("AIML 8")  << USER_INPUT_6  << RULE_1_OUTPUT_1 << 1 << 2;
+    QTest::newRow("AIML 9")  << USER_INPUT_7a << RULE_3_OUTPUT_1 << 3 << 0;
+    QTest::newRow("AIML 10") << USER_INPUT_7b << RULE_3_OUTPUT_1 << 3 << 1;
+    QTest::newRow("AIML 11") << USER_INPUT_7c << RULE_3_OUTPUT_1 << 3 << 2;
+    QTest::newRow("AIML 12") << USER_INPUT_7d << RULE_3_OUTPUT_1 << 3 << 3;
     QTest::newRow("AIML 13") << USER_INPUT_8a << RULE_5_OUTPUT_1 << 5 << 0;
-//    QTest::newRow("AIML 14") << USER_INPUT_8b << QString()       << 0 << 0;
+    QTest::newRow("AIML 14") << USER_INPUT_8b << QString()       << 0 << 0;
+    QTest::newRow("AIML 15") << USER_INPUT_1d << RULE_1_OUTPUT_1 << 1 << 0;
+    QTest::newRow("AIML 16") << USER_INPUT_1e << RULE_1_OUTPUT_1 << 1 << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

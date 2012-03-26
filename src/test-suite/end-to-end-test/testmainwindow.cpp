@@ -225,7 +225,7 @@ void TestMainWindow::testTestTabConversationSingleOutput()
 
     QTest::keyClicks(m_window->ui->testInputText, userInput);
 
-    m_window->testInputTextEntered();
+    m_window->onTestInputTextEntered();
 
     QString conversation = QString(CONVERSATION_ENTRY).arg(userInput, expectedOutput);
 
@@ -274,7 +274,7 @@ void TestMainWindow::testTestTabConversationRandomOuput()
 
         QTest::keyClicks(m_window->ui->testInputText, userInput);
 
-        m_window->testInputTextEntered();
+        m_window->onTestInputTextEntered();
 
         QString conversation = m_window->ui->testConversationText->toPlainText();
         QString output = conversation.remove(QRegExp(CONVERSATION_NOT_OUTPUT_REGEX)).trimmed();
