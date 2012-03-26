@@ -18,13 +18,13 @@ INCLUDEPATH += \
 
 HEADERS += \
     ../../main-project/nlp-engine/aimlengine.h \
-    ../../main-project/nlp-engine/defaultsanitizer.h \
+    ../../main-project/nlp-engine/nullsanitizer.h \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
     testaimlengine.cpp\
     ../../main-project/nlp-engine/aimlengine.cpp \
-    ../../main-project/nlp-engine/defaultsanitizer.cpp \
+    ../../main-project/nlp-engine/nullsanitizer.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
 
 

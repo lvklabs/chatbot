@@ -11,12 +11,14 @@ namespace Nlp
 
 /**
  * \brief Default implementation of the Sanitizer interface
+ *
+ * The DefaultSanitizer class returns a string with all vowels without acute or diaeresis
  */
 
 class DefaultSanitizer : public Sanitizer
 {
 public:
-    virtual QString sanitize(const QString &str);
+    virtual QString sanitize(const QString &str) const;
 
 };
 

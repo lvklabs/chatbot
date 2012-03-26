@@ -1,6 +1,6 @@
 #include "aimlengine.h"
 #include "nlprule.h"
-#include "defaultsanitizer.h"
+#include "nullsanitizer.h"
 
 #include "ProgramQ/aimlparser.h"
 
@@ -18,21 +18,27 @@ namespace
 
 // getCategoryId provide a simple way to map two numbers in one unique number
 // getRuleId and getInputNumber retrieve the original values
-
 // Asumming sizeof(long) == 8, that's true for most modern archs
 // 2^12 = 4K input rules should be far enough and we have 2^52 different rules ids
+
 const int  INPUT_NUMBER_BITS = 12; 
 const long INPUT_NUMBER_MASK = 0xfffl;
+
+//--------------------------------------------------------------------------------------------------
 
 long getCategoryId(Lvk::Nlp::RuleId ruleId, int inputNumber)
 {
     return ((long)ruleId << INPUT_NUMBER_BITS) | (long)inputNumber;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::Nlp::RuleId getRuleId(long categoryId)
 {
     return categoryId >> INPUT_NUMBER_BITS;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 int getInputNumber(long categoryId)
 {
@@ -41,18 +47,25 @@ int getInputNumber(long categoryId)
 
 } // namespace
 
-
 //--------------------------------------------------------------------------------------------------
 // AimlEngine
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine()
-    : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::DefaultSanitizer())
+    : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::NullSanitizer())
 {
-    QFile *logfile = new QFile("aiml_parser.log");
-    logfile->open(QFile::WriteOnly);
-    m_aimlParser = new AIMLParser(logfile);
+    init();
 }
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
+    : m_aimlParser(0), m_sanitizer(sanitizer)
+{
+    init();
+}
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::~AimlEngine()
 {
@@ -60,15 +73,30 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
     delete m_aimlParser;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::init()
+{
+    QFile *logfile = new QFile("aiml_parser.log");
+    logfile->open(QFile::WriteOnly);
+    m_aimlParser = new AIMLParser(logfile);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules() const
 {
     return m_rules;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules()
 {
     return m_rules;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 {
@@ -78,6 +106,8 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
     buildAiml(aiml);
     m_aimlParser->loadAimlFromString(aiml);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &matches)
 {
@@ -95,6 +125,8 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &match
         return "";
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
@@ -115,6 +147,7 @@ QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, Match
     return responses;
 }
 
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 {
@@ -148,4 +181,5 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 
     aiml += "</aiml>";
 }
+
 

@@ -21,12 +21,12 @@ public:
     /**
      * \brief Sanitizes the given string
      */
-    virtual QString sanitize(const QString &str) = 0;
+    virtual QString sanitize(const QString &str) const = 0;
 
     /**
      * \brief Sanitizes each string of the given list
      */
-    virtual QStringList sanitize(const QStringList &list)
+    virtual QStringList sanitize(const QStringList &list) const
     {
         QStringList sanitizedList;
         for (int i = 0; i < list.size(); ++i) {

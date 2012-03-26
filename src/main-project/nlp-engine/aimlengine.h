@@ -22,6 +22,8 @@ class AimlEngine : public Engine
 public:
     AimlEngine();
 
+    AimlEngine(Sanitizer *sanitizer);
+
     ~AimlEngine();
 
     virtual const RuleList &rules() const;
@@ -42,6 +44,7 @@ private:
     AIMLParser *m_aimlParser;
     Sanitizer *m_sanitizer;
 
+    void init();
     void buildAiml(QString &aiml);
 };
 
