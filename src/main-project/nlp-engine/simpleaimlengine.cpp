@@ -3,11 +3,6 @@
 
 #include <exception>
 
-#define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
-#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
-#define ELSE_REGEX      "\\{\\s*else\\s*\\}(.+)"
-#define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
-
 //--------------------------------------------------------------------------------------------------
 // SimpleAimlEngine::InvalidSyntaxException
 //--------------------------------------------------------------------------------------------------
@@ -35,9 +30,16 @@ private:
 // SimpleAimlEngine
 //--------------------------------------------------------------------------------------------------
 
+#define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
+#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
+#define ELSE_REGEX      "\\{\\s*else\\s*\\}(.+)"
+#define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
+
+
 Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine()
     : AimlEngine()
 {
+    initRegexs();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -45,6 +47,27 @@ Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine()
 Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *sanitizer)
     : AimlEngine(sanitizer)
 {
+    initRegexs();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::SimpleAimlEngine::initRegexs()
+{
+    QString localizedIfRegex = QString(IF_REGEX)
+            .replace("if", QObject::tr("if"));
+
+    QString localizedIfElseRegex  = QString(IF_ELSE_REGEX)
+            .replace("if", QObject::tr("if"))
+            .replace("else", QObject::tr("else"));
+
+    m_varNameRegex = QRegExp(VAR_NAME_REGEX);
+    m_ifRegex = QRegExp(localizedIfRegex);
+    m_ifElseRegex = QRegExp(localizedIfElseRegex);
+
+    m_varNameRegex.setCaseSensitive(false);
+    m_ifRegex.setCaseSensitive(false);
+    m_ifElseRegex.setCaseSensitive(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -90,6 +113,8 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRules(Lvk::Nlp::RuleList &pureAiml
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRule,
                                                    const Lvk::Nlp::Rule &rule) const
 {
@@ -100,12 +125,12 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRule,
     buildPureAimlOutputList(pureAimlRule.output(), varNameOnInput, rule.output());
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInputList,
                                                         QString &varNameOnInput,
                                                         const QStringList &inputList) const
 {
-    QRegExp varNameRegex(VAR_NAME_REGEX);
-
     pureAimlInputList.clear();
     varNameOnInput.clear();
 
@@ -121,39 +146,36 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInp
         const QString &input = inputList[i];
         QString pureAimlInput = input;
 
-        int pos = varNameRegex.indexIn(input);
+        int pos = m_varNameRegex.indexIn(input);
 
         // If variable decl found
         if (pos != -1) {
 
-            // Two or more variable decl in the same input
-            if (pos != varNameRegex.lastIndexIn(input)) {
+            if (pos != m_varNameRegex.lastIndexIn(input)) {
                 throw InvalidSyntaxException(
                         QObject::tr("A rule input cannot contain two or more variables"));
             }
 
-            if (!varNameOnInput.isNull() && varNameOnInput != varNameRegex.cap(1)) {
+            if (!varNameOnInput.isNull() && varNameOnInput != m_varNameRegex.cap(1)) {
                 throw InvalidSyntaxException(
                         QObject::tr("Rules cannot contain two or more different variable names"));
             }
 
-            varNameOnInput = varNameRegex.cap(1);
+            varNameOnInput = m_varNameRegex.cap(1);
 
-            pureAimlInput.replace(varNameRegex, " * ");
+            pureAimlInput.replace(m_varNameRegex, " * ");
         }
 
         pureAimlInputList.append(pureAimlInput);
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOutputList,
                                                          const QString &varNameOnInput,
                                                          const QStringList &outputList) const
 {
-    QRegExp varNameRegex(VAR_NAME_REGEX);
-    QRegExp ifElseRegex(IF_ELSE_REGEX);
-    QRegExp ifRegex(IF_REGEX);
-
     pureAimlOutputList.clear();
 
     /*
@@ -181,27 +203,27 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
 
         // Parse If-Else
 
-        pos = ifElseRegex.indexIn(output);
+        pos = m_ifElseRegex.indexIn(output);
         if (pos != -1) {
             pureAimlOutput = QString("<condition>"
                                      "<li name=\"%1\" value=\"%2\">%3</li>"
                                      "<li>%4</li>"
                                      "</condition>")
-                                        .arg(ifElseRegex.cap(1))
-                                        .arg(ifElseRegex.cap(2).trimmed())
-                                        .arg(ifElseRegex.cap(3).trimmed())
-                                        .arg(ifElseRegex.cap(4).trimmed());
+                                        .arg(m_ifElseRegex.cap(1))
+                                        .arg(m_ifElseRegex.cap(2).trimmed())
+                                        .arg(m_ifElseRegex.cap(3).trimmed())
+                                        .arg(m_ifElseRegex.cap(4).trimmed());
         } else {
             // Parse If
 
-            pos = ifRegex.indexIn(output);
+            pos = m_ifRegex.indexIn(output);
             if (pos != -1) {
                 pureAimlOutput = QString("<condition>"
                                          "<li name=\"%1\" value=\"%2\">%3</li>"
                                          "</condition>")
-                                            .arg(ifRegex.cap(1))
-                                            .arg(ifRegex.cap(2).trimmed())
-                                            .arg(ifRegex.cap(3).trimmed());
+                                            .arg(m_ifRegex.cap(1))
+                                            .arg(m_ifRegex.cap(2).trimmed())
+                                            .arg(m_ifRegex.cap(3).trimmed());
             }
         }
 
@@ -209,10 +231,10 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
 
         pos = 0;
         while (pos != -1) {
-            pos = varNameRegex.indexIn(output, pos);
+            pos = m_varNameRegex.indexIn(output, pos);
 
             if (pos != -1) {
-                QString varName = varNameRegex.cap(1);
+                QString varName = m_varNameRegex.cap(1);
 
                 if (varName == varNameOnInput) {
                     pureAimlOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
@@ -227,7 +249,9 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
         }
 
         if (!varNameOnInput.isNull()) {
-            pureAimlOutput.prepend("<think><set name=\"" + varNameOnInput + "\"><star/></set></think>");
+            pureAimlOutput.prepend("<think>"
+                                   "<set name=\"" + varNameOnInput + "\"><star/></set>"
+                                   "</think>");
         }
 
         pureAimlOutputList.append(pureAimlOutput);

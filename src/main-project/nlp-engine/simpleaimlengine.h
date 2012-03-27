@@ -12,9 +12,10 @@ namespace Nlp
 /**
  * \brief SimpleAimlEngine is a wrapper over the AimlEngine to provide a simpler syntax than AIML
  *
- * For instance instead of writing:
+ * SimpleAimlEngine supports handy variable names and if-else conditionals. For instance instead of
+ * writing:
  *
- * Input: Do you like *
+ * Input:  Do you like *
  * Output: <think><set name="like"><star/></set></think>
  *         <condition>
  *             <li name="like" value="football"> Yes I like <star/></li>
@@ -23,7 +24,7 @@ namespace Nlp
  *
  * With SimpleAimlEngine we can write:
  *
- * Input: Do you like [VarName]
+ * Input:  Do you like [VarName]
  * Output: {if [VarName] = football}
  *         Yes I like [VarName]
  *         {else}
@@ -48,6 +49,8 @@ public:
 private:
     RuleList m_rules;
 
+    void initRegexs();
+
     void buildPureAimlRules(RuleList &aimlRules) const;
     void buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRules, const Lvk::Nlp::Rule &rule) const;
     void buildPureAimlInputList(QStringList &pureAimlInputList,
@@ -56,6 +59,11 @@ private:
     void buildPureAimlOutputList(QStringList &pureAimlOutputList,
                                  const QString &varNameOnInput,
                                  const QStringList &outputList) const;
+
+    QRegExp m_varNameRegex;
+    QRegExp m_ifElseRegex;
+    QRegExp m_ifRegex;
+
 };
 
 } // namespace Nlp

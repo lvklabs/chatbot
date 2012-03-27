@@ -19,6 +19,8 @@ private Q_SLOTS:
     void testConditionals_data();
     void testConditionals();
 
+    //TODO void testLocalizedConditionals();
+
 private:
     Lvk::Nlp::SimpleAimlEngine *m_engine;
 };
