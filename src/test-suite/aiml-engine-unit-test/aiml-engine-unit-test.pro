@@ -12,6 +12,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+PROJECT_PATH = $$PWD
+
 INCLUDEPATH += \
     ../../main-project/nlp-engine \
     ../../third-party
@@ -33,9 +35,16 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 OTHER_FILES += \
-    AimlParserRegression.xml \
-    AimlParserRegression.aiml \
-    AimlParserRegressionSkipList.txt
+    $$PROJECT_PATH/AimlParserRegression.xml \
+    $$PROJECT_PATH/AimlParserRegression.aiml \
+    $$PROJECT_PATH/AimlParserRegressionSkipList.txt
 
+win32 {
+    copyfiles.commands = @call copy $$OTHER_FILES .
+} else {
+    copyfiles.commands = cp $$OTHER_FILES .
+}
 
+QMAKE_EXTRA_TARGETS += copyfiles
+POST_TARGETDEPS += copyfiles
 

@@ -200,8 +200,9 @@ void TestAimlEngine::setRules3()
                             QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
 
     rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << RULE_6_INPUT_1 << RULE_6_INPUT_2,
-                            QStringList() << RULE_6_OUTPUT_1);
+                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
+                                          << QString::fromUtf8(RULE_6_INPUT_2),
+                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
 
     m_engineWithDefSanitizer->setRules(rules);
 }
@@ -390,10 +391,18 @@ void TestAimlEngine::testMatchWithDefaultSanitizer_data()
     QTest::addColumn<int>("ruleId");
     QTest::addColumn<int>("ruleInputNumber");
 
-    QTest::newRow("AIML 1 w/DefSanitizer")  << USER_INPUT_9a << RULE_6_OUTPUT_1 << RULE_6_ID << 0;
-    QTest::newRow("AIML 2 w/DefSanitizer")  << USER_INPUT_9b << RULE_6_OUTPUT_1 << RULE_6_ID << 0;
-    QTest::newRow("AIML 3 w/DefSanitizer")  << USER_INPUT_9c << RULE_6_OUTPUT_1 << RULE_6_ID << 0;
-    QTest::newRow("AIML 4 w/DefSanitizer")  << USER_INPUT_9d << RULE_6_OUTPUT_1 << RULE_6_ID << 1;
+    QTest::newRow("AIML 1 w/DefSanitizer") << QString::fromUtf8(USER_INPUT_9a)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("AIML 2 w/DefSanitizer") << QString::fromUtf8(USER_INPUT_9b)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("AIML 3 w/DefSanitizer") << QString::fromUtf8(USER_INPUT_9c)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("AIML 4 w/DefSanitizer") << QString::fromUtf8(USER_INPUT_9d)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 1;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -8,12 +8,13 @@ QT       += testlib
 
 QT       -= gui
 
-TARGET = testdefaultsanitizer
+TARGET = defaultSanitizerUnitTest
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+PROJECT_PATH = $$PWD
 
 INCLUDEPATH += \
     ../../main-project/nlp-engine \
@@ -29,7 +30,13 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 OTHER_FILES += \
-    test_data.txt
+    $$PROJECT_PATH/test_data.txt
 
+win32 {
+    copyfiles.commands = @call copy $$OTHER_FILES .
+} else {
+    copyfiles.commands = cp $$OTHER_FILES .
+}
 
-
+QMAKE_EXTRA_TARGETS += copyfiles
+POST_TARGETDEPS += copyfiles
