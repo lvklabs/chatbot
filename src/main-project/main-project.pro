@@ -56,6 +56,7 @@ HEADERS += \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
+    nlp-engine/simpleaimlengine.h \
     nlp-engine/sanitizer.h \
     nlp-engine/defaultsanitizer.h \
     nlp-engine/nullsanitizer.h \
@@ -83,6 +84,7 @@ SOURCES += \
     back-end/conversation.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
+    nlp-engine/simpleaimlengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
     nlp-engine/nullsanitizer.cpp \
     chat-adapter/xmmpchatbot.cpp \
@@ -102,6 +104,8 @@ RESOURCES += \
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+
 
 
 

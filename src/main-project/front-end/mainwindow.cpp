@@ -24,7 +24,7 @@
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
-#include "aimlengine.h"
+#include "simpleaimlengine.h"
 #include "defaultsanitizer.h"
 
 #include <QStandardItemModel>
@@ -33,10 +33,13 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 
+typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
+typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(new Lvk::Nlp::AimlEngine(new Lvk::Nlp::DefaultSanitizer()), parent)),
+    m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
     m_ruleTreeModel(0),
     m_connectionStatus(DisconnectedFromChat)
 {

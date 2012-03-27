@@ -60,6 +60,7 @@ HEADERS += \
     ../../main-project/nlp-engine/nlprule.h \
     ../../main-project/nlp-engine/exactmatchengine.h \
     ../../main-project/nlp-engine/aimlengine.h \
+    ../../main-project/nlp-engine/simpleaimlengine.h \
     ../../main-project/nlp-engine/defaultsanitizer.h \
     ../../main-project/nlp-engine/nullsanitizer.h \
     ../../main-project/chat-adapter/chatvirtualuser.h \
@@ -85,6 +86,7 @@ SOURCES += \
     ../../main-project/back-end/conversation.cpp \
     ../../main-project/nlp-engine/exactmatchengine.cpp \
     ../../main-project/nlp-engine/aimlengine.cpp \
+    ../../main-project/nlp-engine/simpleaimlengine.cpp \
     ../../main-project/nlp-engine/defaultsanitizer.cpp \
     ../../main-project/nlp-engine/nullsanitizer.cpp \
     ../../main-project/chat-adapter/xmmpchatbot.cpp \

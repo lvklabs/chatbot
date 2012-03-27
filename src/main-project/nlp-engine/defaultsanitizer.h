@@ -13,6 +13,7 @@ namespace Nlp
  * \brief Default implementation of the Sanitizer interface
  *
  * The DefaultSanitizer class returns a string with all vowels without acute or diaeresis
+ * and remove punctuation symbols such as ,;.?!
  */
 
 class DefaultSanitizer : public Sanitizer
