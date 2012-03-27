@@ -40,7 +40,7 @@ private:
 
 #define USER_INPUT_2a                       "Do you like football?"
 #define USER_INPUT_2b                       "Do you like tennis?"
-#define USER_OUTPUT_2a                      "Yes, I Like football"
+#define USER_OUTPUT_2a                      "Yes, I like football"
 #define USER_OUTPUT_2b                      "No, I don't"
 
 #define RULE_3_ID                           3
@@ -49,6 +49,7 @@ private:
 
 #define USER_INPUT_3                        "Do you remember where I was"
 #define USER_OUTPUT_3                       "Sure, you were in cordoba"
+
 
 TestSimpleAimlEngine::TestSimpleAimlEngine()
     : m_engine(new Lvk::Nlp::SimpleAimlEngine())

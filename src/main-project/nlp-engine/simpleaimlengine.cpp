@@ -4,8 +4,9 @@
 #include <exception>
 
 #define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
-#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}([^{]*)"
-#define ELSE_REGEX      "{\\s*else\\s*}(.*)"
+#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
+#define ELSE_REGEX      "\\{\\s*else\\s*\\}(.+)"
+#define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
 
 //--------------------------------------------------------------------------------------------------
 // SimpleAimlEngine::InvalidSyntaxException
@@ -150,8 +151,8 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
                                                          const QStringList &outputList) const
 {
     QRegExp varNameRegex(VAR_NAME_REGEX);
-//    QRegExp ifRegex(IF_REGEX);
-//    QRegExp elseRegex(ELSE_REGEX);
+    QRegExp ifElseRegex(IF_ELSE_REGEX);
+    QRegExp ifRegex(IF_REGEX);
 
     pureAimlOutputList.clear();
 
@@ -171,11 +172,42 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
      */
 
     for (int i = 0; i < outputList.size(); ++i) {
-        const QString &output = outputList[i];
-        QString pureAimlOutput = output;
 
-        int pos = 0;
+        // TODO refactor!
 
+        QString output = outputList[i];
+        QString pureAimlOutput = outputList[i];
+        int pos;
+
+        // Parse If-Else
+
+        pos = ifElseRegex.indexIn(output);
+        if (pos != -1) {
+            pureAimlOutput = QString("<condition>"
+                                     "<li name=\"%1\" value=\"%2\">%3</li>"
+                                     "<li>%4</li>"
+                                     "</condition>")
+                                        .arg(ifElseRegex.cap(1))
+                                        .arg(ifElseRegex.cap(2).trimmed())
+                                        .arg(ifElseRegex.cap(3).trimmed())
+                                        .arg(ifElseRegex.cap(4).trimmed());
+        } else {
+            // Parse If
+
+            pos = ifRegex.indexIn(output);
+            if (pos != -1) {
+                pureAimlOutput = QString("<condition>"
+                                         "<li name=\"%1\" value=\"%2\">%3</li>"
+                                         "</condition>")
+                                            .arg(ifRegex.cap(1))
+                                            .arg(ifRegex.cap(2).trimmed())
+                                            .arg(ifRegex.cap(3).trimmed());
+            }
+        }
+
+        // Parse Variables
+
+        pos = 0;
         while (pos != -1) {
             pos = varNameRegex.indexIn(output, pos);
 
