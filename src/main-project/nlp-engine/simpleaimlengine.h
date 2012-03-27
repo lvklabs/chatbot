@@ -36,6 +36,26 @@ public:
     SimpleAimlEngine();
 
     SimpleAimlEngine(Sanitizer *sanitizer);
+
+    virtual const RuleList &rules() const;
+
+    virtual RuleList &rules();
+
+    virtual void setRules(const RuleList &rules);
+
+    class InvalidSyntaxException;
+
+private:
+    RuleList m_rules;
+
+    void buildPureAimlRules(RuleList &aimlRules) const;
+    void buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRules, const Lvk::Nlp::Rule &rule) const;
+    void buildPureAimlInputList(QStringList &pureAimlInputList,
+                                QString &varNameOnInput,
+                                const QStringList &inputList) const;
+    void buildPureAimlOutputList(QStringList &pureAimlOutputList,
+                                 const QString &varNameOnInput,
+                                 const QStringList &outputList) const;
 };
 
 } // namespace Nlp

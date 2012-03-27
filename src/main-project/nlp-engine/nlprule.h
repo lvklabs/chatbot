@@ -31,7 +31,7 @@ public:
         : m_id(id), m_input(input), m_output(output) {}
 
 
-    RuleId id() { return m_id; }
+    RuleId id() const { return m_id; }
 
     void setId(RuleId id) { m_id = id; }
 
@@ -43,9 +43,9 @@ public:
     void setInput(const QStringList &input) { m_input = input; }
 
 
-    const QStringList output() const { return m_output; }
+    const QStringList &output() const { return m_output; }
 
-    QStringList output() { return m_output; }
+    QStringList &output() { return m_output; }
 
     void setOuput(const QStringList &output) { m_output = output; }
 
