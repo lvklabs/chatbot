@@ -1,14 +1,14 @@
 #ifndef RULEOUTPUTWIDGET_H
 #define RULEOUTPUTWIDGET_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QStringList>
 
 /**
  * \brief Custom widget to edit or display NLP rule ouputs
  */
 
-class RuleOutputWidget : public QTextEdit
+class RuleOutputWidget : public QPlainTextEdit
 {
     Q_OBJECT
 public:

@@ -1,7 +1,7 @@
 #include "ruleoutputwidget.h"
 
 RuleOutputWidget::RuleOutputWidget(QWidget *parent) :
-    QTextEdit(parent)
+    QPlainTextEdit(parent)
 {
 }
 

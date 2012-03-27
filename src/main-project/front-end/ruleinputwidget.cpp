@@ -1,6 +1,6 @@
 #include "ruleinputwidget.h"
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -11,7 +11,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_inputLabel(new QLabel(tr("If user writes:"), this)),
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
-    m_inputVariants(new QTextEdit(this)),
+    m_inputVariants(new QPlainTextEdit(this)),
     m_eventFilter(0)
 {
     m_layout->setMargin(0);
@@ -81,7 +81,7 @@ void RuleInputWidget::setInputList(const QStringList &inputList)
     }
 
     m_input->setText(input);
-    m_inputVariants->setText(inputVariants);
+    m_inputVariants->setPlainText(inputVariants);
 }
 
 void RuleInputWidget::setFocusOnInput()

@@ -6,7 +6,7 @@
 #include <QStringList>
 
 class QLineEdit;
-class QTextEdit;
+class QPlainTextEdit;
 class QLayout;
 class QLabel;
 
@@ -49,12 +49,12 @@ private:
     RuleInputWidget(RuleInputWidget&);
     RuleInputWidget& operator=(RuleInputWidget&);
 
-    QLayout   *m_layout;
-    QLabel    *m_inputLabel;
-    QLineEdit *m_input;
-    QLabel    *m_inputVariantsLabel;
-    QTextEdit *m_inputVariants;
-    QObject   *m_eventFilter;
+    QLayout        *m_layout;
+    QLabel         *m_inputLabel;
+    QLineEdit      *m_input;
+    QLabel         *m_inputVariantsLabel;
+    QPlainTextEdit *m_inputVariants;
+    QObject        *m_eventFilter;
 };
 
 #endif // RULEINPUTWIDGET_H
