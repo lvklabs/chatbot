@@ -53,13 +53,15 @@ public:
 
     bool save();
 
+    bool hasUnsavedChanges() const;
+
     void close();
 
     Rule *rootRule();
 
-    typedef QList< QPair<Rule *, int> > MatchList;
+    typedef QList< QPair<const Rule *, int> > MatchList;
 
-    QString getResponse(const QString &input, MatchList &matches);
+    QString getResponse(const QString &input, MatchList &matches) const;
 
     void refreshNlpEngine();
 
@@ -94,12 +96,14 @@ private:
     Rule *m_rootRule;
     Nlp::Engine *m_nlpEngine;
     Nlp::RuleId m_nextRuleId;
-    QHash<Nlp::RuleId, Rule *> m_rulesHash;
+    QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     QStringList m_evasives;
     CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
 
-    void buildNlpRulesOf(Rule* parentRule, Nlp::RuleList &nlpRules);
+    void markAsSaved();
+
+    void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 
     void createChatbot(ChatType type);
     void deleteCurrentChatbot();

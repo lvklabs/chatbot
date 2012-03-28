@@ -181,9 +181,9 @@ QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, BE::Rule *parentI
     return childItem ? createIndex(row, column, childItem) : QModelIndex();
 }
 
-QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(BE::Rule *item)
+QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(const BE::Rule *item)
 {
-    return item != m_rootRule ? createIndex(rowForItem(item), 0, item) : QModelIndex();
+    return item != m_rootRule ? createIndex(rowForItem(item), 0, (void *)item) : QModelIndex();
 }
 
 bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)

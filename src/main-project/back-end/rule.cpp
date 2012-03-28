@@ -5,25 +5,37 @@
 #include <assert.h>
 
 Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
-    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule)
+    : m_name(""), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule),
+      m_enabled(false), m_status(Unsaved)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
-    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule)
+    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(OrdinaryRule),
+      m_enabled(false), m_status(Unsaved)
 {
 }
 
-Lvk::BE::Rule::Rule(const QString &name, RuleType type, Rule *parent /*= 0*/)
-    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(type)
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
+    : m_name(name), m_input(), m_ouput(), m_parentItem(parent), m_type(type),
+      m_enabled(false), m_status(Unsaved)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
                         const QList<QString> &ouput, Rule *parent /*= 0*/)
-    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(OrdinaryRule)
+    : m_name(name), m_input(input), m_ouput(ouput), m_parentItem(parent), m_type(OrdinaryRule),
+      m_enabled(false), m_status(Unsaved)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule::~Rule()
 {
@@ -37,6 +49,8 @@ Lvk::BE::Rule * Lvk::BE::Rule::parent()
     return m_parentItem;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::BE::Rule * Lvk::BE::Rule::parent() const
 {
     return m_parentItem;
@@ -49,10 +63,14 @@ QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children()
     return m_childItems;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 const QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children() const
 {
     return m_childItems;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::Rule::appendChild(Rule *item)
 {
@@ -62,8 +80,12 @@ bool Lvk::BE::Rule::appendChild(Rule *item)
 
     m_childItems.append(item);
 
+    m_status = Unsaved;
+
     return true;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::Rule::insertChildren(int position, int count)
 {
@@ -76,8 +98,12 @@ bool Lvk::BE::Rule::insertChildren(int position, int count)
         m_childItems.insert(position, rule);
     }
 
+    m_status = Unsaved;
+
     return true;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::Rule::removeChildren(int position, int count)
 {
@@ -89,23 +115,33 @@ bool Lvk::BE::Rule::removeChildren(int position, int count)
         delete m_childItems.takeAt(position);
     }
 
+    m_status = Unsaved;
+
     return true;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::Rule::removeAllChild()
 {
     removeChildren(0, childCount());
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Rule * Lvk::BE::Rule::child(int row)
 {
     return m_childItems.value(row);
 }
 
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::BE::Rule * Lvk::BE::Rule::child(int row) const
 {
     return m_childItems.value(row);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 int Lvk::BE::Rule::childCount() const
 {
@@ -114,12 +150,49 @@ int Lvk::BE::Rule::childCount() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Rule::setType(Rule::RuleType type)
+Lvk::BE::Rule * Lvk::BE::Rule::nextSibling()
 {
-    m_type = type;
+    if (m_parentItem != 0) {
+        // TODO consider not using indexOf to improve performance. Instead store the sibling number
+        //      as a class atribute
+        int i = m_parentItem->m_childItems.indexOf(const_cast<Rule *>(this));
+
+        if (i + 1 <  m_parentItem->m_childItems.size()) {
+            return m_parentItem->m_childItems[i + 1];
+        }
+    }
+    return 0;
 }
 
-Lvk::BE::Rule::RuleType Lvk::BE::Rule::type() const
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Rule * Lvk::BE::Rule::nextSibling() const
+{
+    if (m_parentItem != 0) {
+        // TODO consider not using indexOf to improve performance. Instead store the sibling number
+        //      as a class atribute
+        int i = m_parentItem->m_childItems.indexOf(const_cast<Rule *>(this));
+
+        if (i + 1 <  m_parentItem->m_childItems.size()) {
+            return m_childItems[i + 1];
+        }
+    }
+    return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setType(Rule::Type type)
+{
+    if (m_type != type) {
+        m_type = type;
+        m_status = Unsaved;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule::Type Lvk::BE::Rule::type() const
 {
     return m_type;
 }
@@ -128,6 +201,8 @@ Lvk::BE::Rule::RuleType Lvk::BE::Rule::type() const
 
 QList<QString> &Lvk::BE::Rule::input()
 {
+    m_status = Unsaved;
+
     return m_input;
 }
 
@@ -138,6 +213,8 @@ const QList<QString> &Lvk::BE::Rule::input() const
 
 void Lvk::BE::Rule::setInput(const QList<QString> &input)
 {
+    m_status = Unsaved;
+
     m_input = input;
 }
 
@@ -145,25 +222,28 @@ void Lvk::BE::Rule::setInput(const QList<QString> &input)
 
 QList<QString> &Lvk::BE::Rule::output()
 {
+    m_status = Unsaved;
+
     return m_ouput;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 const QList<QString> &Lvk::BE::Rule::output() const
 {
     return m_ouput;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::Rule::setOutput(const QList<QString> &output)
 {
+    m_status = Unsaved;
+
     m_ouput = output;
 }
 
 //--------------------------------------------------------------------------------------------------
-
-QString &Lvk::BE::Rule::name()
-{
-    return m_name;
-}
 
 const QString &Lvk::BE::Rule::name() const
 
@@ -171,9 +251,15 @@ const QString &Lvk::BE::Rule::name() const
     return m_name;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::Rule::setName(const QString &name)
 {
-    m_name = name;
+    if (m_name != name) {
+        m_name = name;
+
+        m_status = Unsaved;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -213,7 +299,7 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     rule.setName(name);
     rule.setInput(input);
     rule.setOutput(output);
-    rule.setType(static_cast<Rule::RuleType>(type));
+    rule.setType(static_cast<Rule::Type>(type));
 
     for (int i = 0; i < childCount; ++i) {
         Rule *child = new Rule();
@@ -224,6 +310,36 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     return stream;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Rule::enabled()
+{
+    return m_enabled;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setEnabled(bool enabled)
+{
+    if (m_enabled != enabled) {
+        m_enabled = enabled;
+        m_status = Unsaved;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule::Status Lvk::BE::Rule::status()
+{
+    return m_status;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setStatus(Status status)
+{
+    m_status = status;
+}
 
 
 

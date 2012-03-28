@@ -12,19 +12,68 @@ namespace BE
 {
 
 /**
- * \brief This class provides the abstraction of a pattern-template rule.
+ * \brief This class provides a NLP rule plus some metadata
  */
 
 class Rule
 {
+private:
+
+    template <typename T>
+    class generic_iterator
+    {
+    public:
+        generic_iterator(T rule = 0) : m_rule(rule) { }
+
+        T operator*() { return m_rule; }
+
+        generic_iterator<T> operator++()
+        {
+            // Depth-first search
+
+            if (m_rule->childCount() > 0) {
+                m_rule = m_rule->child(0);
+            } else {
+                do {
+                    T nextSibling = m_rule->nextSibling();
+
+                    if (nextSibling) {
+                        m_rule = nextSibling;
+                        break;
+                    }
+
+                    m_rule = m_rule->parent();
+                } while (m_rule);
+            }
+
+            return *this;
+        }
+
+        bool operator==(const generic_iterator& it)
+        {
+            return m_rule == it.m_rule;
+        }
+
+        bool operator!=(const generic_iterator& it)
+        {
+            return !operator==(it);
+        }
+
+    private:
+        T m_rule;
+    };
+
+
 public:
-    enum RuleType { OrdinaryRule, EvasiveRule, ContainerRule };
+    enum Type { OrdinaryRule, EvasiveRule, ContainerRule };
+
+    enum Status { Saved, Unsaved };
 
     Rule(Rule *parent = 0);
 
     Rule(const QString &name, Rule *parent = 0);
 
-    Rule(const QString &name, RuleType type, Rule *parent = 0);
+    Rule(const QString &name, Type type, Rule *parent = 0);
 
     Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
              Rule *parent = 0);
@@ -57,12 +106,15 @@ public:
     const Rule *child(int number) const;
 
 
-    RuleType type() const;
+    Rule *nextSibling();
 
-    void setType(RuleType type);
+    const Rule *nextSibling() const;
 
 
-    QString &name();
+    Type type() const;
+
+    void setType(Type type);
+
 
     const QString &name() const;
 
@@ -82,6 +134,35 @@ public:
 
     void setOutput(const QList<QString> &output);
 
+
+    bool enabled();
+
+    void setEnabled(bool enabled);
+
+
+    Status status();
+
+    void setStatus(Status status);
+
+    /**
+      * \brief Rule iterator
+      */
+    typedef generic_iterator<Rule *> iterator;
+
+    /**
+      * \brief Rule const iterator
+      */
+    typedef generic_iterator<const Rule *> const_iterator;
+
+
+    iterator begin() { return iterator(this); }
+
+    iterator end() { return iterator(0); }
+
+    const_iterator begin() const { return const_iterator(this); }
+
+    const_iterator end() const { return const_iterator(0); }
+
 private:
     Rule(Rule&);
     Rule& operator=(Rule&);
@@ -91,7 +172,9 @@ private:
     QList<QString> m_input;
     QList<QString> m_ouput;
     Rule *m_parentItem;
-    RuleType m_type;
+    Type m_type;
+    bool m_enabled;
+    Status m_status;
 };
 
 QDataStream &operator<<(QDataStream &stream, const Rule &rule);

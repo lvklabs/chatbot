@@ -109,7 +109,7 @@ private:
 
     void selectFirstRule();
 
-    void selectRule(BE::Rule *rule);
+    void selectRule(const BE::Rule *rule);
     BE::Rule *selectedRule();
     BE::Rule *evasiveRule();
     BE::Rule *rootRule();

@@ -78,7 +78,7 @@ void Lvk::FE::MainWindow::initCoreAndModels()
     m_coreApp->load("rules.dat");
 
     m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
-    m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
+    //m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
@@ -170,18 +170,20 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
 
 void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 {
-    QMessageBox msg(QMessageBox::Question,
-                    tr("Save changes"), tr("Do you want to save the changes?"),
-                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+    if (m_coreApp->hasUnsavedChanges()) {
+        QMessageBox msg(QMessageBox::Question,
+                        tr("Save changes"), tr("Do you want to save the changes?"),
+                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
-    int code = msg.exec();
+        int code = msg.exec();
 
-    if (code == QMessageBox::Yes) {
-        m_coreApp->save();
-    } else if (code == QMessageBox::Cancel) {
-        event->ignore();
-    } else {
-        QMainWindow::closeEvent(event);
+        if (code == QMessageBox::Yes) {
+            m_coreApp->save();
+        } else if (code == QMessageBox::Cancel) {
+            event->ignore();
+        } else {
+            QMainWindow::closeEvent(event);
+        }
     }
 }
 
@@ -441,7 +443,7 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
 
     QModelIndex selectedIndex = selectedRows[0];
     BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
-    BE::Rule::RuleType ruleType = selectedItem->type();
+    BE::Rule::Type ruleType = selectedItem->type();
 
     QString dialogText;
     QString dialogTitle;
@@ -520,7 +522,7 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::selectedRule()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::selectRule(BE::Rule *rule)
+void Lvk::FE::MainWindow::selectRule(const BE::Rule *rule)
 {
     if (!rule) {
         return;
@@ -584,7 +586,8 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
     }
 
     if (!selected.indexes().isEmpty()) {
-        BE::Rule *item = static_cast<BE::Rule *>(selected.indexes().first().internalPointer());
+        const BE::Rule *item =
+                static_cast<const BE::Rule *>(selected.indexes().first().internalPointer());
 
         if (item->type() == BE::Rule::OrdinaryRule) {
 
@@ -645,7 +648,7 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
     if (!matches.empty()) {
         // Assuming only one match
 
-        BE::Rule *rule = matches.first().first;
+        const BE::Rule *rule = matches.first().first;
         int ruleNumber = matches.first().second;
 
         selectRule(rule);

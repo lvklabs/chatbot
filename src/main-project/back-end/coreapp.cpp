@@ -69,6 +69,10 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
         loadDefaultRules();
     }
 
+    if (success) {
+        markAsSaved();
+    }
+
     refreshNlpEngine();
 
     return success;
@@ -88,6 +92,10 @@ bool Lvk::BE::CoreApp::save()
         success = false;
     }
 
+    if (success) {
+        markAsSaved();
+    }
+
     return success;
 }
 
@@ -100,6 +108,32 @@ bool Lvk::BE::CoreApp::saveAs(const QString &filename)
     save();
 
     return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::hasUnsavedChanges() const
+{
+    if (!m_rootRule) {
+        return false;
+    }
+
+    for (Rule::/* FIXME const_*/iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
+        if ((*it)->status() == Rule::Unsaved) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::markAsSaved()
+{
+    for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
+        (*it)->setStatus(Rule::Saved);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -185,7 +219,7 @@ Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList  &matches)
+QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) const
 {
     matches.clear();
 
@@ -230,14 +264,14 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::buildNlpRulesOf(BE::Rule *parentRule, Nlp::RuleList &nlpRules)
+void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList &nlpRules)
 {
     if (!parentRule) {
         return;
     }
 
     for (int i = 0; i < parentRule->childCount(); ++i) {
-        BE::Rule *child = parentRule->child(i);
+        const BE::Rule *child = parentRule->child(i);
         if (child->type() == Rule::OrdinaryRule) {
             m_rulesHash[m_nextRuleId] = child;
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
@@ -423,5 +457,6 @@ void Lvk::BE::CoreApp::loadDefaultRules()
 
     evasives->setOutput(evasivesOutputList);
 }
+
 
 

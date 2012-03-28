@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="trainTab">
         <attribute name="title">
@@ -141,7 +141,7 @@
             </layout>
            </widget>
            <widget class="QWidget" name="verticalLayoutWidget_2">
-            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,1,0">
+            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,1,0,0">
              <item>
               <spacer name="verticalSpacer_2">
                <property name="orientation">
@@ -194,6 +194,37 @@
                 <string/>
                </property>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="ruleStatusLabel">
+                 <property name="text">
+                  <string>Status:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="statusTeachSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="teachButton">
+                 <property name="text">
+                  <string>Teach</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <spacer name="verticalSpacer">

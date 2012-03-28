@@ -63,7 +63,7 @@ public:
 
     QModelIndex index(int row, int column, BE::Rule *parentItem) const;
 
-    QModelIndex indexFromItem(BE::Rule *item);
+    QModelIndex indexFromItem(const BE::Rule *item);
 
     bool appendItem(BE::Rule *item);
 
