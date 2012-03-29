@@ -595,7 +595,7 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
         if (rule && m_ruleEdited) {
             QMessageBox msg(QMessageBox::Question,
                             tr("Rule has changed"),
-                            tr("Rule '" + rule->name() + "' has changed\n"
+                            tr("The rule has changed."
                                "Do you want to teach the changes made to the rule?"),
                             QMessageBox::Yes | QMessageBox::No, this);
 
