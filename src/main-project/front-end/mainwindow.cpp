@@ -432,8 +432,12 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
         parentCategory =  m_ruleTreeModel->itemFromIndex(selectedIndex.parent());
         ui->categoriesTree->setExpanded(selectedIndex.parent(), true);
     } else if (selectedItem->type() == BE::Rule::EvasiveRule) {
-        QMessageBox msg(QMessageBox::Critical, tr("Add rule"),
-                        tr("Evasives is an special category that cannot contain rules"),
+        QString title = tr("Add rule");
+        QString text = tr("'%0' is an special category that cannot contain rules");
+
+        QMessageBox msg(QMessageBox::Critical,
+                        title,
+                        text.arg(getRuleDisplayName(selectedIndex)),
                         QMessageBox::Ok, this);
         msg.exec();
     }

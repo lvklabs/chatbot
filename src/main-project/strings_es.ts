@@ -146,8 +146,8 @@
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="396"/>
-        <location filename="front-end/mainwindow.cpp" line="448"/>
-        <location filename="front-end/mainwindow.cpp" line="498"/>
+        <location filename="front-end/mainwindow.cpp" line="452"/>
+        <location filename="front-end/mainwindow.cpp" line="502"/>
         <source>Internal error</source>
         <translation>Error interno</translation>
     </message>
@@ -174,68 +174,69 @@
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="436"/>
-        <source>Evasives is an special category that cannot contain rules</source>
-        <translation>Evasivas es una categoría especial que no puede contener reglas</translation>
+        <source>&apos;%0&apos; is an special category that cannot contain rules</source>
+        <oldsource>Evasives is an special category that cannot contain rules</oldsource>
+        <translation>&apos;%0&apos; es una categoría especial que no puede contener reglas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="449"/>
+        <location filename="front-end/mainwindow.cpp" line="453"/>
         <source>The rule could not be added because of an internal error</source>
         <translation>La regla no se pudo agregar debido a un error interno de la aplicación</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="463"/>
+        <location filename="front-end/mainwindow.cpp" line="467"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="464"/>
+        <location filename="front-end/mainwindow.cpp" line="468"/>
         <source>Select the rule or category you want to remove</source>
         <translation>Seleccione la regla o categoría que desea borrar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="480"/>
+        <location filename="front-end/mainwindow.cpp" line="484"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="481"/>
+        <location filename="front-end/mainwindow.cpp" line="485"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
         <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
 Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="485"/>
+        <location filename="front-end/mainwindow.cpp" line="489"/>
         <source>Remove rule</source>
         <translation>Borrar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="486"/>
+        <location filename="front-end/mainwindow.cpp" line="490"/>
         <source>Are you sure you want to remove the rule &apos;%0&apos;?</source>
         <translation>Esta seguro que desea borrar la regla &apos;%0&apos;?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="499"/>
+        <location filename="front-end/mainwindow.cpp" line="503"/>
         <source>The rule/category could not be removed because of an internalerror</source>
         <translation>La regla/categoría no se pudo borrar debido a un error interno</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="505"/>
+        <location filename="front-end/mainwindow.cpp" line="509"/>
         <source>Cannot remove</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="506"/>
+        <location filename="front-end/mainwindow.cpp" line="510"/>
         <source>The selected category cannot be removed because is mandatory</source>
         <translation>La categoría seleccionada no puede ser borrada porque es obligatoria para el funcionamiento del programa</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="804"/>
+        <location filename="front-end/mainwindow.cpp" line="808"/>
         <source>Category changed</source>
         <translation>Categoría cambiada</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="805"/>
+        <location filename="front-end/mainwindow.cpp" line="809"/>
         <source>The category &apos;%0&apos; has changed.
 Do you want to save the changes made to the category?</source>
         <oldsource>The category &apos;%0&apos; has changed.
@@ -244,12 +245,12 @@ Do you want to teach the changes made to the category?</oldsource>
 Deseas guardar los cambios hechos?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="808"/>
+        <location filename="front-end/mainwindow.cpp" line="812"/>
         <source>Rule changed</source>
         <translation>Regla cambiada</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="809"/>
+        <location filename="front-end/mainwindow.cpp" line="813"/>
         <source>The rule &apos;%0&apos; has changed.
 Do you want to teach the changes made to the rule?</source>
         <translation>La regla &apos;%0&apos; ha cambiado.
@@ -264,12 +265,12 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">La regla ha cambiado. Desea enseñar los cambios realizados?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="728"/>
+        <location filename="front-end/mainwindow.cpp" line="732"/>
         <source>Invalid username</source>
         <translation>Nombre de usuario inválido</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="728"/>
+        <location filename="front-end/mainwindow.cpp" line="732"/>
         <source>Please provide a username</source>
         <translation>Por favor ingrese un nombre de usuario</translation>
     </message>
