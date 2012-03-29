@@ -29,6 +29,7 @@
 #include "rule.h"
 
 class TestMainWindow;
+class QModelIndex;
 
 namespace Ui
 {
@@ -116,6 +117,9 @@ private:
     void undoRule(BE::Rule *rule);
     void handleRuleEdited(BE::Rule *rule);
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
+
+    QString getRuleDisplayName(const QModelIndex &index) const;
+    QString getRuleDisplayName(const BE::Rule *rule) const;
 
 private slots:
     void onAddCategoryButtonClicked();

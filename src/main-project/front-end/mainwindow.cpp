@@ -178,7 +178,8 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 {
     if (m_coreApp->hasUnsavedChanges()) {
         QMessageBox msg(QMessageBox::Question,
-                        tr("Save changes"), tr("Do you want to save the changes?"),
+                        tr("Save changes"),
+                        tr("Do you want to save the changes in your hard drive?"),
                         QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
         int code = msg.exec();
@@ -223,6 +224,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
+        ui->teachRuleButton->setText(tr("Save changes"));
         break;
 
     case EditRuleUiMode:
@@ -231,11 +233,12 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleInputWidget->setVisible(true);
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
-        ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
+        ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
+        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
         break;
 
     case EditEvasivesUiMode:
@@ -244,11 +247,12 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleInputWidget->setVisible(false);
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
-        ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
+        ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
+        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
         break;
 
     // Chat connection tab /////////////////////////////////////////////////
@@ -474,16 +478,17 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
     if (ruleType == BE::Rule::ContainerRule || ruleType == BE::Rule::OrdinaryRule) {
         if (selectedItem->type() == BE::Rule::ContainerRule) {
             dialogTitle = tr("Remove category");
-            dialogText = QString(tr("Are you sure you want to remove the category '%0'?\n"
-                                    "All rules belonging to that category will be also removed"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+            dialogText  = tr("Are you sure you want to remove the category '%0'?\n"
+                             "All rules belonging to that category will be also removed");
+
         } else {
             dialogTitle = tr("Remove rule");
-            dialogText = QString(tr("Are you sure you want to remove the rule '%0'?"))
-                    .arg(selectedIndex.data(Qt::DisplayRole).toString());
+            dialogText  = tr("Are you sure you want to remove the rule '%0'?");
         }
 
-        QMessageBox msg(QMessageBox::Question, dialogTitle, dialogText,
+        QMessageBox msg(QMessageBox::Question,
+                        dialogTitle,
+                        dialogText.arg(getRuleDisplayName(selectedIndex)),
                         QMessageBox::Yes | QMessageBox::No, this);
 
         if (msg.exec() == QMessageBox::Yes) {
@@ -792,10 +797,22 @@ void Lvk::FE::MainWindow::handleRuleEdited(BE::Rule *rule)
         return;
     }
 
+    QString dialogText;
+    QString dialogTitle;
+
+    if (rule->type() == BE::Rule::ContainerRule) {
+        dialogTitle = tr("Category changed");
+        dialogText  = tr("The category '%0' has changed.\n"
+                         "Do you want to save the changes made to the category?");
+    } else {
+        dialogTitle = tr("Rule changed");
+        dialogText  = tr("The rule '%0' has changed.\n"
+                         "Do you want to teach the changes made to the rule?");
+    }
+
     QMessageBox msg(QMessageBox::Question,
-                    tr("Rule has changed"),
-                    tr("The rule has changed."
-                       "Do you want to teach the changes made to the rule?"),
+                    dialogTitle,
+                    dialogText.arg(getRuleDisplayName(rule)),
                     QMessageBox::Yes | QMessageBox::No, this);
 
     int code = msg.exec();
@@ -872,5 +889,23 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::FE::MainWindow::getRuleDisplayName(const BE::Rule *rule) const
+{
+    if (!rule) {
+        return "";
+    } else  {
+        return getRuleDisplayName(m_ruleTreeModel->indexFromItem(rule));
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::FE::MainWindow::getRuleDisplayName(const QModelIndex &index) const
+{
+    return index.data(Qt::DisplayRole).toString();
 }
 
