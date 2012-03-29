@@ -500,6 +500,9 @@
           <layout class="QHBoxLayout" name="testToolbarLayout">
            <item>
             <widget class="QToolButton" name="clearTestConversationButton">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="toolTip">
               <string>Clean test conversation</string>
              </property>

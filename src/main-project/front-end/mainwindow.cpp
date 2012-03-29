@@ -101,9 +101,6 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()),    SLOT(onRuleEdited()));
     connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),       SLOT(onRuleEdited()));
 
-    connect(ui->clearTestConversationButton, SIGNAL(clicked()),
-            ui->testConversationText, SLOT(clear()));
-
     connect(ui->categoriesTree->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
@@ -117,6 +114,9 @@ void Lvk::FE::MainWindow::connectSignals()
     // Test tab
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+
+    connect(ui->clearTestConversationButton, SIGNAL(clicked()),
+            SLOT(onClearTestConversationButtonPressed()));
 
     // Chat connetion tab
 
@@ -333,6 +333,7 @@ void Lvk::FE::MainWindow::clear()
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
+    ui->clearTestConversationButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -687,7 +688,18 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
 
+    ui->clearTestConversationButton->setEnabled(true);
+
     highlightMatchedRules(matches);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onClearTestConversationButtonPressed()
+{
+    ui->clearTestConversationButton->setEnabled(false);
+
+    ui->testConversationText->clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -912,4 +924,5 @@ QString Lvk::FE::MainWindow::getRuleDisplayName(const QModelIndex &index) const
 {
     return index.data(Qt::DisplayRole).toString();
 }
+
 

@@ -135,6 +135,7 @@ private slots:
     void onTeachButtonPressed();
     void onUndoButtonPressed();
     void onTestInputTextEntered();
+    void onClearTestConversationButtonPressed();
 
     void onConnectButtonPressed();
     void onConnectionOk();
