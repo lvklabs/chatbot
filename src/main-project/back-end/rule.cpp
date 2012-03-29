@@ -246,7 +246,6 @@ void Lvk::BE::Rule::setOutput(const QList<QString> &output)
 //--------------------------------------------------------------------------------------------------
 
 const QString &Lvk::BE::Rule::name() const
-
 {
     return m_name;
 }
@@ -312,7 +311,7 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::Rule::enabled()
+bool Lvk::BE::Rule::enabled() const
 {
     return m_enabled;
 }
@@ -329,7 +328,7 @@ void Lvk::BE::Rule::setEnabled(bool enabled)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Status Lvk::BE::Rule::status()
+Lvk::BE::Rule::Status Lvk::BE::Rule::status() const
 {
     return m_status;
 }

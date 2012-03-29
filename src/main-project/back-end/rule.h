@@ -135,12 +135,12 @@ public:
     void setOutput(const QList<QString> &output);
 
 
-    bool enabled();
+    bool enabled() const;
 
     void setEnabled(bool enabled);
 
 
-    Status status();
+    Status status() const;
 
     void setStatus(Status status);
 
