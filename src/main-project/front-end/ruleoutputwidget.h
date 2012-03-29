@@ -24,6 +24,17 @@ public slots:
 
     void highlightOuput(int number);
 
+    void setPlainText(const QString &text);
+
+    void clear();
+
+signals:
+
+    void outputTextEdited();
+
+private:
+    void connectTextChangedSignal();
+    void disconnectTextChangedSignal();
 };
 
 #endif // RULEOUTPUTWIDGET_H

@@ -5,6 +5,10 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+//--------------------------------------------------------------------------------------------------
+// RuleInputWidget
+//--------------------------------------------------------------------------------------------------
+
 RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
@@ -24,19 +28,26 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     setLayout(m_layout);
 
     connect (m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
+    connectTextChangedSignal();
 
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 }
 
+//--------------------------------------------------------------------------------------------------
+
 RuleInputWidget::~RuleInputWidget()
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void RuleInputWidget::installEventFilter(QObject *eventFilter)
 {
     m_eventFilter = eventFilter;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
 {
@@ -49,13 +60,21 @@ bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
     return QWidget::eventFilter(this, event);
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void RuleInputWidget::clear()
 {
     m_input->clear();
+
+    // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
+    disconnectTextChangedSignal();
     m_inputVariants->clear();
+    connectTextChangedSignal();
 
     clearHighlight();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QStringList RuleInputWidget::inputList()
 {
@@ -64,6 +83,8 @@ QStringList RuleInputWidget::inputList()
 
     return inputList;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void RuleInputWidget::setInputList(const QStringList &inputList)
 {
@@ -81,18 +102,28 @@ void RuleInputWidget::setInputList(const QStringList &inputList)
     }
 
     m_input->setText(input);
+
+    // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
+    disconnectTextChangedSignal();
     m_inputVariants->setPlainText(inputVariants);
+    connectTextChangedSignal();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void RuleInputWidget::setFocusOnInput()
 {
     m_input->setFocus();
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void RuleInputWidget::setFocusOnInputVariants()
 {
     m_inputVariants->setFocus();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void RuleInputWidget::highlightInput(int number)
 {
@@ -107,8 +138,25 @@ void RuleInputWidget::highlightInput(int number)
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void RuleInputWidget::clearHighlight()
 {
     m_inputVariants->setStyleSheet("");
     m_input->setStyleSheet("");
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::connectTextChangedSignal()
+{
+    connect(m_inputVariants, SIGNAL(textChanged()), SIGNAL(inputVariantsEdited()));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::disconnectTextChangedSignal()
+{
+    disconnect(m_inputVariants, SIGNAL(textChanged()), this, SIGNAL(inputVariantsEdited()));
+}
+

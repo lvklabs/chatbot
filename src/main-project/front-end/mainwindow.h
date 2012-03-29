@@ -96,6 +96,7 @@ private:
     BE::CoreApp *m_coreApp;
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
+    bool m_ruleEdited;
 
     enum {
         DisconnectedFromChat,
@@ -114,6 +115,7 @@ private:
     BE::Rule *evasiveRule();
     BE::Rule *rootRule();
 
+    void teachRule(BE::Rule *item);
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
 
 private slots:
@@ -122,10 +124,12 @@ private slots:
     void onRemoveButtonClicked();
 
     void onRuleInputEdited(const QString &ruleInput);
-    void onRuleInputEditingFinished();
-    void onRuleOutputEditingFinished();
+    //void onRuleInputEditingFinished();
+    //void onRuleOutputEditingFinished();
+    void onRuleEdited();
     void onRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
+    void onTeachButtonPressed();
     void onTestInputTextEntered();
 
     void onConnectButtonPressed();

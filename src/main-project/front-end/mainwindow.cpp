@@ -41,6 +41,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
     m_ruleTreeModel(0),
+    m_ruleEdited(false),
     m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
@@ -94,7 +95,10 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(onAddCategoryButtonClicked()));
     connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(onAddRuleButtonClicked()));
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(onRemoveButtonClicked()));
-    connect(ui->connectButton,     SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
+    connect(ui->teachButton,       SIGNAL(clicked()), SLOT(onTeachButtonPressed()));
+
+    connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()), SLOT(onRuleEdited()));
+    connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),    SLOT(onRuleEdited()));
 
     connect(ui->clearTestConversationButton, SIGNAL(clicked()),
             ui->testConversationText, SLOT(clear()));
@@ -109,10 +113,13 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
 
+    // Test tab
+
+    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
 
     // Chat connetion tab
 
-    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->connectButton, SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
 
     connect(m_coreApp, SIGNAL(connected()),    SLOT(onConnectionOk()));
     connect(m_coreApp, SIGNAL(disconnected()), SLOT(onDisconnection()));
@@ -154,12 +161,10 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
         if (object == ui->testInputText) {
             ui->ruleInputWidget->clearHighlight();
             ui->ruleOutputWidget->clearHighlight();
-        }
-        else if (object == ui->ruleInputWidget) {
-            onRuleInputEditingFinished();
-        }
-        else if (object == ui->ruleOutputWidget) {
-            onRuleOutputEditingFinished();
+//        } else if (object == ui->ruleInputWidget) {
+//            onRuleInputEditingFinished();
+//        } else if (object == ui->ruleOutputWidget) {
+//            onRuleOutputEditingFinished();
         }
     }
 
@@ -201,6 +206,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleInputWidget->setVisible(false);
         ui->ruleOutputWidget->setVisible(false);
         ui->chatbotRepliesLabel->setVisible(false);
+        ui->teachButton->setVisible(false);
         break;
 
     case EditCategoryUiMode:
@@ -209,6 +215,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleInputWidget->setVisible(false);
         ui->ruleOutputWidget->setVisible(false);
         ui->chatbotRepliesLabel->setVisible(false);
+        ui->teachButton->setVisible(false);
         break;
 
     case EditRuleUiMode:
@@ -218,6 +225,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
         ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
+        ui->teachButton->setVisible(true);
         break;
 
     case EditEvasivesUiMode:
@@ -227,6 +235,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
         ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
+        ui->teachButton->setVisible(true);
         break;
 
     // Chat connection tab /////////////////////////////////////////////////
@@ -290,6 +299,7 @@ void Lvk::FE::MainWindow::clear()
     setUiMode(RuleSelectionEmptyUiMode);
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
+    m_ruleEdited = false;
 
     // chat tab widgets
     ui->fbChatRadio->setChecked(true);
@@ -549,23 +559,30 @@ void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleOutputEditingFinished()
+void Lvk::FE::MainWindow::onRuleEdited()
 {
-    BE::Rule *rule = selectedRule();
-    if (rule) {
-        rule->setOutput(ui->ruleOutputWidget->outputList());
-    }
+    m_ruleEdited = true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleInputEditingFinished()
-{
-    BE::Rule *rule = selectedRule();
-    if (rule) {
-        rule->setInput(ui->ruleInputWidget->inputList());
-    }
-}
+//void Lvk::FE::MainWindow::onRuleOutputEditingFinished()
+//{
+//    BE::Rule *rule = selectedRule();
+//    if (rule) {
+//        rule->setOutput(ui->ruleOutputWidget->outputList());
+//    }
+//}
+
+//--------------------------------------------------------------------------------------------------
+
+//void Lvk::FE::MainWindow::onRuleInputEditingFinished()
+//{
+//    BE::Rule *rule = selectedRule();
+//    if (rule) {
+//        rule->setInput(ui->ruleInputWidget->inputList());
+//    }
+//}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -573,17 +590,24 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
                                             const QItemSelection &deselected)
 {
     if (!deselected.indexes().isEmpty()) {
-        BE::Rule *item = static_cast<BE::Rule *>(deselected.indexes().first().internalPointer());
+        BE::Rule *rule = m_ruleTreeModel->itemFromIndex(deselected.indexes().first());
 
-        if (item->type() == BE::Rule::OrdinaryRule) {
-            item->setInput(ui->ruleInputWidget->inputList());
-            item->setOutput(ui->ruleOutputWidget->outputList());
-        } else if (item->type() == BE::Rule::EvasiveRule) {
-            item->setOutput(ui->ruleOutputWidget->outputList());
-        } else if (item->type() == BE::Rule::ContainerRule) {
-           // nothing to do
+        if (rule && m_ruleEdited) {
+            QMessageBox msg(QMessageBox::Question,
+                            tr("Rule has changed"),
+                            tr("Rule '" + rule->name() + "' has changed\n"
+                               "Do you want to teach the changes made to the rule?"),
+                            QMessageBox::Yes | QMessageBox::No, this);
+
+            int code = msg.exec();
+
+            if (code == QMessageBox::Yes) {
+                teachRule(rule);
+            }
         }
     }
+
+    m_ruleEdited = false;
 
     if (!selected.indexes().isEmpty()) {
         const BE::Rule *item =
@@ -727,4 +751,35 @@ void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &e
     ui->conversationHistory->addConversationEntry(entry);
 }
 
+//--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onTeachButtonPressed()
+{
+    QModelIndex index = m_ruleTreeSelectionModel->selectedIndexes().first();
+
+    if (!index.isValid()) {
+        return;
+    }
+
+    BE::Rule *rule = m_ruleTreeModel->itemFromIndex(index);
+
+    teachRule(rule);
+
+    m_ruleEdited = false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::teachRule(BE::Rule *item)
+{
+    if (item) {
+        if (item->type() == BE::Rule::OrdinaryRule) {
+            item->setInput(ui->ruleInputWidget->inputList());
+            item->setOutput(ui->ruleOutputWidget->outputList());
+        } else if (item->type() == BE::Rule::EvasiveRule) {
+            item->setOutput(ui->ruleOutputWidget->outputList());
+        } else if (item->type() == BE::Rule::ContainerRule) {
+           item->setName(ui->categoryNameTextEdit->text());
+        }
+    }
+}

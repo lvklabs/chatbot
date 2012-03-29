@@ -44,6 +44,7 @@ public slots:
 
 signals:
     void inputTextEdited(const QString &);
+    void inputVariantsEdited();
 
 private:
     RuleInputWidget(RuleInputWidget&);
@@ -55,6 +56,9 @@ private:
     QLabel         *m_inputVariantsLabel;
     QPlainTextEdit *m_inputVariants;
     QObject        *m_eventFilter;
+
+    void connectTextChangedSignal();
+    void disconnectTextChangedSignal();
 };
 
 #endif // RULEINPUTWIDGET_H
