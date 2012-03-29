@@ -26,6 +26,7 @@
 
 #include "coreapp.h"
 #include "conversation.h"
+#include "rule.h"
 
 class TestMainWindow;
 
@@ -39,11 +40,6 @@ class QItemSelection;
 
 namespace Lvk
 {
-
-namespace BE
-{
-    class Rule;
-}
 
 namespace FE
 {
@@ -97,6 +93,7 @@ private:
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
     bool m_ruleEdited;
+    BE::Rule m_ruleBackup;
 
     enum {
         DisconnectedFromChat,
@@ -115,7 +112,9 @@ private:
     BE::Rule *evasiveRule();
     BE::Rule *rootRule();
 
-    void teachRule(BE::Rule *item);
+    void teachRule(BE::Rule *rule);
+    void undoRule(BE::Rule *rule);
+    void handleRuleEdited(BE::Rule *rule);
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
 
 private slots:
@@ -130,6 +129,7 @@ private slots:
     void onRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
     void onTeachButtonPressed();
+    void onUndoButtonPressed();
     void onTestInputTextEntered();
 
     void onConnectButtonPressed();
