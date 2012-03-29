@@ -45,6 +45,14 @@
     </message>
 </context>
 <context>
+    <name>Lvk::BE::CoreApp</name>
+    <message>
+        <location filename="back-end/coreapp.cpp" line="413"/>
+        <source>Rules</source>
+        <translation>Reglas</translation>
+    </message>
+</context>
+<context>
     <name>Lvk::FE::MainWindow</name>
     <message>
         <source>Rules</source>
@@ -324,7 +332,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="184"/>
+        <location filename="front-end/mainwindow.ui" line="187"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
@@ -333,17 +341,17 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="237"/>
+        <location filename="front-end/mainwindow.ui" line="260"/>
         <source>Connect with chat</source>
         <translation>Conectar con chat</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="260"/>
+        <location filename="front-end/mainwindow.ui" line="283"/>
         <source>Connect with chat:</source>
         <translation>Conectar con chat:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="270"/>
+        <location filename="front-end/mainwindow.ui" line="293"/>
         <source> Facebook</source>
         <oldsource>Facebook</oldsource>
         <translation> Facebook</translation>
@@ -353,57 +361,57 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="203"/>
+        <location filename="front-end/mainwindow.ui" line="206"/>
         <source>Undo changes</source>
         <translation>Deshacer cambios</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="210"/>
+        <location filename="front-end/mainwindow.ui" line="223"/>
         <source>Teach rule to the chatbot</source>
         <translation>Enseñar regla al chatbot</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="290"/>
+        <location filename="front-end/mainwindow.ui" line="313"/>
         <source> Gmail or Google Talk</source>
         <translation> Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="320"/>
+        <location filename="front-end/mainwindow.ui" line="343"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="346"/>
+        <location filename="front-end/mainwindow.ui" line="369"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="372"/>
+        <location filename="front-end/mainwindow.ui" line="395"/>
         <source>Connecting...</source>
         <translation>Conectando...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="404"/>
+        <location filename="front-end/mainwindow.ui" line="427"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="411"/>
+        <location filename="front-end/mainwindow.ui" line="434"/>
         <source>Status:</source>
         <translation>Estado:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="434"/>
+        <location filename="front-end/mainwindow.ui" line="457"/>
         <source>Conversations</source>
         <translation>Conversaciones</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="448"/>
+        <location filename="front-end/mainwindow.ui" line="471"/>
         <source>Conversations held with the chatbot:</source>
         <translation>Conversaciones mantenidas con el chatbot:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="481"/>
+        <location filename="front-end/mainwindow.ui" line="504"/>
         <source>Clean test conversation</source>
         <translation>Limpiar conversación de prueba</translation>
     </message>
@@ -416,7 +424,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">La ayuda se muestra acá mientras el usuario mueve el mouse sobre los contoles</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="473"/>
+        <location filename="front-end/mainwindow.ui" line="496"/>
         <source>Test your chatbot</source>
         <translation>Prueba tu chatbot</translation>
     </message>
@@ -425,12 +433,12 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="484"/>
+        <location filename="front-end/mainwindow.ui" line="507"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="526"/>
+        <location filename="front-end/mainwindow.ui" line="549"/>
         <source>Test:</source>
         <translation>Prueba:</translation>
     </message>
@@ -439,7 +447,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="164"/>
+        <location filename="front-end/mainwindow.ui" line="167"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>

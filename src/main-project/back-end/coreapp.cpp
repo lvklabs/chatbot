@@ -410,7 +410,7 @@ const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 
 void Lvk::BE::CoreApp::loadDefaultRules()
 {
-    m_rootRule = new BE::Rule();
+    m_rootRule = new BE::Rule(tr("Rules"));
 
     BE::Rule *catGreetings    = new BE::Rule("Saludos");
     BE::Rule *catPersonalInfo = new BE::Rule("Informacion Personal");
