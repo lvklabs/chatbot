@@ -1,9 +1,17 @@
+v0.04
+ - Implemented variables and single if-else conditionals
+ - Added "Undo rule" and "Teach rule" buttons
+ - Asking to save changes only if there are changes
+ - Implemented   
+ - Bugs fixed: #4, #5
+
 v0.03
  - Added QXmpp and ProgramQ as third-party dependencies
  - Implemented AIML engine and integrated in UI
  - Implemented connection to Facebook and GTalk chat servers and integrated in UI
  - Basic implementation of conversation history
  - Basic implementation to save rules and categories
+ - Bugs fixed: #1, #2, #3
 
 v0.02
  - Second UI design
