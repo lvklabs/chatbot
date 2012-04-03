@@ -37,6 +37,9 @@ struct ContactInfo
 {
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
+
+    /** Returns true if the struct is null */
+    bool isNull() { return username.isNull() && fullname.isNull(); }
 };
 
 

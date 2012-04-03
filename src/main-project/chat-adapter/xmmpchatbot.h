@@ -95,12 +95,19 @@ private:
 
     QXmppClient *m_xmppClient;
     VirtualUser *m_virtualUser;
-    QHash<QString, ContactInfo> m_contactInfo;
 
+    QHash<QString, ContactInfo> m_contactInfo;
     QMutex *m_contactInfoMutex;
-    QWaitCondition *m_waitVCard;
+
+    QList<QXmppMessage> m_messageQueue;
+    QMutex *m_messageQueueMutex;
+
+    void replyMessage(const QXmppMessage &msg, const ContactInfo &info);
 
     ContactInfo getContactInfo(const QString &bareJid);
+    void requestContactInfo(const QXmppMessage &msg);
+    void replyQueuedMessages(const ContactInfo &info);
+
     Error convertToLocalError(QXmppClient::Error err);
 };
 

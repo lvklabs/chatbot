@@ -34,6 +34,10 @@
 #define FB_ICON         ":/icons/facebook_24x24.png"
 #define GMAIL_ICON      ":/icons/gmail_24x24.png"
 
+#define USERNAME_START_TOKEN  "<"
+#define USERNAME_END_TOKEN    ">"
+
+
 enum DateContactTableColumns
 {
     DateColumnn,
@@ -62,15 +66,44 @@ enum
 namespace
 {
 
+// builds a hash key with the given data
 QString hashKey(const QString &date, const QString &from)
 {
     return date + from;
 }
 
+// builds a hash key with the given data
 QString hashKey(const Lvk::BE::Conversation::Entry &entry)
 {
     return hashKey(entry.dateTime.toString(DATE_FORMAT), entry.from);
 }
+
+// gets username from strings with format "FullName <Username>" or "Username"
+QString getUsername(const QString &from)
+{
+    QString username;
+
+    if (from.contains(USERNAME_START_TOKEN)) {
+         username = from.split(USERNAME_START_TOKEN).at(1).trimmed();
+         username.remove(USERNAME_END_TOKEN);
+    } else {
+        username = from;
+    }
+    return username;
+}
+
+// gets fullname from strings with format "FullName <Username>" or "Username"
+QString getFullname(const QString &from)
+{
+    QString fullname;
+
+    if (from.contains(USERNAME_START_TOKEN)) {
+         fullname = from.split(USERNAME_START_TOKEN).at(0).trimmed();
+    }
+
+    return fullname;
+}
+
 
 } //namespace
 
@@ -113,7 +146,7 @@ void ConversationHistoryWidget::setupWidget()
     m_dateContactTable->setHorizontalHeaderLabels(QStringList()
                                                   << tr("Date")
                                                   << tr("Username"));
-    m_dateContactTable->setColumnWidth(DateColumnn, 60);
+    m_dateContactTable->setColumnWidth(DateColumnn, 70);
 
     // Conversation table
     m_conversationTable = new QTableWidget(this);
@@ -131,7 +164,7 @@ void ConversationHistoryWidget::setupWidget()
                                                    << tr("Message")
                                                    << tr("Response")
                                                    << tr("Status"));
-    m_conversationTable->setColumnWidth(TimeColumnn, 60);
+    m_conversationTable->setColumnWidth(TimeColumnn, 70);
 
     setSizes(QList<int>() << 50 << 150);
 
@@ -215,6 +248,9 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
     m_conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.response));
     m_conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
 
+    m_conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
+    m_conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
+
     if (entry.match) {
         m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
     } else {
@@ -227,19 +263,25 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
 void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString date = entry.dateTime.toString(DATE_FORMAT);
-    QString user = entry.from.split("@").at(0);
+    QString username = getUsername(entry.from);
+    QString fullname = getFullname(entry.from);
+
+    if (fullname.isEmpty()) {
+        fullname = username;
+    }
 
     int nextRow = m_dateContactTable->rowCount();
     m_dateContactTable->insertRow(nextRow);
     m_dateContactTable->setItem(nextRow, DateColumnn,    new QTableWidgetItem(date));
-    m_dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(user));
+    m_dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(fullname));
 
     m_dateContactTable->item(nextRow, DateColumnn)->setData(ConversationKeyRole, hashKey(entry));
     m_dateContactTable->item(nextRow, UsernameColumn)->setData(ConversationKeyRole, hashKey(entry));
+    m_dateContactTable->item(nextRow, UsernameColumn)->setData(Qt::ToolTipRole, username);
 
-    if (entry.from.contains("@gmail.com")) {
+    if (username.contains("@gmail.com")) {
         m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
-    } else if (entry.from.contains("@chat.facebook.com")) {
+    } else if (username.contains("@chat.facebook.com")) {
         m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(FB_ICON));
     }
 }

@@ -29,7 +29,11 @@
 #define LOG_FILENAME            "chat_conversations.log"
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
-// TODO verify race conditions. Add locks if nescessary
+// Note: ConversationHistoryWidget relies on these tokens.
+//       If you change them, update the widget accordingly.
+#define USERNAME_START_TOKEN    "<"
+#define USERNAME_END_TOKEN      ">"
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -81,7 +85,11 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
     }
 
     QDateTime dateTime = QDateTime::currentDateTime();
-    QString from = !contact.fullname.isEmpty() ? contact.fullname : contact.username;
+
+    QString from = !contact.fullname.isEmpty()
+            ? contact.fullname + " " + USERNAME_START_TOKEN + contact.username + USERNAME_END_TOKEN
+            : contact.username;
+
     Conversation::Entry entry(dateTime, from, "Default", input, response, matched);
 
     m_conversationHistory.append(entry);

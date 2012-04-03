@@ -30,15 +30,31 @@
 //#include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QWaitCondition>
 
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+QString getBareJid(const QString &from)
+{
+    return from.split("/").at(0);
+}
+
+} // names
+
+
+//--------------------------------------------------------------------------------------------------
+// XmppChatbot
 //--------------------------------------------------------------------------------------------------
 
 Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
       m_virtualUser(0),
       m_contactInfoMutex(new QMutex()),
-      m_waitVCard(new QWaitCondition())
+      m_messageQueueMutex(new QMutex())
 {
     connect(m_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
             this, SLOT(messageReceived(const QXmppMessage&)));
@@ -57,40 +73,10 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
 Lvk::CA::XmppChatbot::~XmppChatbot()
 {
-    delete m_waitVCard;
+    delete m_messageQueueMutex;
     delete m_contactInfoMutex;
     delete m_virtualUser;
     delete m_xmppClient;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::CA::XmppChatbot::messageReceived(const QXmppMessage& message)
-{
-    if (message.type() != QXmppMessage::Chat) {
-        return;
-    }
-    if (!m_virtualUser) {
-        return;
-    }
-    if (message.body().isEmpty()) {
-        return;
-    }
-
-    QString from = message.from();
-    QString body = message.body();
-    QString bareJid = from.split("/").at(0);
-
-    // FIXME this blocks main thread! Use another thread
-    //ContactInfo info = getContactInfo(bareJid);
-    ContactInfo info;
-    info.username = bareJid;
-
-    QString response = m_virtualUser->getResponse(body, info);
-
-    if (!response.isEmpty()) {
-        m_xmppClient->sendPacket(QXmppMessage("", from, response));
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -150,29 +136,65 @@ Lvk::CA::XmppChatbot::Error Lvk::CA::XmppChatbot::convertToLocalError(QXmppClien
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::CA::XmppChatbot::messageReceived(const QXmppMessage& msg)
+{
+    if (msg.type() != QXmppMessage::Chat) {
+        return;
+    }
+    if (!m_virtualUser) {
+        return;
+    }
+    if (msg.body().isEmpty()) {
+        return;
+    }
+
+    ContactInfo info = getContactInfo(getBareJid(msg.from()));
+
+    // To reply a message we need some contact info such as full name
+    // If we dont have the contact info, we enqueue the message and request the info
+    // Once the info is available, we reply the queued message
+    if (!info.isNull()) {
+        replyMessage(msg, info);
+    } else {
+        requestContactInfo(msg);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::CA::ContactInfo Lvk::CA::XmppChatbot::getContactInfo(const QString &bareJid)
 {
-    const int TIMEOUT_MS = 10*1000;
-
     QMutexLocker locker(m_contactInfoMutex);
 
-    bool timeout = false;
+    ContactInfo info;
 
-    while (!m_contactInfo.contains(bareJid) && !timeout) {
-        m_xmppClient->vCardManager().requestVCard(bareJid);
+    if (m_contactInfo.contains(bareJid)) {
+        info = m_contactInfo[bareJid];
+    }
 
-        if (!m_waitVCard->wait(m_contactInfoMutex, TIMEOUT_MS)) {
-            timeout = true;
+    return info;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::requestContactInfo(const QXmppMessage &msg)
+{
+    QMutexLocker locker(m_messageQueueMutex);
+
+    QString bareJid = getBareJid(msg.from());
+
+    bool requested = false;
+
+    for (int i = 0; i < m_messageQueue.size() && !requested; ++i) {
+        if (getBareJid(m_messageQueue[i].from()) == bareJid) {
+            requested = true;
         }
     }
 
-    if (!timeout) {
-        return m_contactInfo[bareJid];
-    } else {
-        ContactInfo info;
-        info.username = bareJid;
+    m_messageQueue.append(msg);
 
-        return info;
+    if (!requested) {
+        m_xmppClient->vCardManager().requestVCard(bareJid);
     }
 }
 
@@ -180,15 +202,47 @@ Lvk::CA::ContactInfo Lvk::CA::XmppChatbot::getContactInfo(const QString &bareJid
 
 void Lvk::CA::XmppChatbot::vCardReceived(const QXmppVCardIq &vCard)
 {
-    QString bareJid = vCard.from().split("/").at(0);
+    QString bareJid = getBareJid(vCard.from());
 
     ContactInfo info;
     info.username = bareJid;
     info.fullname = vCard.fullName();
 
-    QMutexLocker locker(m_contactInfoMutex);
+    {
+        QMutexLocker locker(m_contactInfoMutex);
+        m_contactInfo[bareJid] = info;
+    }
 
-    m_contactInfo[bareJid] = info;
+    replyQueuedMessages(info);
+}
 
-    m_waitVCard->wakeAll();
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::replyQueuedMessages(const ContactInfo &info)
+{
+    QMutexLocker locker(m_messageQueueMutex);
+
+    const QString bareJid = info.username;
+
+    for (int i = 0; i < m_messageQueue.size();) {
+        if (getBareJid(m_messageQueue[i].from()) == bareJid) {
+            replyMessage(m_messageQueue.takeAt(i), info);
+        } else {
+            ++i;
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::replyMessage(const QXmppMessage &msg, const ContactInfo &info)
+{
+    QString from = msg.from();
+    QString body = msg.body();
+
+    QString response = m_virtualUser->getResponse(body, info);
+
+    if (!response.isEmpty()) {
+        m_xmppClient->sendPacket(QXmppMessage("", from, response));
+    }
 }
