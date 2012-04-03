@@ -173,15 +173,13 @@ void ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Conversation
     if (m_dateContactTable->rowCount() == 1) {
         addConversationTableRow(entry);
     } else if (m_dateContactTable->selectionModel()->selectedIndexes().size() > 0) {
-        int selectedRow = m_dateContactTable->selectionModel()->selectedIndexes().first().row();
-        const QString &date = m_dateContactTable->item(selectedRow, DateColumnn)->text();
-        const QString &user = m_dateContactTable->item(selectedRow, UsernameColumn)->text();
+        QModelIndex selectedIndex = m_dateContactTable->selectionModel()->selectedIndexes().first();
+        const QString &selectedKey = selectedIndex.data(ConversationKeyRole).toString();
 
-        if (key == hashKey(date, user)) {
+        if (key == selectedKey) {
             addConversationTableRow(entry);
         }
     }
-
 }
 
 //--------------------------------------------------------------------------------------------------
