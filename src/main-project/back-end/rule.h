@@ -40,6 +40,9 @@ class Rule
 {
 private:
 
+    /**
+     * \brief Generic class used to implement iterator and const_iterator classes
+     */
     template <typename T>
     class generic_iterator
     {

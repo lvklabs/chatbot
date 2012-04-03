@@ -34,7 +34,7 @@ namespace Nlp
 {
 
 /**
- * \brief Abstract interface for NLP Engines
+ * \brief Abstract interface for all NLP Engines
  */
 
 class Engine

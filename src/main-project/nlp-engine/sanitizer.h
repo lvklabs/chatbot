@@ -32,7 +32,7 @@ namespace Nlp
 {
 
 /**
- * \brief Abstract interface for NLP Sanitizers
+ * \brief Abstract interface for all NLP Sanitizers
  */
 
 class Sanitizer

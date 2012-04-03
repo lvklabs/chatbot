@@ -32,6 +32,7 @@ namespace Nlp
 
 /**
  * \brief Exact match case insentive NLP engine
+ *
  */
 
 class ExactMatchEngine : public Engine

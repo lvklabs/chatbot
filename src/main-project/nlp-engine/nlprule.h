@@ -39,7 +39,12 @@ namespace Nlp
 typedef unsigned long RuleId;
 
 /**
- * \brief NLP Rule abstraction
+ * \brief This class provides a NLP Rule
+ *
+ * A NLP rule is simply an structure that contains a list of input strings and a list of output
+ * strings. How these input and output strings are interpreted depends on the engine implemenation.
+ *
+ * @see ExactMatchEngine, AimlEngine, SimpleAimlEngine
  */
 
 class Rule
