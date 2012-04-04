@@ -1,5 +1,5 @@
 v0.05
- - Added window icon
+ - Added application icon
  - Bug fixed: #8, #10
 
 v0.04
