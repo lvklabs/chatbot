@@ -13,6 +13,7 @@
         <file alias="gmail_24x24.png">res/gmail_24x24.png</file>
         <file alias="teach_rule_24x24.png">res/teach_rule_24x24.png</file>
         <file alias="undo_24x24.png">res/undo_24x24.png</file>
+        <file alias="app_icon">res/chatbot_icon_128x228.png</file>
     </qresource>
     <qresource prefix="/strings">
         <file alias="strings_es.qm">strings_es.qm</file>

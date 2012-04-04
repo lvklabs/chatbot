@@ -1,4 +1,4 @@
-TARGET = main
+TARGET = chatbot
 
 QT += \
     ui \
@@ -101,9 +101,15 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
+RC_FILE = chatbot.rc
+
 TRANSLATIONS = strings_es.ts
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+OTHER_FILES += \
+    chatbot.rc
+
 
 
 

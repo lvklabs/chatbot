@@ -32,6 +32,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QIcon>
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
@@ -62,6 +63,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     selectFirstRule();
 
     ui->categoriesTree->setFocus();
+
+    setWindowIcon(icon(":/icons/app_icon"));
 }
 
 //--------------------------------------------------------------------------------------------------
