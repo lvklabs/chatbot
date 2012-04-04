@@ -1,5 +1,6 @@
 v0.05
- - Bug fixed: #6
+ - Added window icon
+ - Bug fixed: #8, #10
 
 v0.04
  - Implemented variables and single if-else conditionals
