@@ -33,6 +33,7 @@
 #define NO_MATCH_ICON   ":/icons/no_match_16x16.png"
 #define FB_ICON         ":/icons/facebook_24x24.png"
 #define GMAIL_ICON      ":/icons/gmail_24x24.png"
+#define LOCAL_TEST_ICON ":/icons/app_icon"
 
 #define USERNAME_START_TOKEN  "<"
 #define USERNAME_END_TOKEN    ">"
@@ -283,6 +284,8 @@ void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversati
         m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
     } else if (username.contains("@chat.facebook.com")) {
         m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(FB_ICON));
+    } else if (username.contains(tr("(test)"))) {
+        m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(LOCAL_TEST_ICON));
     }
 }
 

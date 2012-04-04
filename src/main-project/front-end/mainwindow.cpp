@@ -64,7 +64,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     ui->categoriesTree->setFocus();
 
-    setWindowIcon(icon(":/icons/app_icon"));
+    setWindowIcon(QIcon(":/icons/app_icon"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -694,6 +694,12 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     ui->clearTestConversationButton->setEnabled(true);
 
     highlightMatchedRules(matches);
+
+    // Log conversation
+//    BE::Conversation::Entry convEntry(QDateTime::currentDateTime(),
+//                                      tr("(test)"), "Chatbot",
+//                                      input, response, !matches.isEmpty());
+//    onNewChatConversation(convEntry);
 }
 
 //--------------------------------------------------------------------------------------------------
