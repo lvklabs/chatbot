@@ -30,6 +30,7 @@
 
 class TestMainWindow;
 class QModelIndex;
+class QFile;
 
 namespace Ui
 {
@@ -95,6 +96,7 @@ private:
     QItemSelectionModel *m_ruleTreeSelectionModel;
     bool m_ruleEdited;
     BE::Rule m_ruleBackup;
+    QFile *m_testConversationLog;
 
     enum {
         DisconnectedFromChat,
@@ -120,6 +122,8 @@ private:
 
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
+
+    void logTestConversation(const BE::Conversation::Entry &entry);
 
 private slots:
     void onAddCategoryButtonClicked();

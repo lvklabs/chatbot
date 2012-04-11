@@ -33,9 +33,14 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QIcon>
+#include <QFile>
+
+#define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
+#define DEFAULT_RULES_FILE          "rules.dat"
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+
 
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -43,7 +48,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
-    m_connectionStatus(DisconnectedFromChat)
+    m_connectionStatus(DisconnectedFromChat),
+    m_testConversationLog(new QFile(TEST_CONVERSATION_LOG_FILE))
 {
     ui->setupUi(this);
     ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
@@ -65,24 +71,26 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui->categoriesTree->setFocus();
 
     setWindowIcon(QIcon(":/icons/app_icon"));
+
+    m_testConversationLog->open(QFile::Append);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_testConversationLog;
     delete m_coreApp;
+    delete ui;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::initCoreAndModels()
 {
-    m_coreApp->load("rules.dat");
+    m_coreApp->load(DEFAULT_RULES_FILE);
 
     m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
-    //m_ruleTreeModel->setHeaderData(0, Qt::Horizontal, QString(tr("Rules")), Qt::DisplayRole);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
@@ -696,10 +704,14 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     highlightMatchedRules(matches);
 
     // Log conversation
-//    BE::Conversation::Entry convEntry(QDateTime::currentDateTime(),
-//                                      tr("(test)"), "Chatbot",
-//                                      input, response, !matches.isEmpty());
-//    onNewChatConversation(convEntry);
+    BE::Conversation::Entry convEntry(QDateTime::currentDateTime(),
+                                      "test", "test",
+                                      input, response, !matches.isEmpty());
+
+    // Disabled conversation history
+    //onNewChatConversation(convEntry);
+
+    logTestConversation(convEntry);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -934,4 +946,13 @@ QString Lvk::FE::MainWindow::getRuleDisplayName(const QModelIndex &index) const
     return index.data(Qt::DisplayRole).toString();
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::logTestConversation(const BE::Conversation::Entry &entry)
+{
+    if (m_testConversationLog) {
+        m_testConversationLog->write(entry.toString() + "\n");
+        m_testConversationLog->flush();
+    }
+}
 
