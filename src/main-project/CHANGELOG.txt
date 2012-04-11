@@ -1,3 +1,8 @@
+v0.06
+ - Logging test conversations in test_conversations.log
+ - Added menu bar with menus "About", "Save" and "Exit"
+ - Added "About" window
+
 v0.05
  - Added application icon
  - Bug fixed: #8, #10

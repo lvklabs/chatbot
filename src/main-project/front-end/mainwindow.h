@@ -147,6 +147,10 @@ private slots:
     void onDisconnection();
 
     void onNewChatConversation(const BE::Conversation::Entry &entry);
+
+    void onSaveMenuTriggered();
+    void onAboutMenuTriggered();
+    void onExitMenuTriggered();
 };
 
 } // namespace Lvk

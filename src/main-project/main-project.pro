@@ -8,6 +8,15 @@ QT += \
 
 TEMPLATE = app
 
+############################################
+# Update git revision in versionrev.h
+versionrev.target = common/versionrev.h
+win32:versionrev.commands = #FIXME
+else:versionrev.commands = $$PWD/bin/update-revision.sh
+QMAKE_EXTRA_TARGETS += versionrev
+PRE_TARGETDEPS += common/versionrev.h
+############################################
+
 THIRD_PARTY_PATH      = $$PWD/../third-party
 
 PRGRAMQ_BASE_PATH     = $$THIRD_PARTY_PATH/ProgramQ
@@ -68,6 +77,8 @@ HEADERS += \
     chat-adapter/contactinfo.h \
     common/random.h\
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    common/version.h \
+    common/versionrev.h
 
 
 SOURCES += \
@@ -109,6 +120,8 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
 
 
 

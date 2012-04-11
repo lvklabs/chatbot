@@ -26,6 +26,7 @@
 #include "ui_mainwindow.h"
 #include "simpleaimlengine.h"
 #include "defaultsanitizer.h"
+#include "version.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -37,6 +38,7 @@
 
 #define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
 #define DEFAULT_RULES_FILE          "rules.dat"
+#define APP_ICON_FILE               ":/icons/app_icon"
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
@@ -48,8 +50,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
-    m_connectionStatus(DisconnectedFromChat),
-    m_testConversationLog(new QFile(TEST_CONVERSATION_LOG_FILE))
+    m_testConversationLog(new QFile(TEST_CONVERSATION_LOG_FILE)),
+    m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
     ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
@@ -70,7 +72,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     ui->categoriesTree->setFocus();
 
-    setWindowIcon(QIcon(":/icons/app_icon"));
+    setWindowIcon(QIcon(APP_ICON_FILE));
 
     m_testConversationLog->open(QFile::Append);
 }
@@ -101,6 +103,12 @@ void Lvk::FE::MainWindow::initCoreAndModels()
 
 void Lvk::FE::MainWindow::connectSignals()
 {
+    // Menus
+
+    connect(ui->actionSave,  SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
+    connect(ui->actionExit,  SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
+
     // Edit rules tabs
 
     connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(onAddCategoryButtonClicked()));
@@ -954,5 +962,39 @@ void Lvk::FE::MainWindow::logTestConversation(const BE::Conversation::Entry &ent
         m_testConversationLog->write(entry.toString() + "\n");
         m_testConversationLog->flush();
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onSaveMenuTriggered()
+{
+    m_coreApp->save();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onAboutMenuTriggered()
+{
+    QString title = QString(tr("About %1..."))
+            .arg(APP_NAME);
+    QString text = QString(tr("<b>%1 %2</b><br/>"
+                              "Rev: %3<br/><br/>"
+                              "Developed by LVK<br/>%4<br/>%5"))
+            .arg(APP_NAME)
+            .arg(APP_VERSION_STR)
+            .arg(QString(APP_VERSION_REV).mid(0, 30))
+            .arg(APP_URL_CONTACT)
+            .arg(APP_MAIL_CONTACT);
+
+    QMessageBox msg(QMessageBox::NoIcon, title, text);
+    msg.setIconPixmap(QPixmap(APP_ICON_FILE));
+    msg.exec();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onExitMenuTriggered()
+{
+    this->close();
 }
 
