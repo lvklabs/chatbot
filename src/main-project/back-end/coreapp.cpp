@@ -434,36 +434,28 @@ void Lvk::BE::CoreApp::loadDefaultRules()
     m_rootRule = new BE::Rule(tr("Rules"));
 
     BE::Rule *catGreetings    = new BE::Rule("Saludos");
-    BE::Rule *catPersonalInfo = new BE::Rule("Informacion Personal");
 
     catGreetings->setType(BE::Rule::ContainerRule);
-    catPersonalInfo->setType(BE::Rule::ContainerRule);
 
     m_rootRule->appendChild(catGreetings);
-    m_rootRule->appendChild(catPersonalInfo);
 
     QStringList rule1InputList;
     QStringList rule1OutputList;
-    rule1InputList << QString("Hola") << QString("Holaa") << QString("Holaaa") << QString("Hola *");
-    rule1OutputList << QString("Hola!");
+    rule1InputList  << QString("Hola") << QString("Holaa") << QString("Holaaa")
+                    << QString("Hola *");
+    rule1OutputList << QString("Hola!") << QString("Que haces che!");
 
     QStringList rule2InputList;
     QStringList rule2OutputList;
-    rule2InputList << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes") << QString("Que haces *");
+    rule2InputList  << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes")
+                    << QString("Que haces *");
     rule2OutputList << QString("Buenas, Como estas?");
-
-    QStringList rule3InputList;
-    QStringList rule3OutputList;
-    rule3InputList << QString("Cual es tu nombre?") << QString("Como te llamas?") << QString("Quien sos?");
-    rule3OutputList << QString("Andres");
 
     BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
     BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
-    BE::Rule * rule3 = new BE::Rule("", rule3InputList, rule3OutputList);
 
     catGreetings->appendChild(rule1);
     catGreetings->appendChild(rule2);
-    catPersonalInfo->appendChild(rule3);
 
     // evasives
 
