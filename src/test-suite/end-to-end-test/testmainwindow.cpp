@@ -179,6 +179,8 @@ void TestMainWindow::buildTestRuleHierarchy1()
     m_window->m_ruleTreeModel->appendItem(rule5);
 
     m_window->m_ruleTreeModel->appendItem(evasives);
+
+    m_window->m_coreApp->refreshNlpEngine();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -203,6 +205,8 @@ void TestMainWindow::buildTestRuleHierarchy2()
     m_window->m_ruleTreeModel->appendItem(cat1);
     m_window->m_ruleTreeModel->appendItem(rule1);
     m_window->m_ruleTreeModel->appendItem(evasives);
+
+    m_window->m_coreApp->refreshNlpEngine();
 }
 
 //--------------------------------------------------------------------------------------------------
