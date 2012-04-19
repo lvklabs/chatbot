@@ -69,7 +69,9 @@ HEADERS += \
     ../../main-project/chat-adapter/fbchatbot.h \
     ../../main-project/chat-adapter/gtalkchatbot.h \
     ../../main-project/common/random.h\
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    testxmppclient.h \
+    testmainwindow.h
 
 
 SOURCES += \
@@ -94,7 +96,9 @@ SOURCES += \
     ../../main-project/chat-adapter/gtalkchatbot.cpp \
     ../../main-project/chat-adapter/chatbot.cpp \
     ../../main-project/common/random.cpp \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    testxmppclient.cpp \
+    main.cpp
 
 FORMS += \
     ../../main-project/front-end/mainwindow.ui
@@ -102,3 +106,7 @@ FORMS += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+
+
+

@@ -19,14 +19,17 @@
  *
  */
 
-#include <QtCore/QString>
-#include <QtTest/QtTest>
-#include <QHash>
-#include <QRegExp>
+#include "testmainwindow.h"
 #include "mainwindow.h"
 #include "rule.h"
 #include "ruletreemodel.h"
 #include "ui_mainwindow.h"
+#include "testxmppclient.h"
+
+#include <QString>
+#include <QtTest/QtTest>
+#include <QHash>
+#include <QRegExp>
 
 //--------------------------------------------------------------------------------------------------
 // Test data
@@ -78,46 +81,6 @@
 
 #define CONVERSATION_ENTRY                  "You: %1\nChatbot: %2\n"
 #define CONVERSATION_NOT_OUTPUT_REGEX       "You: .*\nChatbot:"
-
-//--------------------------------------------------------------------------------------------------
-// TestMainWindow declaration
-//--------------------------------------------------------------------------------------------------
-
-class TestMainWindow : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestMainWindow();
-
-    enum { Facebook, Gmail };
-
-private Q_SLOTS:
-
-    void initTestCase();
-    void init();
-
-    void testTestTabConversationSingleOutput_data();
-    void testTestTabConversationSingleOutput();
-
-    void testTestTabConversationRandomOuput_data();
-    void testTestTabConversationRandomOuput();
-
-    void testChatConnection_data();
-    void testChatConnection();
-
-    void cleanupTestCase();
-    void cleanup();
-
-private:
-    Lvk::FE::MainWindow *m_window;
-
-    void buildTestRuleHierarchy1();
-    void buildTestRuleHierarchy2();
-
-    static void (* m_defaultMsgHandler)(QtMsgType, const char *);
-    static void noWarningsMsgHandler(QtMsgType type, const char *msg);
-};
 
 //--------------------------------------------------------------------------------------------------
 // TestMainWindow definition
@@ -429,37 +392,29 @@ void TestMainWindow::testChatConnection()
 }
 
 //--------------------------------------------------------------------------------------------------
-// TestThread class
+
+void TestMainWindow::testChatbotResponse_data()
+{
+    QTest::addColumn<QString>("username");
+    QTest::addColumn<QString>("password");
+    QTest::addColumn<int>("chatType");
+
+    QTest::newRow("gmail chatbot") << "andres.xmpp"     << "xmpp123"  << (int)Gmail;
+    QTest::newRow("fb chatbot")    << "andres.pagliano" << "FIXME"    << (int)Facebook;
+
+}
+
 //--------------------------------------------------------------------------------------------------
 
-// Run TestMainWindow on new thread. See main() for details.
-class TestThread : public QThread
+void TestMainWindow::testChatbotResponse()
 {
-public:
-    void run()
-    {
-        QTest::qSleep(1000);
-        TestMainWindow tmw;
-        int rc = QTest::qExec(&tmw, 0, 0);
-        qApp->exit(rc);
+    QFETCH(QString, username);
+    QFETCH(QString, password);
+    QFETCH(int, chatType);
+
+    if (chatType == Facebook) {
+        QSKIP("", SkipSingle);
     }
-};
-
-//--------------------------------------------------------------------------------------------------
-// Test entry point
-//--------------------------------------------------------------------------------------------------
-
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-
-    // NOTE: The test needs an event loop, this tricks works but there must be a better way
-    //TestMainWindow tmw;
-    //return QTest::qExec(&tmw, argc, argv);
-    TestThread tt;
-    tt.start();
-    return app.exec();
 }
 
 
-#include "testmainwindow.moc"
