@@ -66,7 +66,7 @@ public:
 
     // Lvk::CA::ChatClient interface
 
-    virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
+    virtual void connectToServer(const QString &user, const QString &passwd, const QString &domain);
 
     virtual void disconnectFromServer();
 

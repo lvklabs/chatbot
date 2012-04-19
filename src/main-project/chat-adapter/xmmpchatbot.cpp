@@ -27,7 +27,6 @@
 #include "QXmppVCardManager.h"
 #include "QXmppVCardIq.h"
 
-//#include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -56,6 +55,8 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
       m_contactInfoMutex(new QMutex()),
       m_messageQueueMutex(new QMutex())
 {
+    // Signals
+
     connect(m_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
             this, SLOT(messageReceived(const QXmppMessage&)));
 
@@ -67,6 +68,14 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
     connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
+
+    // Xmpp Logger
+
+    QXmppLogger *xmppLogger = new QXmppLogger(this);
+    xmppLogger->setLoggingType(QXmppLogger::FileLogging);
+    xmppLogger->setLogFilePath("./xmpp.log");
+    xmppLogger->setMessageTypes(QXmppLogger::AnyMessage);
+    m_xmppClient->setLogger(xmppLogger);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -82,9 +91,9 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
-                                          const QString &host)
+                                          const QString &domain)
 {
-    m_xmppClient->connectToServer(user + "@" + host, passwd);
+    m_xmppClient->connectToServer(user + "@" + domain, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------

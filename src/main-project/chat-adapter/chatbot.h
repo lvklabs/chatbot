@@ -46,7 +46,7 @@ class Chatbot : public QObject
 public:
     virtual ~Chatbot();
 
-    virtual void connectToServer(const QString &user, const QString &passwd, const QString &host) = 0;
+    virtual void connectToServer(const QString &user, const QString &passwd, const QString &domain) = 0;
     virtual void disconnectFromServer() = 0;
     virtual void setVirtualUser(VirtualUser *virtualUser) = 0;
     virtual VirtualUser *virtualUser() = 0;
