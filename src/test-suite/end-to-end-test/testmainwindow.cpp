@@ -29,41 +29,7 @@
 #include "ui_mainwindow.h"
 
 //--------------------------------------------------------------------------------------------------
-// TestMainWindow declaration
-//--------------------------------------------------------------------------------------------------
-
-class TestMainWindow : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestMainWindow();
-
-private Q_SLOTS:
-    void initTestCase();
-
-    void testTestTabConversationSingleOutput_data();
-    void testTestTabConversationSingleOutput();
-
-    void testTestTabConversationRandomOuput_data();
-    void testTestTabConversationRandomOuput();
-
-    void cleanupTestCase();
-
-private:
-    Lvk::FE::MainWindow *m_window;
-
-    void buildTestRuleHierarchy1();
-    void buildTestRuleHierarchy2();
-};
-
-TestMainWindow::TestMainWindow()
-    : m_window(0)
-{
-}
-
-//--------------------------------------------------------------------------------------------------
-// TestMainWindow definition
+// Test data
 //--------------------------------------------------------------------------------------------------
 
 #define CATEGORY_1_NAME                     "Greetings"
@@ -114,15 +80,98 @@ TestMainWindow::TestMainWindow()
 #define CONVERSATION_NOT_OUTPUT_REGEX       "You: .*\nChatbot:"
 
 //--------------------------------------------------------------------------------------------------
+// TestMainWindow declaration
+//--------------------------------------------------------------------------------------------------
+
+class TestMainWindow : public QObject
+{
+    Q_OBJECT
+
+public:
+    TestMainWindow();
+
+    enum { Facebook, Gmail };
+
+private Q_SLOTS:
+
+    void initTestCase();
+    void init();
+
+    void testTestTabConversationSingleOutput_data();
+    void testTestTabConversationSingleOutput();
+
+    void testTestTabConversationRandomOuput_data();
+    void testTestTabConversationRandomOuput();
+
+    void testChatConnection_data();
+    void testChatConnection();
+
+    void cleanupTestCase();
+    void cleanup();
+
+private:
+    Lvk::FE::MainWindow *m_window;
+
+    void buildTestRuleHierarchy1();
+    void buildTestRuleHierarchy2();
+
+    static void (* m_defaultMsgHandler)(QtMsgType, const char *);
+    static void noWarningsMsgHandler(QtMsgType type, const char *msg);
+};
+
+//--------------------------------------------------------------------------------------------------
+// TestMainWindow definition
+//--------------------------------------------------------------------------------------------------
+
+void (* TestMainWindow::m_defaultMsgHandler)(QtMsgType, const char *) = 0;
+
+//--------------------------------------------------------------------------------------------------
+
+TestMainWindow::TestMainWindow()
+    : m_window(0)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::noWarningsMsgHandler(QtMsgType type, const char *msg)
+{
+    switch (type) {
+    case QtWarningMsg:
+        // Do not show warnings messages
+        break;
+    default:
+        if (m_defaultMsgHandler) {
+            m_defaultMsgHandler(type, msg);
+        }
+        break;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 
 void TestMainWindow::initTestCase()
+{
+    m_defaultMsgHandler = qInstallMsgHandler(TestMainWindow::noWarningsMsgHandler);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::cleanupTestCase()
+{
+    qInstallMsgHandler(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::init()
 {
     m_window = new Lvk::FE::MainWindow();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TestMainWindow::cleanupTestCase()
+void TestMainWindow::cleanup()
 {
     delete m_window;
     m_window = 0;
@@ -313,9 +362,104 @@ void TestMainWindow::testTestTabConversationRandomOuput()
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::testChatConnection_data()
+{
+    QTest::addColumn<QString>("username");
+    QTest::addColumn<QString>("password");
+    QTest::addColumn<int>("chatType");
+    QTest::addColumn<bool>("valid");
+
+    QTest::newRow("gmail fail") << "andres.xmpp"     << "xmpp123"  << (int)Gmail    << false;
+    QTest::newRow("gmail ok")   << "andres.xmpp"     << "xmpp1234" << (int)Gmail    << true;
+    QTest::newRow("fb fail")    << "andres.pagliano" << "xmpp123"  << (int)Facebook << false;
+    QTest::newRow("fb ok")      << "andres.pagliano" << "FIXME"    << (int)Facebook << true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::testChatConnection()
+{
+    QFETCH(QString, username);
+    QFETCH(QString, password);
+    QFETCH(int, chatType);
+    QFETCH(bool, valid);
+
+    if (chatType == Facebook && valid) {
+        QSKIP("", SkipSingle);
+    }
+
+    QLabel *chatStatusLabel = m_window->ui->connectionStatusLabel;
+
+    QTest::keyClicks(m_window->ui->usernameText, username);
+    QTest::keyClicks(m_window->ui->passwordText, password);
+
+    if (chatType == Facebook) {
+        m_window->ui->fbChatRadio->setChecked(true);
+    } else if (chatType == Gmail){
+        m_window->ui->gtalkChatRadio->setChecked(true);
+    }
+
+    m_window->onConnectButtonPressed();
+
+    int t = 0;
+    const int CONNECTION_TIMEOUT = 20*1000;
+    while (chatStatusLabel->text().contains("connecting", false) && t < CONNECTION_TIMEOUT) {
+        QTest::qSleep(500);
+        t += 500;
+
+        //http://stackoverflow.com/questions/6433933/qtcpclient-successfully-connects-but-not-to-my-
+        //server-where-is-it-connecting
+        qApp->processEvents();
+    }
+
+    //qDebug() << chatStatusLabel->text();
+
+    if (valid) {
+        QVERIFY(chatStatusLabel->text().contains("sucessful", false));
+
+        QTest::qSleep(200);
+        m_window->onConnectButtonPressed();  //disconnect
+
+        QVERIFY(chatStatusLabel->text().contains("disconnected", false));
+
+    } else {
+        QVERIFY(chatStatusLabel->text().contains("error", false));
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// TestThread class
+//--------------------------------------------------------------------------------------------------
+
+// Run TestMainWindow on new thread. See main() for details.
+class TestThread : public QThread
+{
+public:
+    void run()
+    {
+        QTest::qSleep(1000);
+        TestMainWindow tmw;
+        int rc = QTest::qExec(&tmw, 0, 0);
+        qApp->exit(rc);
+    }
+};
+
+//--------------------------------------------------------------------------------------------------
 // Test entry point
 //--------------------------------------------------------------------------------------------------
 
-QTEST_MAIN(TestMainWindow)
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+
+    // NOTE: The test needs an event loop, this tricks works but there must be a better way
+    //TestMainWindow tmw;
+    //return QTest::qExec(&tmw, argc, argv);
+    TestThread tt;
+    tt.start();
+    return app.exec();
+}
+
 
 #include "testmainwindow.moc"
