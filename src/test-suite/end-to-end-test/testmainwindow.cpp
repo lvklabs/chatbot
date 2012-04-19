@@ -35,6 +35,8 @@
 // Test data
 //--------------------------------------------------------------------------------------------------
 
+// Rules -------------------------------------------------------------------------------------------
+
 #define CATEGORY_1_NAME                     "Greetings"
 #define CATEGORY_2_NAME                     "Likes/Dislikes"
 
@@ -63,6 +65,8 @@
 #define RULE_EVASIVE_1                      "I don't understand"
 #define RULE_EVASIVE_2                      "Could you say that in another way?"
 
+// User inputs -------------------------------------------------------------------------------------
+
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
@@ -79,8 +83,32 @@
 #define USER_INPUT_8a                       "Do you like cats?"
 #define USER_INPUT_8b                       "Do you like robots?"
 
+// Chat accounts -----------------------------------------------------------------------------------
+
+#define GMAIL_DOMAIN                        "gmail.com"
+#define FB_CHAT_DOMAIN                      "chat.facebook.com"
+
+#define GMAIL_USER_1                        "andres.xmpp"
+#define GMAIL_USER_1_PASSWD_OK              "xmpp1234"
+#define GMAIL_USER_1_PASSWD_WRONG           "xxx"
+
+#define GMAIL_USER_2                        "andres.test2"
+#define GMAIL_USER_2_PASSWD_OK              "andresTEST"
+#define GMAIL_USER_2_PASSWD_WRONG           "xxx"
+
+#define FB_USER_1                           "andres.pagliano" // FIXME create new account
+#define FB_USER_1_PASSWD_OK                 "FIXME"
+#define FB_USER_1_PASSWD_WRONG              "xxx"
+
+// Misc --------------------------------------------------------------------------------------------
+
 #define CONVERSATION_ENTRY                  "You: %1\nChatbot: %2\n"
 #define CONVERSATION_NOT_OUTPUT_REGEX       "You: .*\nChatbot:"
+
+#define CHAT_CONNECTION_OK_TOKEN            "sucessful"
+#define CHAT_CONNECTION_FAILED_TOKEN        "error"
+#define CHAT_CONNECTING_TOKEN               "connecting"
+#define CHAT_DISCONNECTION_TOKEN            "disconnected"
 
 //--------------------------------------------------------------------------------------------------
 // TestMainWindow definition
@@ -142,7 +170,7 @@ void TestMainWindow::cleanup()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestMainWindow::buildTestRuleHierarchy1()
+void TestMainWindow::UiSetRuleHierarchy1()
 {
     m_window->m_ruleTreeModel->clear();
 
@@ -197,7 +225,7 @@ void TestMainWindow::buildTestRuleHierarchy1()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestMainWindow::buildTestRuleHierarchy2()
+void TestMainWindow::UiSetRuleHierarchy2()
 {
     m_window->m_ruleTreeModel->clear();
 
@@ -219,6 +247,41 @@ void TestMainWindow::buildTestRuleHierarchy2()
     m_window->m_ruleTreeModel->appendItem(evasives);
 
     m_window->m_coreApp->refreshNlpEngine();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::UiConnect(const QString &username, const QString &password, int chatType)
+{
+    QTest::keyClicks(m_window->ui->usernameText, username);
+    QTest::keyClicks(m_window->ui->passwordText, password);
+
+    if (chatType == Facebook) {
+        m_window->ui->fbChatRadio->setChecked(true);
+    } else if (chatType == Gmail){
+        m_window->ui->gtalkChatRadio->setChecked(true);
+    }
+
+    m_window->onConnectButtonPressed();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::UiWaitForConnection()
+{
+    QLabel *statusLabel = m_window->ui->connectionStatusLabel;
+
+    int t = 0;
+    const int CONNECTION_TIMEOUT = 20*1000;
+
+    while (statusLabel->text().contains(CHAT_CONNECTING_TOKEN, false) && t < CONNECTION_TIMEOUT) {
+        QTest::qSleep(500);
+        t += 500;
+
+        //http://stackoverflow.com/questions/6433933/qtcpclient-successfully-connects-but-not-to-my-
+        //server-where-is-it-connecting
+        qApp->processEvents();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -255,7 +318,7 @@ void TestMainWindow::testTestTabConversationSingleOutput()
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
 
-    buildTestRuleHierarchy1();
+    UiSetRuleHierarchy1();
 
     m_window->ui->testInputText->clear();
     m_window->ui->testConversationText->clear();
@@ -303,7 +366,7 @@ void TestMainWindow::testTestTabConversationRandomOuput()
 
     QHash<QString, int> outputUseCount;
 
-    buildTestRuleHierarchy2();
+    UiSetRuleHierarchy2();
 
     for (int i = 0; i < 50; ++i) {
         m_window->ui->testInputText->clear();
@@ -333,10 +396,10 @@ void TestMainWindow::testChatConnection_data()
     QTest::addColumn<int>("chatType");
     QTest::addColumn<bool>("valid");
 
-    QTest::newRow("gmail fail") << "andres.xmpp"     << "xmpp123"  << (int)Gmail    << false;
-    QTest::newRow("gmail ok")   << "andres.xmpp"     << "xmpp1234" << (int)Gmail    << true;
-    QTest::newRow("fb fail")    << "andres.pagliano" << "xmpp123"  << (int)Facebook << false;
-    QTest::newRow("fb ok")      << "andres.pagliano" << "FIXME"    << (int)Facebook << true;
+    QTest::newRow("gmail fail 1") << GMAIL_USER_1 << GMAIL_USER_1_PASSWD_WRONG << (int)Gmail    << false;
+    QTest::newRow("gmail ok 1")   << GMAIL_USER_1 << GMAIL_USER_1_PASSWD_OK    << (int)Gmail    << true;
+    QTest::newRow("fb fail 1")    << FB_USER_1    << FB_USER_1_PASSWD_WRONG    << (int)Facebook << false;
+    QTest::newRow("fb ok 1")      << FB_USER_1    << FB_USER_1_PASSWD_OK       << (int)Facebook << true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -352,42 +415,24 @@ void TestMainWindow::testChatConnection()
         QSKIP("", SkipSingle);
     }
 
+    UiConnect(username, password, chatType);
+
+    UiWaitForConnection();
+
     QLabel *chatStatusLabel = m_window->ui->connectionStatusLabel;
-
-    QTest::keyClicks(m_window->ui->usernameText, username);
-    QTest::keyClicks(m_window->ui->passwordText, password);
-
-    if (chatType == Facebook) {
-        m_window->ui->fbChatRadio->setChecked(true);
-    } else if (chatType == Gmail){
-        m_window->ui->gtalkChatRadio->setChecked(true);
-    }
-
-    m_window->onConnectButtonPressed();
-
-    int t = 0;
-    const int CONNECTION_TIMEOUT = 20*1000;
-    while (chatStatusLabel->text().contains("connecting", false) && t < CONNECTION_TIMEOUT) {
-        QTest::qSleep(500);
-        t += 500;
-
-        //http://stackoverflow.com/questions/6433933/qtcpclient-successfully-connects-but-not-to-my-
-        //server-where-is-it-connecting
-        qApp->processEvents();
-    }
 
     //qDebug() << chatStatusLabel->text();
 
     if (valid) {
-        QVERIFY(chatStatusLabel->text().contains("sucessful", false));
+        QVERIFY(chatStatusLabel->text().contains(CHAT_CONNECTION_OK_TOKEN, false));
 
         QTest::qSleep(200);
         m_window->onConnectButtonPressed();  //disconnect
 
-        QVERIFY(chatStatusLabel->text().contains("disconnected", false));
+        QVERIFY(chatStatusLabel->text().contains(CHAT_DISCONNECTION_TOKEN, false));
 
     } else {
-        QVERIFY(chatStatusLabel->text().contains("error", false));
+        QVERIFY(chatStatusLabel->text().contains(CHAT_CONNECTION_FAILED_TOKEN, false));
     }
 }
 
@@ -395,26 +440,69 @@ void TestMainWindow::testChatConnection()
 
 void TestMainWindow::testChatbotResponse_data()
 {
-    QTest::addColumn<QString>("username");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<int>("chatType");
+    QTest::addColumn<QString>("user1");
+    QTest::addColumn<QString>("passwd1");
+    QTest::addColumn<QString>("user2");
+    QTest::addColumn<QString>("passwd2");
+    QTest::addColumn<int>("usersType");
+    QTest::addColumn<QString>("domain");
+    QTest::addColumn<QString>("msg");
+    QTest::addColumn<QString>("expectedResponse");
 
-    QTest::newRow("gmail chatbot") << "andres.xmpp"     << "xmpp123"  << (int)Gmail;
-    QTest::newRow("fb chatbot")    << "andres.pagliano" << "FIXME"    << (int)Facebook;
+    QTest::newRow("gmail 1")
+            << GMAIL_USER_1
+            << GMAIL_USER_1_PASSWD_OK
+            << GMAIL_USER_2
+            << GMAIL_USER_2_PASSWD_OK
+            << (int)Gmail
+            << GMAIL_DOMAIN
+            << USER_INPUT_1a
+            << RULE_1_OUTPUT_1;
 
+    // TODO add test case for facebook
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void TestMainWindow::testChatbotResponse()
 {
-    QFETCH(QString, username);
-    QFETCH(QString, password);
-    QFETCH(int, chatType);
+    QFETCH(QString, user1);
+    QFETCH(QString, passwd1);
+    QFETCH(QString, user2);
+    QFETCH(QString, passwd2);
+    QFETCH(int, usersType);
+    QFETCH(QString, domain);
+    QFETCH(QString, msg);
+    QFETCH(QString, expectedResponse);
 
-    if (chatType == Facebook) {
-        QSKIP("", SkipSingle);
-    }
+    // Init rules
+
+    UiSetRuleHierarchy1();
+
+    // Connect user1 as chatbot
+
+    UiConnect(user1, passwd1, usersType);
+    UiWaitForConnection();
+
+    QVERIFY(m_window->ui->connectionStatusLabel->text().contains(CHAT_CONNECTION_OK_TOKEN, false));
+
+    // Connect user2 as test xmpp client
+
+    QString jid1 = user1 + "@" + domain;
+    QString jid2 = user2 + "@" + domain;
+
+    TestXmppClient xmmpClient;
+
+    QVERIFY(xmmpClient.connect(jid2, passwd2));
+
+    // Send message to chatbot and wait for response
+
+    xmmpClient.sendMessage(jid1, msg);
+
+    QString response;
+    QVERIFY(xmmpClient.waitForResponse(5000, response));
+
+    QCOMPARE(response, expectedResponse);
 }
 
 

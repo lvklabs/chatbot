@@ -49,8 +49,10 @@ private Q_SLOTS:
 private:
     Lvk::FE::MainWindow *m_window;
 
-    void buildTestRuleHierarchy1();
-    void buildTestRuleHierarchy2();
+    void UiSetRuleHierarchy1();
+    void UiSetRuleHierarchy2();
+    void UiConnect(const QString &username, const QString &password, int chatType);
+    void UiWaitForConnection();
 
     static void (* m_defaultMsgHandler)(QtMsgType, const char *);
     static void noWarningsMsgHandler(QtMsgType type, const char *msg);
