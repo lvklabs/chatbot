@@ -445,6 +445,8 @@ void TestMainWindow::testChatConnection_data()
 
 void TestMainWindow::testChatConnection()
 {
+    std::cout << "Running testChatConnection()..." << std::endl;
+
     QFETCH(QString, username);
     QFETCH(QString, password);
     QFETCH(int, chatType);
@@ -453,6 +455,10 @@ void TestMainWindow::testChatConnection()
     if (chatType == Facebook && valid) {
         QSKIP("", SkipSingle);
     }
+
+    std::cout << " - Connecting with username: " << username.toStdString() << "@"
+              << (chatType == Facebook ? FB_CHAT_DOMAIN : GMAIL_DOMAIN)
+              << (valid ? " - Password OK" : " - Password Wrong") << std::endl;
 
     UiConnect(username, password, chatType);
 
@@ -477,7 +483,7 @@ void TestMainWindow::testChatConnection()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestMainWindow::testChatbotResponse_data()
+void TestMainWindow::testChatbotResponseAndHistory_data()
 {
     QTest::addColumn<QString>("user1");
     QTest::addColumn<QString>("passwd1");
@@ -519,7 +525,7 @@ void TestMainWindow::testChatbotResponse_data()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestMainWindow::testChatbotResponse()
+void TestMainWindow::testChatbotResponseAndHistory()
 {
     std::cout << "Running testChatbotResponse()..." << std::endl;
 
@@ -553,7 +559,6 @@ void TestMainWindow::testChatbotResponse()
     std::cout << " - Connecting " << jid2.toStdString() << " as client..." << std::endl;
 
     TestXmppClient xmmpClient;
-
     QVERIFY(xmmpClient.connectClient(jid2, passwd2));
 
     // Send message to chatbot and wait for response
@@ -567,11 +572,11 @@ void TestMainWindow::testChatbotResponse()
 
     QString response;
     QVERIFY(xmmpClient.waitForResponse(response, 15*1000));
-
     QCOMPARE(response, expectedResponse);
 
-    // Verify history
-    std::cout << " - Verifying conversation history..." << std::endl;
+
+    // Verify log history
+    std::cout << " - Verifying conversation log history..." << std::endl;
 
     QFile conversationLog(CHAT_CONVERSATIONS_LOG_FILE);
     QVERIFY(conversationLog.open(QFile::ReadOnly));
@@ -581,16 +586,20 @@ void TestMainWindow::testChatbotResponse()
     QVERIFY(logLine.contains(msg));
     QVERIFY(logLine.contains(response));
 
-    QTableWidget *conversationTable = m_window->ui->conversationHistory->m_conversationTable;
 
+    // Verify widget history
+    std::cout << " - Verifying conversation widget history..." << std::endl;
+
+    QTableWidget *conversationTable = m_window->ui->conversationHistory->m_conversationTable;
     QCOMPARE(conversationTable->item(0, 1)->text(), msg);
     QCOMPARE(conversationTable->item(0, 2)->text(), response);
     QCOMPARE(conversationTable->item(0, 3)->text(),
              QString(match ? HISTORY_MATCH_STATUS : HISTORY_NO_MATCH_STATUS));
 
     QTableWidget *dateContactTable = m_window->ui->conversationHistory->m_dateContactTable;
-
     QCOMPARE(dateContactTable->item(0, 1)->text(), user2RealName);
+
+    std::cout << " - Everything OK!" << std::endl;
 }
 
 

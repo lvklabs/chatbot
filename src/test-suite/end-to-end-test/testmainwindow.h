@@ -40,8 +40,8 @@ private Q_SLOTS:
     void testChatConnection_data();
     void testChatConnection();
 
-    void testChatbotResponse_data();
-    void testChatbotResponse();
+    void testChatbotResponseAndHistory_data();
+    void testChatbotResponseAndHistory();
 
     void cleanupTestCase();
     void cleanup();
