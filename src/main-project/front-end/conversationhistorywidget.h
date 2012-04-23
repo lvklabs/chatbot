@@ -30,6 +30,7 @@
 
 class QTableWidget;
 class QModelIndex;
+class TestMainWindow;
 
 /**
  * \brief The ConversationHistoryWidget provides a widget to display conversation history beetwen
@@ -38,6 +39,8 @@ class QModelIndex;
 
 class ConversationHistoryWidget : public QSplitter
 {
+    friend class ::TestMainWindow;
+
     Q_OBJECT
 public:
     explicit ConversationHistoryWidget(QWidget *parent = 0);
@@ -50,6 +53,7 @@ public:
     void addConversationEntry(const Lvk::BE::Conversation::Entry &entry);
 
 private:
+
     QTableWidget *m_dateContactTable;
     QTableWidget *m_conversationTable;
 

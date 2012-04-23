@@ -30,6 +30,7 @@
 #include <QtTest/QtTest>
 #include <QHash>
 #include <QRegExp>
+#include <QTableWidget>
 
 #include <iostream>
 
@@ -84,6 +85,7 @@
 #define USER_INPUT_7d                       "Have you seen the latest cars that BMW have launched?"
 #define USER_INPUT_8a                       "Do you like cats?"
 #define USER_INPUT_8b                       "Do you like robots?"
+#define USER_INPUT_9a                       "What's up?"
 
 // Chat accounts -----------------------------------------------------------------------------------
 
@@ -97,10 +99,23 @@
 #define GMAIL_USER_2                        "andres.test2"
 #define GMAIL_USER_2_PASSWD_OK              "andresTEST"
 #define GMAIL_USER_2_PASSWD_WRONG           "xxx"
+#define GMAIL_USER_2_REAL_NAME              "andres test2"
 
 #define FB_USER_1                           "andres.pagliano" // FIXME create new account
 #define FB_USER_1_PASSWD_OK                 "FIXME"
 #define FB_USER_1_PASSWD_WRONG              "xxx"
+
+// Log Files ---------------------------------------------------------------------------------------
+
+#define CHAT_CONVERSATIONS_LOG_FILE         "chat_conversations.log"
+#define TEST_CONVERSATIONS_LOG_FILE         "chat_conversations.log"
+#define AIML_PARSER_LOG_FILE                "aiml_parser.log"
+#define XMPP_LOG_FILE                       "xmpp.log"
+
+#define LOG_FILES                           CHAT_CONVERSATIONS_LOG_FILE << \
+                                            TEST_CONVERSATIONS_LOG_FILE << \
+                                            AIML_PARSER_LOG_FILE \
+                                            XMPP_LOG_FILE
 
 // Misc --------------------------------------------------------------------------------------------
 
@@ -112,8 +127,8 @@
 #define CHAT_CONNECTING_TOKEN               "connecting"
 #define CHAT_DISCONNECTION_TOKEN            "disconnected"
 
-
-
+#define HISTORY_MATCH_STATUS                "Ok"
+#define HISTORY_NO_MATCH_STATUS             "Fail!"
 
 //--------------------------------------------------------------------------------------------------
 // TestMainWindow definition
@@ -149,6 +164,8 @@ void TestMainWindow::noWarningsMsgHandler(QtMsgType type, const char *msg)
 void TestMainWindow::initTestCase()
 {
     m_defaultMsgHandler = qInstallMsgHandler(TestMainWindow::noWarningsMsgHandler);
+
+    removeLogFiles();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -169,8 +186,25 @@ void TestMainWindow::init()
 
 void TestMainWindow::cleanup()
 {
+    removeLogFiles();
+
     delete m_window;
     m_window = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::removeLogFiles()
+{
+    QStringList logFilenames;
+
+    logFilenames << LOG_FILES;
+
+    for (int i = 0; i < logFilenames.size(); ++i) {
+        if (QFile::exists(logFilenames[i])) {
+            QFile::remove(logFilenames[i]);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -449,20 +483,36 @@ void TestMainWindow::testChatbotResponse_data()
     QTest::addColumn<QString>("passwd1");
     QTest::addColumn<QString>("user2");
     QTest::addColumn<QString>("passwd2");
+    QTest::addColumn<QString>("user2RealName");
     QTest::addColumn<int>("usersType");
     QTest::addColumn<QString>("domain");
     QTest::addColumn<QString>("msg");
     QTest::addColumn<QString>("expectedResponse");
+    QTest::addColumn<bool>("match");
 
-    QTest::newRow("gmail 1")
+    QTest::newRow("gmail 1 - match")
             << GMAIL_USER_1
             << GMAIL_USER_1_PASSWD_OK
             << GMAIL_USER_2
             << GMAIL_USER_2_PASSWD_OK
+            << GMAIL_USER_2_REAL_NAME
             << (int)Gmail
             << GMAIL_DOMAIN
             << USER_INPUT_1a
-            << RULE_1_OUTPUT_1;
+            << RULE_1_OUTPUT_1
+            << true;
+
+    QTest::newRow("gmail 1 - no match")
+            << GMAIL_USER_1
+            << GMAIL_USER_1_PASSWD_OK
+            << GMAIL_USER_2
+            << GMAIL_USER_2_PASSWD_OK
+            << GMAIL_USER_2_REAL_NAME
+            << (int)Gmail
+            << GMAIL_DOMAIN
+            << USER_INPUT_9a
+            << RULE_EVASIVE_1
+            << false;
 
     // TODO add test case for facebook
 }
@@ -477,10 +527,12 @@ void TestMainWindow::testChatbotResponse()
     QFETCH(QString, passwd1);
     QFETCH(QString, user2);
     QFETCH(QString, passwd2);
+    QFETCH(QString, user2RealName);
     QFETCH(int, usersType);
     QFETCH(QString, domain);
     QFETCH(QString, msg);
     QFETCH(QString, expectedResponse);
+    QFETCH(bool, match);
 
     QString jid1 = user1 + "@" + domain;
     QString jid2 = user2 + "@" + domain;
@@ -505,7 +557,8 @@ void TestMainWindow::testChatbotResponse()
     QVERIFY(xmmpClient.connectClient(jid2, passwd2));
 
     // Send message to chatbot and wait for response
-    std::cout << " - Sending message from client to chatbot..." << std::endl;
+    std::cout << " - Sending message '" <<  msg.toStdString() << "' from client to chatbot..."
+              << std::endl;
 
     xmmpClient.sendMessage(jid1, msg);
 
@@ -516,6 +569,29 @@ void TestMainWindow::testChatbotResponse()
     QVERIFY(xmmpClient.waitForResponse(response, 15*1000));
 
     QCOMPARE(response, expectedResponse);
+
+    // Verify history
+    std::cout << " - Verifying conversation history..." << std::endl;
+
+    QFile conversationLog(CHAT_CONVERSATIONS_LOG_FILE);
+    QVERIFY(conversationLog.open(QFile::ReadOnly));
+
+    QString logLine = conversationLog.readLine(1024);
+    QVERIFY(logLine.contains(jid2));
+    QVERIFY(logLine.contains(msg));
+    QVERIFY(logLine.contains(response));
+
+    QTableWidget *conversationTable = m_window->ui->conversationHistory->m_conversationTable;
+
+    QCOMPARE(conversationTable->item(0, 1)->text(), msg);
+    QCOMPARE(conversationTable->item(0, 2)->text(), response);
+    QCOMPARE(conversationTable->item(0, 3)->text(),
+             QString(match ? HISTORY_MATCH_STATUS : HISTORY_NO_MATCH_STATUS));
+
+    QTableWidget *dateContactTable = m_window->ui->conversationHistory->m_dateContactTable;
+
+    QCOMPARE(dateContactTable->item(0, 1)->text(), user2RealName);
 }
+
 
 

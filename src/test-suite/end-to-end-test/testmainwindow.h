@@ -47,6 +47,7 @@ private Q_SLOTS:
     void cleanup();
 
 private:
+    void removeLogFiles();
 
     Lvk::FE::MainWindow *m_window;
 
