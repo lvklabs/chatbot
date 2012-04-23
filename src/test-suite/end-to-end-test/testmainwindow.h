@@ -47,6 +47,7 @@ private Q_SLOTS:
     void cleanup();
 
 private:
+
     Lvk::FE::MainWindow *m_window;
 
     void UiSetRuleHierarchy1();

@@ -31,6 +31,8 @@
 #include <QHash>
 #include <QRegExp>
 
+#include <iostream>
+
 //--------------------------------------------------------------------------------------------------
 // Test data
 //--------------------------------------------------------------------------------------------------
@@ -109,6 +111,9 @@
 #define CHAT_CONNECTION_FAILED_TOKEN        "error"
 #define CHAT_CONNECTING_TOKEN               "connecting"
 #define CHAT_DISCONNECTION_TOKEN            "disconnected"
+
+
+
 
 //--------------------------------------------------------------------------------------------------
 // TestMainWindow definition
@@ -466,6 +471,8 @@ void TestMainWindow::testChatbotResponse_data()
 
 void TestMainWindow::testChatbotResponse()
 {
+    std::cout << "Running testChatbotResponse()..." << std::endl;
+
     QFETCH(QString, user1);
     QFETCH(QString, passwd1);
     QFETCH(QString, user2);
@@ -475,11 +482,15 @@ void TestMainWindow::testChatbotResponse()
     QFETCH(QString, msg);
     QFETCH(QString, expectedResponse);
 
+    QString jid1 = user1 + "@" + domain;
+    QString jid2 = user2 + "@" + domain;
+
     // Init rules
 
     UiSetRuleHierarchy1();
 
     // Connect user1 as chatbot
+    std::cout << " - Connecting " << jid1.toStdString() << " as chatbot..." << std::endl;
 
     UiConnect(user1, passwd1, usersType);
     UiWaitForConnection();
@@ -487,20 +498,22 @@ void TestMainWindow::testChatbotResponse()
     QVERIFY(m_window->ui->connectionStatusLabel->text().contains(CHAT_CONNECTION_OK_TOKEN, false));
 
     // Connect user2 as test xmpp client
-
-    QString jid1 = user1 + "@" + domain;
-    QString jid2 = user2 + "@" + domain;
+    std::cout << " - Connecting " << jid2.toStdString() << " as client..." << std::endl;
 
     TestXmppClient xmmpClient;
 
-    QVERIFY(xmmpClient.connect(jid2, passwd2));
+    QVERIFY(xmmpClient.connectClient(jid2, passwd2));
 
     // Send message to chatbot and wait for response
+    std::cout << " - Sending message from client to chatbot..." << std::endl;
 
     xmmpClient.sendMessage(jid1, msg);
 
+    // Waiting for response
+    std::cout << " - Waiting for response..." << std::endl;
+
     QString response;
-    QVERIFY(xmmpClient.waitForResponse(5000, response));
+    QVERIFY(xmmpClient.waitForResponse(response, 15*1000));
 
     QCOMPARE(response, expectedResponse);
 }

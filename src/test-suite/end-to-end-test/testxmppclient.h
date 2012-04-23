@@ -23,21 +23,47 @@
 #define LVK_TESTXMPPCLIENT_H
 
 #include <QString>
+#include <QObject>
+#include "QXmppClient.h"
 
-class TestXmppClient
+class QMutex;
+class QWaitCondition;
+
+class TestXmppClient : public QObject
 {
+    Q_OBJECT
+
 public:
-    TestXmppClient();
+    TestXmppClient(QObject *parent = 0);
 
     ~TestXmppClient();
 
-    bool connect(const QString &jid, const QString &passwd);
+    bool connectClient(const QString &jid, const QString &passwd);
 
-    void disconnect();
+    void disconnectClient();
+
+    bool isConnected();
 
     void sendMessage(const QString &to, const QString &msg);
 
-    bool waitForResponse(int msecs, QString &response);
+    bool waitForResponse(QString &response, int msecs);
+
+private slots:
+    void onConnectionOk();
+
+    void onConnectionError(QXmppClient::Error);
+
+    void onDisconnection();
+
+    void onMessageReceived(const QXmppMessage&);
+
+private:
+    QString m_jid;
+    QString m_response;
+    QXmppClient *m_xmppClient;
+    QMutex *m_mutex;
+    QWaitCondition *m_condWait;
+    enum { Disconnected, Connecting, Connected } m_status;
 };
 
 #endif // LVK_TESTXMPPCLIENT_H
