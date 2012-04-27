@@ -104,7 +104,9 @@ public:
 signals:
 
     void connected();
+
     void disconnected();
+
     void connectionError(int err);
 
     void newConversationEntry(const BE::Conversation::Entry &entry);
@@ -121,6 +123,7 @@ private:
     QStringList m_evasives;
     CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
+    bool m_isFirstTime;
 
     void markAsSaved();
 
@@ -133,7 +136,8 @@ private:
 
     bool read(QFile &file);
     bool write(QFile &file);
-    void loadDefaultRules();
+    bool loadDefaultRules();
+    bool loadDefaultFirstTimeRules();
 };
 
 } // namespace BE

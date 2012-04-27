@@ -35,10 +35,12 @@
 #include <QCloseEvent>
 #include <QIcon>
 #include <QFile>
+#include <QFileDialog>
 
 #define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
 #define DEFAULT_RULES_FILE          "rules.dat"
 #define APP_ICON_FILE               ":/icons/app_icon"
+#define APP_EXTENSION               "crf"
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
@@ -58,7 +60,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     clear();
 
-    initCoreAndModels();
+    initCoreAndModelsWithFile(DEFAULT_RULES_FILE); // TODO Open last file
 
     connectSignals();
 
@@ -88,15 +90,31 @@ Lvk::FE::MainWindow::~MainWindow()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::initCoreAndModels()
+bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 {
-    m_coreApp->load(DEFAULT_RULES_FILE);
+    bool success = true;
+
+    setFilename(filename);
+
+    if (!filename.isEmpty()) {
+        success = m_coreApp->load(filename);
+    } else {
+        m_coreApp->close();
+    }
+
+    delete m_ruleTreeModel;
 
     m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
+    connect(m_ruleTreeSelectionModel,
+            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
+
+    return success;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -105,9 +123,12 @@ void Lvk::FE::MainWindow::connectSignals()
 {
     // Menus
 
-    connect(ui->actionSave,  SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
-    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
-    connect(ui->actionExit,  SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
+    connect(ui->actionNew,         SIGNAL(triggered()), SLOT(onNewMenuTriggered()));
+    connect(ui->actionOpen,        SIGNAL(triggered()), SLOT(onOpenMenuTriggered()));
+    connect(ui->actionSave,        SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
+    connect(ui->actionSaveAs,      SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
+    connect(ui->actionAbout,       SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
+    connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
 
     // Edit rules tabs
 
@@ -119,10 +140,6 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()),    SLOT(onRuleEdited()));
     connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),       SLOT(onRuleEdited()));
-
-    connect(ui->categoriesTree->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
 
     connect(ui->categoryNameTextEdit, SIGNAL(textEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
@@ -195,20 +212,11 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
 
 void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_ruleEdited || m_coreApp->hasUnsavedChanges()) {
-        QMessageBox msg(QMessageBox::Question,
-                        tr("Save changes"),
-                        tr("Do you want to save the changes in your hard drive?"),
-                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
-
-        int code = msg.exec();
+    if (hasUnsavedChanges()) {
+        int code = showSaveChangesDialog();
 
         if (code == QMessageBox::Yes) {
-            if (m_ruleEdited) {
-                teachRule(selectedRule());
-            }
-
-            m_coreApp->save();
+            saveChanges();
         } else if (code == QMessageBox::Cancel) {
             event->ignore();
         } else {
@@ -330,6 +338,10 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 void Lvk::FE::MainWindow::clear()
 {
+    initCoreAndModelsWithFile("");
+
+    m_ruleEdited = false;
+
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
     ui->rightSideTabWidget->setCurrentIndex(0);
@@ -339,7 +351,6 @@ void Lvk::FE::MainWindow::clear()
     setUiMode(RuleSelectionEmptyUiMode);
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
-    m_ruleEdited = false;
 
     // chat tab widgets
     ui->fbChatRadio->setChecked(true);
@@ -357,6 +368,109 @@ void Lvk::FE::MainWindow::clear()
     ui->testConversationText->clear();
     ui->testInputText->clear();
     ui->clearTestConversationButton->setEnabled(false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::hasUnsavedChanges()
+{
+    return m_ruleEdited || m_coreApp->hasUnsavedChanges();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::FE::MainWindow::showSaveChangesDialog()
+{
+    QString text = !m_filename.isEmpty() ?
+                tr("Do you want to save the changes in " + m_filename + "?") :
+                tr("Do you want to save the changes?");
+
+    QMessageBox msg(QMessageBox::Question, tr("Save changes"), text,
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+
+    return msg.exec();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::saveChanges()
+{
+    bool saved = false;
+
+    if (m_filename.isEmpty()) {
+        saved = saveAsChanges();
+    } else {
+        if (m_ruleEdited) {
+            teachRule(selectedRule());
+        }
+
+        m_coreApp->save();
+
+        saved = true;
+    }
+
+    return saved;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::saveAsChanges()
+{
+    QString exts = tr("Chatbot Rule Files") + QString(" (*." APP_EXTENSION ");;")
+            + tr("All files") + " (*.*)";
+
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), exts);
+
+    bool saved = false;
+
+    if (!filename.isEmpty()) {
+        if (!filename.endsWith("." APP_EXTENSION)) {
+            filename.append("." APP_EXTENSION);
+        }
+
+        setFilename(filename);
+
+        if (m_ruleEdited) {
+            teachRule(selectedRule());
+        }
+
+        m_coreApp->saveAs(m_filename);
+
+        saved = true;
+    }
+
+    return saved;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::load(const QString &filename)
+{
+    clear();
+
+    bool success = initCoreAndModelsWithFile(filename);
+
+    if (!success) {
+        QMessageBox msgbox(QMessageBox::Critical, tr("Open File"), tr("Cannot open ") + m_filename);
+
+        msgbox.exec();
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setFilename(const QString &filename)
+{
+    m_filename = filename;
+
+    if (!filename.isEmpty()) {
+        QFileInfo fileInfo(filename);
+        setWindowTitle(fileInfo.fileName() + " - " + APP_NAME);
+    } else {
+        setWindowTitle(APP_NAME);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -624,26 +738,6 @@ void Lvk::FE::MainWindow::onRuleEdited()
         ui->undoRuleButton->setEnabled(true);
     }
 }
-
-//--------------------------------------------------------------------------------------------------
-
-//void Lvk::FE::MainWindow::onRuleOutputEditingFinished()
-//{
-//    BE::Rule *rule = selectedRule();
-//    if (rule) {
-//        rule->setOutput(ui->ruleOutputWidget->outputList());
-//    }
-//}
-
-//--------------------------------------------------------------------------------------------------
-
-//void Lvk::FE::MainWindow::onRuleInputEditingFinished()
-//{
-//    BE::Rule *rule = selectedRule();
-//    if (rule) {
-//        rule->setInput(ui->ruleInputWidget->inputList());
-//    }
-//}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -970,9 +1064,73 @@ void Lvk::FE::MainWindow::logTestConversation(const BE::Conversation::Entry &ent
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onNewMenuTriggered()
+{
+    bool canceled = false;
+
+    if (hasUnsavedChanges()) {
+        int code = showSaveChangesDialog();
+
+        if (code == QMessageBox::Yes) {
+            if (!saveChanges()) {
+                canceled = true;
+            }
+        } else if (code == QMessageBox::No) {
+            // Nothing to do
+        } else if (code == QMessageBox::Cancel) {
+            canceled = true;
+        }
+    }
+
+    if (!canceled) {
+        clear();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onOpenMenuTriggered()
+{
+    bool canceled = false;
+
+    if (hasUnsavedChanges()) {
+        int code = showSaveChangesDialog();
+
+        if (code == QMessageBox::Yes) {
+            if (!saveChanges()) {
+                canceled = true;
+            }
+        } else if (code == QMessageBox::No) {
+            // Nothing to do
+        } else if (code == QMessageBox::Cancel) {
+            canceled = true;
+        }
+    }
+
+    if (!canceled) {
+        QString exts = tr("Chatbot Rule Files") + QString(" (*." APP_EXTENSION ");;")
+                + tr("All files") + " (*.*)";
+
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), exts);
+
+        if (!filename.isEmpty()) {
+            load(filename);
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onSaveMenuTriggered()
 {
-    m_coreApp->save();
+    saveChanges();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
+{
+    saveAsChanges();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1001,4 +1159,7 @@ void Lvk::FE::MainWindow::onExitMenuTriggered()
 {
     this->close();
 }
+
+
+
 

@@ -52,7 +52,8 @@
 <context>
     <name>Lvk::BE::CoreApp</name>
     <message>
-        <location filename="back-end/coreapp.cpp" line="434"/>
+        <location filename="back-end/coreapp.cpp" line="442"/>
+        <location filename="back-end/coreapp.cpp" line="489"/>
         <source>Rules</source>
         <translation>Reglas</translation>
     </message>
@@ -64,35 +65,34 @@
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="200"/>
-        <location filename="front-end/mainwindow.cpp" line="246"/>
+        <location filename="front-end/mainwindow.cpp" line="256"/>
+        <location filename="front-end/mainwindow.cpp" line="386"/>
         <source>Save changes</source>
         <translation>Guardar cambios</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="201"/>
         <source>Do you want to save the changes in your hard drive?</source>
-        <translation>¿Deseas guardar los cambios en el disco duro?</translation>
+        <translation type="obsolete">¿Deseas guardar los cambios en el disco duro?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="259"/>
+        <location filename="front-end/mainwindow.cpp" line="269"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="260"/>
-        <location filename="front-end/mainwindow.cpp" line="274"/>
+        <location filename="front-end/mainwindow.cpp" line="270"/>
+        <location filename="front-end/mainwindow.cpp" line="284"/>
         <source>Teach rule to the chatbot</source>
         <translation>Enseñar regla al chatbot</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="273"/>
+        <location filename="front-end/mainwindow.cpp" line="283"/>
         <source>If chatbot does not understand, it replies:</source>
         <translation>Si el chatbot no entiende la pregunta responde:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="284"/>
-        <location filename="front-end/mainwindow.cpp" line="317"/>
+        <location filename="front-end/mainwindow.cpp" line="294"/>
+        <location filename="front-end/mainwindow.cpp" line="327"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
@@ -101,8 +101,8 @@
         <translation type="obsolete">Estado: Desconectado</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="295"/>
-        <location filename="front-end/mainwindow.cpp" line="306"/>
+        <location filename="front-end/mainwindow.cpp" line="305"/>
+        <location filename="front-end/mainwindow.cpp" line="316"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
@@ -119,129 +119,171 @@
         <translation type="obsolete">Estado: Error en la conexión</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="286"/>
+        <location filename="front-end/mainwindow.cpp" line="296"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="297"/>
+        <location filename="front-end/mainwindow.cpp" line="307"/>
         <source>Connecting...</source>
         <translation>Conectando...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="308"/>
+        <location filename="front-end/mainwindow.cpp" line="318"/>
         <source>Connection sucessful!</source>
         <translation>Conexión exitosa!</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="319"/>
+        <location filename="front-end/mainwindow.cpp" line="329"/>
         <source>Connection error</source>
         <translation>Error en la conexión</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="406"/>
-        <location filename="front-end/mainwindow.cpp" line="422"/>
+        <location filename="front-end/mainwindow.cpp" line="383"/>
+        <source>Do you want to save the changes in </source>
+        <translation>¿Desea guardar los cambios realizados en </translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="384"/>
+        <source>Do you want to save the changes?</source>
+        <translation>¿Desea guardar los cambios realizados?</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="417"/>
+        <location filename="front-end/mainwindow.cpp" line="1109"/>
+        <source>Chatbot Rule Files</source>
+        <translation>Archivos Chabot</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="418"/>
+        <location filename="front-end/mainwindow.cpp" line="1110"/>
+        <source>All files</source>
+        <translation>Todos los archivos</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="420"/>
+        <source>Save File</source>
+        <translation>Guardar archivo</translation>
+    </message>
+    <message>
+        <source>Chatbot Rule Files (*.</source>
+        <translation type="obsolete">Archivos Chatbot (*.</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="452"/>
+        <location filename="front-end/mainwindow.cpp" line="1112"/>
+        <source>Open File</source>
+        <translation>Abrir archivo</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="452"/>
+        <source>Cannot open </source>
+        <translation>No se pudo abrir </translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.cpp" line="522"/>
+        <location filename="front-end/mainwindow.cpp" line="538"/>
         <source>Add category</source>
         <translation>Agregar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="406"/>
+        <location filename="front-end/mainwindow.cpp" line="522"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="416"/>
-        <location filename="front-end/mainwindow.cpp" line="472"/>
-        <location filename="front-end/mainwindow.cpp" line="522"/>
+        <location filename="front-end/mainwindow.cpp" line="532"/>
+        <location filename="front-end/mainwindow.cpp" line="588"/>
+        <location filename="front-end/mainwindow.cpp" line="638"/>
         <source>Internal error</source>
         <translation>Error interno</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="417"/>
+        <location filename="front-end/mainwindow.cpp" line="533"/>
         <source>The category could not be added because of an internal error</source>
         <translation>La categoría no se pudo agregar debido a un error interno de la aplicación</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="423"/>
+        <location filename="front-end/mainwindow.cpp" line="539"/>
         <source>The category name cannot be empty</source>
         <translation>No se puede agregar una categoría sin nombre</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="436"/>
-        <location filename="front-end/mainwindow.cpp" line="455"/>
+        <location filename="front-end/mainwindow.cpp" line="552"/>
+        <location filename="front-end/mainwindow.cpp" line="571"/>
         <source>Add rule</source>
         <translation>Agregar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="437"/>
+        <location filename="front-end/mainwindow.cpp" line="553"/>
         <source>Select the category where the rule will belong to</source>
         <translation>Seleccione la categoría a la cual pertenecerá la regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="456"/>
+        <location filename="front-end/mainwindow.cpp" line="572"/>
         <source>&apos;%0&apos; is an special category that cannot contain rules</source>
         <oldsource>Evasives is an special category that cannot contain rules</oldsource>
         <translation>&apos;%0&apos; es una categoría especial que no puede contener reglas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="473"/>
+        <location filename="front-end/mainwindow.cpp" line="589"/>
         <source>The rule could not be added because of an internal error</source>
         <translation>La regla no se pudo agregar debido a un error interno de la aplicación</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="487"/>
+        <location filename="front-end/mainwindow.cpp" line="603"/>
         <source>Remove rule or category</source>
         <translation>Borrar regla o categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="488"/>
+        <location filename="front-end/mainwindow.cpp" line="604"/>
         <source>Select the rule or category you want to remove</source>
         <translation>Seleccione la regla o categoría que desea borrar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="504"/>
+        <location filename="front-end/mainwindow.cpp" line="620"/>
         <source>Remove category</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="505"/>
+        <location filename="front-end/mainwindow.cpp" line="621"/>
         <source>Are you sure you want to remove the category &apos;%0&apos;?
 All rules belonging to that category will be also removed</source>
         <translation>¿Está seguro que desea borrar la categoría &apos;%0&apos;?
 Todas las reglas que pertenecen a esta categoría también serán borradas</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="509"/>
+        <location filename="front-end/mainwindow.cpp" line="625"/>
         <source>Remove rule</source>
         <translation>Borrar regla</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="510"/>
+        <location filename="front-end/mainwindow.cpp" line="626"/>
         <source>Are you sure you want to remove the rule &apos;%0&apos;?</source>
         <translation>Esta seguro que desea borrar la regla &apos;%0&apos;?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="523"/>
+        <location filename="front-end/mainwindow.cpp" line="639"/>
         <source>The rule/category could not be removed because of an internalerror</source>
         <translation>La regla/categoría no se pudo borrar debido a un error interno</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="529"/>
+        <location filename="front-end/mainwindow.cpp" line="645"/>
         <source>Cannot remove</source>
         <translation>Borrar categoría</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="530"/>
+        <location filename="front-end/mainwindow.cpp" line="646"/>
         <source>The selected category cannot be removed because is mandatory</source>
         <translation>La categoría seleccionada no puede ser borrada porque es obligatoria para el funcionamiento del programa</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="849"/>
+        <location filename="front-end/mainwindow.cpp" line="945"/>
         <source>Category changed</source>
         <translation>Categoría cambiada</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="850"/>
+        <location filename="front-end/mainwindow.cpp" line="946"/>
         <source>The category &apos;%0&apos; has changed.
 Do you want to save the changes made to the category?</source>
         <oldsource>The category &apos;%0&apos; has changed.
@@ -250,27 +292,27 @@ Do you want to teach the changes made to the category?</oldsource>
 Deseas guardar los cambios hechos?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="853"/>
+        <location filename="front-end/mainwindow.cpp" line="949"/>
         <source>Rule changed</source>
         <translation>Regla cambiada</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="854"/>
+        <location filename="front-end/mainwindow.cpp" line="950"/>
         <source>The rule &apos;%0&apos; has changed.
 Do you want to teach the changes made to the rule?</source>
         <translation>La regla &apos;%0&apos; ha cambiado.
 Deseas enseñar los cambios hechos?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="978"/>
+        <location filename="front-end/mainwindow.cpp" line="1138"/>
         <source>About %1...</source>
         <translation>Acerca de %1...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="980"/>
+        <location filename="front-end/mainwindow.cpp" line="1140"/>
         <source>&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;br/&gt;&lt;br/&gt;Developed by LVK&lt;br/&gt;%4&lt;br/&gt;%5</source>
         <oldsource>&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Revision: %3&lt;br/&gt;&lt;br/&gt;Developed by LVK&lt;br/&gt;%4&lt;br/&gt;%5</oldsource>
-        <translation type="unfinished">&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;br/&gt;&lt;br/&gt;Desarrollado por LVK&lt;br/&gt;%4&lt;br/&gt;%5</translation>
+        <translation>&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;br/&gt;&lt;br/&gt;Desarrollado por LVK&lt;br/&gt;%4&lt;br/&gt;%5</translation>
     </message>
     <message>
         <source>Rule has changed</source>
@@ -281,12 +323,12 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">La regla ha cambiado. Desea enseñar los cambios realizados?</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="773"/>
+        <location filename="front-end/mainwindow.cpp" line="869"/>
         <source>Invalid username</source>
         <translation>Nombre de usuario inválido</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.cpp" line="773"/>
+        <location filename="front-end/mainwindow.cpp" line="869"/>
         <source>Please provide a username</source>
         <translation>Por favor ingrese un nombre de usuario</translation>
     </message>
@@ -434,36 +476,66 @@ Deseas enseñar los cambios hechos?</translation>
         <translation>Limpiar conversación de prueba</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="589"/>
+        <location filename="front-end/mainwindow.ui" line="592"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="592"/>
+        <location filename="front-end/mainwindow.ui" line="595"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="597"/>
-        <location filename="front-end/mainwindow.ui" line="610"/>
+        <location filename="front-end/mainwindow.ui" line="600"/>
+        <location filename="front-end/mainwindow.ui" line="613"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="602"/>
         <location filename="front-end/mainwindow.ui" line="605"/>
+        <location filename="front-end/mainwindow.ui" line="608"/>
         <source>About Chatbot...</source>
         <translation>Acerca de Chatbot...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="615"/>
+        <location filename="front-end/mainwindow.ui" line="618"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="618"/>
+        <location filename="front-end/mainwindow.ui" line="621"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="626"/>
+        <source>Save as...</source>
+        <translation>Guardar como...</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="629"/>
+        <source>Ctrl+Shift+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="634"/>
+        <source>Open...</source>
+        <translation>Abrir...</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="637"/>
+        <source>Ctrl+O</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="642"/>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+    <message>
+        <location filename="front-end/mainwindow.ui" line="645"/>
+        <source>Ctrl+N</source>
+        <translation></translation>
     </message>
     <message>
         <source>Help</source>
@@ -561,7 +633,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
 <context>
     <name>QObject</name>
     <message>
-        <location filename="back-end/coreapp.cpp" line="263"/>
+        <location filename="back-end/coreapp.cpp" line="267"/>
         <source>Sorry, I don&apos;t understand that</source>
         <translation>Lo siento, no entiendo eso</translation>
     </message>

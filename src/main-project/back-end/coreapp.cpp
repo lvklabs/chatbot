@@ -41,10 +41,11 @@
 
 Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
     : QObject(parent),
-      m_rootRule(0),
+      m_rootRule(new Rule()),
       m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()),
       m_nextRuleId(0),
-      m_chatbot(0)
+      m_chatbot(0),
+      m_isFirstTime(true)
 {
 }
 
@@ -52,10 +53,11 @@ Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
 
 Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
-      m_rootRule(0),
+      m_rootRule(new Rule()),
       m_nlpEngine(nlpEngine),
       m_nextRuleId(0),
-      m_chatbot(0)
+      m_chatbot(0),
+      m_isFirstTime(true)
 {
 }
 
@@ -80,14 +82,16 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
     m_filename = filename;
 
-    bool success = true;
+    bool success = false;
 
     QFile file(m_filename);
 
     if (file.exists() && file.open(QFile::ReadOnly)) {
         success = read(file);
+    } else if (m_isFirstTime) {
+        success = loadDefaultFirstTimeRules();
     } else {
-        loadDefaultRules();
+        success = loadDefaultRules();
     }
 
     if (success) {
@@ -171,8 +175,7 @@ void Lvk::BE::CoreApp::close()
         m_chatbot = 0;
     }
 
-    delete m_rootRule;
-    m_rootRule = 0;
+    loadDefaultRules();
 
     m_filename = "";
 
@@ -203,6 +206,7 @@ bool Lvk::BE::CoreApp::read(QFile &file)
         return false;
     }
 
+    delete m_rootRule;
     m_rootRule = new Rule();
 
     istream >> *m_rootRule;
@@ -428,9 +432,13 @@ const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 //--------------------------------------------------------------------------------------------------
 // Misc
 //--------------------------------------------------------------------------------------------------
+// TODO localize
 
-void Lvk::BE::CoreApp::loadDefaultRules()
+bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 {
+    m_isFirstTime = false;
+
+    delete m_rootRule;
     m_rootRule = new BE::Rule(tr("Rules"));
 
     BE::Rule *catGreetings    = new BE::Rule("Saludos");
@@ -469,6 +477,41 @@ void Lvk::BE::CoreApp::loadDefaultRules()
                        << QString("No entiendo, puedes explicarlo de otra manera?");
 
     evasives->setOutput(evasivesOutputList);
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::loadDefaultRules()
+{
+    delete m_rootRule;
+    m_rootRule = new BE::Rule(tr("Rules"));
+
+    // initial category
+
+    BE::Rule *cat1  = new BE::Rule("Categoria");
+
+    cat1->setType(BE::Rule::ContainerRule);
+
+    m_rootRule->appendChild(cat1);
+
+    BE::Rule * rule1 = new BE::Rule("");
+
+    cat1->appendChild(rule1);
+
+    // evasives
+
+    BE::Rule *evasives    = new BE::Rule("Si no entiende");
+    evasives->setType(BE::Rule::EvasiveRule);
+
+    m_rootRule->appendChild(evasives);
+
+    QStringList evasivesOutputList;
+
+    evasives->setOutput(evasivesOutputList);
+
+    return true;
 }
 
 

@@ -97,6 +97,7 @@ private:
     bool m_ruleEdited;
     BE::Rule m_ruleBackup;
     QFile *m_testConversationLog;
+    QString m_filename;
 
     enum {
         DisconnectedFromChat,
@@ -105,7 +106,7 @@ private:
         ConnectionError
     } m_connectionStatus;
 
-    void initCoreAndModels();
+    bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
 
     void selectFirstRule();
@@ -124,6 +125,13 @@ private:
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
     void logTestConversation(const BE::Conversation::Entry &entry);
+
+    bool hasUnsavedChanges();
+    int showSaveChangesDialog();
+    bool saveChanges();
+    bool saveAsChanges();
+    bool load(const QString &filename);
+    void setFilename(const QString &filename);
 
 private slots:
     void onAddCategoryButtonClicked();
@@ -148,7 +156,10 @@ private slots:
 
     void onNewChatConversation(const BE::Conversation::Entry &entry);
 
+    void onNewMenuTriggered();
+    void onOpenMenuTriggered();
     void onSaveMenuTriggered();
+    void onSaveAsMenuTriggered();
     void onAboutMenuTriggered();
     void onExitMenuTriggered();
 };
