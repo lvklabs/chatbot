@@ -195,7 +195,7 @@ bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
 
 void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_coreApp->hasUnsavedChanges()) {
+    if (m_ruleEdited || m_coreApp->hasUnsavedChanges()) {
         QMessageBox msg(QMessageBox::Question,
                         tr("Save changes"),
                         tr("Do you want to save the changes in your hard drive?"),
@@ -204,6 +204,10 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
         int code = msg.exec();
 
         if (code == QMessageBox::Yes) {
+            if (m_ruleEdited) {
+                teachRule(selectedRule());
+            }
+
             m_coreApp->save();
         } else if (code == QMessageBox::Cancel) {
             event->ignore();
