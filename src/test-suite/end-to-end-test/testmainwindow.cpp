@@ -34,6 +34,9 @@
 
 #include <iostream>
 
+Q_DECLARE_METATYPE(Lvk::BE::Rule*)
+
+
 //--------------------------------------------------------------------------------------------------
 // Test data
 //--------------------------------------------------------------------------------------------------
@@ -320,6 +323,104 @@ void TestMainWindow::UiWaitForConnection()
         //http://stackoverflow.com/questions/6433933/qtcpclient-successfully-connects-but-not-to-my-
         //server-where-is-it-connecting
         qApp->processEvents();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::testImportExport_data()
+{
+    Lvk::BE::Rule *emptyImportContainer = new Lvk::BE::Rule();
+    Lvk::BE::Rule *importContainer1 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *importContainer2 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *cat1 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *cat2 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *rule1 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *rule2 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *rule3 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *eva1 = new Lvk::BE::Rule();
+
+    rule1->setType(Lvk::BE::Rule::OrdinaryRule);
+    rule1->setInput(QStringList()  << "Test Rule 1 Input 1");
+    rule1->setOutput(QStringList() << "Test Rule 1 Ouput 1");
+
+    rule2->setType(Lvk::BE::Rule::OrdinaryRule);
+    rule2->setInput(QStringList()  << "Test Rule 2 Input 1" << "Test Rule 2 Input 2");
+    rule2->setOutput(QStringList() << "Test Rule 2 Ouput 1" << "Test Rule 2 Ouput 2");
+
+    eva1->setType(Lvk::BE::Rule::EvasiveRule);
+    eva1->setOutput(QStringList() << "Test Evasive 1" << "Test Evasive 2" << "Test Evasive 2");
+
+    cat1->setType(Lvk::BE::Rule::ContainerRule);
+    cat1->setName("Import Test Category 1");
+    cat1->appendChild(rule1);
+    cat1->appendChild(rule2);
+    cat1->appendChild(rule3);
+
+    cat2->setType(Lvk::BE::Rule::ContainerRule);
+    cat2->setName("Import Test Category 2");
+
+    importContainer1->appendChild(cat1);
+    importContainer1->appendChild(cat2);
+
+//    importContainer2->appendChild(cat1);
+    importContainer2->appendChild(eva1);
+
+    QTest::addColumn<Lvk::BE::Rule *>("container");
+
+    QTest::newRow("export/import empty")  << emptyImportContainer;
+    QTest::newRow("export/import list 1") << importContainer1;
+//    QTest::newRow("export/import list 2") << importContainer2;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestMainWindow::testImportExport()
+{
+    QFETCH(Lvk::BE::Rule *, container);
+
+    UiSetRuleHierarchy1();
+
+    const QString EXPORTED_FILE = "./test_exported_file.cef";
+
+    if (QFile::exists(EXPORTED_FILE)) {
+        QVERIFY(QFile::remove(EXPORTED_FILE));
+    }
+
+    // Export & Import
+
+    QVERIFY(m_window->m_coreApp->exportRules(container, EXPORTED_FILE));
+
+    QVERIFY(QFile::exists(EXPORTED_FILE));
+
+    QVERIFY(m_window->m_coreApp->importRules(EXPORTED_FILE));
+
+    // Verify if rules have been imported
+
+    const Lvk::BE::Rule *rootRule = m_window->m_coreApp->rootRule();
+    const Lvk::BE::Rule *evasiveRule = m_window->evasiveRule();
+
+    QVERIFY(rootRule);
+    QVERIFY(evasiveRule);
+
+    foreach (const Lvk::BE::Rule *rule, container->children()) {
+
+        // The evasives rule is unique, so evasives rules are merged in a different way
+        if (rule->type() != Lvk::BE::Rule::EvasiveRule) {
+            bool found = false;
+            Lvk::BE::Rule::const_iterator it = rootRule->begin();
+            for (; it != rootRule->end() && !found; ++it) {
+                if (*rule == **it) {
+                    found = true;
+                }
+            }
+            QVERIFY(found);
+        } else {
+            foreach (QString s, rule->output()) {
+                QVERIFY(evasiveRule->output().contains(s));
+            }
+        }
+
     }
 }
 

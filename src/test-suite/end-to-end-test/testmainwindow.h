@@ -31,6 +31,9 @@ private Q_SLOTS:
     void initTestCase();
     void init();
 
+    void testImportExport_data();
+    void testImportExport();
+
     void testTestTabConversationSingleOutput_data();
     void testTestTabConversationSingleOutput();
 

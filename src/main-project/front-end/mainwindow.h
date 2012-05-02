@@ -160,6 +160,8 @@ private slots:
     void onOpenMenuTriggered();
     void onSaveMenuTriggered();
     void onSaveAsMenuTriggered();
+    void onImportMenuTriggered();
+    void onExportMenuTriggered();
     void onAboutMenuTriggered();
     void onExitMenuTriggered();
 };

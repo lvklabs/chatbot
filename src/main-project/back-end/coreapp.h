@@ -78,6 +78,10 @@ public:
 
     void close();
 
+    bool importRules(const QString &inputFile);
+
+    bool exportRules(const Rule *container, const QString &outputFile);
+
     Rule *rootRule();
 
     typedef QList< QPair<const Rule *, int> > MatchList;
@@ -126,6 +130,8 @@ private:
     bool m_isFirstTime;
 
     void markAsSaved();
+
+    bool mergeRules(Rule *container);
 
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 

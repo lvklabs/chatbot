@@ -129,6 +129,8 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->actionSaveAs,      SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
     connect(ui->actionAbout,       SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
     connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
+    connect(ui->actionImport,      SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
+    connect(ui->actionExport,      SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
 
     // Edit rules tabs
 
@@ -1131,6 +1133,20 @@ void Lvk::FE::MainWindow::onSaveMenuTriggered()
 void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 {
     saveAsChanges();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onImportMenuTriggered()
+{
+    // TODO
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onExportMenuTriggered()
+{
+    // TODO
 }
 
 //--------------------------------------------------------------------------------------------------

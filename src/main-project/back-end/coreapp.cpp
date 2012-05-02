@@ -32,8 +32,18 @@
 #include <QFile>
 #include <QDataStream>
 
-#define MAGIC_NUMBER            (('l'<<0) | ('v'<<8) | ('k'<<16) | ('\0'<<24))
-#define FILE_FORMAT_VERSION     1
+#include <iostream>
+
+#define CRF_MAGIC_NUMBER            (('c'<<0) | ('r'<<8) | ('f'<<16) | ('\0'<<24))
+#define CRF_FILE_FORMAT_VERSION     2
+
+#define CEF_MAGIC_NUMBER            (('c'<<0) | ('e'<<8) | ('f'<<16) | ('\0'<<24))
+#define CEF_FILE_FORMAT_VERSION     2
+
+// Backward compatibility: Magic number for file format version 1
+#define CRF_MAGIC_NUMBER_V1         (('l'<<0) | ('v'<<8) | ('k'<<16) | ('\0'<<24))
+
+
 
 //--------------------------------------------------------------------------------------------------
 // Constructors & destructor
@@ -139,10 +149,6 @@ bool Lvk::BE::CoreApp::saveAs(const QString &filename)
 
 bool Lvk::BE::CoreApp::hasUnsavedChanges() const
 {
-    if (!m_rootRule) {
-        return false;
-    }
-
     for (Rule::/* FIXME const_*/iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         if ((*it)->status() == Rule::Unsaved) {
             return true;
@@ -175,6 +181,9 @@ void Lvk::BE::CoreApp::close()
         m_chatbot = 0;
     }
 
+    delete m_rootRule;
+    m_rootRule = new Rule();
+
     loadDefaultRules();
 
     m_filename = "";
@@ -195,14 +204,17 @@ bool Lvk::BE::CoreApp::read(QFile &file)
     quint32 magicNumber;
     istream >> magicNumber;
 
-    if (magicNumber != MAGIC_NUMBER) {
+    quint32 version;
+    istream >> version;
+
+    if (version == 1 && magicNumber != CRF_MAGIC_NUMBER_V1) {
+        return false;
+    }
+    if (version != 1 && magicNumber != CRF_MAGIC_NUMBER) {
         return false;
     }
 
-    qint32 version;
-    istream >> version;
-
-    if (version < FILE_FORMAT_VERSION) {
+    if (version > CRF_FILE_FORMAT_VERSION) {
         return false;
     }
 
@@ -220,14 +232,98 @@ bool Lvk::BE::CoreApp::write(QFile &file)
 {
     QDataStream ostream(&file);
 
-    ostream << (quint32)MAGIC_NUMBER;
-    ostream << (qint32)FILE_FORMAT_VERSION;
+    ostream.setVersion(QDataStream::Qt_4_0);
+
+    ostream << (quint32)CRF_MAGIC_NUMBER;
+    ostream << (quint32)CRF_FILE_FORMAT_VERSION;
+    ostream << *m_rootRule;
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Import/Export
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::importRules(const QString &inputFile)
+{
+    QFile file(inputFile);
+
+    if (!file.open(QFile::ReadOnly)) {
+        return false;
+    }
+
+    QDataStream istream(&file);
+
+    quint32 magicNumber;
+    istream >> magicNumber;
+
+    quint32 version;
+    istream >> version;
+
+    if (magicNumber != CEF_MAGIC_NUMBER) {
+        return false;
+    }
+
+    if (version > CEF_FILE_FORMAT_VERSION) {
+        return false;
+    }
+
+    // TODO use auto_ptr
+    BE::Rule *container = new BE::Rule();
+    istream >> *container;
+
+    bool merged = mergeRules(container);
+
+    delete container;
+
+    return merged;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &outputFile)
+{
+    QFile file(outputFile);
+
+    if (!file.open(QFile::WriteOnly)) {
+        return false;
+    }
+
+    QDataStream ostream(&file);
 
     ostream.setVersion(QDataStream::Qt_4_0);
 
-    if (m_rootRule) {
-        ostream << *m_rootRule;
+    ostream << (quint32)CEF_MAGIC_NUMBER;
+    ostream << (quint32)CEF_FILE_FORMAT_VERSION;
+    ostream << *container;
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
+{
+    QStringList evasives = m_evasives;
+
+    foreach (Lvk::BE::Rule *rule, container->children()) {
+        switch (rule->type()) {
+        case Rule::ContainerRule:
+            m_rootRule->appendChild(new BE::Rule(*rule));
+            break;
+        case Rule::EvasiveRule:
+            evasives.append(rule->output());
+            //TODO setEvasives(evasives);
+            break;
+        case Rule::OrdinaryRule:
+            // not supported
+            // TODO log warning
+            break;
+        }
     }
+
+    refreshNlpEngine();
 
     return true;
 }
@@ -278,11 +374,7 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
-
-        if (m_rootRule) {
-            buildNlpRulesOf(m_rootRule, nlpRules);
-        }
-
+        buildNlpRulesOf(m_rootRule, nlpRules);
         m_nlpEngine->setRules(nlpRules);
     }
 }
@@ -513,6 +605,8 @@ bool Lvk::BE::CoreApp::loadDefaultRules()
 
     return true;
 }
+
+
 
 
 

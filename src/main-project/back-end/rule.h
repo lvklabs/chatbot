@@ -49,8 +49,6 @@ private:
     public:
         generic_iterator(T rule = 0) : m_rule(rule) { }
 
-        T operator*() { return m_rule; }
-
         generic_iterator<T> operator++()
         {
             // Depth-first search
@@ -73,17 +71,17 @@ private:
             return *this;
         }
 
-        bool operator==(const generic_iterator& it)
+        bool operator==(const generic_iterator& it) const
         {
             return m_rule == it.m_rule;
         }
 
-        bool operator!=(const generic_iterator& it)
+        bool operator!=(const generic_iterator& it) const
         {
             return !operator==(it);
         }
 
-    private:
+    protected:
         T m_rule;
     };
 
@@ -102,7 +100,15 @@ public:
     Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
              Rule *parent = 0);
 
+    Rule(const Rule &other);
+
     ~Rule();
+
+    //Rule& operator=(const Rule &other);
+
+    bool operator==(const Rule &other) const;
+
+    bool operator!=(const Rule &other) const;
 
 
     Rule *parent();
@@ -171,13 +177,24 @@ public:
     /**
       * \brief Rule iterator
       */
-    typedef generic_iterator<Rule *> iterator;
+    class iterator : public generic_iterator<Rule *>
+    {
+    public:
+        iterator(Rule *rule = 0) : generic_iterator<Rule *>(rule) { }
+
+        Rule* operator*() { return m_rule; }
+    };
 
     /**
       * \brief Rule const iterator
       */
-    typedef generic_iterator<const Rule *> const_iterator;
+    class const_iterator : public generic_iterator<const Rule *>
+    {
+    public:
+        const_iterator(const Rule *rule = 0) : generic_iterator<const Rule *>(rule) { }
 
+        const Rule* operator*() const { return m_rule; }
+    };
 
     iterator begin() { return iterator(this); }
 
@@ -188,13 +205,12 @@ public:
     const_iterator end() const { return const_iterator(0); }
 
 private:
-    Rule(Rule&);
-    Rule& operator=(Rule&);
+    Rule& operator=(Rule &other);
 
     QList<Rule*> m_childItems;
     QString m_name;
     QList<QString> m_input;
-    QList<QString> m_ouput;
+    QList<QString> m_output;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;
