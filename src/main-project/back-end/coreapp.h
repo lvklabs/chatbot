@@ -28,6 +28,8 @@
 #include <QHash>
 #include <QPair>
 
+#include <memory>
+
 #include "nlprule.h"
 #include "conversation.h"
 
@@ -120,7 +122,7 @@ private:
     CoreApp& operator=(CoreApp&);
 
     QString m_filename;
-    Rule *m_rootRule;
+    std::auto_ptr<Rule> m_rootRule;
     Nlp::Engine *m_nlpEngine;
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;

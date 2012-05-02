@@ -404,7 +404,6 @@ void TestMainWindow::testImportExport()
     QVERIFY(evasiveRule);
 
     foreach (const Lvk::BE::Rule *rule, container->children()) {
-
         // The evasives rule is unique, so evasives rules are merged in a different way
         if (rule->type() != Lvk::BE::Rule::EvasiveRule) {
             bool found = false;
@@ -420,7 +419,6 @@ void TestMainWindow::testImportExport()
                 QVERIFY(evasiveRule->output().contains(s));
             }
         }
-
     }
 }
 

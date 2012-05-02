@@ -76,7 +76,6 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 Lvk::BE::CoreApp::~CoreApp()
 {
     delete m_chatbot;
-    delete m_rootRule;
     delete m_nlpEngine;
 }
 
@@ -181,8 +180,7 @@ void Lvk::BE::CoreApp::close()
         m_chatbot = 0;
     }
 
-    delete m_rootRule;
-    m_rootRule = new Rule();
+    m_rootRule = std::auto_ptr<Rule>(new Rule());
 
     loadDefaultRules();
 
@@ -218,8 +216,7 @@ bool Lvk::BE::CoreApp::read(QFile &file)
         return false;
     }
 
-    delete m_rootRule;
-    m_rootRule = new Rule();
+    m_rootRule = std::auto_ptr<Rule>(new Rule());
 
     istream >> *m_rootRule;
 
@@ -269,15 +266,11 @@ bool Lvk::BE::CoreApp::importRules(const QString &inputFile)
         return false;
     }
 
-    // TODO use auto_ptr
-    BE::Rule *container = new BE::Rule();
+    std::auto_ptr<BE::Rule> container(new BE::Rule());
+
     istream >> *container;
 
-    bool merged = mergeRules(container);
-
-    delete container;
-
-    return merged;
+    return mergeRules(container.get());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -335,7 +328,7 @@ bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
 
 Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
 {
-    return m_rootRule;
+    return m_rootRule.get();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -374,7 +367,7 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
-        buildNlpRulesOf(m_rootRule, nlpRules);
+        buildNlpRulesOf(m_rootRule.get(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
     }
 }
@@ -530,8 +523,7 @@ bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 {
     m_isFirstTime = false;
 
-    delete m_rootRule;
-    m_rootRule = new BE::Rule(tr("Rules"));
+    m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
 
     BE::Rule *catGreetings    = new BE::Rule("Saludos");
 
@@ -577,8 +569,7 @@ bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 
 bool Lvk::BE::CoreApp::loadDefaultRules()
 {
-    delete m_rootRule;
-    m_rootRule = new BE::Rule(tr("Rules"));
+    m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
 
     // initial category
 
