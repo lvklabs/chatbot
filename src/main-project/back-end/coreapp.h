@@ -86,6 +86,8 @@ public:
 
     Rule *rootRule();
 
+    Rule *evasivesRule();
+
     typedef QList< QPair<const Rule *, int> > MatchList;
 
     QString getResponse(const QString &input, MatchList &matches) const;
@@ -123,10 +125,10 @@ private:
 
     QString m_filename;
     std::auto_ptr<Rule> m_rootRule;
+    Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
-    QStringList m_evasives;
     CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
     bool m_isFirstTime;
@@ -137,9 +139,11 @@ private:
 
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 
+    QStringList getEvasives() const;
+
     void createChatbot(ChatType type);
     void deleteCurrentChatbot();
-    void setEvasivesToChatbot(const QStringList &evasives);
+    void refreshEvasivesToChatbot();
     void connectChatClientSignals();
 
     bool read(QFile &file);

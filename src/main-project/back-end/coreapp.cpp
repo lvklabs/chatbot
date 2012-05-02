@@ -52,6 +52,7 @@
 Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
     : QObject(parent),
       m_rootRule(new Rule()),
+      m_evasivesRule(0),
       m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()),
       m_nextRuleId(0),
       m_chatbot(0),
@@ -64,6 +65,7 @@ Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
 Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
       m_rootRule(new Rule()),
+      m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
       m_nextRuleId(0),
       m_chatbot(0),
@@ -180,6 +182,8 @@ void Lvk::BE::CoreApp::close()
         m_chatbot = 0;
     }
 
+    m_evasivesRule = 0;
+
     m_rootRule = std::auto_ptr<Rule>(new Rule());
 
     loadDefaultRules();
@@ -189,8 +193,6 @@ void Lvk::BE::CoreApp::close()
     m_nextRuleId = 0;
 
     m_rulesHash.clear();
-
-    m_evasives.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -298,16 +300,18 @@ bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &out
 
 bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
 {
-    QStringList evasives = m_evasives;
-
     foreach (Lvk::BE::Rule *rule, container->children()) {
         switch (rule->type()) {
         case Rule::ContainerRule:
             m_rootRule->appendChild(new BE::Rule(*rule));
             break;
         case Rule::EvasiveRule:
-            evasives.append(rule->output());
-            //TODO setEvasives(evasives);
+            if (m_evasivesRule) {
+                m_evasivesRule->output().append(rule->output());
+            } else {
+                m_evasivesRule = new BE::Rule(*rule);
+                m_rootRule->appendChild(m_evasivesRule);
+            }
             break;
         case Rule::OrdinaryRule:
             // not supported
@@ -325,10 +329,23 @@ bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
 // Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
-
 Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
 {
     return m_rootRule.get();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule * Lvk::BE::CoreApp::evasivesRule()
+{
+    return m_evasivesRule;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QStringList Lvk::BE::CoreApp::getEvasives() const
+{
+    return m_evasivesRule ? m_evasivesRule->output() : QStringList();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -344,16 +361,22 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) 
     Nlp::Engine::MatchList nlpRulesMatched;
     QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
 
+
+    // TODO Refactor return
+
     if (!nlpRulesMatched.isEmpty()) {
         Nlp::RuleId ruleId = nlpRulesMatched.first().first;
         int inputNumber = nlpRulesMatched.first().second;
         matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
 
         return response;
-    } else if (!m_evasives.isEmpty()) {
-        return m_evasives[Common::Random::getInt(0, m_evasives.size() - 1)];
     } else {
-        return QObject::tr("Sorry, I don't understand that");
+        QStringList evasives = getEvasives();
+        if (!evasives.isEmpty()) {
+            return evasives[Common::Random::getInt(0, evasives.size() - 1)];
+        } else {
+            return "";
+        }
     }
 }
 
@@ -361,14 +384,15 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) 
 
 void Lvk::BE::CoreApp::refreshNlpEngine()
 {
+    m_evasivesRule = 0;
     m_nextRuleId = 0;
     m_rulesHash.clear();
-    m_evasives.clear();
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
         buildNlpRulesOf(m_rootRule.get(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
+        refreshEvasivesToChatbot();
     }
 }
 
@@ -387,8 +411,7 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
             nlpRules.append(nlpRule);
         } else if (child->type() == Rule::EvasiveRule) {
-            m_evasives = child->output(); // Design decision: It can exist only one evasive rule
-            setEvasivesToChatbot(child->output());
+            m_evasivesRule = (BE::Rule *)child; // FIXME fix cast
         } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
@@ -448,7 +471,7 @@ void Lvk::BE::CoreApp::createChatbot(ChatType type)
     m_currentChatbotType = type;
 
     DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_nlpEngine);
-    virtualUser->setEvasives(m_evasives);
+    virtualUser->setEvasives(getEvasives());
 
     m_chatbot->setVirtualUser(virtualUser);
 
@@ -469,14 +492,14 @@ void Lvk::BE::CoreApp::deleteCurrentChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::setEvasivesToChatbot(const QStringList &evasives)
+void Lvk::BE::CoreApp::refreshEvasivesToChatbot()
 {
     if (m_chatbot && m_chatbot->virtualUser()) {
         DefaultVirtualUser *virtualUser =
                 dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
 
         if (virtualUser) {
-            virtualUser->setEvasives(evasives);
+            virtualUser->setEvasives(getEvasives());
         }
     }
 }

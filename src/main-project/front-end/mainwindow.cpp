@@ -661,22 +661,14 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
 
 Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
 {
-    return m_ruleTreeModel->invisibleRootItem();
+    return m_coreApp->rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::MainWindow::evasiveRule()
+Lvk::BE::Rule * Lvk::FE::MainWindow::evasivesRule()
 {
-    if (rootRule()) {
-        for (int i = 0; i < rootRule()->childCount(); ++i) {
-            if (rootRule()->child(i)->type() == BE::Rule::EvasiveRule) {
-                return rootRule()->child(i);
-            }
-        }
-    }
-
-    return 0;
+    return m_coreApp->evasivesRule();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -805,6 +797,7 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString response = m_coreApp->getResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
+
     ui->testInputText->setText("");
 
     ui->clearTestConversationButton->setEnabled(true);
@@ -848,7 +841,7 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
 
         ui->ruleInputWidget->highlightInput(ruleNumber);
     } else {
-        selectRule(evasiveRule());
+        selectRule(evasivesRule());
 
         ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
     }

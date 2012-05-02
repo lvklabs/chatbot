@@ -335,6 +335,7 @@ void TestMainWindow::testImportExport_data()
     Lvk::BE::Rule *importContainer2 = new Lvk::BE::Rule();
     Lvk::BE::Rule *cat1 = new Lvk::BE::Rule();
     Lvk::BE::Rule *cat2 = new Lvk::BE::Rule();
+    Lvk::BE::Rule *cat3 = new Lvk::BE::Rule();
     Lvk::BE::Rule *rule1 = new Lvk::BE::Rule();
     Lvk::BE::Rule *rule2 = new Lvk::BE::Rule();
     Lvk::BE::Rule *rule3 = new Lvk::BE::Rule();
@@ -355,22 +356,25 @@ void TestMainWindow::testImportExport_data()
     cat1->setName("Import Test Category 1");
     cat1->appendChild(rule1);
     cat1->appendChild(rule2);
-    cat1->appendChild(rule3);
 
     cat2->setType(Lvk::BE::Rule::ContainerRule);
     cat2->setName("Import Test Category 2");
 
+    cat3->setType(Lvk::BE::Rule::ContainerRule);
+    cat3->setName("Import Test Category 3");
+    cat3->appendChild(rule3);
+
     importContainer1->appendChild(cat1);
     importContainer1->appendChild(cat2);
 
-//    importContainer2->appendChild(cat1);
+    importContainer2->appendChild(cat3);
     importContainer2->appendChild(eva1);
 
     QTest::addColumn<Lvk::BE::Rule *>("container");
 
     QTest::newRow("export/import empty")  << emptyImportContainer;
     QTest::newRow("export/import list 1") << importContainer1;
-//    QTest::newRow("export/import list 2") << importContainer2;
+    QTest::newRow("export/import list 2") << importContainer2;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -398,7 +402,7 @@ void TestMainWindow::testImportExport()
     // Verify if rules have been imported
 
     const Lvk::BE::Rule *rootRule = m_window->m_coreApp->rootRule();
-    const Lvk::BE::Rule *evasiveRule = m_window->evasiveRule();
+    const Lvk::BE::Rule *evasiveRule = m_window->evasivesRule();
 
     QVERIFY(rootRule);
     QVERIFY(evasiveRule);
