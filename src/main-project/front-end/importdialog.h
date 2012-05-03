@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_FE_EXPORTDIALOG_H
-#define LVK_FE_EXPORTDIALOG_H
+#ifndef LVK_FE_IMPORTDIALOG_H
+#define LVK_FE_IMPORTDIALOG_H
 
 #include "portdialog.h"
 #include "rule.h"
@@ -35,17 +35,17 @@ namespace FE
 {
 
 /**
- * The ExportDialog class provides a dialog that allow users to select rules which rules export to
+ * The ImportDialog class provides a dialog that allow users to select rules to import to
  */
 
-class ExportDialog : public PortDialog
+class ImportDialog : public PortDialog
 {
     Q_OBJECT
 
 public:
-    explicit ExportDialog(QWidget *parent = 0);
+    explicit ImportDialog(QWidget *parent = 0);
 
-    ExportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
+    ImportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
                  QWidget *parent = 0);
 
     int exec(BE::Rule *container);
@@ -60,4 +60,4 @@ private:
 
 } // namespace Lvk
 
-#endif // LVK_FE_EXPORTDIALOG_H
+#endif // LVK_FE_IMPORTDIALOG_H

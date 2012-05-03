@@ -276,6 +276,8 @@ bool Lvk::BE::CoreApp::importRules(BE::Rule *container, const QString &inputFile
     }
 
     istream >> *container;
+
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------

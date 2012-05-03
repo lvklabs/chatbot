@@ -19,14 +19,16 @@
  *
  */
 
-#include "exportdialog.h"
+#include "importdialog.h"
 #include "ui_portdialog.h"
 
 //--------------------------------------------------------------------------------------------------
-// ExportDialog
+// ImportDialog
 //--------------------------------------------------------------------------------------------------
+//
+// TODO refactor! there is a lot of duplciated code in ExportDialog
 
-Lvk::FE::ExportDialog::ExportDialog(QWidget *parent /*= 0*/)
+Lvk::FE::ImportDialog::ImportDialog(QWidget *parent /*= 0*/)
     : PortDialog(parent), m_model(0)
 {
     setWindowTitle("");
@@ -35,7 +37,7 @@ Lvk::FE::ExportDialog::ExportDialog(QWidget *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ExportDialog::ExportDialog(const QString &title, const QString &msg,
+Lvk::FE::ImportDialog::ImportDialog(const QString &title, const QString &msg,
                                     RuleTreeModel *model, QWidget *parent /*= 0*/)
     : PortDialog(parent), m_model(model)
 {
@@ -47,7 +49,7 @@ Lvk::FE::ExportDialog::ExportDialog(const QString &title, const QString &msg,
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::FE::ExportDialog::exec(BE::Rule *container)
+int Lvk::FE::ImportDialog::exec(BE::Rule *container)
 {
     int code = PortDialog::exec();
 
@@ -63,7 +65,7 @@ int Lvk::FE::ExportDialog::exec(BE::Rule *container)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ExportDialog::copyCheckedRules(BE::Rule *to, BE::Rule *from)
+void Lvk::FE::ImportDialog::copyCheckedRules(BE::Rule *to, BE::Rule *from)
 {
     if (!to || !from) {
         return;

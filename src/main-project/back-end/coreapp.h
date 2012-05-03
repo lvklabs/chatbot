@@ -86,6 +86,8 @@ public:
 
     bool exportRules(const Rule *container, const QString &outputFile);
 
+    bool mergeRules(Rule *container);
+
     Rule *rootRule();
 
     Rule *evasivesRule();
@@ -137,7 +139,6 @@ private:
 
     void markAsSaved();
 
-    bool mergeRules(Rule *container);
 
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 

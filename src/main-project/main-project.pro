@@ -80,7 +80,8 @@ HEADERS += \
     common/random.h\
     common/version.h \
     common/versionrev.h \
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    front-end/importdialog.h
 
 
 SOURCES += \
@@ -107,7 +108,8 @@ SOURCES += \
     chat-adapter/gtalkchatbot.cpp \
     chat-adapter/chatbot.cpp \
     common/random.cpp \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    front-end/importdialog.cpp
 
 
 FORMS += \
@@ -125,6 +127,8 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
 
 
 

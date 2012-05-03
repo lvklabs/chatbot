@@ -1141,17 +1141,29 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
 
     QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "", FILE_EXPORT_FILTERS);
 
-    // TODO show import dialog
-
     if (!filename.isEmpty()) {
-        m_ruleTreeModel->notifyDataAboutToChange();
 
-        if (!m_coreApp->importRules(filename)) {
+        BE::Rule container;
+        if (m_coreApp->importRules(&container, filename)) {
+            FE::RuleTreeModel *model = new FE::RuleTreeModel(&container, this);
+
+            FE::ExportDialog importDialog(IMPORT_TITLE , tr("Select the rules you want to import:"),
+                                          model, this);
+
+            BE::Rule selectedRulesContainer;
+            if (importDialog.exec(&selectedRulesContainer) == QDialog::Accepted) {
+                m_ruleTreeModel->notifyDataAboutToChange();
+                if (!m_coreApp->mergeRules(&selectedRulesContainer)) {
+                    QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE,
+                                       tr("Cannot import file"));
+                    msgBox.exec();
+                }
+                m_ruleTreeModel->notifyDataChanged();
+            }
+        } else {
             QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE, tr("Cannot import file"));
             msgBox.exec();
         }
-
-        m_ruleTreeModel->notifyDataChanged();
     }
 }
 
@@ -1162,7 +1174,6 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
     const QString EXPORT_TITLE = tr("Export Rules");
 
     FE::RuleTreeModel *model = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
-    model->setIsUserCheckable(true);
 
     FE::ExportDialog exportDialog(EXPORT_TITLE , tr("Select the rules you want to export:"),
                                   model, this);
