@@ -303,13 +303,13 @@ bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
     foreach (Lvk::BE::Rule *rule, container->children()) {
         switch (rule->type()) {
         case Rule::ContainerRule:
-            m_rootRule->appendChild(new BE::Rule(*rule));
+            m_rootRule->appendChild(new BE::Rule(*rule, true));
             break;
         case Rule::EvasiveRule:
             if (m_evasivesRule) {
                 m_evasivesRule->output().append(rule->output());
             } else {
-                m_evasivesRule = new BE::Rule(*rule);
+                m_evasivesRule = new BE::Rule(*rule, true);
                 m_rootRule->appendChild(m_evasivesRule);
             }
             break;

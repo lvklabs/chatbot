@@ -57,6 +57,8 @@ HEADERS += \
     front-end/ruleinputwidget.h \
     front-end/testconversationwidget.h \
     front-end/conversationhistorywidget.h \
+    front-end/portdialog.h \
+    front-end/exportdialog.h \
     back-end/rule.h \
     back-end/coreapp.h \
     back-end/defaultvirtualuser.h \
@@ -76,9 +78,9 @@ HEADERS += \
     chat-adapter/gtalkchatbot.h \
     chat-adapter/contactinfo.h \
     common/random.h\
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     common/version.h \
-    common/versionrev.h
+    common/versionrev.h \
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
 
 
 SOURCES += \
@@ -89,6 +91,8 @@ SOURCES += \
     front-end/ruleinputwidget.cpp \
     front-end/testconversationwidget.cpp \
     front-end/conversationhistorywidget.cpp \
+    front-end/portdialog.cpp \
+    front-end/exportdialog.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -103,11 +107,12 @@ SOURCES += \
     chat-adapter/gtalkchatbot.cpp \
     chat-adapter/chatbot.cpp \
     common/random.cpp \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp
 
 
 FORMS += \
-    front-end/mainwindow.ui
+    front-end/mainwindow.ui \
+    front-end/portdialog.ui
 
 RESOURCES += \
     resources.qrc
@@ -120,6 +125,11 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
+
+
+
 
 
 

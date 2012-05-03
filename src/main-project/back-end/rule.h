@@ -100,7 +100,7 @@ public:
     Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
              Rule *parent = 0);
 
-    Rule(const Rule &other);
+    Rule(const Rule &other, bool deepCopy = false);
 
     ~Rule();
 
@@ -129,6 +129,9 @@ public:
     void removeAllChild();
 
     int childCount() const;
+
+
+    void clear();
 
 
     Rule *child(int number);
@@ -170,6 +173,11 @@ public:
     void setEnabled(bool enabled);
 
 
+    Qt::CheckState checkState() const;
+
+    void setCheckState(Qt::CheckState state);
+
+
     Status status() const;
 
     void setStatus(Status status);
@@ -205,6 +213,7 @@ public:
     const_iterator end() const { return const_iterator(0); }
 
 private:
+    //Rule(const Rule &other);
     Rule& operator=(Rule &other);
 
     QList<Rule*> m_childItems;
@@ -215,6 +224,7 @@ private:
     Type m_type;
     bool m_enabled;
     Status m_status;
+    Qt::CheckState m_checkState;
 };
 
 QDataStream &operator<<(QDataStream &stream, const Rule &rule);

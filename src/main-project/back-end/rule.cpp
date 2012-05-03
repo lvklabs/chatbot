@@ -27,7 +27,7 @@
 
 Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
     : m_name(""), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
 }
 
@@ -35,7 +35,7 @@ Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
 
 Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
     : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
 }
 
@@ -43,7 +43,7 @@ Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
 
 Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
     : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(type),
-      m_enabled(false), m_status(Unsaved)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
 }
 
@@ -52,18 +52,21 @@ Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
 Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
                         const QList<QString> &ouput, Rule *parent /*= 0*/)
     : m_name(name), m_input(input), m_output(ouput), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Rule(const Rule &other)
+Lvk::BE::Rule::Rule(const Rule &other, bool deepCopy /*= false*/)
     : m_name(other.m_name), m_input(other.m_input), m_output(other.m_output), m_parentItem(0),
-      m_type(other.m_type), m_enabled(other.m_enabled), m_status(Unsaved)
+      m_type(other.m_type), m_enabled(other.m_enabled), m_status(Unsaved),
+      m_checkState(Qt::Unchecked)
 {
-    foreach (const Rule *rule, other.m_childItems) {
-        appendChild(new Rule(*rule));
+    if (deepCopy) {
+        foreach (const Rule *rule, other.m_childItems) {
+            appendChild(new Rule(*rule, true));
+        }
     }
 }
 
@@ -96,8 +99,7 @@ bool Lvk::BE::Rule::operator==(const Lvk::BE::Rule &other) const
     return m_type == other.m_type &&
            m_name == other.m_name &&
            m_output == other.m_output &&
-           m_input == other.m_input &&
-           m_enabled == other.m_enabled;
+           m_input == other.m_input;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -243,6 +245,18 @@ const Lvk::BE::Rule * Lvk::BE::Rule::nextSibling() const
         }
     }
     return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::clear()
+{
+    m_name.clear();
+    m_input.clear();
+    m_output.clear();
+    m_childItems.clear();
+    m_status = Unsaved;
+    m_checkState = Qt::Unchecked;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -402,6 +416,19 @@ void Lvk::BE::Rule::setStatus(Status status)
     m_status = status;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+Qt::CheckState Lvk::BE::Rule::checkState() const
+{
+    return m_checkState;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setCheckState(Qt::CheckState state)
+{
+    m_checkState = state;
+}
 
 
 

@@ -26,6 +26,7 @@
 #include "ui_mainwindow.h"
 #include "simpleaimlengine.h"
 #include "defaultsanitizer.h"
+#include "exportdialog.h"
 #include "version.h"
 
 #include <QStandardItemModel>
@@ -40,7 +41,17 @@
 #define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
 #define DEFAULT_RULES_FILE          "rules.dat"
 #define APP_ICON_FILE               ":/icons/app_icon"
-#define APP_EXTENSION               "crf"
+
+#define FILE_EXTENSION              "crf"
+#define FILE_EXPORT_EXTENSION       "cef"
+
+#define FILE_FILTERS                tr("Chatbot Rule Files") + \
+                                    QString(" (*." FILE_EXTENSION ");;")\
+                                    + tr("All files") + " (*.*)"
+
+#define FILE_EXPORT_FILTERS         tr("Chatbot Export Files") + \
+                                    QString(" (*." FILE_EXPORT_EXTENSION ");;")\
+                                    + tr("All files") + " (*.*)"
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
@@ -418,16 +429,13 @@ bool Lvk::FE::MainWindow::saveChanges()
 
 bool Lvk::FE::MainWindow::saveAsChanges()
 {
-    QString exts = tr("Chatbot Rule Files") + QString(" (*." APP_EXTENSION ");;")
-            + tr("All files") + " (*.*)";
-
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), exts);
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "", FILE_FILTERS);
 
     bool saved = false;
 
     if (!filename.isEmpty()) {
-        if (!filename.endsWith("." APP_EXTENSION)) {
-            filename.append("." APP_EXTENSION);
+        if (!filename.endsWith("." FILE_EXTENSION)) {
+            filename.append("." FILE_EXTENSION);
         }
 
         setFilename(filename);
@@ -1103,10 +1111,7 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
     }
 
     if (!canceled) {
-        QString exts = tr("Chatbot Rule Files") + QString(" (*." APP_EXTENSION ");;")
-                + tr("All files") + " (*.*)";
-
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), exts);
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "", FILE_FILTERS);
 
         if (!filename.isEmpty()) {
             load(filename);
@@ -1132,14 +1137,49 @@ void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 
 void Lvk::FE::MainWindow::onImportMenuTriggered()
 {
-    // TODO
+    const QString IMPORT_TITLE = tr("Import Rules");
+
+    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "", FILE_EXPORT_FILTERS);
+
+    // TODO show import dialog
+
+    if (!filename.isEmpty()) {
+        if (!m_coreApp->importRules(filename)) {
+            QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE, tr("Cannot import file"));
+            msgBox.exec();
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onExportMenuTriggered()
 {
-    // TODO
+    const QString EXPORT_TITLE = tr("Export Rules");
+
+    FE::RuleTreeModel *model = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
+    model->setIsUserCheckable(true);
+
+    FE::ExportDialog exportDialog(EXPORT_TITLE , tr("Select the rules you want to export:"),
+                                  model, this);
+
+    BE::Rule container;
+    if (exportDialog.exec(&container) == QDialog::Accepted) {
+
+        QString filename = QFileDialog::getSaveFileName(this, EXPORT_TITLE , "",
+                                                        FILE_EXPORT_FILTERS);
+
+        if (!filename.isEmpty()) {
+            if (!filename.endsWith("." FILE_EXPORT_EXTENSION)) {
+                filename.append("." FILE_EXPORT_EXTENSION);
+            }
+
+            if (!m_coreApp->exportRules(&container, filename)) {
+                QMessageBox msgBox(QMessageBox::Critical, EXPORT_TITLE , tr("Cannot export file"));
+                msgBox.exec();
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
