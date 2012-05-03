@@ -1152,12 +1152,15 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
 
             BE::Rule selectedRulesContainer;
             if (importDialog.exec(&selectedRulesContainer) == QDialog::Accepted) {
+
+                // FIXME do not use notifyDataAboutToChange
                 m_ruleTreeModel->notifyDataAboutToChange();
                 if (!m_coreApp->mergeRules(&selectedRulesContainer)) {
                     QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE,
                                        tr("Cannot import file"));
                     msgBox.exec();
                 }
+                // FIXME do not use notifyDataChanged
                 m_ruleTreeModel->notifyDataChanged();
             }
         } else {

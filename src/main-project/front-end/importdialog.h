@@ -23,10 +23,6 @@
 #define LVK_FE_IMPORTDIALOG_H
 
 #include "portdialog.h"
-#include "rule.h"
-#include "ruletreemodel.h"
-
-#include <QString>
 
 namespace Lvk
 {
@@ -47,13 +43,6 @@ public:
 
     ImportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
                  QWidget *parent = 0);
-
-    int exec(BE::Rule *container);
-
-private:
-    RuleTreeModel *m_model;
-
-    void copyCheckedRules(BE::Rule *to, BE::Rule *from);
 };
 
 } // namespace FE

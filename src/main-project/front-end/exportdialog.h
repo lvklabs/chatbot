@@ -23,10 +23,6 @@
 #define LVK_FE_EXPORTDIALOG_H
 
 #include "portdialog.h"
-#include "rule.h"
-#include "ruletreemodel.h"
-
-#include <QString>
 
 namespace Lvk
 {
@@ -35,7 +31,7 @@ namespace FE
 {
 
 /**
- * The ExportDialog class provides a dialog that allow users to select rules which rules export to
+ * The ExportDialog class provides a dialog that allow users to select rules to export to
  */
 
 class ExportDialog : public PortDialog
@@ -47,13 +43,6 @@ public:
 
     ExportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
                  QWidget *parent = 0);
-
-    int exec(BE::Rule *container);
-
-private:
-    RuleTreeModel *m_model;
-
-    void copyCheckedRules(BE::Rule *to, BE::Rule *from);
 };
 
 } // namespace FE

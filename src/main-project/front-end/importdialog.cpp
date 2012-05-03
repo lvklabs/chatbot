@@ -20,87 +20,21 @@
  */
 
 #include "importdialog.h"
-#include "ui_portdialog.h"
 
 //--------------------------------------------------------------------------------------------------
 // ImportDialog
 //--------------------------------------------------------------------------------------------------
-//
-// TODO refactor! there is a lot of duplciated code in ExportDialog
 
 Lvk::FE::ImportDialog::ImportDialog(QWidget *parent /*= 0*/)
-    : PortDialog(parent), m_model(0)
+    : PortDialog(parent)
 {
-    setWindowTitle("");
-    ui->label->setText("");
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::ImportDialog::ImportDialog(const QString &title, const QString &msg,
                                     RuleTreeModel *model, QWidget *parent /*= 0*/)
-    : PortDialog(parent), m_model(model)
+    : PortDialog(title, msg, model, parent)
 {
-    model->setIsUserCheckable(true);
-    setWindowTitle(title);
-    ui->label->setText(msg);
-    ui->treeView->setModel(model);
 }
-
-//--------------------------------------------------------------------------------------------------
-
-int Lvk::FE::ImportDialog::exec(BE::Rule *container)
-{
-    int code = PortDialog::exec();
-
-    if (code == QDialog::Accepted) {
-        container->clear();
-        container->setType(BE::Rule::ContainerRule);
-
-        copyCheckedRules(container, m_model->invisibleRootItem());
-    }
-
-    return code;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::ImportDialog::copyCheckedRules(BE::Rule *to, BE::Rule *from)
-{
-    if (!to || !from) {
-        return;
-    }
-
-    foreach (BE::Rule *child, from->children()) {
-        if (child->checkState() != Qt::Unchecked) {
-            BE::Rule *childCopy = new BE::Rule(*child);
-            to->appendChild(childCopy);
-            copyCheckedRules(childCopy, child);
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

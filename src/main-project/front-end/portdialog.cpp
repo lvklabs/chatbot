@@ -22,13 +22,73 @@
 #include "portdialog.h"
 #include "ui_portdialog.h"
 
-Lvk::FE::PortDialog::PortDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::PortDialog)
+//--------------------------------------------------------------------------------------------------
+// PortDialog
+//--------------------------------------------------------------------------------------------------
+
+Lvk::FE::PortDialog::PortDialog(QWidget *parent /*= 0*/)
+    : QDialog(parent), ui(new Ui::PortDialog), m_model(0)
 {
     ui->setupUi(this);
+    ui->label->setText("");
+    setWindowTitle("");
 }
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
+                                RuleTreeModel *model, QWidget *parent /*= 0*/)
+    : QDialog(parent), ui(new Ui::PortDialog), m_model(model)
+{
+    model->setIsUserCheckable(true);
+    ui->setupUi(this);
+    ui->label->setText(msg);
+    ui->treeView->setModel(model);
+    setWindowTitle(title);
+}
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::FE::PortDialog::~PortDialog()
 {
     delete ui;
 }
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::FE::PortDialog::exec(BE::Rule *container)
+{
+    int code = QDialog::exec();
+
+    if (code == QDialog::Accepted) {
+        container->clear();
+        container->setType(BE::Rule::ContainerRule);
+
+        copyCheckedRules(container, m_model->invisibleRootItem());
+    }
+
+    return code;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::copyCheckedRules(BE::Rule *to, BE::Rule *from)
+{
+    if (!to || !from) {
+        return;
+    }
+
+    foreach (BE::Rule *child, from->children()) {
+        if (child->checkState() != Qt::Unchecked) {
+            BE::Rule *childCopy = new BE::Rule(*child);
+            to->appendChild(childCopy);
+            copyCheckedRules(childCopy, child);
+        }
+    }
+}
+
+
+
+
+
+

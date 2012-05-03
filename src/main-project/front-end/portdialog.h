@@ -22,7 +22,12 @@
 #ifndef LVK_FE_PORTDIALOG_H
 #define LVK_FE_PORTDIALOG_H
 
+#include "rule.h"
+#include "ruletreemodel.h"
+
 #include <QDialog>
+#include <QString>
+
 
 namespace Ui {
     class PortDialog;
@@ -47,11 +52,20 @@ class PortDialog : public QDialog
 public:
     explicit PortDialog(QWidget *parent = 0);
 
+    PortDialog(const QString &title, const QString &msg, RuleTreeModel *model, QWidget *parent = 0);
+
     ~PortDialog();
 
-protected:
+    int exec(BE::Rule *container);
+
+private:
     Ui::PortDialog *ui;
+    RuleTreeModel *m_model;
+
+    void copyCheckedRules(BE::Rule *to, BE::Rule *from);
+
 };
+
 
 } // namespace FE
 
