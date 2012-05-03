@@ -92,7 +92,14 @@ public:
 
     void removeAllRows(BE::Rule *parent);
 
+
     void clear();
+
+
+    void notifyDataAboutToChange(); // FIXME refactor to remove this!
+
+    void notifyDataChanged();  // FIXME refactor to remove this!
+
 
     void setIsUserCheckable(bool checkable);
 

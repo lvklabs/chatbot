@@ -82,6 +82,8 @@ public:
 
     bool importRules(const QString &inputFile);
 
+    bool importRules(BE::Rule *container, const QString &inputFile);
+
     bool exportRules(const Rule *container, const QString &outputFile);
 
     Rule *rootRule();

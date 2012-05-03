@@ -1144,10 +1144,14 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
     // TODO show import dialog
 
     if (!filename.isEmpty()) {
+        m_ruleTreeModel->notifyDataAboutToChange();
+
         if (!m_coreApp->importRules(filename)) {
             QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE, tr("Cannot import file"));
             msgBox.exec();
         }
+
+        m_ruleTreeModel->notifyDataChanged();
     }
 }
 

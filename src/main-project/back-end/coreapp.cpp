@@ -246,6 +246,13 @@ bool Lvk::BE::CoreApp::write(QFile &file)
 
 bool Lvk::BE::CoreApp::importRules(const QString &inputFile)
 {
+    BE::Rule container;
+
+    return importRules(&container, inputFile) && mergeRules(&container);
+}
+
+bool Lvk::BE::CoreApp::importRules(BE::Rule *container, const QString &inputFile)
+{
     QFile file(inputFile);
 
     if (!file.open(QFile::ReadOnly)) {
@@ -268,11 +275,7 @@ bool Lvk::BE::CoreApp::importRules(const QString &inputFile)
         return false;
     }
 
-    std::auto_ptr<BE::Rule> container(new BE::Rule());
-
     istream >> *container;
-
-    return mergeRules(container.get());
 }
 
 //--------------------------------------------------------------------------------------------------

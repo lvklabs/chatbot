@@ -268,6 +268,20 @@ void Lvk::FE::RuleTreeModel::removeAllRows(BE::Rule *parent)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::RuleTreeModel::notifyDataAboutToChange()
+{
+    emit layoutAboutToBeChanged();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::notifyDataChanged()
+{
+    emit layoutChanged();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleTreeModel::clear()
 {
     removeAllRows(m_rootRule);
@@ -445,3 +459,4 @@ void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
         emit dataChanged(index, index);
     }
 }
+
