@@ -94,6 +94,10 @@ public:
 
     void clear();
 
+    void setIsUserCheckable(bool checkable);
+
+    bool isUserCheckable();
+
 private:
     RuleTreeModel(RuleTreeModel&);
     RuleTreeModel& operator=(RuleTreeModel&);
@@ -102,8 +106,13 @@ private:
     int columnCountForItem(const BE::Rule *item) const;
     QVariant dataForItem(const BE::Rule *item, int column, int role) const;
     bool setDataForItem(BE::Rule *item, const QVariant &value, int column, int role);
+    void updateCheckStateOnTree(BE::Rule *item, Qt::CheckState state);
+    void updateCheckStateOnChildren(BE::Rule *item, Qt::CheckState state);
+    void updateCheckStateOnParent(BE::Rule *item, Qt::CheckState state);
+    void setCheckState(BE::Rule *item, Qt::CheckState state);
 
     BE::Rule *m_rootRule;
+    bool m_isUserCheckable;
 };
 
 } // namespace FE

@@ -30,9 +30,11 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleTreeModel::RuleTreeModel(BE::Rule *rootRule, QObject *parent)
-    : QAbstractItemModel(parent), m_rootRule(rootRule)
+    : QAbstractItemModel(parent), m_rootRule(rootRule), m_isUserCheckable(false)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleTreeModel::~RuleTreeModel()
 {
@@ -54,6 +56,7 @@ QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, const QModelIndex
     return index(row, column, parentItem);
 }
 
+//--------------------------------------------------------------------------------------------------
 
 QModelIndex Lvk::FE::RuleTreeModel::parent(const QModelIndex &index) const
 {
@@ -71,6 +74,8 @@ QModelIndex Lvk::FE::RuleTreeModel::parent(const QModelIndex &index) const
     return createIndex(rowForItem(parentItem), 0, parentItem);
 }
 
+//--------------------------------------------------------------------------------------------------
+
 int Lvk::FE::RuleTreeModel::rowCount(const QModelIndex &parent) const
 {
     BE::Rule *parentItem = parent.isValid() ?
@@ -79,6 +84,8 @@ int Lvk::FE::RuleTreeModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
+//--------------------------------------------------------------------------------------------------
+
 int Lvk::FE::RuleTreeModel::columnCount(const QModelIndex &parent) const
 {
     BE::Rule *parentItem = parent.isValid() ?
@@ -86,6 +93,8 @@ int Lvk::FE::RuleTreeModel::columnCount(const QModelIndex &parent) const
 
     return columnCountForItem(parentItem);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QVariant Lvk::FE::RuleTreeModel::data(const QModelIndex &index, int role) const
 {
@@ -97,6 +106,8 @@ QVariant Lvk::FE::RuleTreeModel::data(const QModelIndex &index, int role) const
 
     return dataForItem(item, index.column(), role);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QVariant Lvk::FE::RuleTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
 {
@@ -125,6 +136,8 @@ bool Lvk::FE::RuleTreeModel::setData(const QModelIndex &index, const QVariant &v
     return false;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::FE::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientation,
                                        const QVariant &value, int role)
 {
@@ -137,6 +150,8 @@ bool Lvk::FE::RuleTreeModel::setHeaderData(int section, Qt::Orientation orientat
     }
     return false;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::FE::RuleTreeModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
@@ -153,6 +168,8 @@ bool Lvk::FE::RuleTreeModel::insertRows(int position, int rows, const QModelInde
     return inserted;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::FE::RuleTreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
     BE::Rule *parentItem = itemFromIndex(parent);
@@ -168,13 +185,17 @@ bool Lvk::FE::RuleTreeModel::removeRows(int position, int rows, const QModelInde
     return removed;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid()) {
         return 0;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable
+            | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags)
+            /*| Qt::ItemIsEditable*/;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -186,6 +207,8 @@ Lvk::BE::Rule * Lvk::FE::RuleTreeModel::invisibleRootItem()
     return m_rootRule;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
 {
     if (!index.isValid()) {
@@ -195,6 +218,8 @@ Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
     return static_cast<BE::Rule *>(index.internalPointer());
 }
 
+//--------------------------------------------------------------------------------------------------
+
 QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, BE::Rule *parentItem) const
 {
     BE::Rule *childItem = parentItem->child(row);
@@ -202,10 +227,14 @@ QModelIndex Lvk::FE::RuleTreeModel::index(int row, int column, BE::Rule *parentI
     return childItem ? createIndex(row, column, childItem) : QModelIndex();
 }
 
+//--------------------------------------------------------------------------------------------------
+
 QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(const BE::Rule *item)
 {
     return item != m_rootRule ? createIndex(rowForItem(item), 0, (void *)item) : QModelIndex();
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
 {
@@ -223,15 +252,21 @@ bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
     return appended;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleTreeModel::removeAllRows(const QModelIndex &parent)
 {
     removeRows(0, rowCount(parent), parent);
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleTreeModel::removeAllRows(BE::Rule *parent)
 {
     removeAllRows(indexFromItem(parent));
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::RuleTreeModel::clear()
 {
@@ -251,10 +286,14 @@ int Lvk::FE::RuleTreeModel::rowForItem(const BE::Rule *item) const
     return 0;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 int Lvk::FE::RuleTreeModel::columnCountForItem(const BE::Rule */*item*/) const
 {
     return 1;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, int role) const
 {
@@ -287,10 +326,15 @@ QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, i
             return QVariant();
         }
 
+    case Qt::CheckStateRole:
+        return m_isUserCheckable ? item->checkState() : QVariant();
+
     default:
         return QVariant();
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &value, int column,
                                             int role)
@@ -309,7 +353,7 @@ bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &valu
             if (item->input().size() == 0) {
                 item->input().append(value.toString());
             } else {
-                item->input()[0] = value.toString();
+                item->input().first() = value.toString();
             }
             return true;
 
@@ -325,8 +369,79 @@ bool Lvk::FE::RuleTreeModel::setDataForItem(BE::Rule *item, const QVariant &valu
             return false;
         }
 
+    case Qt::CheckStateRole:
+        updateCheckStateOnTree(item, static_cast<Qt::CheckState>(value.toInt()));
+        return true;
+
     default:
         return false;
     }
 
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::RuleTreeModel::isUserCheckable()
+{
+    return m_isUserCheckable;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::setIsUserCheckable(bool checkable)
+{
+    m_isUserCheckable = checkable;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::updateCheckStateOnTree(BE::Rule *item, Qt::CheckState state)
+{
+    setCheckState(item, state);
+    updateCheckStateOnChildren(item, state);
+    updateCheckStateOnParent(item, state);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::updateCheckStateOnChildren(BE::Rule *item, Qt::CheckState state)
+{
+    foreach (BE::Rule *child, item->children()) {
+        setCheckState(child, state);
+        updateCheckStateOnChildren(child, state);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::updateCheckStateOnParent(BE::Rule *item, Qt::CheckState state)
+{
+    BE::Rule *parent = item->parent();
+
+    if (parent) {
+        setCheckState(parent, state);
+
+        if (state != Qt::PartiallyChecked) {
+            foreach (BE::Rule *sibling, parent->children()) {
+                if (sibling->checkState() != state) {
+                    setCheckState(parent, Qt::PartiallyChecked);
+                    break;
+                }
+            }
+        }
+
+        updateCheckStateOnParent(parent, parent->checkState());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
+{
+    if (item->checkState() != state) {
+        item->setCheckState(state);
+
+        QModelIndex index = indexFromItem(item);
+        emit dataChanged(index, index);
+    }
 }
