@@ -73,6 +73,9 @@ private:
 
 private slots:
     void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onAcceptButtonPressed();
+    void onRejectButtonPressed();
+
 };
 
 

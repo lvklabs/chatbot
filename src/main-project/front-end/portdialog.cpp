@@ -22,6 +22,8 @@
 #include "portdialog.h"
 #include "ui_portdialog.h"
 
+#include <QMessageBox>
+
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
@@ -102,6 +104,9 @@ Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
     connect(ui->treeView->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
+
+    connect(ui->acceptButton, SIGNAL(clicked()), SLOT(onAcceptButtonPressed()));
+    connect(ui->rejectButton, SIGNAL(clicked()), SLOT(onRejectButtonPressed()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -200,6 +205,34 @@ void Lvk::FE::PortDialog::onRuleSelectionChanged(const QItemSelection &selected,
 
         ui->rulePreview->setText(rule != m_secondRoot ? ruleToString(rule) : "");
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::onAcceptButtonPressed()
+{
+    bool emptySelection = true;
+
+    BE::Rule *root = m_model->rootItem();
+    for (BE::Rule::iterator it = root->begin(); it != root->end(); ++it) {
+        if ((*it)->checkState() == Qt::Checked) {
+            emptySelection = false;
+            break;
+        }
+    }
+
+    if (!emptySelection) {
+        done(QDialog::Accepted);
+    } else {
+        QMessageBox::information(this, windowTitle(), tr("Please select at least one rule"));
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::onRejectButtonPressed()
+{
+    done(QDialog::Rejected);
 }
 
 
