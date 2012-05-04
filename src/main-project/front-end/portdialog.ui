@@ -64,7 +64,10 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QTextEdit" name="rulePreview">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>350</x>
@@ -76,13 +79,10 @@
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
-   <property name="text">
-    <string/>
+   <property name="undoRedoEnabled">
+    <bool>false</bool>
    </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-   </property>
-   <property name="wordWrap">
+   <property name="readOnly">
     <bool>true</bool>
    </property>
   </widget>

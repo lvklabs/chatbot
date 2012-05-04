@@ -33,6 +33,8 @@ namespace Ui {
     class PortDialog;
 }
 
+class QItemSelection;
+
 namespace Lvk
 {
 
@@ -64,6 +66,8 @@ private:
 
     void copyCheckedRules(BE::Rule *to, BE::Rule *from);
 
+private slots:
+    void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
 
