@@ -67,6 +67,8 @@ public:
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    virtual Qt::DropActions supportedDropActions() const;
+
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     virtual bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
@@ -83,6 +85,8 @@ public:
     void setRootItem(BE::Rule *root);
 
     BE::Rule *itemFromIndex(const QModelIndex &index);
+
+    const BE::Rule *itemFromIndex(const QModelIndex &index) const;
 
     QModelIndex index(int row, int column, BE::Rule *parentItem) const;
 

@@ -193,9 +193,27 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
         return 0;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable
-            | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags)
-            /*| Qt::ItemIsEditable*/;
+#ifdef DRAG_AND_DROP_ENABLED
+    const BE::Rule *item = itemFromIndex(index);
+#endif
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/
+#ifdef DRAG_AND_DROP_ENABLED
+            | (item->type() == BE::Rule::OrdinaryRule ? Qt::ItemIsDragEnabled : Qt::NoItemFlags)
+            | (item->type() == BE::Rule::ContainerRule ?  Qt::ItemIsDropEnabled : Qt::NoItemFlags)
+#endif
+            | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Qt::DropActions Lvk::FE::RuleTreeModel::supportedDropActions() const
+{
+#ifdef DRAG_AND_DROP_ENABLED
+    return Qt::CopyAction | Qt::MoveAction;
+#else
+    return Qt::IgnoreAction;
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -225,6 +243,17 @@ Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index)
     }
 
     return static_cast<BE::Rule *>(index.internalPointer());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Rule * Lvk::FE::RuleTreeModel::itemFromIndex(const QModelIndex &index) const
+{
+    if (!index.isValid()) {
+        return m_rootRule;
+    }
+
+    return static_cast<const BE::Rule *>(index.internalPointer());
 }
 
 //--------------------------------------------------------------------------------------------------
