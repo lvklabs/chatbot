@@ -567,9 +567,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
     bool success = initCoreAndModelsWithFile(filename);
 
     if (!success) {
-        QMessageBox msgbox(QMessageBox::Critical, tr("Open File"), tr("Cannot open ") + m_filename);
-
-        msgbox.exec();
+        QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
 
     return success;
@@ -635,9 +633,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
                 // FIXME do not use notifyDataAboutToChange
                 m_ruleTreeModel->notifyDataAboutToChange();
                 if (!m_coreApp->mergeRules(&selectedRulesContainer)) {
-                    QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE,
-                                       tr("Cannot import file"));
-                    msgBox.exec();
+                    QMessageBox::critical(this, IMPORT_TITLE, tr("Cannot import file ") + filename);
                 }
                 // FIXME do not use notifyDataChanged
                 m_ruleTreeModel->notifyDataChanged();
@@ -645,8 +641,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
                 refreshRuleOnWidget();
             }
         } else {
-            QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE, tr("Cannot import file"));
-            msgBox.exec();
+            QMessageBox::critical(this, IMPORT_TITLE, tr("Cannot import file ") + filename);
         }
     }
 }
@@ -674,8 +669,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
             }
 
             if (!m_coreApp->exportRules(&container, filename)) {
-                QMessageBox msgBox(QMessageBox::Critical, EXPORT_TITLE , tr("Cannot export file"));
-                msgBox.exec();
+                QMessageBox::critical(this, EXPORT_TITLE, tr("Cannot export file ") + filename);
             }
         }
     }
@@ -727,15 +721,14 @@ void Lvk::FE::MainWindow::onAddCategoryButtonClicked()
             if (category) {
                 selectRule(category);
             } else {
-                QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
-                                tr("The category could not be added because of an internal error"),
-                                QMessageBox::Ok, this);
-                msg.exec();
+                QString title = tr("Internal error");
+                QString text = tr("The category could not be added because of an internal error");
+                QMessageBox::critical(this, title, text);
             }
         } else {
-            QMessageBox msg(QMessageBox::Critical, tr("Add category"),
-                            tr("The category name cannot be empty"), QMessageBox::Ok, this);
-            msg.exec();
+            QString title = tr("Add category");
+            QString text = tr("The category name cannot be empty");
+            QMessageBox::critical(this, title, text);
         }
     }
 }
@@ -744,18 +737,15 @@ void Lvk::FE::MainWindow::onAddCategoryButtonClicked()
 
 void Lvk::FE::MainWindow::onAddRuleButtonClicked()
 {
-    QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
-
-    if (selectedRows.size() <= 0) {
-        QMessageBox msg(QMessageBox::Information, tr("Add rule"),
-                        tr("Select the category where the rule will belong to"),
-                        QMessageBox::Ok, this);
-        msg.exec();
+    if (m_ruleTreeSelectionModel->selectedRows().isEmpty()) {
+        QString title = tr("Add rule");
+        QString text = tr("Select the category where the rule will belong to");
+        QMessageBox::information(this, title, text);
 
         return;
     }
 
-    QModelIndex selectedIndex = selectedRows.first();
+    QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedRows().first();
     BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
     BE::Rule *parentCategory = 0;
 
@@ -768,12 +758,7 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
     } else if (selectedItem->type() == BE::Rule::EvasiveRule) {
         QString title = tr("Add rule");
         QString text = tr("'%0' is an special category that cannot contain rules");
-
-        QMessageBox msg(QMessageBox::Critical,
-                        title,
-                        text.arg(getRuleDisplayName(selectedIndex)),
-                        QMessageBox::Ok, this);
-        msg.exec();
+        QMessageBox::critical(this, title, text.arg(getRuleDisplayName(selectedIndex)));
     }
 
     if (parentCategory) {
@@ -783,10 +768,9 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
             selectRule(emptyRule);
             ui->ruleInputWidget->setFocusOnInput();
         } else {
-            QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
-                            tr("The rule could not be added because of an internal error"),
-                            QMessageBox::Ok, this);
-            msg.exec();
+            QString title = tr("Internal error");
+            QString text = tr("The rule could not be added because of an internal error");
+            QMessageBox::critical(this, title, text);
         }
     }
 }
@@ -795,18 +779,15 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
 
 void Lvk::FE::MainWindow::onRemoveButtonClicked()
 {
-    QModelIndexList selectedRows = m_ruleTreeSelectionModel->selectedRows();
-
-    if (selectedRows.size() <= 0) {
-        QMessageBox msg(QMessageBox::Critical, tr("Remove rule or category"),
-                        tr("Select the rule or category you want to remove"),
-                        QMessageBox::Ok, this);
-        msg.exec();
+    if (m_ruleTreeSelectionModel->selectedRows().isEmpty()) {
+        QString text = tr("Remove rule or category");
+        QString title = tr("Select the rule or category you want to remove");
+        QMessageBox::critical(this, text, title);
 
         return;
     }
 
-    QModelIndex selectedIndex = selectedRows[0];
+    QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedRows().first();
     BE::Rule *selectedItem = m_ruleTreeModel->itemFromIndex(selectedIndex);
     BE::Rule::Type ruleType = selectedItem->type();
 
@@ -824,30 +805,24 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
             dialogText  = tr("Are you sure you want to remove the rule '%0'?");
         }
 
-        QMessageBox msg(QMessageBox::Question,
-                        dialogTitle,
+        QMessageBox msg(QMessageBox::Question, dialogTitle,
                         dialogText.arg(getRuleDisplayName(selectedIndex)),
                         QMessageBox::Yes | QMessageBox::No, this);
 
-        if (msg.exec() == QMessageBox::Yes) {
+       if (msg.exec() == QMessageBox::Yes) {
             bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
 
             if (!removed) {
-                QMessageBox msg(QMessageBox::Critical, tr("Internal error"),
-                                tr("The rule/category could not be removed because of an internal"
-                                   "error"), QMessageBox::Ok, this);
-                msg.exec();
+                dialogTitle = tr("Internal error");
+                dialogText = tr("The rule/category could not be removed because of an internal"
+                                " error");
+                QMessageBox::critical(this, dialogTitle, dialogText);
             }
         }
     } else if (ruleType == BE::Rule::EvasiveRule) {
         dialogTitle = tr("Cannot remove");
         dialogText = tr("The selected category cannot be removed because is mandatory");
-
-        QMessageBox msg(QMessageBox::Information, dialogTitle, dialogText, QMessageBox::Ok, this);
-
-        msg.exec();
-
-        return;
+        QMessageBox::information(this, dialogTitle, dialogText);
     }
 }
 
@@ -1049,8 +1024,7 @@ void Lvk::FE::MainWindow::handleRuleEdited(BE::Rule *rule)
     }
 
     QMessageBox msg(QMessageBox::Question,
-                    dialogTitle,
-                    dialogText.arg(getRuleDisplayName(rule)),
+                    dialogTitle, dialogText.arg(getRuleDisplayName(rule)),
                     QMessageBox::Yes | QMessageBox::No, this);
 
     int code = msg.exec();
@@ -1222,10 +1196,7 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 
             m_coreApp->connectToChat(server, ui->usernameText->text(), ui->passwordText->text());
         } else {
-            QMessageBox msg(QMessageBox::Critical,
-                            tr("Invalid username"), tr("Please provide a username"),
-                            QMessageBox::Ok, this);
-            msg.exec();
+            QMessageBox::information(this, tr("Invalid username"), tr("Please provide a username"));
 
             ui->usernameText->setFocus();
         }
