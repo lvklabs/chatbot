@@ -27,6 +27,7 @@
 #include "simpleaimlengine.h"
 #include "defaultsanitizer.h"
 #include "exportdialog.h"
+#include "importdialog.h"
 #include "version.h"
 
 #include <QStandardItemModel>
@@ -621,8 +622,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
         if (m_coreApp->importRules(&container, filename)) {
             FE::RuleTreeModel *model = new FE::RuleTreeModel(&container, this);
 
-            FE::ExportDialog importDialog(IMPORT_TITLE , tr("Select the rules you want to import:"),
-                                          model, this);
+            FE::ImportDialog importDialog(IMPORT_TITLE, model, this);
 
             BE::Rule selectedRulesContainer;
             if (importDialog.exec(&selectedRulesContainer) == QDialog::Accepted) {
@@ -651,8 +651,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
 
     FE::RuleTreeModel *model = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
 
-    FE::ExportDialog exportDialog(EXPORT_TITLE , tr("Select the rules you want to export:"),
-                                  model, this);
+    FE::ExportDialog exportDialog(EXPORT_TITLE, model, this);
 
     BE::Rule container;
     if (exportDialog.exec(&container) == QDialog::Accepted) {

@@ -41,8 +41,7 @@ class ExportDialog : public PortDialog
 public:
     explicit ExportDialog(QWidget *parent = 0);
 
-    ExportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
-                 QWidget *parent = 0);
+    ExportDialog(const QString &title, RuleTreeModel *model, QWidget *parent = 0);
 };
 
 } // namespace FE

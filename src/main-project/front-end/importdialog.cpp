@@ -32,9 +32,9 @@ Lvk::FE::ImportDialog::ImportDialog(QWidget *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ImportDialog::ImportDialog(const QString &title, const QString &msg,
-                                    RuleTreeModel *model, QWidget *parent /*= 0*/)
-    : PortDialog(title, msg, model, parent)
+Lvk::FE::ImportDialog::ImportDialog(const QString &title, RuleTreeModel *model,
+                                    QWidget *parent /*= 0*/)
+    : PortDialog(title, tr("Select the rules you want to import:"), tr("&Import"), model, parent)
 {
 }
 

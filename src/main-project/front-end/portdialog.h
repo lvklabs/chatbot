@@ -54,7 +54,8 @@ class PortDialog : public QDialog
 public:
     explicit PortDialog(QWidget *parent = 0);
 
-    PortDialog(const QString &title, const QString &msg, RuleTreeModel *model, QWidget *parent = 0);
+    PortDialog(const QString &title, const QString &msg, const QString &acceptButtonText,
+               RuleTreeModel *model, QWidget *parent = 0);
 
     ~PortDialog();
 

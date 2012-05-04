@@ -41,8 +41,7 @@ class ImportDialog : public PortDialog
 public:
     explicit ImportDialog(QWidget *parent = 0);
 
-    ImportDialog(const QString &title, const QString &msg, RuleTreeModel *model,
-                 QWidget *parent = 0);
+    ImportDialog(const QString &title, RuleTreeModel *model, QWidget *parent = 0);
 };
 
 } // namespace FE

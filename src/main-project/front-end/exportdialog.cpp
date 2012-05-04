@@ -32,9 +32,9 @@ Lvk::FE::ExportDialog::ExportDialog(QWidget *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ExportDialog::ExportDialog(const QString &title, const QString &msg,
-                                    RuleTreeModel *model, QWidget *parent /*= 0*/)
-    : PortDialog(title, msg, model, parent)
+Lvk::FE::ExportDialog::ExportDialog(const QString &title, RuleTreeModel *model,
+                                    QWidget *parent /*= 0*/)
+    : PortDialog(title, tr("Select the rules you want to export:"), tr("&Export"), model, parent)
 {
 }
 

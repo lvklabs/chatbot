@@ -84,7 +84,8 @@ Lvk::FE::PortDialog::PortDialog(QWidget *parent /*= 0*/)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
-                                RuleTreeModel *model, QWidget *parent /*= 0*/)
+                                const QString &acceptButtonText, RuleTreeModel *model,
+                                QWidget *parent /*= 0*/)
     : QDialog(parent), ui(new Ui::PortDialog), m_model(model), m_secondRoot(0)
 {
     addExtraRootLevel();
@@ -93,6 +94,7 @@ Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
 
     ui->setupUi(this);
     ui->label->setText(msg);
+    ui->acceptButton->setText(acceptButtonText);
     ui->treeView->setModel(model);
     ui->treeView->setHeaderHidden(true);
     ui->treeView->expand(m_model->indexFromItem(m_secondRoot));
