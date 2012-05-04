@@ -78,7 +78,9 @@ public:
 
     // RuleTreeModel
 
-    BE::Rule *invisibleRootItem();
+    BE::Rule *rootItem();
+
+    void setRootItem(BE::Rule *root);
 
     BE::Rule *itemFromIndex(const QModelIndex &index);
 

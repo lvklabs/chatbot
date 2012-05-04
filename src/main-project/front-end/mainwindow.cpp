@@ -864,7 +864,7 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
     }
 
     bool added = m_ruleTreeModel->insertRows(lastButOneRow, 1, QModelIndex());
-    BE::Rule *category = m_ruleTreeModel->invisibleRootItem()->child(lastButOneRow);
+    BE::Rule *category = m_ruleTreeModel->rootItem()->child(lastButOneRow);
     category->setName(name);
     category->setType(BE::Rule::ContainerRule);
 

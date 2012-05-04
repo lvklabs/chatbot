@@ -129,6 +129,10 @@ public:
 
     void removeAllChild();
 
+    bool moveChildren(int position, int count, Rule *newParent);
+
+    bool moveAllChildren(Rule *newParent);
+
     int childCount() const;
 
 

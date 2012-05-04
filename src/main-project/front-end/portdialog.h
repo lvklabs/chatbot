@@ -63,7 +63,12 @@ public:
 private:
     Ui::PortDialog *ui;
     RuleTreeModel *m_model;
+    BE::Rule *m_secondRoot;
+    BE::Rule::Status m_rootStatusBak;
 
+    void addExtraRootLevel();
+    void removeExtraRootLevel();
+    void checkAllRules();
     void copyCheckedRules(BE::Rule *to, BE::Rule *from);
 
 private slots:

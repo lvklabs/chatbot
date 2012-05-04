@@ -202,9 +202,18 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 // RuleTreeMode
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::RuleTreeModel::invisibleRootItem()
+Lvk::BE::Rule * Lvk::FE::RuleTreeModel::rootItem()
 {
     return m_rootRule;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleTreeModel::setRootItem(BE::Rule *root)
+{
+    emit layoutAboutToBeChanged();
+    m_rootRule = root;
+    emit layoutChanged();
 }
 
 //--------------------------------------------------------------------------------------------------

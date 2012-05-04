@@ -25,6 +25,8 @@
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
+//
+// Helpers to get a string representation of rules
 
 namespace
 {
@@ -70,7 +72,7 @@ QString ruleToString(const Lvk::BE::Rule *rule)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::PortDialog::PortDialog(QWidget *parent /*= 0*/)
-    : QDialog(parent), ui(new Ui::PortDialog), m_model(0)
+    : QDialog(parent), ui(new Ui::PortDialog), m_model(0), m_secondRoot(0)
 {
     ui->setupUi(this);
     ui->label->setText("");
@@ -81,14 +83,21 @@ Lvk::FE::PortDialog::PortDialog(QWidget *parent /*= 0*/)
 
 Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
                                 RuleTreeModel *model, QWidget *parent /*= 0*/)
-    : QDialog(parent), ui(new Ui::PortDialog), m_model(model)
+    : QDialog(parent), ui(new Ui::PortDialog), m_model(model), m_secondRoot(0)
 {
+    addExtraRootLevel();
+
     model->setIsUserCheckable(true);
+
     ui->setupUi(this);
     ui->label->setText(msg);
     ui->treeView->setModel(model);
     ui->treeView->setHeaderHidden(true);
+    ui->treeView->expand(m_model->indexFromItem(m_secondRoot));
+
     setWindowTitle(title);
+
+    checkAllRules();
 
     connect(ui->treeView->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -99,7 +108,52 @@ Lvk::FE::PortDialog::PortDialog(const QString &title, const QString &msg,
 
 Lvk::FE::PortDialog::~PortDialog()
 {
+    removeExtraRootLevel();
+
+    delete m_model;
     delete ui;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::addExtraRootLevel()
+{
+    if (m_secondRoot) {
+        return;
+    }
+
+    m_secondRoot = new BE::Rule("", BE::Rule::ContainerRule);
+
+    m_rootStatusBak = m_model->rootItem()->status();
+
+    m_model->rootItem()->moveAllChildren(m_secondRoot);
+    m_model->rootItem()->appendChild(m_secondRoot);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::removeExtraRootLevel()
+{
+    if (!m_secondRoot) {
+        return;
+    }
+
+    m_secondRoot->moveAllChildren(m_model->rootItem());
+
+    m_model->rootItem()->removeChildren(0, 1);
+    m_model->rootItem()->setStatus(m_rootStatusBak);
+
+    m_secondRoot = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::PortDialog::checkAllRules()
+{
+    BE::Rule *root = m_model->rootItem();
+    for (BE::Rule::iterator it = root->begin(); it != root->end(); ++it) {
+        (*it)->setCheckState(Qt::Checked);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -112,7 +166,7 @@ int Lvk::FE::PortDialog::exec(BE::Rule *container)
         container->clear();
         container->setType(BE::Rule::ContainerRule);
 
-        copyCheckedRules(container, m_model->invisibleRootItem());
+        copyCheckedRules(container, m_secondRoot);
     }
 
     return code;
@@ -144,9 +198,11 @@ void Lvk::FE::PortDialog::onRuleSelectionChanged(const QItemSelection &selected,
         const BE::Rule *rule =
                 static_cast<const BE::Rule *>(selected.indexes().first().internalPointer());
 
-        ui->rulePreview->setText(ruleToString(rule));
+        ui->rulePreview->setText(rule != m_secondRoot ? ruleToString(rule) : "");
     }
 }
+
+
 
 
 

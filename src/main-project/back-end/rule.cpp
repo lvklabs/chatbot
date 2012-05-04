@@ -141,7 +141,7 @@ const QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children() const
 
 bool Lvk::BE::Rule::appendChild(Rule *item)
 {
-    assert(item->m_parentItem == 0 || item->m_parentItem == this);
+    //assert(item->m_parentItem == 0 || item->m_parentItem == this);
 
     item->m_parentItem = this;
 
@@ -192,6 +192,28 @@ bool Lvk::BE::Rule::removeChildren(int position, int count)
 void Lvk::BE::Rule::removeAllChild()
 {
     removeChildren(0, childCount());
+}
+
+//---------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Rule::moveChildren(int position, int count, Lvk::BE::Rule *newParent)
+{
+    if (position < 0 || position + count > m_childItems.size()) {
+        return false;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        newParent->appendChild(m_childItems.takeAt(position));
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Rule::moveAllChildren(Lvk::BE::Rule *newParent)
+{
+    return moveChildren(0, childCount(), newParent);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -429,6 +451,8 @@ void Lvk::BE::Rule::setCheckState(Qt::CheckState state)
 {
     m_checkState = state;
 }
+
+
 
 
 
