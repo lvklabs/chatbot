@@ -40,7 +40,7 @@
 #include <QFileDialog>
 
 #define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
-#define DEFAULT_RULES_FILE          "rules.dat"
+#define DEFAULT_RULES_FILE          "rules.crf"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
 #define FILE_EXTENSION              "crf"
