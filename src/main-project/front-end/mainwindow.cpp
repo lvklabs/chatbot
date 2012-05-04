@@ -211,12 +211,9 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->connectButton, SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
 
-    connect(m_coreApp, SIGNAL(connected()),    SLOT(onConnectionOk()));
-    connect(m_coreApp, SIGNAL(disconnected()), SLOT(onDisconnection()));
-
-    connect(m_coreApp,
-            SIGNAL(connectionError(int)),
-            SLOT(onConnectionError(int)));
+    connect(m_coreApp, SIGNAL(connected()),          SLOT(onConnectionOk()));
+    connect(m_coreApp, SIGNAL(disconnected()),       SLOT(onDisconnection()));
+    connect(m_coreApp, SIGNAL(connectionError(int)), SLOT(onConnectionError(int)));
 
     connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
 
