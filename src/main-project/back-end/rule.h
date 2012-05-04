@@ -19,11 +19,12 @@
  *
  */
 
-#ifndef LVK_BE_ITEM_H
-#define LVK_BE_ITEM_H
+#ifndef LVK_BE_RULE_H
+#define LVK_BE_RULE_H
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 
 namespace Lvk
@@ -97,7 +98,7 @@ public:
 
     Rule(const QString &name, Type type, Rule *parent = 0);
 
-    Rule(const QString &name, const QList<QString> &input, const QList<QString> &ouput,
+    Rule(const QString &name, const QStringList &input, const QStringList &ouput,
              Rule *parent = 0);
 
     Rule(const Rule &other, bool deepCopy = false);
@@ -154,18 +155,18 @@ public:
     void setName(const QString &name);
 
 
-    QList<QString> &input();
+    QStringList &input();
 
-    const QList<QString> &input() const;
+    const QStringList &input() const;
 
-    void setInput(const QList<QString> &input);
+    void setInput(const QStringList &input);
 
 
-    QList<QString> &output();
+    QStringList &output();
 
-    const QList<QString> &output() const;
+    const QStringList &output() const;
 
-    void setOutput(const QList<QString> &output);
+    void setOutput(const QStringList &output);
 
 
     bool enabled() const;
@@ -218,8 +219,8 @@ private:
 
     QList<Rule*> m_childItems;
     QString m_name;
-    QList<QString> m_input;
-    QList<QString> m_output;
+    QStringList m_input;
+    QStringList m_output;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;
@@ -234,4 +235,4 @@ QDataStream &operator>>(QDataStream &stream, Rule &rule);
 
 } // namespace Lvk
 
-#endif // LVK_BE_ITEM_H
+#endif // LVK_BE_RULE_H

@@ -49,8 +49,8 @@ Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Rule(const QString &name, const QList<QString> &input,
-                        const QList<QString> &ouput, Rule *parent /*= 0*/)
+Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QStringList &ouput,
+                    Rule *parent /*= 0*/)
     : m_name(name), m_input(input), m_output(ouput), m_parentItem(parent), m_type(OrdinaryRule),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
@@ -278,19 +278,19 @@ Lvk::BE::Rule::Type Lvk::BE::Rule::type() const
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> &Lvk::BE::Rule::input()
+QStringList &Lvk::BE::Rule::input()
 {
     m_status = Unsaved;
 
     return m_input;
 }
 
-const QList<QString> &Lvk::BE::Rule::input() const
+const QStringList &Lvk::BE::Rule::input() const
 {
     return m_input;
 }
 
-void Lvk::BE::Rule::setInput(const QList<QString> &input)
+void Lvk::BE::Rule::setInput(const QStringList &input)
 {
     m_status = Unsaved;
 
@@ -299,7 +299,7 @@ void Lvk::BE::Rule::setInput(const QList<QString> &input)
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> &Lvk::BE::Rule::output()
+QStringList &Lvk::BE::Rule::output()
 {
     m_status = Unsaved;
 
@@ -308,14 +308,14 @@ QList<QString> &Lvk::BE::Rule::output()
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<QString> &Lvk::BE::Rule::output() const
+const QStringList &Lvk::BE::Rule::output() const
 {
     return m_output;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Rule::setOutput(const QList<QString> &output)
+void Lvk::BE::Rule::setOutput(const QStringList &output)
 {
     m_status = Unsaved;
 
