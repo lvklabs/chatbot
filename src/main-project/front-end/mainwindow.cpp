@@ -756,39 +756,55 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
     m_ruleEdited = false;
 
     if (!selected.indexes().isEmpty()) {
-        const BE::Rule *item =
+        const BE::Rule *rule =
                 static_cast<const BE::Rule *>(selected.indexes().first().internalPointer());
 
-        if (item->type() == BE::Rule::OrdinaryRule) {
-
-            setUiMode(EditRuleUiMode);
-
-            ui->categoryNameTextEdit->clear();
-            ui->ruleInputWidget->setInputList(item->input());
-            ui->ruleOutputWidget->setOutputList(item->output());
-        } else if (item->type() == BE::Rule::EvasiveRule) {
-
-            setUiMode(EditEvasivesUiMode);
-
-            ui->categoryNameTextEdit->clear();
-            ui->ruleInputWidget->clear();
-            ui->ruleOutputWidget->setOutputList(item->output());
-        } else if (item->type() == BE::Rule::ContainerRule) {
-
-            setUiMode(EditCategoryUiMode);
-
-            ui->categoryNameTextEdit->setText(item->name());
-            ui->ruleInputWidget->clear();
-            ui->ruleOutputWidget->clear();
-        }
+        showRuleOnWidget(rule);
     } else {
+        showRuleOnWidget(0);
+    }
+}
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
+{
+    // TODO Create a RuleWidget class that contains nameTextEdit, inputWidget and outputWidget.
+    //      Define a method setRule(Rule*) that does this job.
+
+    if (!rule) {
         setUiMode(RuleSelectionEmptyUiMode);
-
+        ui->categoryNameLabel->clear();
+        ui->ruleInputWidget->clear();
+        ui->ruleOutputWidget->clear();
+    } else if (rule->type() == BE::Rule::OrdinaryRule) {
+        setUiMode(EditRuleUiMode);
+        ui->categoryNameTextEdit->clear();
+        ui->ruleInputWidget->setInputList(rule->input());
+        ui->ruleOutputWidget->setOutputList(rule->output());
+    } else if (rule->type() == BE::Rule::EvasiveRule) {
+        setUiMode(EditEvasivesUiMode);
+        ui->categoryNameTextEdit->clear();
+        ui->ruleInputWidget->clear();
+        ui->ruleOutputWidget->setOutputList(rule->output());
+    } else if (rule->type() == BE::Rule::ContainerRule) {
+        setUiMode(EditCategoryUiMode);
+        ui->categoryNameTextEdit->setText(rule->name());
+        ui->ruleInputWidget->clear();
+        ui->ruleOutputWidget->clear();
+    } else {
+        setUiMode(RuleSelectionEmptyUiMode);
         ui->categoryNameLabel->clear();
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->clear();
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::refreshRuleOnWidget()
+{
+    showRuleOnWidget(selectedRule());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1162,6 +1178,8 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
                 }
                 // FIXME do not use notifyDataChanged
                 m_ruleTreeModel->notifyDataChanged();
+
+                refreshRuleOnWidget();
             }
         } else {
             QMessageBox msgBox(QMessageBox::Critical, IMPORT_TITLE, tr("Cannot import file"));

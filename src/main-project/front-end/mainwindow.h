@@ -121,6 +121,9 @@ private:
     void handleRuleEdited(BE::Rule *rule);
     void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
 
+    void showRuleOnWidget(const BE::Rule *rule);
+    void refreshRuleOnWidget();
+
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
