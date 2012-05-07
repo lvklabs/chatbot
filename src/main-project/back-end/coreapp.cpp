@@ -350,7 +350,7 @@ Lvk::BE::Rule * Lvk::BE::CoreApp::evasivesRule()
 
 QStringList Lvk::BE::CoreApp::getEvasives() const
 {
-    return m_evasivesRule ? static_cast<const BE::Rule*>(m_evasivesRule)->output() : QStringList();
+    return m_evasivesRule ? const_cast<const BE::Rule*>(m_evasivesRule)->output() : QStringList();
 }
 
 //--------------------------------------------------------------------------------------------------
