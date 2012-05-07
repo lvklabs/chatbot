@@ -34,6 +34,8 @@ RosterWidget::RosterWidget(QWidget *parent) :
     QWidget(parent)
 {
     setupWidget();
+
+    connect(m_allUsersCheckBox, SIGNAL(stateChanged(int)), SLOT(onAllUsersStateChanged(int)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -60,6 +62,8 @@ void RosterWidget::setupWidget()
 
 void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
 {
+    m_rosterList->clear();
+
     foreach (Lvk::BE::RosterItem entry, roster) {
         QString itemText = entry.fullname;
 
@@ -71,5 +75,16 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
         item->setCheckState(Qt::Checked);
 
         m_rosterList->addItem(item);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RosterWidget::onAllUsersStateChanged(int)
+{
+    Qt::CheckState state = m_allUsersCheckBox->checkState();
+
+    for (int i = 0; i < m_rosterList->count(); ++i) {
+        m_rosterList->item(i)->setCheckState(state);
     }
 }

@@ -41,6 +41,9 @@ public:
 
     void setRoster(const Lvk::BE::Roster &roster);
 
+private slots:
+    void onAllUsersStateChanged(int);
+
 private:
     QCheckBox *m_allUsersCheckBox;
     QListWidget *m_rosterList;
