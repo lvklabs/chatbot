@@ -52,8 +52,8 @@
 <context>
     <name>Lvk::BE::CoreApp</name>
     <message>
-        <location filename="back-end/coreapp.cpp" line="554"/>
-        <location filename="back-end/coreapp.cpp" line="600"/>
+        <location filename="back-end/coreapp.cpp" line="570"/>
+        <location filename="back-end/coreapp.cpp" line="616"/>
         <source>Rules</source>
         <translation>Reglas</translation>
     </message>
@@ -124,6 +124,7 @@
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="368"/>
+        <location filename="front-end/mainwindow.cpp" line="396"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
@@ -150,8 +151,9 @@
         <translation>Conectando...</translation>
     </message>
     <message>
+        <location filename="front-end/mainwindow.cpp" line="398"/>
         <source>Connection sucessful!</source>
-        <translation type="obsolete">Conexión exitosa!</translation>
+        <translation>Conexión exitosa!</translation>
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="382"/>
@@ -538,9 +540,8 @@ Deseas enseñar los cambios hechos?</translation>
         <translation>Seleccione los usuarios que pueden conversar con el Chatbot:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="520"/>
         <source>All users</source>
-        <translation>Todos los usuarios</translation>
+        <translation type="obsolete">Todos los usuarios</translation>
     </message>
     <message>
         <location filename="front-end/mainwindow.ui" line="559"/>
@@ -776,6 +777,14 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <location filename="front-end/portdialog.cpp" line="63"/>
         <source>&lt;b&gt;If Chatbot does not understand:&lt;/b&gt;&lt;br/&gt;%1</source>
         <translation>&lt;b&gt;Si el Chatbot no entiende:&lt;/b&gt;&lt;br/&gt;%1</translation>
+    </message>
+</context>
+<context>
+    <name>RosterWidget</name>
+    <message>
+        <location filename="front-end/rosterwidget.cpp" line="49"/>
+        <source>All users</source>
+        <translation>Todos los usuarios</translation>
     </message>
 </context>
 <context>
