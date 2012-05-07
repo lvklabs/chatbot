@@ -129,7 +129,7 @@ void Lvk::FE::PortDialog::addExtraRootLevel()
         return;
     }
 
-    m_secondRoot = new BE::Rule("", BE::Rule::ContainerRule);
+    m_secondRoot = new BE::Rule(tr("(All)"), BE::Rule::ContainerRule);
 
     m_rootStatusBak = m_model->rootItem()->status();
 

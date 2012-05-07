@@ -401,6 +401,15 @@ Deseas enseñar los cambios hechos?</translation>
 <context>
     <name>Lvk::FE::PortDialog</name>
     <message>
+        <source>All categories</source>
+        <translation type="obsolete">Todas las categorías</translation>
+    </message>
+    <message>
+        <location filename="front-end/portdialog.cpp" line="132"/>
+        <source>(All)</source>
+        <translation>(Todo)</translation>
+    </message>
+    <message>
         <location filename="front-end/portdialog.cpp" line="229"/>
         <source>Please select at least one rule</source>
         <translation>Por favor seleccione al menos una regla</translation>
@@ -410,7 +419,7 @@ Deseas enseñar los cambios hechos?</translation>
     <name>MainWindow</name>
     <message>
         <location filename="front-end/mainwindow.ui" line="14"/>
-        <location filename="front-end/mainwindow.ui" line="577"/>
+        <location filename="front-end/mainwindow.ui" line="586"/>
         <source>Chatbot</source>
         <translation>Chatbot</translation>
     </message>
@@ -447,7 +456,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="187"/>
+        <location filename="front-end/mainwindow.ui" line="196"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
@@ -456,17 +465,17 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="260"/>
+        <location filename="front-end/mainwindow.ui" line="269"/>
         <source>Connect with chat</source>
         <translation>Conectar con chat</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="283"/>
+        <location filename="front-end/mainwindow.ui" line="292"/>
         <source>Connect with chat:</source>
         <translation>Conectar con chat:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="293"/>
+        <location filename="front-end/mainwindow.ui" line="302"/>
         <source> Facebook</source>
         <oldsource>Facebook</oldsource>
         <translation> Facebook</translation>
@@ -476,129 +485,129 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="206"/>
+        <location filename="front-end/mainwindow.ui" line="215"/>
         <source>Undo changes</source>
         <translation>Deshacer cambios</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="223"/>
+        <location filename="front-end/mainwindow.ui" line="232"/>
         <source>Teach rule to the chatbot</source>
         <translation>Enseñar regla al chatbot</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="313"/>
+        <location filename="front-end/mainwindow.ui" line="322"/>
         <source> Gmail or Google Talk</source>
         <translation> Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="343"/>
+        <location filename="front-end/mainwindow.ui" line="352"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="369"/>
+        <location filename="front-end/mainwindow.ui" line="378"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="395"/>
+        <location filename="front-end/mainwindow.ui" line="404"/>
         <source>Connecting...</source>
         <translation>Conectando...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="427"/>
+        <location filename="front-end/mainwindow.ui" line="436"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="434"/>
+        <location filename="front-end/mainwindow.ui" line="443"/>
         <source>Status:</source>
         <translation>Estado:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="457"/>
+        <location filename="front-end/mainwindow.ui" line="466"/>
         <source>Conversations</source>
         <translation>Conversaciones</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="471"/>
+        <location filename="front-end/mainwindow.ui" line="480"/>
         <source>Conversations held with the chatbot:</source>
         <translation>Conversaciones mantenidas con el chatbot:</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="507"/>
+        <location filename="front-end/mainwindow.ui" line="516"/>
         <source>Clean test conversation</source>
         <translation>Limpiar conversación de prueba</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="595"/>
+        <location filename="front-end/mainwindow.ui" line="604"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="598"/>
+        <location filename="front-end/mainwindow.ui" line="607"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="603"/>
-        <location filename="front-end/mainwindow.ui" line="616"/>
+        <location filename="front-end/mainwindow.ui" line="612"/>
+        <location filename="front-end/mainwindow.ui" line="625"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="608"/>
-        <location filename="front-end/mainwindow.ui" line="611"/>
+        <location filename="front-end/mainwindow.ui" line="617"/>
+        <location filename="front-end/mainwindow.ui" line="620"/>
         <source>About Chatbot...</source>
         <translation>Acerca de Chatbot...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="621"/>
+        <location filename="front-end/mainwindow.ui" line="630"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="624"/>
+        <location filename="front-end/mainwindow.ui" line="633"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="629"/>
+        <location filename="front-end/mainwindow.ui" line="638"/>
         <source>Save as...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="632"/>
+        <location filename="front-end/mainwindow.ui" line="641"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="637"/>
+        <location filename="front-end/mainwindow.ui" line="646"/>
         <source>Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="640"/>
+        <location filename="front-end/mainwindow.ui" line="649"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="645"/>
+        <location filename="front-end/mainwindow.ui" line="654"/>
         <source>New</source>
         <translation>Nuevo</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="648"/>
+        <location filename="front-end/mainwindow.ui" line="657"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="653"/>
+        <location filename="front-end/mainwindow.ui" line="662"/>
         <source>Import rules...</source>
         <translation>Importar Reglas...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="658"/>
+        <location filename="front-end/mainwindow.ui" line="667"/>
         <source>Export rules...</source>
         <translation>Exportar Reglas...</translation>
     </message>
@@ -611,7 +620,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">La ayuda se muestra acá mientras el usuario mueve el mouse sobre los contoles</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="496"/>
+        <location filename="front-end/mainwindow.ui" line="505"/>
         <source>Test your chatbot</source>
         <translation>Prueba tu chatbot</translation>
     </message>
@@ -620,12 +629,12 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="510"/>
+        <location filename="front-end/mainwindow.ui" line="519"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="552"/>
+        <location filename="front-end/mainwindow.ui" line="561"/>
         <source>Test:</source>
         <translation>Prueba:</translation>
     </message>
@@ -634,7 +643,7 @@ Deseas enseñar los cambios hechos?</translation>
         <translation type="obsolete">Open...</translation>
     </message>
     <message>
-        <location filename="front-end/mainwindow.ui" line="167"/>
+        <location filename="front-end/mainwindow.ui" line="176"/>
         <source>Category name:</source>
         <translation>Nombre de la categoría:</translation>
     </message>
