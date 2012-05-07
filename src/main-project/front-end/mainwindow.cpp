@@ -1230,7 +1230,7 @@ void Lvk::FE::MainWindow::onConnectionOk()
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
-    updateRosterList();
+    ui->rosterWidget->setRoster(m_coreApp->roster());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1251,28 +1251,6 @@ void Lvk::FE::MainWindow::onDisconnection()
     if (m_connectionStatus != ConnectionError) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::updateRosterList()
-{
-    ui->allUsersCheckBox->setCheckState(Qt::Checked);
-
-    BE::Roster roster = m_coreApp->roster();
-
-    foreach (BE::RosterItem entry, roster) {
-        QString itemText = entry.fullname;
-
-        if (itemText.isEmpty()) {
-            itemText = entry.username;
-        }
-
-        QListWidgetItem *item = new QListWidgetItem(itemText);
-        item->setCheckState(Qt::Checked);
-
-        ui->rosterWidget->addItem(item);
     }
 }
 

@@ -501,7 +501,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="2">
+               <item row="3" column="2">
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -513,19 +513,6 @@
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item row="3" column="0" colspan="3">
-                <widget class="QCheckBox" name="allUsersCheckBox">
-                 <property name="text">
-                  <string>All users</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                 <property name="tristate">
-                  <bool>false</bool>
-                 </property>
-                </widget>
                </item>
                <item row="1" column="0" colspan="3">
                 <spacer name="verticalSpacer_3">
@@ -543,8 +530,21 @@
                  </property>
                 </spacer>
                </item>
-               <item row="4" column="0" colspan="2">
-                <widget class="QListWidget" name="rosterWidget"/>
+               <item row="3" column="0">
+                <widget class="RosterWidget" name="rosterWidget" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -782,6 +782,12 @@
    <class>ConversationHistoryWidget</class>
    <extends>QWidget</extends>
    <header>conversationhistorywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RosterWidget</class>
+   <extends>QWidget</extends>
+   <header>rosterwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
