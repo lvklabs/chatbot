@@ -27,6 +27,7 @@
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
+#include "QXmppRosterIq.h"
 #include "chatbot.h"
 
 class QXmppVCardIq;
@@ -74,10 +75,22 @@ public:
 
     virtual VirtualUser *virtualUser();
 
-public slots:
-    void messageReceived(const QXmppMessage&);
+    virtual ContactInfoList roster() const;
 
-    void vCardReceived(const QXmppVCardIq&);
+    virtual void setBlackListRoster(const ContactInfoList &blackList);
+
+    virtual ContactInfoList blackListRoster() const;
+
+public slots:
+    void onConnected();
+
+    void onMessageReceived(const QXmppMessage &);
+
+    void onVCardReceived(const QXmppVCardIq &);
+
+    void onRosterReceived();
+
+    void onRosterChanged(const QString &);
 
 signals:
     void connected();
@@ -96,19 +109,21 @@ private:
     QXmppClient *m_xmppClient;
     VirtualUser *m_virtualUser;
 
-    QHash<QString, ContactInfo> m_contactInfo;
+    QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
 
-    QList<QXmppMessage> m_messageQueue;
-    QMutex *m_messageQueueMutex;
+    bool m_rosterHasChanged;
+    mutable ContactInfoList m_roster;
+    ContactInfoList m_blackListRoster;
 
-    void replyMessage(const QXmppMessage &msg, const ContactInfo &info);
+    ContactInfo getContactInfo(const QString &bareJid) const;
 
-    ContactInfo getContactInfo(const QString &bareJid);
-    void requestContactInfo(const QXmppMessage &msg);
-    void replyQueuedMessages(const ContactInfo &info);
+    QXmppVCardIq getVCard(const QString &bareJid);
+    void requestVCard(const QString &bareJid);
 
     Error convertToLocalError(QXmppClient::Error err);
+
+    bool isUserAllowed(const QString &jid);
 };
 
 } //namespace CA

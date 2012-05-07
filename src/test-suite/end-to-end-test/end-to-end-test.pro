@@ -54,6 +54,7 @@ HEADERS += \
     ../../main-project/front-end/conversationhistorywidget.h \
     ../../main-project/front-end/portdialog.h \
     ../../main-project/front-end/exportdialog.h \
+    ../../main-project/front-end/importdialog.h \
     ../../main-project/back-end/rule.h \
     ../../main-project/back-end/coreapp.h \
     ../../main-project/back-end/defaultvirtualuser.h \
@@ -86,6 +87,7 @@ SOURCES += \
     ../../main-project/front-end/conversationhistorywidget.cpp \
     ../../main-project/front-end/portdialog.cpp \
     ../../main-project/front-end/exportdialog.cpp \
+    ../../main-project/front-end/importdialog.cpp \
     ../../main-project/back-end/rule.cpp \
     ../../main-project/back-end/coreapp.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \

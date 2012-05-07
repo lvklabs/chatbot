@@ -23,6 +23,7 @@
 #define LVK_CA_CONTACTINFO_H
 
 #include <QString>
+#include <QList>
 
 namespace Lvk
 {
@@ -30,11 +31,16 @@ namespace Lvk
 namespace CA
 {
 
+
 /**
  * \brief ContactInfo struct provides information about a chat contact
  */
 struct ContactInfo
 {
+    ContactInfo() {}
+
+    ContactInfo(QString username, QString fullname) : username(username), fullname(fullname) {}
+
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
 
@@ -42,6 +48,11 @@ struct ContactInfo
     bool isNull() { return username.isNull() && fullname.isNull(); }
 };
 
+
+/**
+ * \brief The ContactInfoList class provides a list of contact information
+ */
+typedef QList<ContactInfo> ContactInfoList;
 
 } //namespace CA
 

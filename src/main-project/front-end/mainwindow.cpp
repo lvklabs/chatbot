@@ -389,14 +389,14 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->disconnectButton->setIcon(ui->fbChatRadio->isChecked() ?
                                           QIcon(FB_ICON_FILE) : QIcon(GMAIL_ICON_FILE));
         // Not visible anymore:
-        //ui->fbChatRadio->setEnabled(false);
-        //ui->gtalkChatRadio->setEnabled(false);
-        //ui->usernameText->setEnabled(false);
-        //ui->passwordText->setEnabled(false);
-        //ui->connectButton->setText(tr("Disconnect"));
-        //ui->connectionProgressBar->setVisible(false);
-        //ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
-        //ui->connectionStatusLabel->setStyleSheet("color:green");
+        ui->fbChatRadio->setEnabled(false);
+        ui->gtalkChatRadio->setEnabled(false);
+        ui->usernameText->setEnabled(false);
+        ui->passwordText->setEnabled(false);
+        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectionProgressBar->setVisible(false);
+        ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
+        ui->connectionStatusLabel->setStyleSheet("color:green");
         break;
     }
 }

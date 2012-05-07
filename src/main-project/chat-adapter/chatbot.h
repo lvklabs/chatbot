@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+#include "contactinfo.h"
+
 class QString;
 
 namespace Lvk
@@ -34,11 +36,10 @@ namespace CA
 
 class VirtualUser;
 
+
 /**
  * \brief Abstract interface for all chatbots
- *
  */
-
 class Chatbot : public QObject
 {
     Q_OBJECT
@@ -47,13 +48,24 @@ public:
     virtual ~Chatbot();
 
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &domain) = 0;
+
     virtual void disconnectFromServer() = 0;
+
     virtual void setVirtualUser(VirtualUser *virtualUser) = 0;
+
     virtual VirtualUser *virtualUser() = 0;
+
+    virtual ContactInfoList roster() const = 0;
+
+    virtual void setBlackListRoster(const ContactInfoList &blackList) = 0;
+
+    virtual ContactInfoList blackListRoster() const = 0;
 
 signals:
     void connected();
+
     void disconnected();
+
     void error(int err);
 };
 
