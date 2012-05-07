@@ -525,6 +525,22 @@ void Lvk::BE::CoreApp::connectChatClientSignals()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::BE::Roster Lvk::BE::CoreApp::roster()
+{
+    Roster roster;
+
+    if (m_chatbot) {
+        CA::ContactInfoList infoList = m_chatbot->roster();
+        foreach (const CA::ContactInfo &info, infoList) {
+            roster.append(RosterItem(info.username, info.fullname));
+        }
+    }
+
+    return roster;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 {
     if (!m_chatbot) {

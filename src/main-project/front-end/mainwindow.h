@@ -129,6 +129,8 @@ private:
 
     void logTestConversation(const BE::Conversation::Entry &entry);
 
+    void updateRosterList();
+
     bool hasUnsavedChanges();
     int showSaveChangesDialog();
     bool saveChanges();

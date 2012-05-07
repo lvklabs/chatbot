@@ -32,6 +32,7 @@
 
 #include "nlprule.h"
 #include "conversation.h"
+#include "roster.h"
 
 class QFile;
 
@@ -110,6 +111,8 @@ public:
     void connectToChat(ChatType chatType, const QString &user, const QString &passwd);
 
     void disconnectFromChat();
+
+    Roster roster();
 
     const Conversation &conversationHistory();
 

@@ -59,10 +59,12 @@ HEADERS += \
     front-end/conversationhistorywidget.h \
     front-end/portdialog.h \
     front-end/exportdialog.h \
+    front-end/importdialog.h \
     back-end/rule.h \
     back-end/coreapp.h \
     back-end/defaultvirtualuser.h \
     back-end/conversation.h \
+    back-end/roster.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
@@ -81,7 +83,6 @@ HEADERS += \
     common/version.h \
     common/versionrev.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    front-end/importdialog.h
 
 
 SOURCES += \
@@ -94,6 +95,7 @@ SOURCES += \
     front-end/conversationhistorywidget.cpp \
     front-end/portdialog.cpp \
     front-end/exportdialog.cpp \
+    front-end/importdialog.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -109,7 +111,6 @@ SOURCES += \
     chat-adapter/chatbot.cpp \
     common/random.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
-    front-end/importdialog.cpp
 
 
 FORMS += \
@@ -127,6 +128,9 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
+
 
 
 

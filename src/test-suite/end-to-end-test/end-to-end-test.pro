@@ -74,7 +74,8 @@ HEADERS += \
     ../../main-project/common/random.h\
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
-    testmainwindow.h
+    testmainwindow.h \
+    ../../main-project/back-end/contactinfo.h
 
 
 SOURCES += \
@@ -113,6 +114,7 @@ FORMS += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
 
 
 
