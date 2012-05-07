@@ -54,6 +54,9 @@
                                     QString(" (*." FILE_EXPORT_EXTENSION ");;")\
                                     + tr("All files") + " (*.*)"
 
+#define FB_ICON_FILE               ":/icons/facebook_24x24.png"
+#define GMAIL_ICON_FILE            ":/icons/gmail_24x24.png"
+
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 
@@ -210,7 +213,8 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Chat connetion tab
 
-    connect(ui->connectButton, SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
+    connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
+    connect(ui->disconnectButton, SIGNAL(clicked()), SLOT(onDisconnectButtonPressed()));
 
     connect(m_coreApp, SIGNAL(connected()),          SLOT(onConnectionOk()));
     connect(m_coreApp, SIGNAL(disconnected()),       SLOT(onDisconnection()));
@@ -344,6 +348,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     // Chat connection tab /////////////////////////////////////////////////
 
     case ChatDisconnectedUiMode:
+        ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->fbChatRadio->setEnabled(true);
         ui->gtalkChatRadio->setEnabled(true);
         ui->usernameText->setEnabled(true);
@@ -355,6 +360,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChatConnectingUiMode:
+        ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->fbChatRadio->setEnabled(false);
         ui->gtalkChatRadio->setEnabled(false);
         ui->usernameText->setEnabled(false);
@@ -365,18 +371,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectionStatusLabel->setStyleSheet("");
         break;
 
-    case ChatConnectionOkUiMode:
-        ui->fbChatRadio->setEnabled(false);
-        ui->gtalkChatRadio->setEnabled(false);
-        ui->usernameText->setEnabled(false);
-        ui->passwordText->setEnabled(false);
-        ui->connectButton->setText(tr("Disconnect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
-        ui->connectionStatusLabel->setStyleSheet("color:green");
-        break;
-
     case ChatConnectionFailedUiMode:
+        ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->fbChatRadio->setEnabled(true);
         ui->gtalkChatRadio->setEnabled(true);
         ui->usernameText->setEnabled(true);
@@ -385,6 +381,22 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Connection error"));
         ui->connectionStatusLabel->setStyleSheet("color:red");
+        break;
+
+    case ChatConnectionOkUiMode:
+        ui->connectToChatStackWidget->setCurrentIndex(1);
+        ui->disconnectButton->setText(tr("Disconnect ") + ui->usernameText->text());
+        ui->disconnectButton->setIcon(ui->fbChatRadio->isChecked() ?
+                                          QIcon(FB_ICON_FILE) : QIcon(GMAIL_ICON_FILE));
+        // Not visible anymore:
+        //ui->fbChatRadio->setEnabled(false);
+        //ui->gtalkChatRadio->setEnabled(false);
+        //ui->usernameText->setEnabled(false);
+        //ui->passwordText->setEnabled(false);
+        //ui->connectButton->setText(tr("Disconnect"));
+        //ui->connectionProgressBar->setVisible(false);
+        //ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
+        //ui->connectionStatusLabel->setStyleSheet("color:green");
         break;
     }
 }
@@ -1196,7 +1208,14 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 
             ui->usernameText->setFocus();
         }
-    } else {
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onDisconnectButtonPressed()
+{
+    if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
 

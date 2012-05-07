@@ -153,6 +153,7 @@ private slots:
     void onClearTestConversationButtonPressed();
 
     void onConnectButtonPressed();
+    void onDisconnectButtonPressed();
     void onConnectionOk();
     void onConnectionError(int err);
     void onDisconnection();
