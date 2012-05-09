@@ -22,7 +22,14 @@
 #ifndef LVK_COMMON_SETTINGSKEYS_H
 #define LVK_COMMON_SETTINGSKEYS_H
 
+#define SETTING_APP_LANGUAGE                        "Application/language"
+
+#define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/size"
+#define SETTING_MAIN_WINDOW_POS                     "MainWindow/position"
+#define SETTING_MAIN_WINDOW_MAXIMIZED               "MainWindow/maximized"
+
 #define SETTING_DEFAULT_CHAT_USERNAME               "Chat/Username"
 #define SETTING_DEFAULT_CHAT_SERVER_TYPE            "Chat/ServerType"
+#define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
 
 #endif // LVK_COMMON_SETTINGSKEYS_H

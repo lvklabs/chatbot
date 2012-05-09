@@ -21,31 +21,43 @@
 
 #include <QApplication>
 #include <QTranslator>
-#include <QDesktopWidget>
-#include <algorithm>
 #include "mainwindow.h"
 #include "version.h"
+#include "settings.h"
+#include "settingskeys.h"
+
+void setLanguage(QApplication &app);
+
+//--------------------------------------------------------------------------------------------------
+// main
+//--------------------------------------------------------------------------------------------------
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
-    QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
-    QCoreApplication::setApplicationName(APP_NAME);
+    QApplication::setOrganizationName(ORGANIZATION_NAME);
+    QApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
+    QApplication::setApplicationName(APP_NAME);
 
     QApplication app(argc, argv);
 
-    QTranslator translator;
-    translator.load(":/strings/strings_es");
-    app.installTranslator(&translator);
-
-    QRect scrGeo = app.desktop()->availableGeometry(0);
+    setLanguage(app);
 
     Lvk::FE::MainWindow window;
-    window.resize(std::min<int>(scrGeo.width()*0.8, window.width()),
-                  std::min<int>(scrGeo.height()*0.8, window.height()));
-    window.move((scrGeo.width() - window.width())/2,
-                (scrGeo.height() - window.height())/2);
     window.show();
 
     return app.exec();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+void setLanguage(QApplication &app)
+{
+    Lvk::Common::Settings settings;
+    QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es")).toString();
+
+    QTranslator *translator = new QTranslator();
+    translator->load(":/strings/strings_" + lang);
+    app.installTranslator(translator);
 }

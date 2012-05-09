@@ -40,6 +40,8 @@
 #include <QIcon>
 #include <QFile>
 #include <QFileDialog>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
 #define DEFAULT_RULES_FILE          "rules.crf"
@@ -99,7 +101,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     m_testConversationLog->open(QFile::Append);
 
-    loadSettings();
+    loadAllSettings();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -289,7 +291,7 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
     }
 
     if (event->isAccepted()) {
-        saveSettings();
+        saveAllSettings();
     }
 }
 
@@ -297,19 +299,78 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 // Load / Save settings
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::loadSettings()
+void Lvk::FE::MainWindow::loadAllSettings()
+{
+    loadMainWindowSettings();
+    loadChatSettings();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveAllSettings()
+{
+    saveMainWindowSettings();
+    saveChatSettings();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::loadMainWindowSettings()
 {
     Common::Settings settings;
-    uiSelectChat(static_cast<BE::CoreApp::ChatType>(settings.value(SETTING_DEFAULT_CHAT_SERVER_TYPE).toInt()));
+
+    if (settings.contains(SETTING_MAIN_WINDOW_SIZE) && settings.contains(SETTING_MAIN_WINDOW_POS)) {
+        resize(settings.value(SETTING_MAIN_WINDOW_SIZE).toSize());
+        move(settings.value(SETTING_MAIN_WINDOW_POS).toPoint());
+    } else {
+        QRect scrGeo = qApp->desktop()->availableGeometry(0);
+
+        resize(std::min<int>(width(), scrGeo.width()*0.8),
+               std::min<int>(height(), scrGeo.height()*0.8));
+
+        move((scrGeo.width() - width())/2, (scrGeo.height() - height())/2);
+    }
+    if (settings.value(SETTING_MAIN_WINDOW_MAXIMIZED).toBool()) {
+        showMaximized();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::loadChatSettings()
+{
+    Common::Settings settings;
+
+    int chatType = settings.value(SETTING_DEFAULT_CHAT_SERVER_TYPE).toInt();
+    uiSelectChat(static_cast<BE::CoreApp::ChatType>(chatType));
+
     ui->usernameText->setText(settings.value(SETTING_DEFAULT_CHAT_USERNAME).toString());
 }
 
-void Lvk::FE::MainWindow::saveSettings()
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveMainWindowSettings()
 {
     Common::Settings settings;
+
+    settings.setValue(SETTING_MAIN_WINDOW_SIZE, size());
+    settings.setValue(SETTING_MAIN_WINDOW_POS, pos());
+    settings.setValue(SETTING_MAIN_WINDOW_MAXIMIZED, isMaximized());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveChatSettings()
+{
+    Common::Settings settings;
+
     settings.setValue(SETTING_DEFAULT_CHAT_SERVER_TYPE, uiChatSelected());
     settings.setValue(SETTING_DEFAULT_CHAT_USERNAME, ui->usernameText->text());
+
+    // TODO
+    //settings.setValue(SETTING_BLACK_LIST_ROSTER, ui->rosterWidget->uncheckedRoster());
 }
+
 
 //--------------------------------------------------------------------------------------------------
 // UI Modes

@@ -109,8 +109,12 @@ private:
     bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
 
-    void loadSettings();
-    void saveSettings();
+    void loadAllSettings();
+    void loadMainWindowSettings();
+    void loadChatSettings();
+    void saveAllSettings();
+    void saveMainWindowSettings();
+    void saveChatSettings();
 
     void selectFirstRule();
 
