@@ -40,7 +40,7 @@ class RosterWidget : public QWidget
 public:
     explicit RosterWidget(QWidget *parent = 0);
 
-    void setRoster(const Lvk::BE::Roster &roster);
+    void setRoster(const Lvk::BE::Roster &roster, Qt::CheckState initialState = Qt::Checked);
 
     const Lvk::BE::Roster &roster();
 

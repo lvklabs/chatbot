@@ -63,9 +63,12 @@ void RosterWidget::setupWidget()
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
+void RosterWidget::setRoster(const Lvk::BE::Roster &roster,
+                             Qt::CheckState initialState /*= Qt::Checked*/)
 {
     m_roster = roster;
+
+    m_allUsersCheckBox->setCheckState(initialState);
 
     m_rosterList->clear();
 
@@ -73,7 +76,7 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
         QString itemText = !entry.fullname.isEmpty() ? entry.fullname : entry.username;
 
         QListWidgetItem *item = new QListWidgetItem(itemText);
-        item->setCheckState(Qt::Checked);
+        item->setCheckState(initialState);
 
         m_rosterList->addItem(item);
     }
