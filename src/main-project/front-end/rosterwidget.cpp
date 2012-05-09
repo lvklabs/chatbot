@@ -35,7 +35,10 @@ RosterWidget::RosterWidget(QWidget *parent) :
 {
     setupWidget();
 
-    connect(m_allUsersCheckBox, SIGNAL(stateChanged(int)), SLOT(onAllUsersStateChanged(int)));
+    connect(m_allUsersCheckBox, SIGNAL(clicked()), SLOT(onAllUsersClicked()));
+
+    connect(m_rosterList, SIGNAL(itemClicked(QListWidgetItem*)),
+            SLOT(onRosterItemClicked(QListWidgetItem*)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -65,11 +68,7 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
     m_rosterList->clear();
 
     foreach (Lvk::BE::RosterItem entry, roster) {
-        QString itemText = entry.fullname;
-
-        if (itemText.isEmpty()) {
-            itemText = entry.username;
-        }
+        QString itemText = !entry.fullname.isEmpty() ? entry.fullname : entry.username;
 
         QListWidgetItem *item = new QListWidgetItem(itemText);
         item->setCheckState(Qt::Checked);
@@ -80,11 +79,36 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::onAllUsersStateChanged(int)
+void RosterWidget::onAllUsersClicked()
 {
     Qt::CheckState state = m_allUsersCheckBox->checkState();
+
+    if (state == Qt::PartiallyChecked) {
+        m_allUsersCheckBox->setCheckState(Qt::Checked);
+        state = Qt::Checked;
+    }
 
     for (int i = 0; i < m_rosterList->count(); ++i) {
         m_rosterList->item(i)->setCheckState(state);
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
+{
+    Qt::CheckState itemState = item->checkState();
+
+    // Update allUsersCheckBox check state
+
+    m_allUsersCheckBox->setCheckState(itemState);
+    for (int i = 0; i < m_rosterList->count(); ++i) {
+        if (m_rosterList->item(i)->checkState() != itemState) {
+               m_allUsersCheckBox->setCheckState(Qt::PartiallyChecked);
+               break;
+        }
+    }
+}
+
+
+

@@ -28,6 +28,7 @@
 
 class QListWidget;
 class QCheckBox;
+class QListWidgetItem;
 
 /**
  * \brief The ConversationHistoryWidget provides a widget to display a roster of chat users
@@ -42,7 +43,8 @@ public:
     void setRoster(const Lvk::BE::Roster &roster);
 
 private slots:
-    void onAllUsersStateChanged(int);
+    void onAllUsersClicked();
+    void onRosterItemClicked(QListWidgetItem *item);
 
 private:
     QCheckBox *m_allUsersCheckBox;
