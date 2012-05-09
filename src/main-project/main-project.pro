@@ -83,6 +83,8 @@ HEADERS += \
     common/random.h\
     common/version.h \
     common/versionrev.h \
+    common/settings.h \
+    common/settingskeys.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
 
 
@@ -112,6 +114,7 @@ SOURCES += \
     chat-adapter/gtalkchatbot.cpp \
     chat-adapter/chatbot.cpp \
     common/random.cpp \
+    common/settings.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
 
 
@@ -130,6 +133,9 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
+
 
 
 

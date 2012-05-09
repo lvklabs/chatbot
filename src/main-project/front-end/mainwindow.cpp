@@ -29,6 +29,8 @@
 #include "exportdialog.h"
 #include "importdialog.h"
 #include "version.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -96,6 +98,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(APP_ICON_FILE));
 
     m_testConversationLog->open(QFile::Append);
+
+    loadSettings();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -276,12 +280,35 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 
         if (code == QMessageBox::Yes) {
             saveChanges();
+            event->accept();
         } else if (code == QMessageBox::Cancel) {
             event->ignore();
         } else {
-            QMainWindow::closeEvent(event);
+            event->accept();
         }
     }
+
+    if (event->isAccepted()) {
+        saveSettings();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Load / Save settings
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::loadSettings()
+{
+    Common::Settings settings;
+    uiSelectChat(static_cast<BE::CoreApp::ChatType>(settings.value(SETTING_DEFAULT_CHAT_SERVER_TYPE).toInt()));
+    ui->usernameText->setText(settings.value(SETTING_DEFAULT_CHAT_USERNAME).toString());
+}
+
+void Lvk::FE::MainWindow::saveSettings()
+{
+    Common::Settings settings;
+    settings.setValue(SETTING_DEFAULT_CHAT_SERVER_TYPE, uiChatSelected());
+    settings.setValue(SETTING_DEFAULT_CHAT_USERNAME, ui->usernameText->text());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1197,14 +1224,13 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 {
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         if (!ui->usernameText->text().isEmpty()) {
-            BE::CoreApp::ChatType server = ui->gtalkChatRadio->isChecked() ?
-                        BE::CoreApp::GTalkChat :
-                        BE::CoreApp::FbChat;
 
             m_connectionStatus =  ConnectingToChat;
             setUiMode(ChatConnectingUiMode);
 
-            m_coreApp->connectToChat(server, ui->usernameText->text(), ui->passwordText->text());
+            m_coreApp->connectToChat(uiChatSelected(),
+                                     ui->usernameText->text(),
+                                     ui->passwordText->text());
         } else {
             QMessageBox::information(this, tr("Invalid username"), tr("Please provide a username"));
 
@@ -1270,6 +1296,25 @@ void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &e
 void Lvk::FE::MainWindow::onRosterSelectionChanged()
 {
     updateBlackList();
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::CoreApp::ChatType Lvk::FE::MainWindow::uiChatSelected()
+{
+    return ui->gtalkChatRadio->isChecked() ? BE::CoreApp::GTalkChat : BE::CoreApp::FbChat;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::uiSelectChat(BE::CoreApp::ChatType type)
+{
+    if (type == BE::CoreApp::GTalkChat) {
+        ui->gtalkChatRadio->setChecked(true);
+    } else if (type == BE::CoreApp::FbChat) {
+        ui->fbChatRadio->setChecked(true);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

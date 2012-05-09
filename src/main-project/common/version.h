@@ -3,6 +3,9 @@
 
 #include "versionrev.h"
 
+#define ORGANIZATION_NAME   "LVK"
+#define ORGANIZATION_DOMAIN "lvklabs.com"
+
 #define APP_VERSION_STR     "0.06"
 #define APP_VERSION_REV     AUTO_APP_VERSION_REV
 #define APP_NAME            "Chatbot"

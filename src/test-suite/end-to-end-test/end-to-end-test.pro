@@ -73,6 +73,7 @@ HEADERS += \
     ../../main-project/chat-adapter/fbchatbot.h \
     ../../main-project/chat-adapter/gtalkchatbot.h \
     ../../main-project/common/random.h\
+    ../../main-project/common/settings.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -105,6 +106,7 @@ SOURCES += \
     ../../main-project/chat-adapter/gtalkchatbot.cpp \
     ../../main-project/chat-adapter/chatbot.cpp \
     ../../main-project/common/random.cpp \
+    ../../main-project/common/settings.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp

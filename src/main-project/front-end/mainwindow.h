@@ -109,6 +109,9 @@ private:
     bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
 
+    void loadSettings();
+    void saveSettings();
+
     void selectFirstRule();
 
     void selectRule(const BE::Rule *rule);
@@ -129,6 +132,8 @@ private:
 
     void logTestConversation(const BE::Conversation::Entry &entry);
     void updateBlackList();
+    BE::CoreApp::ChatType uiChatSelected();
+    void uiSelectChat(BE::CoreApp::ChatType type);
 
     bool hasUnsavedChanges();
     int showSaveChangesDialog();

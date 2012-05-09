@@ -24,9 +24,14 @@
 #include <QDesktopWidget>
 #include <algorithm>
 #include "mainwindow.h"
+#include "version.h"
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
+    QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
+    QCoreApplication::setApplicationName(APP_NAME);
+
     QApplication app(argc, argv);
 
     QTranslator translator;
