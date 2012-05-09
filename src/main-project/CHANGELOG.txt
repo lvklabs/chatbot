@@ -1,3 +1,10 @@
+v0.07
+ - Implemented "Save as", "Open", "New"
+ - Implemented import and export
+ - Added list (roster) to select which users the chatbot can talk to
+ - Saving user preferences. So far: window size, window position, last 
+   chat username, checked/unchecked users in roster 
+
 v0.06
  - Logging test conversations in test_conversations.log
  - Added menu bar with menus "About", "Save" and "Exit"
