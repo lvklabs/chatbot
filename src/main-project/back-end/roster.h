@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QList>
+#include <QMetaType>
 
 namespace Lvk
 {
@@ -33,18 +34,22 @@ namespace BE
 
 
 /**
- * \brief RosterItem struct provides information about a user in the roster
+ * \brief RosterItem class provides information about a user in the roster
  */
-struct RosterItem
+class RosterItem
 {
+public:
     RosterItem() { }
 
     RosterItem(QString username, QString fullname) : username(username), fullname(fullname) { }
 
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
-};
 
+    QDataStream &operator<<(QDataStream &out) { return out << username << fullname; }
+
+    QDataStream &operator>>(QDataStream &in) { return in >> username >> fullname; }
+};
 
 /**
  * \brief The Roster class provides a list of roster items
@@ -54,5 +59,10 @@ typedef QList<RosterItem> Roster;
 } //namespace BE
 
 } //namespace Lvk
+
+
+Q_DECLARE_METATYPE(Lvk::BE::RosterItem)
+Q_DECLARE_METATYPE(Lvk::BE::Roster)
+
 
 #endif // LVK_BE_ROSTER_H

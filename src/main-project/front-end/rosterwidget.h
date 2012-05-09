@@ -22,7 +22,10 @@
 #ifndef ROSTERWIDGET_H
 #define ROSTERWIDGET_H
 
+
+#include <QString>
 #include <QWidget>
+#include <QHash>
 
 #include "roster.h"
 
@@ -42,6 +45,8 @@ public:
 
     void setRoster(const Lvk::BE::Roster &roster, Qt::CheckState initialState = Qt::Checked);
 
+    void setRoster(const Lvk::BE::Roster &roster, const Lvk::BE::Roster &uncheckedSubset);
+
     const Lvk::BE::Roster &roster();
 
     Lvk::BE::Roster checkedRoster();
@@ -59,8 +64,9 @@ private slots:
 
 private:
     QCheckBox *m_allUsersCheckBox;
-    QListWidget *m_rosterList;
+    QListWidget *m_rosterListWidget;
     Lvk::BE::Roster m_roster;
+    QHash<QString, int> m_rows; // username -> list row
 
     void setupWidget();
     Lvk::BE::Roster filterRosteryBy(Qt::CheckState);

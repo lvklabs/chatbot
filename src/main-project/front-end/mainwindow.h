@@ -112,9 +112,13 @@ private:
     void loadAllSettings();
     void loadMainWindowSettings();
     void loadChatSettings();
+
     void saveAllSettings();
     void saveMainWindowSettings();
     void saveChatSettings();
+
+    void saveBlackListSettings(const BE::Roster &blackList, const QString &account);
+    Lvk::BE::Roster getBlackListSettings(const QString &account);
 
     void selectFirstRule();
 

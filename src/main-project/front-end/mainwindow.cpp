@@ -28,6 +28,7 @@
 #include "defaultsanitizer.h"
 #include "exportdialog.h"
 #include "importdialog.h"
+#include "roster.h"
 #include "version.h"
 #include "settings.h"
 #include "settingskeys.h"
@@ -61,8 +62,51 @@
 #define FB_ICON_FILE               ":/icons/facebook_24x24.png"
 #define GMAIL_ICON_FILE            ":/icons/gmail_24x24.png"
 
+
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+
+
+//--------------------------------------------------------------------------------------------------
+// Non-member helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+// These two first helpers are workarounds to save black list settings with QSettings.
+// See saveBlackListSettings() and loadBlackListSettings() methods for more details.
+
+QString rosterUsersToString(const Lvk::BE::Roster &roster)
+{
+    QString s;
+    foreach (const Lvk::BE::RosterItem &item, roster) {
+        s.append(item.username).append(";");
+    }
+
+    return s;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster rosterUsersfromString(const QString &s)
+{
+    Lvk::BE::Roster roster;
+    foreach (const QString &username, s.split(";")) {
+        roster.append(Lvk::BE::RosterItem(username, ""));
+    }
+
+    return roster;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString canonicAccount(const QString &username, Lvk::BE::CoreApp::ChatType type)
+{
+    return username.trimmed().split("@").at(0) + "@" + QString::number(type);
+}
+
+} // namespace
 
 
 //--------------------------------------------------------------------------------------------------
@@ -366,9 +410,45 @@ void Lvk::FE::MainWindow::saveChatSettings()
 
     settings.setValue(SETTING_DEFAULT_CHAT_SERVER_TYPE, uiChatSelected());
     settings.setValue(SETTING_DEFAULT_CHAT_USERNAME, ui->usernameText->text());
+}
 
-    // TODO
-    //settings.setValue(SETTING_BLACK_LIST_ROSTER, ui->rosterWidget->uncheckedRoster());
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster Lvk::FE::MainWindow::getBlackListSettings(const QString &chatAccount)
+{
+    Common::Settings settings;
+
+    QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
+
+    // Not working:
+    //
+    // QVariant v = settings.value(key);
+    // BE::Roster blackList = v.value<BE::Roster>();
+    //
+    // Workaround:
+
+    QString s = settings.value(key).toString();
+    return rosterUsersfromString(s);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveBlackListSettings(const BE::Roster &blackList,
+                                                const QString &chatAccount)
+{
+    Common::Settings settings;
+
+    QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
+
+    // Not working:
+    //
+    // QVariant v;
+    // v.setValue(ui->rosterWidget->uncheckedRoster());
+    // settings.setValue(key, v);
+    //
+    // Workaround:
+
+    settings.setValue(key, rosterUsersToString(blackList));
 }
 
 
@@ -1319,9 +1399,11 @@ void Lvk::FE::MainWindow::onConnectionOk()
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
-    ui->rosterWidget->setRoster(m_coreApp->roster());
+    QString account = canonicAccount(ui->usernameText->text(), uiChatSelected());
+    BE::Roster blackList = getBlackListSettings(account);
 
-    updateBlackList();
+    ui->rosterWidget->setRoster(m_coreApp->roster(), blackList);
+    m_coreApp->setBlackListRoster(blackList);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1359,7 +1441,6 @@ void Lvk::FE::MainWindow::onRosterSelectionChanged()
     updateBlackList();
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::CoreApp::ChatType Lvk::FE::MainWindow::uiChatSelected()
@@ -1382,7 +1463,12 @@ void Lvk::FE::MainWindow::uiSelectChat(BE::CoreApp::ChatType type)
 
 void Lvk::FE::MainWindow::updateBlackList()
 {
-    m_coreApp->setBlackListRoster(ui->rosterWidget->uncheckedRoster());
-}
+    QString account = canonicAccount(ui->usernameText->text(), uiChatSelected());
 
+    BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
+
+    m_coreApp->setBlackListRoster(blackList);
+
+    saveBlackListSettings(blackList, account);
+}
 
