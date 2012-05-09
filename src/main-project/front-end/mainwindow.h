@@ -128,6 +128,7 @@ private:
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
     void logTestConversation(const BE::Conversation::Entry &entry);
+    void updateBlackList();
 
     bool hasUnsavedChanges();
     int showSaveChangesDialog();
@@ -157,6 +158,7 @@ private slots:
     void onConnectionOk();
     void onConnectionError(int err);
     void onDisconnection();
+    void onRosterSelectionChanged();
 
     void onNewChatConversation(const BE::Conversation::Entry &entry);
 

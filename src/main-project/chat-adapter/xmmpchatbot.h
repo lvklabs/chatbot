@@ -115,6 +115,7 @@ private:
     bool m_rosterHasChanged;
     mutable ContactInfoList m_roster;
     ContactInfoList m_blackListRoster;
+    QSet<QString> m_blackListSet;
 
     ContactInfo getContactInfo(const QString &bareJid) const;
 
@@ -122,8 +123,6 @@ private:
     void requestVCard(const QString &bareJid);
 
     Error convertToLocalError(QXmppClient::Error err);
-
-    bool isUserAllowed(const QString &jid);
 };
 
 } //namespace CA

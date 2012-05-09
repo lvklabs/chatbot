@@ -135,7 +135,7 @@ void RosterWidget::onAllUsersClicked()
         m_rosterList->item(i)->setCheckState(state);
     }
 
-    emit selectionHasChanged();
+    emit selectionChanged();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
         }
     }
 
-    emit selectionHasChanged();
+    emit selectionChanged();
 }
 
 

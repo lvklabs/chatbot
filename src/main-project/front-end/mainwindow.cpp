@@ -222,6 +222,8 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
 
+    connect(ui->rosterWidget, SIGNAL(selectionChanged()), SLOT(onRosterSelectionChanged()));
+
     // Conversations tab
 
     connect(m_coreApp,
@@ -1231,6 +1233,8 @@ void Lvk::FE::MainWindow::onConnectionOk()
     setUiMode(ChatConnectionOkUiMode);
 
     ui->rosterWidget->setRoster(m_coreApp->roster());
+
+    updateBlackList();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1260,4 +1264,19 @@ void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &e
 {
     ui->conversationHistory->addConversationEntry(entry);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRosterSelectionChanged()
+{
+    updateBlackList();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::updateBlackList()
+{
+    m_coreApp->setBlackListRoster(ui->rosterWidget->uncheckedRoster());
+}
+
 

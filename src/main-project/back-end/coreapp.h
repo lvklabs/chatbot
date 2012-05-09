@@ -114,6 +114,8 @@ public:
 
     Roster roster();
 
+    void setBlackListRoster(const Roster &roster);
+
     const Conversation &conversationHistory();
 
 signals:

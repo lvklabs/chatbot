@@ -541,6 +541,19 @@ Lvk::BE::Roster Lvk::BE::CoreApp::roster()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::BE::CoreApp::setBlackListRoster(const Roster &roster)
+{
+    if (m_chatbot) {
+        CA::ContactInfoList infoList;
+        foreach (const RosterItem &item, roster) {
+            infoList.append(CA::ContactInfo(item.username, item.username));
+        }
+        m_chatbot->setBlackListRoster(infoList);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 {
     if (!m_chatbot) {
@@ -640,6 +653,7 @@ bool Lvk::BE::CoreApp::loadDefaultRules()
 
     return true;
 }
+
 
 
 

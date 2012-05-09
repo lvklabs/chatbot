@@ -145,6 +145,13 @@ Lvk::CA::ContactInfoList Lvk::CA::XmppChatbot::roster() const
 void Lvk::CA::XmppChatbot::setBlackListRoster(const Lvk::CA::ContactInfoList &blackList)
 {
     m_blackListRoster = blackList;
+
+    // Set for fast look-up
+
+    m_blackListSet.clear();
+    foreach (const ContactInfo &info, blackList) {
+        m_blackListSet.insert(info.username);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -190,16 +197,17 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
     if (msg.body().isEmpty()) {
         return;
     }
-    if (!isUserAllowed(msg.from())) {
-        return;
-    }
 
-    ContactInfo info = getContactInfo(getBareJid(msg.from()));
+    QString bareJid = getBareJid(msg.from());
 
-    QString response = m_virtualUser->getResponse(msg.body(), info);
+    if (!m_blackListSet.contains(bareJid)) {
+        ContactInfo info = getContactInfo(bareJid);
 
-    if (!response.isEmpty()) {
-        m_xmppClient->sendPacket(QXmppMessage("", msg.from(), response));
+        QString response = m_virtualUser->getResponse(msg.body(), info);
+
+        if (!response.isEmpty()) {
+            m_xmppClient->sendPacket(QXmppMessage("", msg.from(), response));
+        }
     }
 }
 
@@ -267,20 +275,4 @@ void Lvk::CA::XmppChatbot::onRosterChanged(const QString &/*bareJid*/)
 {
     m_rosterHasChanged = true;
 }
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::CA::XmppChatbot::isUserAllowed(const QString &jid)
-{
-    QString bareJid = getBareJid(jid);
-
-    foreach (ContactInfo info, m_blackListRoster) {
-        if (info.username == bareJid) {
-            return false;
-        }
-    }
-    return true;
-}
-
-
 

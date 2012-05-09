@@ -51,7 +51,7 @@ public:
     Qt::CheckState allUsersCheckState();
 
 signals:
-    void selectionHasChanged();
+    void selectionChanged();
 
 private slots:
     void onAllUsersClicked();
