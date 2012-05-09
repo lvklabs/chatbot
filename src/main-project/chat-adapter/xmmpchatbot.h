@@ -111,6 +111,7 @@ private:
 
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
+    QMutex *m_rosterMutex;
 
     bool m_rosterHasChanged;
     mutable ContactInfoList m_roster;
@@ -123,6 +124,8 @@ private:
     void requestVCard(const QString &bareJid);
 
     Error convertToLocalError(QXmppClient::Error err);
+
+    bool isInBlackList(const QString &jid);
 };
 
 } //namespace CA

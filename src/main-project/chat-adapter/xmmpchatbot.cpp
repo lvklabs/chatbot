@@ -54,6 +54,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
       m_virtualUser(0),
       m_contactInfoMutex(new QMutex()),
+      m_rosterMutex(new QMutex()),
       m_rosterHasChanged(false)
 {
     // Signals
@@ -88,6 +89,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
 Lvk::CA::XmppChatbot::~XmppChatbot()
 {
+    delete m_rosterMutex;
     delete m_contactInfoMutex;
     delete m_virtualUser;
     delete m_xmppClient;
@@ -129,6 +131,8 @@ Lvk::CA::VirtualUser * Lvk::CA::XmppChatbot::virtualUser()
 
 Lvk::CA::ContactInfoList Lvk::CA::XmppChatbot::roster() const
 {
+    QMutexLocker locker(m_rosterMutex);
+
     if (m_rosterHasChanged) {
         m_roster.clear();
 
@@ -144,6 +148,8 @@ Lvk::CA::ContactInfoList Lvk::CA::XmppChatbot::roster() const
 
 void Lvk::CA::XmppChatbot::setBlackListRoster(const Lvk::CA::ContactInfoList &blackList)
 {
+    QMutexLocker locker(m_rosterMutex);
+
     m_blackListRoster = blackList;
 
     // Set for fast look-up
@@ -158,7 +164,19 @@ void Lvk::CA::XmppChatbot::setBlackListRoster(const Lvk::CA::ContactInfoList &bl
 
 Lvk::CA::ContactInfoList Lvk::CA::XmppChatbot::blackListRoster() const
 {
+    QMutexLocker locker(m_rosterMutex);
+
     return m_blackListRoster;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+
+bool Lvk::CA::XmppChatbot::isInBlackList(const QString &jid)
+{
+    QMutexLocker locker(m_rosterMutex);
+
+    return m_blackListSet.contains(jid);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -200,7 +218,7 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
 
     QString bareJid = getBareJid(msg.from());
 
-    if (!m_blackListSet.contains(bareJid)) {
+    if (!isInBlackList(bareJid)) {
         ContactInfo info = getContactInfo(bareJid);
 
         QString response = m_virtualUser->getResponse(msg.body(), info);
