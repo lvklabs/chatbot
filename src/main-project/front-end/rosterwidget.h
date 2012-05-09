@@ -42,6 +42,17 @@ public:
 
     void setRoster(const Lvk::BE::Roster &roster);
 
+    const Lvk::BE::Roster &roster();
+
+    Lvk::BE::Roster checkedRoster();
+
+    Lvk::BE::Roster uncheckedRoster();
+
+    Qt::CheckState allUsersCheckState();
+
+signals:
+    void selectionHasChanged();
+
 private slots:
     void onAllUsersClicked();
     void onRosterItemClicked(QListWidgetItem *item);
@@ -49,8 +60,10 @@ private slots:
 private:
     QCheckBox *m_allUsersCheckBox;
     QListWidget *m_rosterList;
+    Lvk::BE::Roster m_roster;
 
     void setupWidget();
+    Lvk::BE::Roster filterRosteryBy(Qt::CheckState);
 };
 
 #endif // ROSTERWIDGET_H

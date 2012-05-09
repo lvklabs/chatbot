@@ -65,6 +65,8 @@ void RosterWidget::setupWidget()
 
 void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
 {
+    m_roster = roster;
+
     m_rosterList->clear();
 
     foreach (Lvk::BE::RosterItem entry, roster) {
@@ -75,6 +77,47 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster)
 
         m_rosterList->addItem(item);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Roster &RosterWidget::roster()
+{
+    return m_roster;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster RosterWidget::checkedRoster()
+{
+    return filterRosteryBy(Qt::Checked);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster RosterWidget::uncheckedRoster()
+{
+    return filterRosteryBy(Qt::Unchecked);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Qt::CheckState RosterWidget::allUsersCheckState()
+{
+    return m_allUsersCheckBox->checkState();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster RosterWidget::filterRosteryBy(Qt::CheckState state)
+{
+    Lvk::BE::Roster filteredRoster;
+    for (int i = 0; i < m_rosterList->count(); ++i){
+        if (m_rosterList->item(i)->checkState() == state) {
+            filteredRoster.append(m_roster[i]);
+        }
+    }
+    return filteredRoster;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -91,6 +134,8 @@ void RosterWidget::onAllUsersClicked()
     for (int i = 0; i < m_rosterList->count(); ++i) {
         m_rosterList->item(i)->setCheckState(state);
     }
+
+    emit selectionHasChanged();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -108,7 +153,8 @@ void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
                break;
         }
     }
-}
 
+    emit selectionHasChanged();
+}
 
 
