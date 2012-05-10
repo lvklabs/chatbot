@@ -23,6 +23,7 @@
 #define LVK_FE_AUTOCOMPLETETEXTEDIT_H
 
 #include <QLineEdit>
+#include <QStringList>
 
 class QListWidget;
 
@@ -44,10 +45,16 @@ class AutocompleteTextEdit : public QLineEdit
 public:
     explicit AutocompleteTextEdit(QWidget *parent = 0);
 
+    void setStringList(const QStringList &strList);
+
+    const QStringList &stringList();
+
+protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    QListWidget *m_list;
+    QStringList m_strList;
+    QListWidget *m_listWidget;
 
 private slots:
     void onTargetTextEdited(QString);

@@ -24,6 +24,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QKeyEvent>
+#include <QStringList>
 
 
 //--------------------------------------------------------------------------------------------------
@@ -31,18 +32,21 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_list(new QListWidget(this))
+    QLineEdit(parent), m_listWidget(new QListWidget(this))
 {
-    m_list->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-
-    m_list->addItem("Andres Pagliano");
-    m_list->addItem("Andres Calamaro");
-    m_list->addItem("Andrea Prodan");
-    m_list->addItem("Luciana Benotti");
-    m_list->addItem("Emilia Echeveste");
+    m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
     connect(this, SIGNAL(textEdited(QString)), SLOT(onTargetTextEdited(QString)));
     connect(this, SIGNAL(lostFocus()),         SLOT(onTargetLostFocus()));
+
+    ///////////////////////////////////////
+    // TODO remove!
+    m_strList.append("Andres Pagliano");
+    m_strList.append("Andres Calamaro");
+    m_strList.append("Andrea Prodan");
+    m_strList.append("Luciana Benotti");
+    m_strList.append("Emilia Echeveste");
+    ///////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -51,18 +55,33 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
 
-    if (key == Qt::Key_Down && m_list->currentRow() + 1 < m_list->count()) {
-        m_list->setCurrentRow(m_list->currentRow() + 1);
+    if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
+        m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
     }
-    if (key == Qt::Key_Up && m_list->currentRow() > 0) {
-        m_list->setCurrentRow(m_list->currentRow() - 1);
+    if (key == Qt::Key_Up && m_listWidget->currentRow() > 0) {
+        m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
     }
-    if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_list->currentRow() != -1) {
-        setText(m_list->currentItem()->text() + ", ");
-        m_list->hide();
+    if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
+        setText(m_listWidget->currentItem()->text() + ", ");
+        m_listWidget->hide();
     }
 
     QLineEdit::keyPressEvent(event);
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::setStringList(const QStringList &strList)
+{
+    m_strList = strList;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QStringList & Lvk::FE::AutocompleteTextEdit::stringList()
+{
+    return m_strList;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -71,25 +90,24 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 {
     QPoint pos = mapToGlobal(QPoint(0,0));
 
-    m_list->setGeometry(pos.x(), pos.y() + height(), 300, 200);
+    m_listWidget->setGeometry(pos.x(), pos.y() + height(), 300, 200);
 
-    int matches = 0;
+    m_listWidget->clear();
 
-    if (text().size() > 0) {
-        for (int i = 0; i < m_list->count(); ++i) {
-            QListWidgetItem *item = m_list->item(i);
-            bool match = item->text().contains(text(), false);
-            if (match) {
-                matches++;
+    QString target = text();
+
+    if (target.size() > 0) {
+        foreach (const QString &str, m_strList) {
+            if (str.contains(target, false)) {
+                m_listWidget->addItem(str);
             }
-            item->setHidden(!match);
         }
     }
 
-    if (matches > 0) {
-        m_list->show();
+    if (m_listWidget->count() > 0) {
+        m_listWidget->show();
     } else {
-        m_list->hide();
+        m_listWidget->hide();
     }
 }
 
@@ -97,6 +115,6 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 
 void Lvk::FE::AutocompleteTextEdit::onTargetLostFocus()
 {
-    m_list->hide();
+    m_listWidget->hide();
 }
 
