@@ -19,43 +19,43 @@
  *
  */
 
-#ifndef RULEOUTPUTWIDGET_H
-#define RULEOUTPUTWIDGET_H
+#ifndef LVK_FE_AUTOCOMPLETETEXTEDIT_H
+#define LVK_FE_AUTOCOMPLETETEXTEDIT_H
 
-#include <QPlainTextEdit>
-#include <QStringList>
+#include <QLineEdit>
+
+class QListWidget;
+
+namespace Lvk
+{
+
+namespace FE
+{
 
 /**
- * \brief The RuleInputWidget class provides a widget to edit or display NLP rule outputs
+ * \brief The AutoCompleteTextEdit class provides a widget that is used to edit text like a
+ *        QPlainTextEdit but it also displays a list that suggests words to autocomplete
  */
 
-class RuleOutputWidget : public QPlainTextEdit
+class AutocompleteTextEdit : public QLineEdit
 {
     Q_OBJECT
+
 public:
-    explicit RuleOutputWidget(QWidget *parent = 0);
+    explicit AutocompleteTextEdit(QWidget *parent = 0);
 
-    QStringList outputList();
-
-    void setOutputList(const QStringList &outputList);
-
-public slots:
-
-    void clearHighlight();
-
-    void highlightOuput(int number);
-
-    void setPlainText(const QString &text);
-
-    void clear();
-
-signals:
-
-    void outputTextEdited();
+    void keyPressEvent(QKeyEvent *event);
 
 private:
-    void connectTextChangedSignal();
-    void disconnectTextChangedSignal();
+    QListWidget *m_list;
+
+private slots:
+    void onTargetTextEdited(QString);
+    void onTargetLostFocus();
 };
 
-#endif // RULEOUTPUTWIDGET_H
+} // namespace FE
+
+} // namespace Lvk
+
+#endif // LVK_FE_AUTOCOMPLETETEXTEDIT_H

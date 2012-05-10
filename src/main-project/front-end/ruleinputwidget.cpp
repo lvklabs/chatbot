@@ -20,16 +20,14 @@
  */
 
 #include "ruleinputwidget.h"
+#include "autocompletetextedit.h"
 
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QListWidget>
-#include <QMainWindow>
 #include <QEvent>
 
-#include <iostream>
 
 //--------------------------------------------------------------------------------------------------
 // RuleInputWidget
@@ -39,7 +37,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
     m_targetLabel(new QLabel(tr("If:"), this)),
-    m_target(new QLineEdit(this)),
+    m_target(new Lvk::FE::AutocompleteTextEdit(this)),
     m_inputLabel(new QLabel(tr("Writes:"), this)),
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
@@ -60,59 +58,9 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
     connectTextChangedSignal();
 
-    connect(m_target, SIGNAL(textEdited(QString)), SLOT(onTargetTextEdited(QString)));
-    connect(m_target, SIGNAL(lostFocus()), SLOT(onTargetLostFocus()));
-
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
-
-    ///////////////////////////////////////////////////////////////////
-
-    m_targetLabel->setVisible(false);
-    m_target->setVisible(false);
-
-    m_list = new QListWidget(m_target);
-    m_list->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-    m_list->addItem("Andres Pagliano");
-    m_list->addItem("Andres Calamaro");
-    m_list->addItem("Andrea Prodan");
-    m_list->addItem("Luciana Benotti");
-    m_list->addItem("Emilia Echeveste");
 }
-
-void RuleInputWidget::onTargetTextEdited(QString)
-{
-    QPoint pos = m_target->mapToGlobal(QPoint(0,0));
-
-    m_list->setGeometry(pos.x(), pos.y() + m_target->height(), 300, 200);
-
-    int matches = 0;
-
-    if (m_target->text().size() > 0) {
-        for (int i = 0; i < m_list->count(); ++i) {
-            QListWidgetItem *item = m_list->item(i);
-            bool match = item->text().contains(m_target->text(), false);
-            if (match) {
-                matches++;
-            }
-            item->setHidden(!match);
-        }
-    }
-
-    if (matches > 0) {
-        m_list->show();
-    } else {
-        m_list->hide();
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void RuleInputWidget::onTargetLostFocus()
-{
-    m_list->hide();
-}
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -129,27 +77,7 @@ void RuleInputWidget::installEventFilter(QObject *eventFilter)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::keyPressEvent(QKeyEvent *event)
-{
-    int key = event->key();
-
-    if (key == Qt::Key_Down && m_list->currentRow() + 1 < m_list->count()) {
-        m_list->setCurrentRow(m_list->currentRow() + 1);
-    }
-    if (key == Qt::Key_Up && m_list->currentRow() > 0) {
-        m_list->setCurrentRow(m_list->currentRow() - 1);
-    }
-    if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_list->currentRow() != -1) {
-        m_target->setText(m_list->currentItem()->text() + ", ");
-        m_list->hide();
-    }
-
-    QWidget::keyPressEvent(event);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool RuleInputWidget::eventFilter(QObject *object, QEvent *event)
+bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
 {
     if (m_eventFilter) {
         if (!m_eventFilter->eventFilter(this, event)) {

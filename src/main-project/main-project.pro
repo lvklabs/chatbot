@@ -61,6 +61,7 @@ HEADERS += \
     front-end/exportdialog.h \
     front-end/importdialog.h \
     front-end/rosterwidget.h \
+    front-end/autocompletetextedit.h \
     back-end/rule.h \
     back-end/coreapp.h \
     back-end/defaultvirtualuser.h \
@@ -100,6 +101,7 @@ SOURCES += \
     front-end/exportdialog.cpp \
     front-end/importdialog.cpp \
     front-end/rosterwidget.cpp \
+    front-end/autocompletetextedit.cpp \
     back-end/rule.cpp \
     back-end/coreapp.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -133,6 +135,8 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
 
 
 

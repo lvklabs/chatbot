@@ -56,6 +56,7 @@ HEADERS += \
     ../../main-project/front-end/exportdialog.h \
     ../../main-project/front-end/importdialog.h \
     ../../main-project/front-end/rosterwidget.h \
+    ../../main-project/front-end/autocompletetextedit.h \
     ../../main-project/back-end/rule.h \
     ../../main-project/back-end/coreapp.h \
     ../../main-project/back-end/defaultvirtualuser.h \
@@ -92,6 +93,7 @@ SOURCES += \
     ../../main-project/front-end/exportdialog.cpp \
     ../../main-project/front-end/importdialog.cpp \
     ../../main-project/front-end/rosterwidget.cpp \
+    ../../main-project/front-end/autocompletetextedit.cpp \
     ../../main-project/back-end/rule.cpp \
     ../../main-project/back-end/coreapp.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \

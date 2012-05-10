@@ -30,10 +30,22 @@ class QLineEdit;
 class QPlainTextEdit;
 class QLayout;
 class QLabel;
-class QListWidget;
+
+namespace Lvk
+{
+
+namespace FE
+{
+
+class AutocompleteTextEdit;
+
+} //namespace FE
+
+} //namespace Lvk
+
 
 /**
- * \brief Custom widget to edit or display NLP rule inputs
+ * \brief The RuleInputWidget class provides a widget to edit or display NLP rule inputs
  */
 
 class RuleInputWidget : public QWidget
@@ -58,8 +70,6 @@ public:
 
     bool eventFilter(QObject *object, QEvent *event);
 
-    void keyPressEvent(QKeyEvent *event);
-
 public slots:
 
     void clearHighlight();
@@ -74,22 +84,17 @@ private:
     RuleInputWidget(RuleInputWidget&);
     RuleInputWidget& operator=(RuleInputWidget&);
 
-    QLayout        *m_layout;
-    QLabel         *m_targetLabel;
-    QLineEdit      *m_target;
-    QLabel         *m_inputLabel;
-    QLineEdit      *m_input;
-    QLabel         *m_inputVariantsLabel;
-    QPlainTextEdit *m_inputVariants;
-    QObject        *m_eventFilter;
-    QListWidget    *m_list;
+    QLayout                       *m_layout;
+    QLabel                        *m_targetLabel;
+    Lvk::FE::AutocompleteTextEdit *m_target;
+    QLabel                        *m_inputLabel;
+    QLineEdit                     *m_input;
+    QLabel                        *m_inputVariantsLabel;
+    QPlainTextEdit                *m_inputVariants;
+    QObject                       *m_eventFilter;
 
     void connectTextChangedSignal();
     void disconnectTextChangedSignal();
-
-private slots:
-    void onTargetTextEdited(QString);
-    void onTargetLostFocus();
 };
 
 #endif // RULEINPUTWIDGET_H
