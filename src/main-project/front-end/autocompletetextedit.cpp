@@ -26,13 +26,58 @@
 #include <QKeyEvent>
 #include <QStringList>
 
+#include <iostream>
+
+
+//--------------------------------------------------------------------------------------------------
+
+int find(const QString &token, const QString &text, int from)
+{
+    int tkSize = token.size();
+    int txtSize = text.size();
+
+    for (int i = from; i + (tkSize - 1) < txtSize; ++i) {
+        for (int j = 0; j < tkSize; ++j) {
+            if (token[j] != text[i + j]) {
+                break;
+            }
+            if (j == tkSize - 1) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int rfind(const QString &token, const QString &text, int from)
+{
+    int tkSize = token.size();
+    int txtSize = text.size();
+
+    for (int i = from; i >= 0; --i) {
+        if (i + (tkSize - 1) < txtSize) {
+            for (int j = 0; j < tkSize; ++j) {
+                if (token[j] != text[i + j]) {
+                    break;
+                }
+                if (j == tkSize - 1) {
+                    return i;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // AutoCompleteTextEdit
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_listWidget(new QListWidget(this))
+    QLineEdit(parent), m_init(false), m_splitToken(" "), m_listWidget(new QListWidget(this))
 {
     m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
@@ -62,13 +107,23 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
         m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
     }
     if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
-        setText(m_listWidget->currentItem()->text() + ", ");
+        QString t1; // text before cursor position
+        QString t2; // text after cursor position
+        if (m_tail.isEmpty()) {
+            t1 = m_head + m_listWidget->currentItem()->text() + m_splitToken;
+            //t2 = "";
+        } else {
+            t1 = m_head + m_listWidget->currentItem()->text();
+            t2 = m_tail;
+        }
+        setText(t1 + t2);
+        setCursorPosition(t1.size());
+
         m_listWidget->hide();
     }
 
     QLineEdit::keyPressEvent(event);
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -88,18 +143,24 @@ const QStringList & Lvk::FE::AutocompleteTextEdit::stringList()
 
 void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 {
-    QPoint pos = mapToGlobal(QPoint(0,0));
+    if (!m_init) {
+        updateListWidgetGeometry();
+        m_init = true;
+    }
 
-    m_listWidget->setGeometry(pos.x(), pos.y() + height(), 300, 200);
+    updateTextParts();
 
     m_listWidget->clear();
 
-    QString target = text();
+    QString current = m_current.trimmed();
 
-    if (target.size() > 0) {
+    if (current.size() > 0) {
         foreach (const QString &str, m_strList) {
-            if (str.contains(target, false)) {
+            if (str.contains(current, false)) {
                 m_listWidget->addItem(str);
+            }
+            if (m_listWidget->count() == 1) {
+                m_listWidget->setCurrentRow(0);
             }
         }
     }
@@ -118,3 +179,82 @@ void Lvk::FE::AutocompleteTextEdit::onTargetLostFocus()
     m_listWidget->hide();
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::updateListWidgetGeometry()
+{
+    QPoint globalPos = mapToGlobal(QPoint(0,0));
+
+    if (m_globalPos != globalPos) {
+        m_globalPos =  globalPos;
+
+        m_listWidget->setGeometry(globalPos.x(), globalPos.y() + height(), 300, 200);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::AutocompleteTextEdit::event(QEvent *event)
+{
+    // FIXME
+    //std::cout << event->type() << std::endl;
+    return QLineEdit::event(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
+{
+    // FIXME
+    //std::cout << "paintEvent" << std::endl;
+    //updateListWidgetGeometry();
+
+    QLineEdit::paintEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::setSplitToken(const QString &token)
+{
+    m_splitToken = token;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QString & Lvk::FE::AutocompleteTextEdit::splitToken()
+{
+    return m_splitToken;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::updateTextParts()
+{
+    // Update head, current and tail parts. Example:
+    //   splitToken = " "
+    //   text       = "word1 word2 word3 word4"
+    //                               |_____________ CursorPos
+    // It returns:
+    //   head    = "word1 word2 "
+    //   current = "word3"
+    //   tail    = " word4"
+
+    int cursorPos = cursorPosition();
+    QString text = this->text();
+
+    int prevTokenPos = ::rfind(m_splitToken, text, cursorPos - 1);
+    int nextTokenPos = ::find(m_splitToken, text, cursorPos);
+
+    if (nextTokenPos == -1) {
+        nextTokenPos = text.size();
+    }
+
+    m_head    = text.mid(0, prevTokenPos+1);
+    m_current = text.mid(prevTokenPos+1, nextTokenPos - (prevTokenPos+1));
+    m_tail    = text.mid(nextTokenPos);
+
+    std::cout << "[" << m_head.toStdString() << "] "
+              << "[" << m_current.toStdString() << "] "
+              << "[" << m_tail.toStdString() << "]"
+              << std::endl;
+}

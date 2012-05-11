@@ -49,12 +49,29 @@ public:
 
     const QStringList &stringList();
 
+    void setSplitToken(const QString &token);
+
+    const QString &splitToken();
+
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event);
+
+    virtual bool event(QEvent *event);
+
+    void paintEvent ( QPaintEvent * event );
 
 private:
+    bool m_init;
+    QString m_splitToken;
+    QPoint m_globalPos;
     QStringList m_strList;
     QListWidget *m_listWidget;
+    QString m_head;
+    QString m_current;
+    QString m_tail;
+
+    void updateListWidgetGeometry();
+    void updateTextParts();
 
 private slots:
     void onTargetTextEdited(QString);
