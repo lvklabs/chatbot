@@ -26,10 +26,15 @@
 #include <QKeyEvent>
 #include <QStringList>
 
-#include <iostream>
+//#include <iostream>
 
 
 //--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
 
 int find(const QString &token, const QString &text, int from)
 {
@@ -70,6 +75,8 @@ int rfind(const QString &token, const QString &text, int from)
     }
     return -1;
 }
+
+}  // namespace
 
 
 //--------------------------------------------------------------------------------------------------
@@ -141,6 +148,20 @@ const QStringList & Lvk::FE::AutocompleteTextEdit::stringList()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::AutocompleteTextEdit::setDelimiter(const QString &delim)
+{
+    m_delimiter = delim;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
+{
+    return m_delimiter;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 {
     if (!m_init) {
@@ -198,6 +219,7 @@ bool Lvk::FE::AutocompleteTextEdit::event(QEvent *event)
 {
     // FIXME
     //std::cout << event->type() << std::endl;
+
     return QLineEdit::event(event);
 }
 
@@ -214,20 +236,6 @@ void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::setDelimiter(const QString &delim)
-{
-    m_delimiter = delim;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
-{
-    return m_delimiter;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::FE::AutocompleteTextEdit::updateTextParts()
 {
     // Update head, current and tail parts. Example:
@@ -240,6 +248,7 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
     //   tail    = " word4"
 
     int cursorPos = cursorPosition();
+    int delimSize = m_delimiter.size();
     QString text = this->text();
 
     int prevDelimPos = ::rfind(m_delimiter, text, cursorPos - 1);
@@ -250,12 +259,11 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
     }
 
     m_head    = text.mid(0, prevDelimPos+1);
-    m_current = text.mid(prevDelimPos+1, nextDelimPos - (prevDelimPos+1));
+    m_current = text.mid(prevDelimPos+delimSize, nextDelimPos - (prevDelimPos+delimSize));
     m_tail    = text.mid(nextDelimPos);
 
-    // TODO disable this:
-    std::cout << "[" << m_head.toStdString()    << "] "
-              << "[" << m_current.toStdString() << "] "
-              << "[" << m_tail.toStdString()    << "]"
-              << std::endl;
+//    std::cout << "[" << m_head.toStdString()    << "] "
+//              << "[" << m_current.toStdString() << "] "
+//              << "[" << m_tail.toStdString()    << "]"
+//              << std::endl;
 }
