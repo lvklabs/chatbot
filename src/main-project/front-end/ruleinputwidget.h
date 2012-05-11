@@ -32,6 +32,7 @@ class QLineEdit;
 class QPlainTextEdit;
 class QLayout;
 class QLabel;
+class QPushButton;
 
 namespace Lvk
 {
@@ -94,6 +95,7 @@ private:
 
     QLayout                       *m_layout;
     QLabel                        *m_targetLabel;
+    QPushButton                   *m_selectUsersButton;
     Lvk::FE::AutocompleteTextEdit *m_target;
     QLabel                        *m_inputLabel;
     QLineEdit                     *m_input;
@@ -103,6 +105,9 @@ private:
 
     void connectTextChangedSignal();
     void disconnectTextChangedSignal();
+
+private slots:
+    void onSelectUsersButtonClicked();
 };
 
 #endif // RULEINPUTWIDGET_H

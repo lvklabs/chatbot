@@ -25,8 +25,11 @@
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QEvent>
+#include <QPushButton>
+#include <QSpacerItem>
 
 
 //--------------------------------------------------------------------------------------------------
@@ -36,7 +39,8 @@
 RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
-    m_targetLabel(new QLabel(tr("If:"), this)),
+    m_targetLabel(new QLabel(tr("If: Any user"), this)),
+    m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
     m_target(new Lvk::FE::AutocompleteTextEdit(this)),
     m_inputLabel(new QLabel(tr("Writes:"), this)),
     m_input(new QLineEdit(this)),
@@ -44,24 +48,42 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_inputVariants(new QPlainTextEdit(this)),
     m_eventFilter(0)
 {
+    // Setup UI
+
+    setLayout(m_layout);
+
+    QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
+
     m_layout->setMargin(0);
 
-    m_layout->addWidget(m_targetLabel);
+    //m_layout->addWidget(m_targetLabel);
+    //m_layout->addWidget(m_selectUsersButton);
     m_layout->addWidget(m_target);
     m_layout->addWidget(m_inputLabel);
     m_layout->addWidget(m_input);
     m_layout->addWidget(m_inputVariantsLabel);
     m_layout->addWidget(m_inputVariants);
 
-    setLayout(m_layout);
 
-    connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
-    connectTextChangedSignal();
+    selectUsersInnerLayout->addWidget(m_targetLabel);
+    selectUsersInnerLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Maximum));
+    selectUsersInnerLayout->addWidget(m_selectUsersButton);
 
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
     m_target->setDelimiter(",");
+    m_target->setVisible(false);
+
+    //m_selectUsersButton->setIcon("");
+
+    // Signals
+
+    connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
+
+    connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
+
+    connectTextChangedSignal();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -213,6 +235,16 @@ void RuleInputWidget::connectTextChangedSignal()
 void RuleInputWidget::disconnectTextChangedSignal()
 {
     disconnect(m_inputVariants, SIGNAL(textChanged()), this, SIGNAL(inputVariantsEdited()));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::onSelectUsersButtonClicked()
+{
+    m_targetLabel->setText(tr("If:"));
+    m_selectUsersButton->setVisible(false);
+    m_target->setVisible(true);
+    m_target->setFocus();
 }
 
 
