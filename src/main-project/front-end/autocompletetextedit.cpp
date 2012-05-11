@@ -77,7 +77,7 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_init(false), m_splitToken(" "), m_listWidget(new QListWidget(this))
+    QLineEdit(parent), m_init(false), m_delimiter(" "), m_listWidget(new QListWidget(this))
 {
     m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
@@ -110,7 +110,7 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
         QString t1; // text before cursor position
         QString t2; // text after cursor position
         if (m_tail.isEmpty()) {
-            t1 = m_head + m_listWidget->currentItem()->text() + m_splitToken;
+            t1 = m_head + m_listWidget->currentItem()->text() + m_delimiter;
             //t2 = "";
         } else {
             t1 = m_head + m_listWidget->currentItem()->text();
@@ -214,16 +214,16 @@ void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::setSplitToken(const QString &token)
+void Lvk::FE::AutocompleteTextEdit::setDelimiter(const QString &delim)
 {
-    m_splitToken = token;
+    m_delimiter = delim;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const QString & Lvk::FE::AutocompleteTextEdit::splitToken()
+const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
 {
-    return m_splitToken;
+    return m_delimiter;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -242,19 +242,20 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
     int cursorPos = cursorPosition();
     QString text = this->text();
 
-    int prevTokenPos = ::rfind(m_splitToken, text, cursorPos - 1);
-    int nextTokenPos = ::find(m_splitToken, text, cursorPos);
+    int prevDelimPos = ::rfind(m_delimiter, text, cursorPos - 1);
+    int nextDelimPos = ::find(m_delimiter, text, cursorPos);
 
-    if (nextTokenPos == -1) {
-        nextTokenPos = text.size();
+    if (nextDelimPos == -1) {
+        nextDelimPos = text.size();
     }
 
-    m_head    = text.mid(0, prevTokenPos+1);
-    m_current = text.mid(prevTokenPos+1, nextTokenPos - (prevTokenPos+1));
-    m_tail    = text.mid(nextTokenPos);
+    m_head    = text.mid(0, prevDelimPos+1);
+    m_current = text.mid(prevDelimPos+1, nextDelimPos - (prevDelimPos+1));
+    m_tail    = text.mid(nextDelimPos);
 
-    std::cout << "[" << m_head.toStdString() << "] "
+    // TODO disable this:
+    std::cout << "[" << m_head.toStdString()    << "] "
               << "[" << m_current.toStdString() << "] "
-              << "[" << m_tail.toStdString() << "]"
+              << "[" << m_tail.toStdString()    << "]"
               << std::endl;
 }

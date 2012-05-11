@@ -61,7 +61,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
-    m_target->setSplitToken(",");
+    m_target->setDelimiter(",");
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -49,9 +49,9 @@ public:
 
     const QStringList &stringList();
 
-    void setSplitToken(const QString &token);
+    void setDelimiter(const QString &delim);
 
-    const QString &splitToken();
+    const QString &delimiter();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
@@ -62,7 +62,7 @@ protected:
 
 private:
     bool m_init;
-    QString m_splitToken;
+    QString m_delimiter;
     QPoint m_globalPos;
     QStringList m_strList;
     QListWidget *m_listWidget;
