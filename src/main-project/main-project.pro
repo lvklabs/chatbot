@@ -8,6 +8,8 @@ QT += \
 
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -Wall -Wextra
+
 ############################################
 # Update git revision in versionrev.h
 versionrev.target = common/versionrev.h
