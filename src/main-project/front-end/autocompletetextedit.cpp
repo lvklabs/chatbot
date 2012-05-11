@@ -93,11 +93,11 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
     ///////////////////////////////////////
     // TODO remove!
-    m_strList.append("Andres Pagliano");
-    m_strList.append("Andres Calamaro");
-    m_strList.append("Andrea Prodan");
-    m_strList.append("Luciana Benotti");
-    m_strList.append("Emilia Echeveste");
+//    m_strList.append("Andres Pagliano");
+//    m_strList.append("Andres Calamaro");
+//    m_strList.append("Andrea Prodan");
+//    m_strList.append("Luciana Benotti");
+//    m_strList.append("Emilia Echeveste");
     ///////////////////////////////////////
 }
 

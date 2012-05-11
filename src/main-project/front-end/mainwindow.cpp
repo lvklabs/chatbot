@@ -1399,11 +1399,14 @@ void Lvk::FE::MainWindow::onConnectionOk()
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
-    QString account = canonicAccount(ui->usernameText->text(), uiChatSelected());
-    BE::Roster blackList = getBlackListSettings(account);
+    BE::Roster roster = m_coreApp->roster();
 
-    ui->rosterWidget->setRoster(m_coreApp->roster(), blackList);
-    m_coreApp->setBlackListRoster(blackList);
+    QString account = canonicAccount(ui->usernameText->text(), uiChatSelected());
+    BE::Roster blackListRoster = getBlackListSettings(account);
+
+    ui->ruleInputWidget->setRoster(roster);
+    ui->rosterWidget->setRoster(roster, blackListRoster);
+    m_coreApp->setBlackListRoster(blackListRoster);
 }
 
 //--------------------------------------------------------------------------------------------------

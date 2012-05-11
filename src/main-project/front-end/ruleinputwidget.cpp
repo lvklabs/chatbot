@@ -141,6 +141,31 @@ void RuleInputWidget::setInputList(const QStringList &inputList)
 
 //--------------------------------------------------------------------------------------------------
 
+QString RuleInputWidget::targets()
+{
+    return m_target->text();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::setTargets(const QString &targets)
+{
+    m_target->setText(targets);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
+{
+    QStringList strList;
+    foreach (const Lvk::BE::RosterItem &item, roster) {
+        strList.append(!item.fullname.isEmpty() ? item.fullname : item.username);
+    }
+    m_target->setStringList(strList);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void RuleInputWidget::setFocusOnInput()
 {
     m_input->setFocus();
@@ -189,5 +214,6 @@ void RuleInputWidget::disconnectTextChangedSignal()
 {
     disconnect(m_inputVariants, SIGNAL(textChanged()), this, SIGNAL(inputVariantsEdited()));
 }
+
 
 

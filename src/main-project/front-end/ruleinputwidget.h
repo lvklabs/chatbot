@@ -26,6 +26,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "roster.h"
+
 class QLineEdit;
 class QPlainTextEdit;
 class QLayout;
@@ -61,6 +63,12 @@ public:
     QStringList inputList();
 
     void setInputList(const QStringList &inputList);
+
+    QString targets();
+
+    void setTargets(const QString &targets);
+
+    void setRoster(const Lvk::BE::Roster &roster);
 
     void setFocusOnInput();
 
