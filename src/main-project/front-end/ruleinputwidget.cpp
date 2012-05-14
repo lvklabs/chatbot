@@ -31,7 +31,6 @@
 #include <QPushButton>
 #include <QSpacerItem>
 
-
 //--------------------------------------------------------------------------------------------------
 // RuleInputWidget
 //--------------------------------------------------------------------------------------------------
@@ -42,52 +41,13 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
     m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
     m_target(new Lvk::FE::AutocompleteTextEdit(this)),
-#ifdef ENABLE_TARGET_RULES
     m_inputLabel(new QLabel(tr("Writes:"), this)),
-#else
-    m_inputLabel(new QLabel(tr("If user writes:"), this)),
-#endif
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
     m_inputVariants(new QPlainTextEdit(this)),
     m_eventFilter(0)
 {
-    // Setup UI
-
-    setLayout(m_layout);
-
-    QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
-
-    m_layout->setMargin(0);
-
-    //m_layout->addWidget(m_targetLabel);
-    //m_layout->addWidget(m_selectUsersButton);
-    m_layout->addWidget(m_inputLabel);
-    m_layout->addWidget(m_input);
-    m_layout->addWidget(m_inputVariantsLabel);
-    m_layout->addWidget(m_inputVariants);
-
-    m_layout->addWidget(m_target);
-
-    selectUsersInnerLayout->addWidget(m_targetLabel);
-    selectUsersInnerLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Maximum));
-    selectUsersInnerLayout->addWidget(m_selectUsersButton);
-
-    m_input->installEventFilter(this);
-    m_inputVariants->installEventFilter(this);
-
-    m_target->setDelimiter(",");
-    m_target->setVisible(false);
-
-    //m_selectUsersButton->setIcon("");
-
-#ifndef ENABLE_TARGET_RULES
-    m_targetLabel->setVisible(false);
-    m_selectUsersButton->setVisible(false);
-    m_target->setVisible(false);
-#endif
-
-    // Signals
+    setupUi();
 
     connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
 
@@ -100,6 +60,35 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
 
 RuleInputWidget::~RuleInputWidget()
 {
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::setupUi()
+{
+    setLayout(m_layout);
+
+    m_layout->setMargin(0);
+
+    QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
+
+    m_layout->addWidget(m_target);
+    m_layout->addWidget(m_inputLabel);
+    m_layout->addWidget(m_input);
+    m_layout->addWidget(m_inputVariantsLabel);
+    m_layout->addWidget(m_inputVariants);
+
+    selectUsersInnerLayout->addWidget(m_targetLabel);
+    selectUsersInnerLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Maximum));
+    selectUsersInnerLayout->addWidget(m_selectUsersButton);
+
+    m_input->installEventFilter(this);
+    m_inputVariants->installEventFilter(this);
+
+    m_target->setDelimiter(",");
+    m_target->setVisible(false);
+
+    //TODO m_selectUsersButton->setIcon("");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -256,6 +245,7 @@ void RuleInputWidget::onSelectUsersButtonClicked()
     m_target->setVisible(true);
     m_target->setFocus();
 }
+
 
 
 

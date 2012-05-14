@@ -25,6 +25,7 @@
 #include <QListWidgetItem>
 #include <QKeyEvent>
 #include <QStringList>
+#include <QToolTip>
 
 //#include <iostream>
 

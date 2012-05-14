@@ -103,6 +103,7 @@ private:
     QPlainTextEdit                *m_inputVariants;
     QObject                       *m_eventFilter;
 
+    void setupUi();
     void connectTextChangedSignal();
     void disconnectTextChangedSignal();
 
