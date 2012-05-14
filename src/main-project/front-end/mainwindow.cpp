@@ -127,7 +127,9 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     clear();
 
-    initCoreAndModelsWithFile(DEFAULT_RULES_FILE); // TODO Open last file
+    Lvk::Common::Settings settings;
+    QString lastFile = settings.value(SETTING_LAST_FILE, QString(DEFAULT_RULES_FILE)).toString();
+    initCoreAndModelsWithFile(lastFile);
 
     connectSignals();
 
@@ -356,6 +358,11 @@ void Lvk::FE::MainWindow::saveAllSettings()
 {
     saveMainWindowSettings();
     saveChatSettings();
+
+    if (!m_filename.isEmpty()) {
+        Lvk::Common::Settings settings;
+        settings.setValue(SETTING_LAST_FILE, m_filename);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -22,11 +22,13 @@
 #ifndef LVK_COMMON_SETTINGSKEYS_H
 #define LVK_COMMON_SETTINGSKEYS_H
 
-#define SETTING_APP_LANGUAGE                        "Application/language"
+#define SETTING_APP_LANGUAGE                        "Application/Language"
 
-#define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/size"
-#define SETTING_MAIN_WINDOW_POS                     "MainWindow/position"
-#define SETTING_MAIN_WINDOW_MAXIMIZED               "MainWindow/maximized"
+#define SETTING_LAST_FILE                           "Files/LastFile"
+
+#define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/Size"
+#define SETTING_MAIN_WINDOW_POS                     "MainWindow/Position"
+#define SETTING_MAIN_WINDOW_MAXIMIZED               "MainWindow/Maximized"
 
 #define SETTING_DEFAULT_CHAT_USERNAME               "Chat/Username"
 #define SETTING_DEFAULT_CHAT_SERVER_TYPE            "Chat/ServerType"
