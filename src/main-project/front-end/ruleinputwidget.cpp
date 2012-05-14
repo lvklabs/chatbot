@@ -39,10 +39,10 @@
 RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
-#ifdef ENABLE_TARGET_RULES
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
     m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
     m_target(new Lvk::FE::AutocompleteTextEdit(this)),
+#ifdef ENABLE_TARGET_RULES
     m_inputLabel(new QLabel(tr("Writes:"), this)),
 #else
     m_inputLabel(new QLabel(tr("If user writes:"), this)),
@@ -56,9 +56,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
 
     setLayout(m_layout);
 
-#ifdef ENABLE_TARGET_RULES
     QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
-#endif
 
     m_layout->setMargin(0);
 
@@ -69,27 +67,29 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_layout->addWidget(m_inputVariantsLabel);
     m_layout->addWidget(m_inputVariants);
 
-#ifdef ENABLE_TARGET_RULES
     m_layout->addWidget(m_target);
 
     selectUsersInnerLayout->addWidget(m_targetLabel);
     selectUsersInnerLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Maximum));
     selectUsersInnerLayout->addWidget(m_selectUsersButton);
-#endif
 
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
-    // Signals
-
-#ifdef ENABLE_TARGET_RULES
     m_target->setDelimiter(",");
     m_target->setVisible(false);
 
     //m_selectUsersButton->setIcon("");
 
-    connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
+#ifndef ENABLE_TARGET_RULES
+    m_targetLabel->setVisible(false);
+    m_selectUsersButton->setVisible(false);
+    m_target->setVisible(false);
 #endif
+
+    // Signals
+
+    connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
 
     connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
 
