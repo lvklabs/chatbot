@@ -39,10 +39,14 @@
 RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
+#ifdef ENABLE_TARGET_RULES
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
     m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
     m_target(new Lvk::FE::AutocompleteTextEdit(this)),
     m_inputLabel(new QLabel(tr("Writes:"), this)),
+#else
+    m_inputLabel(new QLabel(tr("If user writes:"), this)),
+#endif
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
     m_inputVariants(new QPlainTextEdit(this)),
@@ -52,34 +56,40 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
 
     setLayout(m_layout);
 
+#ifdef ENABLE_TARGET_RULES
     QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
+#endif
 
     m_layout->setMargin(0);
 
     //m_layout->addWidget(m_targetLabel);
     //m_layout->addWidget(m_selectUsersButton);
-    m_layout->addWidget(m_target);
     m_layout->addWidget(m_inputLabel);
     m_layout->addWidget(m_input);
     m_layout->addWidget(m_inputVariantsLabel);
     m_layout->addWidget(m_inputVariants);
 
+#ifdef ENABLE_TARGET_RULES
+    m_layout->addWidget(m_target);
 
     selectUsersInnerLayout->addWidget(m_targetLabel);
     selectUsersInnerLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Maximum));
     selectUsersInnerLayout->addWidget(m_selectUsersButton);
+#endif
 
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
+    // Signals
+
+#ifdef ENABLE_TARGET_RULES
     m_target->setDelimiter(",");
     m_target->setVisible(false);
 
     //m_selectUsersButton->setIcon("");
 
-    // Signals
-
     connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
+#endif
 
     connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
 

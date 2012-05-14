@@ -790,21 +790,32 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
 <context>
     <name>RuleInputWidget</name>
     <message>
+        <location filename="front-end/ruleinputwidget.cpp" line="48"/>
         <source>If user writes:</source>
-        <translation type="obsolete">Si el usuario escribe:</translation>
+        <translation>Si el usuario escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="41"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="254"/>
         <source>If:</source>
         <translation>Si:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="43"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="46"/>
         <source>Writes:</source>
         <translation>Escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="45"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="43"/>
+        <source>If: Any user</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="front-end/ruleinputwidget.cpp" line="44"/>
+        <source>Edit users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="front-end/ruleinputwidget.cpp" line="51"/>
         <source>Or any of these variants:</source>
         <translation>O cualquiera de las variantes:</translation>
     </message>
