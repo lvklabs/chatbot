@@ -48,16 +48,8 @@
 #define DEFAULT_RULES_FILE          "rules.crf"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
-#define FILE_EXTENSION              "crf"
-#define FILE_EXPORT_EXTENSION       "cef"
-
-#define FILE_FILTERS                tr("Chatbot Rule Files") + \
-                                    QString(" (*." FILE_EXTENSION ");;")\
-                                    + tr("All files") + " (*.*)"
-
-#define FILE_EXPORT_FILTERS         tr("Chatbot Export Files") + \
-                                    QString(" (*." FILE_EXPORT_EXTENSION ");;")\
-                                    + tr("All files") + " (*.*)"
+#define FILE_EXTENSION              QString(QObject::tr("crf"))
+#define FILE_EXPORT_EXTENSION       QString(QObject::tr("cef"))
 
 #define FB_ICON_FILE               ":/icons/facebook_24x24.png"
 #define GMAIL_ICON_FILE            ":/icons/gmail_24x24.png"
@@ -100,10 +92,29 @@ Lvk::BE::Roster rosterUsersfromString(const QString &s)
 }
 
 //--------------------------------------------------------------------------------------------------
+// Cannonic representation for chat accounts used to persist some settings
 
 QString canonicAccount(const QString &username, Lvk::BE::CoreApp::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Localized file filters for open/save dialogs
+
+QString getFileFilters()
+{
+    return QObject::tr("Chatbot Rule Files") + QString(" (*.") + FILE_EXTENSION + QString(");;")
+            + QObject::tr("All files") + QString(" (*.*)");
+}
+
+//--------------------------------------------------------------------------------------------------
+// Localized export file filters for import/export dialogs
+
+QString getFileExportFilters()
+{
+    return QObject::tr("Chatbot Export Files") + QString(" (*.") + FILE_EXPORT_EXTENSION
+            + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
 }
 
 } // namespace
@@ -676,7 +687,7 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
     }
 
     if (!canceled) {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "", FILE_FILTERS);
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",getFileFilters());
 
         if (!filename.isEmpty()) {
             load(filename);
@@ -723,13 +734,13 @@ bool Lvk::FE::MainWindow::saveChanges()
 
 bool Lvk::FE::MainWindow::saveAsChanges()
 {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "", FILE_FILTERS);
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "", getFileFilters());
 
     bool saved = false;
 
     if (!filename.isEmpty()) {
-        if (!filename.endsWith("." FILE_EXTENSION)) {
-            filename.append("." FILE_EXTENSION);
+        if (!filename.endsWith("." + FILE_EXTENSION)) {
+            filename.append("." + FILE_EXTENSION);
         }
 
         setFilename(filename);
@@ -804,7 +815,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
 {
     const QString IMPORT_TITLE = tr("Import Rules");
 
-    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "", FILE_EXPORT_FILTERS);
+    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "", getFileExportFilters());
 
     if (!filename.isEmpty()) {
 
@@ -847,11 +858,11 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
     if (exportDialog.exec(&container) == QDialog::Accepted) {
 
         QString filename = QFileDialog::getSaveFileName(this, EXPORT_TITLE , "",
-                                                        FILE_EXPORT_FILTERS);
+                                                        getFileExportFilters());
 
         if (!filename.isEmpty()) {
-            if (!filename.endsWith("." FILE_EXPORT_EXTENSION)) {
-                filename.append("." FILE_EXPORT_EXTENSION);
+            if (!filename.endsWith("." + FILE_EXPORT_EXTENSION)) {
+                filename.append("." + FILE_EXPORT_EXTENSION);
             }
 
             if (!m_coreApp->exportRules(&container, filename)) {
