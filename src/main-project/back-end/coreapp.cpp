@@ -416,7 +416,7 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
             nlpRules.append(nlpRule);
         } else if (child->type() == Rule::EvasiveRule) {
-            m_evasivesRule = (BE::Rule *)child; // FIXME fix cast
+            m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
@@ -613,6 +613,8 @@ bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 
     m_rootRule->appendChild(evasives);
 
+    m_evasivesRule = evasives;
+
     QStringList evasivesOutputList;
     evasivesOutputList << QString("Perdon, no entiendo")
                        << QString("No entiendo, puedes explicarlo de otra manera?");
@@ -646,6 +648,8 @@ bool Lvk::BE::CoreApp::loadDefaultRules()
     evasives->setType(BE::Rule::EvasiveRule);
 
     m_rootRule->appendChild(evasives);
+
+    m_evasivesRule = evasives;
 
     QStringList evasivesOutputList;
 
