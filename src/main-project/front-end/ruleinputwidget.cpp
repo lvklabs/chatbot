@@ -31,6 +31,9 @@
 #include <QPushButton>
 #include <QSpacerItem>
 
+#define TARGET_SPLIT_TOKEN  ","
+
+
 //--------------------------------------------------------------------------------------------------
 // RuleInputWidget
 //--------------------------------------------------------------------------------------------------
@@ -49,11 +52,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
 {
     setupUi();
 
-    connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
-
-    connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
-
-    connectTextChangedSignal();
+    connectSignals();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -85,8 +84,9 @@ void RuleInputWidget::setupUi()
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
-    m_target->setDelimiter(",");
+    m_target->setDelimiter(TARGET_SPLIT_TOKEN);
     m_target->setVisible(false);
+    m_target->setDefaultText(tr("Any user"));
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
 
@@ -94,6 +94,19 @@ void RuleInputWidget::setupUi()
     // FIXME not using select users button
     onSelectUsersButtonClicked();
     ///////////////////////////////////////
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RuleInputWidget::connectSignals()
+{
+    connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
+
+    connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
+
+    connect(m_target, SIGNAL(textEdited(QString)), SIGNAL(targetTextEdited(QString)));
+
+    connectTextChangedSignal();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -132,7 +145,7 @@ void RuleInputWidget::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList RuleInputWidget::inputList()
+QStringList RuleInputWidget::input()
 {
     QStringList inputList = m_inputVariants->toPlainText().split("\n", QString::SkipEmptyParts);
     inputList.prepend(m_input->text());
@@ -142,7 +155,7 @@ QStringList RuleInputWidget::inputList()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setInputList(const QStringList &inputList)
+void RuleInputWidget::setInput(const QStringList &inputList)
 {
     QString input, inputVariants;
 
@@ -167,16 +180,16 @@ void RuleInputWidget::setInputList(const QStringList &inputList)
 
 //--------------------------------------------------------------------------------------------------
 
-QString RuleInputWidget::targets()
+QStringList RuleInputWidget::target()
 {
-    return m_target->text();
+    return m_target->text().split(TARGET_SPLIT_TOKEN, QString::SkipEmptyParts);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setTargets(const QString &targets)
+void RuleInputWidget::setTarget(const QStringList &target)
 {
-    m_target->setText(targets);
+    m_target->setText(target.join(TARGET_SPLIT_TOKEN));
 }
 
 //--------------------------------------------------------------------------------------------------

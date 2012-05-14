@@ -81,15 +81,12 @@ int rfind(const QString &token, const QString &text, int from)
 // AutoCompleteTextEdit
 //--------------------------------------------------------------------------------------------------
 
-// TODO Add new class methods to set the start string and tooltip
-
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_init(false), m_delimiter(" "), m_listWidget(new QListWidget(this)),
-    m_startString(tr("Any user"))
+    QLineEdit(parent), m_init(false), m_delimiter(" "), m_listWidget(new QListWidget(this))
 {
     m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
-    setText(m_startString);
+    setText(m_defaultString);
 
     connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
     connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
@@ -131,7 +128,7 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 {
     if (text().trimmed().isEmpty()) {
-        setText(m_startString);
+        setText(m_defaultString);
     }
 
     m_listWidget->hide();
@@ -143,7 +140,7 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
-    if (text().trimmed() == m_startString) {
+    if (text().trimmed() == m_defaultString) {
         setText("");
     }
 
@@ -193,6 +190,25 @@ const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
     return m_delimiter;
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::setDefaultText(const QString &text)
+{
+    m_defaultString = text;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::setText(const QString &text)
+{
+    if (!text.isEmpty()) {
+        QLineEdit::setText(text);
+    } else {
+        QLineEdit::setText(m_defaultString);
+    }
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
@@ -207,6 +223,7 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
     m_listWidget->clear();
 
     if (m_strList.isEmpty()) {
+        // FIXME Add new class methods to set the tooltip
         QToolTip::showText(mapToGlobal(QPoint(0, height()/2)),
                            tr("Tip: Go to the 'Connect to chat' tab and connect using your\n"
                               "Facebook or Gmail account to get a list of contacts"), this);
@@ -318,10 +335,9 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
     m_current = text.mid(prevDelimPos+delimSize, nextDelimPos - (prevDelimPos+delimSize));
     m_tail    = text.mid(nextDelimPos);
 
-//    std::cout << "[" << m_head.toStdString()    << "] "
-//              << "[" << m_current.toStdString() << "] "
-//              << "[" << m_tail.toStdString()    << "]"
-//              << std::endl;
+	//    std::cout << "[" << m_head.toStdString()    << "] "
+	//              << "[" << m_current.toStdString() << "] "
+	//              << "[" << m_tail.toStdString()    << "]"
+    //              << std::endl;
 }
-
 

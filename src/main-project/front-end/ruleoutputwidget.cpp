@@ -33,7 +33,7 @@ RuleOutputWidget::RuleOutputWidget(QWidget *parent) :
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList RuleOutputWidget::outputList()
+QStringList RuleOutputWidget::output()
 {
     return toPlainText().split("\n", QString::SkipEmptyParts);
 }

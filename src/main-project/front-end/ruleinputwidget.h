@@ -61,13 +61,13 @@ public:
 
     void clear();
 
-    QStringList inputList();
+    QStringList input();
 
-    void setInputList(const QStringList &inputList);
+    void setInput(const QStringList &input);
 
-    QString targets();
+    QStringList target();
 
-    void setTargets(const QString &targets);
+    void setTarget(const QStringList &target);
 
     void setRoster(const Lvk::BE::Roster &roster);
 
@@ -87,6 +87,9 @@ public slots:
 
 signals:
     void inputTextEdited(const QString &);
+
+    void targetTextEdited(const QString &);
+
     void inputVariantsEdited();
 
 private:
@@ -104,6 +107,7 @@ private:
     QObject                       *m_eventFilter;
 
     void setupUi();
+    void connectSignals();
     void connectTextChangedSignal();
     void disconnectTextChangedSignal();
 

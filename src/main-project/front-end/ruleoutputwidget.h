@@ -35,9 +35,9 @@ class RuleOutputWidget : public QPlainTextEdit
 public:
     explicit RuleOutputWidget(QWidget *parent = 0);
 
-    QStringList outputList();
+    QStringList output();
 
-    void setOutputList(const QStringList &outputList);
+    void setOutputList(const QStringList &output);
 
 public slots:
 

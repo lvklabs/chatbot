@@ -53,6 +53,10 @@ public:
 
     const QString &delimiter();
 
+    void setText(const QString &text);
+
+    void setDefaultText(const QString &text);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
@@ -75,7 +79,7 @@ private:
     QString m_head;
     QString m_current;
     QString m_tail;
-    QString m_startString;
+    QString m_defaultString;
 
     void updateListWidgetGeometry();
     void updateTextParts();

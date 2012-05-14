@@ -231,7 +231,7 @@ bool Lvk::BE::CoreApp::write(QFile &file)
 {
     QDataStream ostream(&file);
 
-    ostream.setVersion(QDataStream::Qt_4_0);
+    ostream.setVersion(QDataStream::Qt_4_7);
 
     ostream << (quint32)CRF_MAGIC_NUMBER;
     ostream << (quint32)CRF_FILE_FORMAT_VERSION;
@@ -292,7 +292,7 @@ bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &out
 
     QDataStream ostream(&file);
 
-    ostream.setVersion(QDataStream::Qt_4_0);
+    ostream.setVersion(QDataStream::Qt_4_7);
 
     ostream << (quint32)CEF_MAGIC_NUMBER;
     ostream << (quint32)CEF_FILE_FORMAT_VERSION;

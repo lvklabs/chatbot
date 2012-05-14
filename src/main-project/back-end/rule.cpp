@@ -25,6 +25,9 @@
 #include <QIcon>
 #include <assert.h>
 
+#define LVK_BE_RULE_VERSION     2
+
+
 Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
     : m_name(""), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
@@ -59,9 +62,9 @@ Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QString
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule::Rule(const Rule &other, bool deepCopy /*= false*/)
-    : m_name(other.m_name), m_input(other.m_input), m_output(other.m_output), m_parentItem(0),
-      m_type(other.m_type), m_enabled(other.m_enabled), m_status(Unsaved),
-      m_checkState(Qt::Unchecked)
+    : m_name(other.m_name), m_input(other.m_input), m_output(other.m_output),
+      m_target(other.m_target), m_parentItem(0), m_type(other.m_type), m_enabled(other.m_enabled),
+      m_status(Unsaved), m_checkState(Qt::Unchecked)
 {
     if (deepCopy) {
         foreach (const Rule *rule, other.m_childItems) {
@@ -82,6 +85,7 @@ Lvk::BE::Rule::~Rule()
 //Lvk::BE::Rule & Lvk::BE::Rule::operator=(const Rule& other)
 //{
 //    m_name = other.m_name;
+//    m_target = other.m_target
 //    m_input = other.m_input;
 //    m_output = other.m_output;
 //    m_parentItem = 0;
@@ -98,8 +102,9 @@ bool Lvk::BE::Rule::operator==(const Lvk::BE::Rule &other) const
 {
     return m_type == other.m_type &&
            m_name == other.m_name &&
-           m_output == other.m_output &&
-           m_input == other.m_input;
+           m_target == other.m_target &&
+           m_input == other.m_input &&
+           m_output == other.m_output;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -300,6 +305,31 @@ Lvk::BE::Rule::Type Lvk::BE::Rule::type() const
 
 //--------------------------------------------------------------------------------------------------
 
+QStringList &Lvk::BE::Rule::target()
+{
+    m_status = Unsaved;
+
+    return m_target;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QStringList &Lvk::BE::Rule::target() const
+{
+    return m_target;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setTarget(const QStringList &target)
+{
+    m_status = Unsaved;
+
+    m_target = target;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 QStringList &Lvk::BE::Rule::input()
 {
     m_status = Unsaved;
@@ -307,10 +337,14 @@ QStringList &Lvk::BE::Rule::input()
     return m_input;
 }
 
+//--------------------------------------------------------------------------------------------------
+
 const QStringList &Lvk::BE::Rule::input() const
 {
     return m_input;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::Rule::setInput(const QStringList &input)
 {
@@ -364,7 +398,9 @@ void Lvk::BE::Rule::setName(const QString &name)
 
 QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
 {
+    stream << LVK_BE_RULE_VERSION;
     stream << rule.name();
+    stream << rule.target();
     stream << rule.input();
     stream << rule.output();
     stream << static_cast<int>(rule.type());
@@ -381,18 +417,30 @@ QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
 
 QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
 {
+    int version = 0;
     QString name;
+    QStringList target;
     QStringList input;
     QStringList output;
     int type;
     int childCount;
 
+    if (true /* FIXME Need trick to keep backward compatibility */) {
+        stream >> version;
+    }
+
     stream >> name;
+
+    if (version > 0) {
+        stream >> target;
+    }
+
     stream >> input;
     stream >> output;
     stream >> type;
     stream >> childCount;
 
+    rule.setTarget(target);
     rule.setName(name);
     rule.setInput(input);
     rule.setOutput(output);

@@ -268,6 +268,9 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
 
+    connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
+            SLOT(onRuleInputEdited(QString)));
+
     // Test tab
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
@@ -1107,7 +1110,8 @@ void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
     } else if (rule->type() == BE::Rule::OrdinaryRule) {
         setUiMode(EditRuleUiMode);
         ui->categoryNameTextEdit->clear();
-        ui->ruleInputWidget->setInputList(rule->input());
+        ui->ruleInputWidget->setTarget(rule->target());
+        ui->ruleInputWidget->setInput(rule->input());
         ui->ruleOutputWidget->setOutputList(rule->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
         setUiMode(EditEvasivesUiMode);
@@ -1245,10 +1249,11 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     }
 
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        rule->setInput(ui->ruleInputWidget->inputList());
-        rule->setOutput(ui->ruleOutputWidget->outputList());
+        rule->setTarget(ui->ruleInputWidget->target());
+        rule->setInput(ui->ruleInputWidget->input());
+        rule->setOutput(ui->ruleOutputWidget->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
-        rule->setOutput(ui->ruleOutputWidget->outputList());
+        rule->setOutput(ui->ruleOutputWidget->output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         rule->setName(ui->categoryNameTextEdit->text());
     }
@@ -1274,7 +1279,7 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
     // Refresh rule IO widgets
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        ui->ruleInputWidget->setInputList(m_ruleBackup.input());
+        ui->ruleInputWidget->setInput(m_ruleBackup.input());
         ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
         ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
