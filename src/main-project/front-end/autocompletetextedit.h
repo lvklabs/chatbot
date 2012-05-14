@@ -56,6 +56,12 @@ public:
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
+    virtual void focusOutEvent(QFocusEvent *event);
+
+    virtual void focusInEvent(QFocusEvent *event);
+
+    virtual void mouseReleaseEvent(QMouseEvent *);
+
     virtual bool event(QEvent *event);
 
     void paintEvent ( QPaintEvent * event );
@@ -69,13 +75,14 @@ private:
     QString m_head;
     QString m_current;
     QString m_tail;
+    QString m_startString;
 
     void updateListWidgetGeometry();
     void updateTextParts();
 
 private slots:
     void onTargetTextEdited(QString);
-    void onTargetLostFocus();
+    void onListItemSelected();
 };
 
 } // namespace FE

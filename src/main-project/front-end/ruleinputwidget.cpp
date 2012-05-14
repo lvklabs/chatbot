@@ -88,7 +88,12 @@ void RuleInputWidget::setupUi()
     m_target->setDelimiter(",");
     m_target->setVisible(false);
 
-    //TODO m_selectUsersButton->setIcon("");
+    m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
+
+    ///////////////////////////////////////
+    // FIXME not using select users button
+    onSelectUsersButtonClicked();
+    ///////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
