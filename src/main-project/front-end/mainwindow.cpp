@@ -176,7 +176,8 @@ void Lvk::FE::MainWindow::clear()
     ui->ruleOutputWidget->clear();
 
     // chat tab widgets
-    ui->fbChatRadio->setChecked(true);
+    //ui->fbChatRadio->setChecked(true);
+    ui->rosterWidget->clear();
     m_connectionStatus = DisconnectedFromChat;
     m_coreApp->disconnectFromChat();
 
@@ -1416,6 +1417,7 @@ void Lvk::FE::MainWindow::onConnectionError(int err)
     m_connectionStatus = ConnectionError;
     setUiMode(ChatConnectionFailedUiMode);
 
+    ui->rosterWidget->clear();
     ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
                                        QString::number(err));
 }
@@ -1427,6 +1429,8 @@ void Lvk::FE::MainWindow::onDisconnection()
     if (m_connectionStatus != ConnectionError) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
+
+        ui->rosterWidget->clear();
     }
 }
 

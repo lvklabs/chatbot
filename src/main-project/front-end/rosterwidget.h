@@ -32,6 +32,7 @@
 class QListWidget;
 class QCheckBox;
 class QListWidgetItem;
+class QLineEdit;
 
 /**
  * \brief The ConversationHistoryWidget provides a widget to display a roster of chat users
@@ -55,16 +56,20 @@ public:
 
     Qt::CheckState allUsersCheckState();
 
+    void clear();
+
 signals:
     void selectionChanged();
 
 private slots:
     void onAllUsersClicked();
     void onRosterItemClicked(QListWidgetItem *item);
+    void onFilterTextChanged(const QString &);
 
 private:
     QCheckBox *m_allUsersCheckBox;
     QListWidget *m_rosterListWidget;
+    QLineEdit *m_filterText;
     Lvk::BE::Roster m_roster;
     QHash<QString, int> m_rows; // username -> list row
 

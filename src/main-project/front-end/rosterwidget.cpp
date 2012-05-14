@@ -25,13 +25,16 @@
 #include <QCheckBox>
 #include <QLayout>
 #include <QVBoxLayout>
+#include <QLineEdit>
+#include <QLabel>
 
 //--------------------------------------------------------------------------------------------------
 // RosterWidget
 //--------------------------------------------------------------------------------------------------
 
 RosterWidget::RosterWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), m_allUsersCheckBox(new QCheckBox()), m_rosterListWidget(new QListWidget()),
+    m_filterText(new QLineEdit())
 {
     setupWidget();
 
@@ -39,6 +42,8 @@ RosterWidget::RosterWidget(QWidget *parent) :
 
     connect(m_rosterListWidget, SIGNAL(itemClicked(QListWidgetItem*)),
             SLOT(onRosterItemClicked(QListWidgetItem*)));
+
+    connect(m_filterText,       SIGNAL(textChanged(QString)), SLOT(onFilterTextChanged(QString)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -48,17 +53,19 @@ void RosterWidget::setupWidget()
     setLayout(new QVBoxLayout());
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    m_allUsersCheckBox = new QCheckBox();
     m_allUsersCheckBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_allUsersCheckBox->setCheckState(Qt::Checked);
     m_allUsersCheckBox->setText(tr("All users"));
 
     layout()->addWidget(m_allUsersCheckBox);
 
-    m_rosterListWidget = new QListWidget();
     m_rosterListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout()->addWidget(m_rosterListWidget);
+
+    layout()->addWidget(new QLabel(tr("Find:")));
+
+    layout()->addWidget(m_filterText);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -142,6 +149,16 @@ Qt::CheckState RosterWidget::allUsersCheckState()
 
 //--------------------------------------------------------------------------------------------------
 
+void RosterWidget::clear()
+{
+    m_rosterListWidget->clear();
+    m_roster.clear();
+    m_rows.clear();
+    m_filterText->clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Roster RosterWidget::filterRosteryBy(Qt::CheckState state)
 {
     Lvk::BE::Roster filteredRoster;
@@ -188,6 +205,20 @@ void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
     }
 
     emit selectionChanged();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void RosterWidget::onFilterTextChanged(const QString &)
+{
+    for (int i = 0; i < m_rosterListWidget->count(); ++i) {
+        QListWidgetItem *item = m_rosterListWidget->item(i);
+        if (item->text().contains(m_filterText->text(), false)) {
+            item->setHidden(false);
+        } else {
+            item->setHidden(true);
+        }
+    }
 }
 
 
