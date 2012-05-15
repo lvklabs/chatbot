@@ -102,7 +102,7 @@ Q_DECLARE_METATYPE(Lvk::BE::Rule*)
 #define GMAIL_USER_2                        "andres.test2"
 #define GMAIL_USER_2_PASSWD_OK              "andresTEST"
 #define GMAIL_USER_2_PASSWD_WRONG           "xxx"
-#define GMAIL_USER_2_REAL_NAME              "andres test2"
+#define GMAIL_USER_2_REAL_NAME              "andres.test2@gmail.com" //"andres test2"
 
 #define FB_USER_1                           "andres.pagliano" // FIXME create new account
 #define FB_USER_1_PASSWD_OK                 "FIXME"
@@ -575,7 +575,7 @@ void TestMainWindow::testChatConnection()
         QVERIFY(chatStatusLabel->text().contains(CHAT_CONNECTION_OK_TOKEN, false));
 
         QTest::qSleep(200);
-        m_window->onConnectButtonPressed();  //disconnect
+        m_window->onDisconnectButtonPressed();
 
         QVERIFY(chatStatusLabel->text().contains(CHAT_DISCONNECTION_TOKEN, false));
 
