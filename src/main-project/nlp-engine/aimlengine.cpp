@@ -197,6 +197,9 @@ QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const
 
         long catId = categoriesId.last();
         matches.append(QPair<RuleId, int>(getRuleId(catId), getInputNumber(catId)));
+    } else if (target != ANY_USER) {
+        // No response found with the given target, fallback to rules with any user:
+        return getAllResponses(input, ANY_USER, matches);
     }
 
     return responses;
