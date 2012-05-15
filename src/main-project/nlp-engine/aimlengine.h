@@ -84,7 +84,13 @@ public:
 
     virtual QString getResponse(const QString &input, MatchList &matches);
 
+    virtual QString getResponse(const QString &input, const QString &target,
+                                MatchList &matches);
+
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
+
+    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
+                                           MatchList &matches);
 
 private:
     AimlEngine(AimlEngine&);
@@ -96,6 +102,7 @@ private:
 
     void init();
     void buildAiml(QString &aiml);
+    void buildAiml(QString &aiml, const Rule &rule);
 };
 
 } // namespace Nlp

@@ -50,7 +50,13 @@ public:
 
     virtual QString getResponse(const QString &input, MatchList &matches);
 
+    virtual QString getResponse(const QString &input, const QString &target,
+                                MatchList &matches);
+
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
+
+    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
+                                           MatchList &matches);
 
 private:
 
