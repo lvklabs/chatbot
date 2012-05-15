@@ -71,7 +71,7 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
     }
 
     Nlp::Engine::MatchList matches;
-    QString response = m_engine->getResponse(input, matches);
+    QString response = m_engine->getResponse(input, contact.username, matches);
 
     bool matched = !response.isEmpty() && matches.size() > 0;
 

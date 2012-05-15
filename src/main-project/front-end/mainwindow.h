@@ -156,6 +156,7 @@ private slots:
     void onRemoveButtonClicked();
 
     void onRuleInputEdited(const QString &ruleInput);
+    void onRuleTargetEdited(const QString &ruleInput);
     //void onRuleInputEditingFinished();
     //void onRuleOutputEditingFinished();
     void onRuleEdited();

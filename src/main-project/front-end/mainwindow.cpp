@@ -269,7 +269,7 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onRuleInputEdited(QString)));
 
     connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
-            SLOT(onRuleInputEdited(QString)));
+            SLOT(onRuleTargetEdited(QString)));
 
     // Test tab
 
@@ -1172,6 +1172,13 @@ void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onRuleTargetEdited(const QString &/*ruleInput*/)
+{
+    onRuleEdited();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onRuleEdited()
 {
     const BE::Rule *selRule = selectedRule();
@@ -1181,6 +1188,7 @@ void Lvk::FE::MainWindow::onRuleEdited()
 
         m_ruleBackup.setStatus(selRule->status());
         m_ruleBackup.setName(selRule->name());
+        m_ruleBackup.setTarget(selRule->target());
         m_ruleBackup.setInput(selRule->input());
         m_ruleBackup.setOutput(selRule->output());
 

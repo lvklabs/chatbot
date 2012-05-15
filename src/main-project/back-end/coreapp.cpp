@@ -413,7 +413,7 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
         const BE::Rule *child = parentRule->child(i);
         if (child->type() == Rule::OrdinaryRule) {
             m_rulesHash[m_nextRuleId] = child;
-            Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
+            Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output(), child->target());
             nlpRules.append(nlpRule);
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
