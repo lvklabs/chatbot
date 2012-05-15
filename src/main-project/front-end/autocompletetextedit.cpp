@@ -128,7 +128,7 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 {
     if (text().trimmed().isEmpty()) {
-        setText(m_defaultString);
+        QLineEdit::setText(m_defaultString);
     }
 
     m_listWidget->hide();
@@ -141,7 +141,7 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
     if (text().trimmed() == m_defaultString) {
-        setText("");
+        QLineEdit::setText("");
     }
 
     // If empty, display full list
