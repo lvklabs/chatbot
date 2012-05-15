@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QHash>
 #include <QPair>
+#include <QSet>
 
 #include <memory>
 
@@ -95,7 +96,9 @@ public:
 
     typedef QList< QPair<const Rule *, int> > MatchList;
 
-    QString getResponse(const QString &input, MatchList &matches) const;
+    QString getResponse(const QString &input, const QString &target, MatchList &matches) const;
+
+    QString getTestUserResponse(const QString &input, MatchList &matches) const;
 
     void refreshNlpEngine();
 
@@ -141,11 +144,13 @@ private:
     CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
     bool m_isFirstTime;
+    QSet<QString> m_targets;
 
     void markAsSaved();
 
-
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
+
+    void addTargets(const QStringList &targets);
 
     QStringList getEvasives() const;
 

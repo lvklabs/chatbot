@@ -142,6 +142,7 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRule,
     QString varNameOnInput;
 
     pureAimlRule.setId(rule.id());
+    pureAimlRule.setTarget(rule.target());
     buildPureAimlInputList(pureAimlRule.input(), varNameOnInput, rule.input());
     buildPureAimlOutputList(pureAimlRule.output(), varNameOnInput, rule.output());
 }

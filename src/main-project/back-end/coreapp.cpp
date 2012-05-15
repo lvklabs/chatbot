@@ -193,6 +193,8 @@ void Lvk::BE::CoreApp::close()
     m_nextRuleId = 0;
 
     m_rulesHash.clear();
+
+    m_targets.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -355,7 +357,31 @@ QStringList Lvk::BE::CoreApp::getEvasives() const
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) const
+QString Lvk::BE::CoreApp::getTestUserResponse(const QString &input, MatchList &matches) const
+{
+    QString response;
+
+    // Try with all targets
+
+    foreach (const QString &target, m_targets) {
+        response = getResponse(input, target, matches);
+
+        if (!matches.isEmpty()) {
+            break;
+        }
+    }
+
+    if (matches.isEmpty()) {
+        response = getResponse(input, "", matches);
+    }
+
+    return response;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::CoreApp::getResponse(const QString &input, const QString &target,
+                                      MatchList &matches) const
 {
     matches.clear();
 
@@ -364,25 +390,19 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) 
     }
 
     Nlp::Engine::MatchList nlpRulesMatched;
-    QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
-
-
-    // TODO Refactor return
+    QString response = m_nlpEngine->getResponse(input, target, nlpRulesMatched);
 
     if (!nlpRulesMatched.isEmpty()) {
         Nlp::RuleId ruleId = nlpRulesMatched.first().first;
         int inputNumber = nlpRulesMatched.first().second;
         matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
-
-        return response;
     } else {
         QStringList evasives = getEvasives();
-        if (!evasives.isEmpty()) {
-            return evasives[Common::Random::getInt(0, evasives.size() - 1)];
-        } else {
-            return "";
-        }
+        response = !evasives.isEmpty() ?
+                    evasives[Common::Random::getInt(0, evasives.size() - 1)] : "";
     }
+
+    return response;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -392,6 +412,7 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
     m_evasivesRule = 0;
     m_nextRuleId = 0;
     m_rulesHash.clear();
+    m_targets.clear();
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
@@ -415,11 +436,21 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
             m_rulesHash[m_nextRuleId] = child;
             Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output(), child->target());
             nlpRules.append(nlpRule);
+            addTargets(child->target());
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::addTargets(const QStringList &targets)
+{
+    foreach (const QString &target, targets) {
+        m_targets.insert(target);
     }
 }
 

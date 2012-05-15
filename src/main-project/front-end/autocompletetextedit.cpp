@@ -270,6 +270,8 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
     setText(t1 + t2);
     setCursorPosition(t1.size());
 
+    emit textEdited(text());
+
     m_listWidget->hide();
 }
 

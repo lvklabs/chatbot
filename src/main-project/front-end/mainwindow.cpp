@@ -1287,6 +1287,7 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
     // Refresh rule IO widgets
     if (rule->type() == BE::Rule::OrdinaryRule) {
+        ui->ruleInputWidget->setTarget(m_ruleBackup.target());
         ui->ruleInputWidget->setInput(m_ruleBackup.input());
         ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
@@ -1326,7 +1327,7 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString input = ui->testInputText->text();
     BE::CoreApp::MatchList matches;
 
-    QString response = m_coreApp->getResponse(input, matches);
+    QString response = m_coreApp->getTestUserResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
 
