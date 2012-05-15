@@ -97,9 +97,9 @@ TestAimlEngine::TestAimlEngine()
 #define U_DIAERESIS "\xc3\x9c"
 
 #define TARGET_USER_1                       "user1@gmail.com"
-#define TARGET_USER_2                       "John Smith"
+#define TARGET_USER_2                       "John R. Smith"
 #define TARGET_USER_3                       "user3@facebook.com"
-#define TARGET_USER_4                       "Juan Perez"
+#define TARGET_USER_4                       "Ju" a_ACUTE "n P" e_ACUTE "rez"
 
 #define RULE_1_ID                           1
 #define RULE_1_INPUT_1                      "Hello"
@@ -251,6 +251,11 @@ void TestAimlEngine::setRules4()
                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
                             QStringList() << RULE_1_OUTPUT_1,
                             QStringList() << TARGET_USER_2);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1,
+                            QStringList() << RULE_3_OUTPUT_1,
+                            QStringList() << TARGET_USER_2 << QString::fromUtf8(TARGET_USER_4));
 
     rules << Lvk::Nlp::Rule(RULE_6_ID,
                             QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
@@ -508,8 +513,11 @@ void TestAimlEngine::testMatchWithTarget_data()
     QTest::newRow("Match user 3")    << TARGET_USER_3 << USER_INPUT_9a
                                      << QString::fromUtf8(RULE_6_OUTPUT_1) << RULE_6_ID << 0;
 
-    QTest::newRow("No Match user 4") << TARGET_USER_4 << USER_INPUT_9a << QString()
-                                     << -1 << -1;
+    QTest::newRow("No Match user 4") << QString::fromUtf8(TARGET_USER_4) << USER_INPUT_1a
+                                     << QString() << -1 << -1;
+
+    QTest::newRow("Match user 4")    << QString::fromUtf8(TARGET_USER_4) << USER_INPUT_7b
+                                     << QString() << RULE_3_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------
