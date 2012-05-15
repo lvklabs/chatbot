@@ -64,7 +64,7 @@
         <location filename="front-end/autocompletetextedit.cpp" line="228"/>
         <source>Tip: Go to the &apos;Connect to chat&apos; tab and connect using your
 Facebook or Gmail account to get a list of contacts</source>
-        <translation type="unfinished">Consejo: Ve a la pestaña &apos;Conectar&apos; y conéctate usando tu usuario
+        <translation>Consejo: Ve a la pestaña &apos;Conectar&apos; y conéctate usando tu usuario
 de Facebook o Gmail para obtener una lista con tus contactos</translation>
     </message>
 </context>
@@ -865,9 +865,13 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
 <context>
     <name>TestConversationWidget</name>
     <message>
-        <location filename="front-end/testconversationwidget.cpp" line="51"/>
         <source>You:</source>
-        <translation>Vos:</translation>
+        <translation type="obsolete">Vos:</translation>
+    </message>
+    <message>
+        <location filename="front-end/testconversationwidget.cpp" line="51"/>
+        <source>Me:</source>
+        <translation>Yo:</translation>
     </message>
     <message>
         <location filename="front-end/testconversationwidget.cpp" line="54"/>

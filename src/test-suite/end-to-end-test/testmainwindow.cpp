@@ -122,8 +122,8 @@ Q_DECLARE_METATYPE(Lvk::BE::Rule*)
 
 // Misc --------------------------------------------------------------------------------------------
 
-#define CONVERSATION_ENTRY                  "You: %1\nChatbot: %2\n"
-#define CONVERSATION_NOT_OUTPUT_REGEX       "You: .*\nChatbot:"
+#define CONVERSATION_ENTRY                  "Me: %1\nChatbot: %2\n"
+#define CONVERSATION_NOT_OUTPUT_REGEX       "Me: .*\nChatbot:"
 
 #define CHAT_CONNECTION_OK_TOKEN            "sucessful"
 #define CHAT_CONNECTION_FAILED_TOKEN        "error"

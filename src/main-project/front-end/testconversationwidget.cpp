@@ -48,7 +48,7 @@ void TestConversationWidget::appendConversation(const QString &userInput, const 
     QString conversation = toHtml();
 
     conversation.remove(END_P_BODY_HTML);
-    conversation += START_USER_SPAN + tr("You:") + " " + END_SPAN + userInput + BR;
+    conversation += START_USER_SPAN + tr("Me:") + " " + END_SPAN + userInput + BR;
 
     if (!botOuput_.isEmpty()) {
         conversation += START_CHATBOT_SPAN + tr("Chatbot:") + " " + END_SPAN + botOuput + BR;
