@@ -93,7 +93,7 @@ QString inputWithTarget(const QString &input, const QString &target)
 Lvk::Nlp::AimlEngine::AimlEngine()
     : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::NullSanitizer())
 {
-    init();
+    resetParser();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ Lvk::Nlp::AimlEngine::AimlEngine()
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
     : m_aimlParser(0), m_sanitizer(sanitizer)
 {
-    init();
+    resetParser();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -114,10 +114,12 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::AimlEngine::init()
+void Lvk::Nlp::AimlEngine::resetParser()
 {
     QFile *logfile = new QFile("aiml_parser.log");
     logfile->open(QFile::WriteOnly);
+
+    delete m_aimlParser;
     m_aimlParser = new AIMLParser(logfile);
 }
 
@@ -143,6 +145,9 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 
     QString aiml;
     buildAiml(aiml);
+
+    resetParser();
+
     m_aimlParser->loadAimlFromString(aiml);
 }
 

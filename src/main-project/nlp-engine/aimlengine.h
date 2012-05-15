@@ -100,7 +100,7 @@ private:
     AIMLParser *m_aimlParser;
     Sanitizer *m_sanitizer;
 
-    void init();
+    void resetParser();
     void buildAiml(QString &aiml);
     void buildAiml(QString &aiml, const Rule &rule);
 };

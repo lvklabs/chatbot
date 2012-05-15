@@ -45,7 +45,7 @@ public:
     TestAimlEngine();
 
 private Q_SLOTS:
-    void init();
+    void initTestCase();
 
     void testAimlParserRegression();
 
@@ -61,7 +61,7 @@ private Q_SLOTS:
     void testMatchWithTarget_data();
     void testMatchWithTarget();
 
-    void cleanup();
+    void cleanupTestCase();
 
 private:
 
@@ -162,7 +162,7 @@ TestAimlEngine::TestAimlEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestAimlEngine::init()
+void TestAimlEngine::initTestCase()
 {
     m_engine = new Lvk::Nlp::AimlEngine(new Lvk::Nlp::NullSanitizer());
     m_engineWithDefSanitizer = new Lvk::Nlp::AimlEngine(new Lvk::Nlp::DefaultSanitizer());
@@ -170,7 +170,7 @@ void TestAimlEngine::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestAimlEngine::cleanup()
+void TestAimlEngine::cleanupTestCase()
 {
     delete m_engine;
     m_engine = 0;
