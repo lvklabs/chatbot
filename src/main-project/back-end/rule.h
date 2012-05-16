@@ -27,6 +27,8 @@
 #include <QStringList>
 #include <QVariant>
 
+#include "target.h"
+
 namespace Lvk
 {
 
@@ -151,11 +153,11 @@ public:
 
     void setName(const QString &name);
 
-    QStringList &target();
+    TargetList &target();
 
-    const QStringList &target() const;
+    const TargetList &target() const;
 
-    void setTarget(const QStringList &target);
+    void setTarget(const TargetList &target);
 
     QStringList &input();
 
@@ -222,7 +224,7 @@ private:
     QString m_name;
     QStringList m_input;
     QStringList m_output;
-    QStringList m_target;
+    TargetList m_target;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;

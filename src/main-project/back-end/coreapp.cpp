@@ -44,6 +44,31 @@
 #define CRF_MAGIC_NUMBER_V1         (('l'<<0) | ('v'<<8) | ('k'<<16) | ('\0'<<24))
 
 
+//--------------------------------------------------------------------------------------------------
+// Non-members Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+// Make Nlp::Rule from BE::Rule
+
+Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
+{
+    Lvk::Nlp::Rule nlpRule(id, rule->input(), rule->output());
+
+    QStringList targets;
+    foreach (const Lvk::BE::Target &t, rule->target()) {
+        targets.append(t.username);
+    }
+
+    nlpRule.setTarget(targets);
+
+    return nlpRule;
+}
+
+} // namespace
+
 
 //--------------------------------------------------------------------------------------------------
 // Constructors & destructor
@@ -433,10 +458,9 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
     for (int i = 0; i < parentRule->childCount(); ++i) {
         const BE::Rule *child = parentRule->child(i);
         if (child->type() == Rule::OrdinaryRule) {
+            storeTargets(child->target());
             m_rulesHash[m_nextRuleId] = child;
-            Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output(), child->target());
-            nlpRules.append(nlpRule);
-            addTargets(child->target());
+            nlpRules.append(makeNlpRule(child, m_nextRuleId++));
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {
@@ -447,10 +471,10 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::addTargets(const QStringList &targets)
+void Lvk::BE::CoreApp::storeTargets(const TargetList &targets)
 {
-    foreach (const QString &target, targets) {
-        m_targets.insert(target);
+    foreach (const Target &t, targets) {
+        m_targets.insert(t.username);
     }
 }
 

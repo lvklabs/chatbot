@@ -1110,14 +1110,14 @@ void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
     } else if (rule->type() == BE::Rule::OrdinaryRule) {
         setUiMode(EditRuleUiMode);
         ui->categoryNameTextEdit->clear();
-        ui->ruleInputWidget->setTarget(rule->target());
+        ui->ruleInputWidget->setTargets(rule->target());
         ui->ruleInputWidget->setInput(rule->input());
-        ui->ruleOutputWidget->setOutputList(rule->output());
+        ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
         setUiMode(EditEvasivesUiMode);
         ui->categoryNameTextEdit->clear();
         ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->setOutputList(rule->output());
+        ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         setUiMode(EditCategoryUiMode);
         ui->categoryNameTextEdit->setText(rule->name());
@@ -1257,7 +1257,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     }
 
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        rule->setTarget(ui->ruleInputWidget->target());
+        rule->setTarget(ui->ruleInputWidget->targets());
         rule->setInput(ui->ruleInputWidget->input());
         rule->setOutput(ui->ruleOutputWidget->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
@@ -1287,11 +1287,11 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
     // Refresh rule IO widgets
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        ui->ruleInputWidget->setTarget(m_ruleBackup.target());
+        ui->ruleInputWidget->setTargets(m_ruleBackup.target());
         ui->ruleInputWidget->setInput(m_ruleBackup.input());
-        ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
+        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
-        ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
+        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         ui->categoryNameTextEdit->setText(m_ruleBackup.name());
     }

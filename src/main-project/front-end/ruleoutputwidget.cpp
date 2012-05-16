@@ -40,7 +40,7 @@ QStringList RuleOutputWidget::output()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::setOutputList(const QStringList &outputList)
+void RuleOutputWidget::setOutput(const QStringList &outputList)
 {
     QString output;
 

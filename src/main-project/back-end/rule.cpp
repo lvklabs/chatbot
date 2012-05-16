@@ -305,7 +305,7 @@ Lvk::BE::Rule::Type Lvk::BE::Rule::type() const
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList &Lvk::BE::Rule::target()
+Lvk::BE::TargetList &Lvk::BE::Rule::target()
 {
     m_status = Unsaved;
 
@@ -314,14 +314,14 @@ QStringList &Lvk::BE::Rule::target()
 
 //--------------------------------------------------------------------------------------------------
 
-const QStringList &Lvk::BE::Rule::target() const
+const Lvk::BE::TargetList &Lvk::BE::Rule::target() const
 {
     return m_target;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Rule::setTarget(const QStringList &target)
+void Lvk::BE::Rule::setTarget(const TargetList &target)
 {
     m_status = Unsaved;
 
@@ -419,7 +419,7 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
 {
     int version = 0;
     QString name;
-    QStringList target;
+    TargetList target;
     QStringList input;
     QStringList output;
     int type;

@@ -43,7 +43,7 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_layout(new QVBoxLayout(this)),
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
     m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
-    m_target(new Lvk::FE::AutocompleteTextEdit(this)),
+    m_targetTextEdit(new Lvk::FE::AutocompleteTextEdit(this)),
     m_inputLabel(new QLabel(tr("Writes:"), this)),
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
@@ -71,7 +71,7 @@ void RuleInputWidget::setupUi()
 
     QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
 
-    m_layout->addWidget(m_target);
+    m_layout->addWidget(m_targetTextEdit);
     m_layout->addWidget(m_inputLabel);
     m_layout->addWidget(m_input);
     m_layout->addWidget(m_inputVariantsLabel);
@@ -84,9 +84,9 @@ void RuleInputWidget::setupUi()
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
 
-    m_target->setDelimiter(TARGET_SPLIT_TOKEN);
-    m_target->setVisible(false);
-    m_target->setDefaultText(tr("Any user"));
+    m_targetTextEdit->setDelimiter(TARGET_SPLIT_TOKEN);
+    m_targetTextEdit->setVisible(false);
+    m_targetTextEdit->setDefaultText(tr("Any user"));
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
 
@@ -104,7 +104,7 @@ void RuleInputWidget::connectSignals()
 
     connect(m_input, SIGNAL(textEdited(QString)), SIGNAL(inputTextEdited(QString)));
 
-    connect(m_target, SIGNAL(textEdited(QString)), SIGNAL(targetTextEdited(QString)));
+    connect(m_targetTextEdit, SIGNAL(textEdited(QString)), SIGNAL(targetTextEdited(QString)));
 
     connectTextChangedSignal();
 }
@@ -134,6 +134,8 @@ bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
 void RuleInputWidget::clear()
 {
     m_input->clear();
+    m_targetTextEdit->clear();
+    m_reverseRoster.clear();
 
     // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
     disconnectTextChangedSignal();
@@ -180,27 +182,55 @@ void RuleInputWidget::setInput(const QStringList &inputList)
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList RuleInputWidget::target()
+Lvk::BE::TargetList RuleInputWidget::targets()
 {
-    return m_target->text().split(TARGET_SPLIT_TOKEN, QString::SkipEmptyParts);
+    Lvk::BE::TargetList targets;
+
+    QStringList dispTexts =
+            m_targetTextEdit->text().split(TARGET_SPLIT_TOKEN, QString::SkipEmptyParts);
+
+    foreach (const QString &dispText, dispTexts) {
+        ReverseRoster::const_iterator it = m_reverseRoster.find(dispText);
+        if (it != m_reverseRoster.end()) {
+            targets.append(*it);
+        } else {
+            targets.append(Lvk::BE::Target(dispText, dispText));
+        }
+    }
+
+    return targets;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setTarget(const QStringList &target)
+void RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
 {
-    m_target->setText(target.join(TARGET_SPLIT_TOKEN));
+    QString targetText;
+
+    foreach (const Lvk::BE::Target &target, targets) {
+        if (!targetText.isEmpty()) {
+            targetText.append(TARGET_SPLIT_TOKEN);
+        }
+        targetText.append(target.displayText());
+    }
+
+    m_targetTextEdit->setText(targetText);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
 {
+    m_reverseRoster.clear();
+
     QStringList strList;
+
     foreach (const Lvk::BE::RosterItem &item, roster) {
-        strList.append(!item.fullname.isEmpty() ? item.fullname : item.username);
+        m_reverseRoster.insert(item.displayText(), item);
+        strList.append(item.displayText());
     }
-    m_target->setStringList(strList);
+
+    m_targetTextEdit->setStringList(strList);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -260,8 +290,8 @@ void RuleInputWidget::onSelectUsersButtonClicked()
 {
     m_targetLabel->setText(tr("If:"));
     m_selectUsersButton->setVisible(false);
-    m_target->setVisible(true);
-    m_target->setFocus();
+    m_targetTextEdit->setVisible(true);
+    m_targetTextEdit->setFocus();
 }
 
 

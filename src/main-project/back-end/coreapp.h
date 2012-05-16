@@ -34,6 +34,7 @@
 #include "nlprule.h"
 #include "conversation.h"
 #include "roster.h"
+#include "target.h"
 
 class QFile;
 
@@ -150,7 +151,7 @@ private:
 
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
 
-    void addTargets(const QStringList &targets);
+    void storeTargets(const TargetList &targets);
 
     QStringList getEvasives() const;
 

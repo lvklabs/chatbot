@@ -89,6 +89,7 @@ HEADERS += \
     common/settings.h \
     common/settingskeys.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    back-end/target.h
 
 
 SOURCES += \
@@ -137,6 +138,7 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
 
 
 

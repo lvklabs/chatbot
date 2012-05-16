@@ -37,7 +37,7 @@ public:
 
     QStringList output();
 
-    void setOutputList(const QStringList &output);
+    void setOutput(const QStringList &output);
 
 public slots:
 

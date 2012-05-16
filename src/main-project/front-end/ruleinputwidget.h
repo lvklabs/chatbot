@@ -25,8 +25,10 @@
 #include <QWidget>
 #include <QString>
 #include <QStringList>
+#include <QHash>
 
 #include "roster.h"
+#include "target.h"
 
 class QLineEdit;
 class QPlainTextEdit;
@@ -65,9 +67,9 @@ public:
 
     void setInput(const QStringList &input);
 
-    QStringList target();
+    Lvk::BE::TargetList targets();
 
-    void setTarget(const QStringList &target);
+    void setTargets(const Lvk::BE::TargetList &target);
 
     void setRoster(const Lvk::BE::Roster &roster);
 
@@ -99,12 +101,15 @@ private:
     QLayout                       *m_layout;
     QLabel                        *m_targetLabel;
     QPushButton                   *m_selectUsersButton;
-    Lvk::FE::AutocompleteTextEdit *m_target;
+    Lvk::FE::AutocompleteTextEdit *m_targetTextEdit;
     QLabel                        *m_inputLabel;
     QLineEdit                     *m_input;
     QLabel                        *m_inputVariantsLabel;
     QPlainTextEdit                *m_inputVariants;
     QObject                       *m_eventFilter;
+
+    typedef QHash<QString, Lvk::BE::RosterItem> ReverseRoster;
+    ReverseRoster m_reverseRoster;
 
     void setupUi();
     void connectSignals();
