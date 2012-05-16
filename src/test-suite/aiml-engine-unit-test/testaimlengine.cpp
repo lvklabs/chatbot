@@ -96,9 +96,9 @@ TestAimlEngine::TestAimlEngine()
 #define u_DIAERESIS "\xc3\xbc"
 #define U_DIAERESIS "\xc3\x9c"
 
-#define TARGET_USER_1                       "user1@gmail.com"
-#define TARGET_USER_2                       "John R. Smith"
-#define TARGET_USER_3                       "user3@facebook.com"
+#define TARGET_USER_1                       "-1234123431@chat.facebook.com"
+#define TARGET_USER_2                       "-1234123432@chat.facebook.com"
+#define TARGET_USER_3                       "John R. Smith"
 #define TARGET_USER_4                       "Ju" a_ACUTE "n P" e_ACUTE "rez"
 
 #define RULE_1_ID                           1

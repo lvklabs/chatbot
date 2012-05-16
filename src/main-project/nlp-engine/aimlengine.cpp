@@ -77,7 +77,7 @@ int getInputNumber(long categoryId)
 QString inputWithTarget(const QString &input, const QString &target)
 {
     if (target != ANY_USER) {
-        return "TSTART" + QString(target).replace(QRegExp("[\\.\\?!;@  \\t]"),"X") + "TEND "
+        return "TSTART" + QString(target).replace(QRegExp("[^a-zA-Z0-9]"),"X") + "TEND "
                 + input;
     } else {
         return input;
