@@ -64,14 +64,11 @@ protected:
 
     virtual void focusInEvent(QFocusEvent *event);
 
-    virtual void mouseReleaseEvent(QMouseEvent *);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
-    virtual bool event(QEvent *event);
-
-    void paintEvent ( QPaintEvent * event );
+    virtual void paintEvent(QPaintEvent *event);
 
 private:
-    bool m_init;
     QString m_delimiter;
     QPoint m_globalPos;
     QStringList m_strList;

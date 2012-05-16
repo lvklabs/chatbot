@@ -82,7 +82,7 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_init(false), m_delimiter(" "), m_listWidget(new QListWidget(this))
+    QLineEdit(parent), m_delimiter(" "), m_listWidget(new QListWidget(this))
 {
     m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
@@ -90,15 +90,6 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
     connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
     connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
-
-    ///////////////////////////////////////
-    // TODO remove!
-//    m_strList.append("Andres Pagliano");
-//    m_strList.append("Andres Calamaro");
-//    m_strList.append("Andrea Prodan");
-//    m_strList.append("Luciana Benotti");
-//    m_strList.append("Emilia Echeveste");
-    ///////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -164,6 +155,20 @@ void Lvk::FE::AutocompleteTextEdit::mouseReleaseEvent(QMouseEvent *)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
+{
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // FIXME How to detect that the window has been moved in order to update the position of
+    //       the list widget ? As workaround I'm using the pain't event to refresh the position
+    //       periodically.
+    updateListWidgetGeometry();
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    QLineEdit::paintEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::AutocompleteTextEdit::setStringList(const QStringList &strList)
 {
     m_strList = strList;
@@ -213,11 +218,6 @@ void Lvk::FE::AutocompleteTextEdit::setText(const QString &text)
 
 void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 {
-    if (!m_init) {
-        updateListWidgetGeometry();
-        m_init = true;
-    }
-
     updateTextParts();
 
     m_listWidget->clear();
@@ -290,27 +290,6 @@ void Lvk::FE::AutocompleteTextEdit::updateListWidgetGeometry()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::AutocompleteTextEdit::event(QEvent *event)
-{
-    // FIXME
-    //std::cout << event->type() << std::endl;
-
-    return QLineEdit::event(event);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
-{
-    // FIXME
-    //std::cout << "paintEvent" << std::endl;
-    //updateListWidgetGeometry();
-
-    QLineEdit::paintEvent(event);
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::FE::AutocompleteTextEdit::updateTextParts()
 {
     // Update head, current and tail parts. Example:
@@ -342,4 +321,6 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
 	//              << "[" << m_tail.toStdString()    << "]"
     //              << std::endl;
 }
+
+
 
