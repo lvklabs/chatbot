@@ -24,8 +24,6 @@
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
-#include "simpleaimlengine.h"
-#include "defaultsanitizer.h"
 #include "exportdialog.h"
 #include "importdialog.h"
 #include "roster.h"
@@ -40,6 +38,7 @@
 #include <QCloseEvent>
 #include <QIcon>
 #include <QFile>
+#include <QDir>
 #include <QFileDialog>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -53,10 +52,6 @@
 
 #define FB_ICON_FILE               ":/icons/facebook_24x24.png"
 #define GMAIL_ICON_FILE            ":/icons/gmail_24x24.png"
-
-
-typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
-typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 
 
 //--------------------------------------------------------------------------------------------------
@@ -127,10 +122,10 @@ QString getFileExportFilters()
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
+    m_coreApp(new BE::CoreApp(this)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
-    m_testConversationLog(new QFile(TEST_CONVERSATION_LOG_FILE)),
+    m_testConversationLog(0),
     m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
@@ -139,6 +134,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     clear();
 
     Lvk::Common::Settings settings;
+
     QString lastFile = settings.value(SETTING_LAST_FILE, QString(DEFAULT_RULES_FILE)).toString();
     initCoreAndModelsWithFile(lastFile);
 
@@ -156,6 +152,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     setWindowIcon(QIcon(APP_ICON_FILE));
 
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+    m_testConversationLog = new QFile(logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE);
     m_testConversationLog->open(QFile::Append);
 
     loadAllSettings();
@@ -195,7 +193,7 @@ void Lvk::FE::MainWindow::clear()
     m_coreApp->disconnectFromChat();
 
     setUiMode(ChatDisconnectedUiMode);
-    ui->usernameText->clear();
+    //ui->usernameText->clear();
     ui->passwordText->clear();
 
     // conversation tab widgets
@@ -693,7 +691,9 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
         QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",getFileFilters());
 
         if (!filename.isEmpty()) {
-            load(filename);
+            if (!load(filename)) {
+                clear();
+            }
         }
     }
 }
@@ -768,7 +768,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
     bool success = initCoreAndModelsWithFile(filename);
 
-    if (!success) {
+    if (success) {
+        ui->conversationHistory->setConversation(m_coreApp->conversationHistory());
+    } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
 

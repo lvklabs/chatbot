@@ -22,11 +22,14 @@
 #include "aimlengine.h"
 #include "nlprule.h"
 #include "nullsanitizer.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include "ProgramQ/aimlparser.h"
 
 #include <QStringList>
 #include <QFile>
+#include <QDir>
 #include <cassert>
 
 #define ANY_USER        "LvkNlpAimlEngineAnyUser"
@@ -116,7 +119,10 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 
 void Lvk::Nlp::AimlEngine::resetParser()
 {
-    QFile *logfile = new QFile("aiml_parser.log");
+    Lvk::Common::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+
+    QFile *logfile = new QFile(logsPath + QDir::separator() + "aiml_parser.log");
     logfile->open(QFile::WriteOnly);
 
     delete m_aimlParser;

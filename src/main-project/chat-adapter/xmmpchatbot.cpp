@@ -21,6 +21,8 @@
 
 #include "xmmpchatbot.h"
 #include "chatvirtualuser.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -30,6 +32,7 @@
 #include "QXmppMucManager.h"
 
 
+#include <QDir>
 #include <QMutex>
 #include <QMutexLocker>
 #include <iostream>
@@ -81,9 +84,12 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
     // Xmpp Logger
 
+    Lvk::Common::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+
     QXmppLogger *xmppLogger = new QXmppLogger(this);
     xmppLogger->setLoggingType(QXmppLogger::FileLogging);
-    xmppLogger->setLogFilePath("./xmpp.log");
+    xmppLogger->setLogFilePath(logsPath + QDir::separator() + "./xmpp.log");
     xmppLogger->setMessageTypes(QXmppLogger::AnyMessage);
     m_xmppClient->setLogger(xmppLogger);
 }

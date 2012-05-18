@@ -73,7 +73,7 @@ public:
 
     ~CoreApp();
 
-    bool load(const QString &filename);
+    bool load(const QString &filename, bool create = true);
 
     bool saveAs(const QString &filename);
 
@@ -143,6 +143,7 @@ private:
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
+    QString m_chatbotId;
     ChatType m_currentChatbotType;
     bool m_isFirstTime;
     QSet<QString> m_targets;

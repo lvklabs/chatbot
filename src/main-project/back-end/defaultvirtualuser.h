@@ -49,7 +49,7 @@ class DefaultVirtualUser : public QObject, public CA::VirtualUser
     Q_OBJECT
 
 public:
-    DefaultVirtualUser(Nlp::Engine *engine = 0, QObject *parent = 0);
+    DefaultVirtualUser(const QString &id, Nlp::Engine *engine = 0, QObject *parent = 0);
     ~DefaultVirtualUser();
 
     virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
@@ -68,6 +68,7 @@ private:
     DefaultVirtualUser(DefaultVirtualUser&);
     DefaultVirtualUser& operator=(DefaultVirtualUser&);
 
+    QString m_id;
     Nlp::Engine *m_engine;
     QStringList m_evasives;
     Conversation m_conversationHistory;

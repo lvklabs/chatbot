@@ -21,11 +21,14 @@
 
 #include <QApplication>
 #include <QTranslator>
+#include <QDir>
+
 #include "mainwindow.h"
 #include "version.h"
 #include "settings.h"
 #include "settingskeys.h"
 
+void makeDirStructure();
 void setLanguage(QApplication &app);
 
 //--------------------------------------------------------------------------------------------------
@@ -40,6 +43,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    makeDirStructure();
     setLanguage(app);
 
     Lvk::FE::MainWindow window;
@@ -60,4 +64,21 @@ void setLanguage(QApplication &app)
     QTranslator *translator = new QTranslator();
     translator->load(":/strings/strings_" + lang);
     app.installTranslator(translator);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void makeDirStructure()
+{
+    Lvk::Common::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+
+    QDir qdir;
+
+    if (!qdir.exists(logsPath)) {
+        if (!qdir.mkpath(logsPath)) {
+            qCritical("Critical: Cannot create logs path");
+            exit(1);
+        }
+    }
 }

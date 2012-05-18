@@ -22,11 +22,15 @@
 #include "defaultvirtualuser.h"
 #include "nlpengine.h"
 #include "random.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include <QFile>
+#include <QDir>
 #include <QDateTime>
 
-#define LOG_FILENAME            "chat_conversations.log"
+#define LOG_BASE_FILENAME       "conversations_"
+#define LOG_EXT_FILENAME        "log"
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
 // Note: ConversationHistoryWidget relies on these tokens.
@@ -39,10 +43,21 @@
 // DefaultVirtualUser
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(Nlp::Engine *engine /*= 0*/,
+Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
+                                                Nlp::Engine *engine /*= 0*/,
                                                 QObject *parent /*= 0*/)
-    : QObject(parent), m_engine(engine), m_logFile(new QFile(LOG_FILENAME))
+    : QObject(parent),
+      m_id(id),
+      m_engine(engine),
+      m_logFile(0)
 {
+    Lvk::Common::Settings settings;
+
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+    QString logFilename = LOG_BASE_FILENAME + id + "." + LOG_EXT_FILENAME;
+
+    m_logFile = new QFile(logsPath + QDir::separator() + logFilename);
+
     m_logFile->open(QFile::ReadOnly);
 
     if (m_logFile->isOpen()) {
@@ -92,7 +107,7 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
             ? contact.fullname + " " + USERNAME_START_TOKEN + contact.username + USERNAME_END_TOKEN
             : contact.username;
 
-    Conversation::Entry entry(dateTime, from, "Default", input, response, matched);
+    Conversation::Entry entry(dateTime, from, m_id, input, response, matched);
 
     m_conversationHistory.append(entry);
 
