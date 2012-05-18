@@ -27,9 +27,12 @@
 #include "QXmppVCardManager.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVCardIq.h"
+#include "QXmppMucManager.h"
+
 
 #include <QMutex>
 #include <QMutexLocker>
+#include <iostream>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -42,6 +45,8 @@ QString getBareJid(const QString &from)
 {
     return from.split("/").at(0);
 }
+
+QXmppMucManager *mucManager;
 
 } // names
 
@@ -76,6 +81,17 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
 
+    connect(m_xmppClient, SIGNAL(iqReceived(QXmppIq)), SLOT(onIqReceived(QXmppIq)));
+
+    connect(m_xmppClient, SIGNAL(presenceReceived(QXmppPresence)),
+            SLOT(onPresenceReceived(QXmppPresence)));
+
+    mucManager = new QXmppMucManager;
+    m_xmppClient->addExtension(mucManager);
+
+    connect(mucManager, SIGNAL(invitationReceived(QString,QString,QString)),
+            SLOT(onInvitationReceived(QString,QString,QString)));
+
     // Xmpp Logger
 
     QXmppLogger *xmppLogger = new QXmppLogger(this);
@@ -100,7 +116,15 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
 void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
                                           const QString &domain)
 {
-    m_xmppClient->connectToServer(user + "@" + domain, passwd);
+//    QXmppConfiguration conf;
+//    conf.setDomain(domain);
+//    conf.setUser(user);
+//    conf.setPassword(passwd);
+//    conf.setResource("");
+//    conf.setAutoAcceptSubscriptions(true);
+
+//    m_xmppClient->connectToServer(conf);
+    m_xmppClient->connectToServer(user + "@" + domain + "/lvkchatbot", passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -206,6 +230,9 @@ Lvk::CA::XmppChatbot::Error Lvk::CA::XmppChatbot::convertToLocalError(QXmppClien
 
 void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
 {
+    std::cout << "onMessageReceived from " << m_xmppClient->rosterManager().
+                 getRosterEntry(msg.from()).name().toStdString() << std::endl;
+
     if (msg.type() != QXmppMessage::Chat) {
         return;
     }
@@ -284,6 +311,36 @@ void Lvk::CA::XmppChatbot::onRosterReceived()
 {
     m_rosterHasChanged = true;
 
+    ////////////////////////////////////////////////////////////////
+
+    //    <iq xmlns='jabber:client'
+    //        type='set'
+    //        id='enable1'>
+    //      <enable xmlns='urn:xmpp:carbons:1'/>
+    //    </iq>
+
+    QXmppElement enableNode;
+    enableNode.setTagName("enable");
+    enableNode.setAttribute("xmlns", "urn:xmpp:carbons:1");
+
+    QXmppIq iq;
+    iq.setType(QXmppIq::Set);
+    iq.setExtensions(QXmppElementList() << enableNode);
+
+    QString xml;
+    QXmlStreamWriter writer(&xml);
+    iq.toXml(&writer);
+
+    std::cout << "=== iqSent ===" << std::endl;
+    std::cout <<  xml.toStdString() << std::endl;
+
+    //     <iq id="qxmpp9" type="set">
+    //          <enable xmlns="urn:xmpp:carbons:1"/>
+    //     </iq>
+
+    m_xmppClient->sendPacket(iq);
+    ////////////////////////////////////////////////////////////////
+
     emit connected();
 }
 
@@ -293,4 +350,35 @@ void Lvk::CA::XmppChatbot::onRosterChanged(const QString &/*bareJid*/)
 {
     m_rosterHasChanged = true;
 }
+
+
+
+
+void Lvk::CA::XmppChatbot::onIqReceived(QXmppIq iq)
+{
+    QString xml;
+    QXmlStreamWriter writer(&xml);
+    iq.toXml(&writer);
+
+    std::cout << "=== onIqReceived ===" << std::endl;
+    std::cout <<  xml.toStdString() << std::endl;
+}
+
+void Lvk::CA::XmppChatbot::onPresenceReceived(QXmppPresence /*p*/)
+{
+//    QString xml;
+//    QXmlStreamWriter writer(&xml);
+//    p.toXml(&writer);
+
+//    std::cout << "=== onPresenceReceived ===" << std::endl;
+//    std::cout <<  xml.toStdString() << std::endl;
+
+//    std::cout << " *** " << m_xmppClient->rosterManager().getRosterEntry(p.from()).getName().toStdString() << std::endl;
+}
+
+void Lvk::CA::XmppChatbot::onInvitationReceived(QString, QString, QString)
+{
+    std::cout << "=== onInvitationReceived ===" << std::endl;
+}
+
 

@@ -102,6 +102,12 @@ signals:
 private slots:
     void emitLocalError(QXmppClient::Error);
 
+    void onIqReceived(QXmppIq);
+
+    void onPresenceReceived(QXmppPresence);
+
+    void onInvitationReceived(QString,QString,QString);
+
 private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
