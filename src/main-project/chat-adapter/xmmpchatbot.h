@@ -99,6 +99,10 @@ signals:
 
     void error(int err);
 
+protected:
+    QXmppClient *m_xmppClient;
+    VirtualUser *m_virtualUser;
+
 private slots:
     void emitLocalError(QXmppClient::Error);
 
@@ -111,9 +115,6 @@ private slots:
 private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
-
-    QXmppClient *m_xmppClient;
-    VirtualUser *m_virtualUser;
 
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;

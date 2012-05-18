@@ -124,7 +124,7 @@ void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &p
 //    conf.setAutoAcceptSubscriptions(true);
 
 //    m_xmppClient->connectToServer(conf);
-    m_xmppClient->connectToServer(user + "@" + domain + "/lvkchatbot", passwd);
+    m_xmppClient->connectToServer(user + "@" + domain, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------

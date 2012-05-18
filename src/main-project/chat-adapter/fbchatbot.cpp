@@ -21,17 +21,87 @@
 
 #include "fbchatbot.h"
 
+#include <QDomElement>
+
+#include "QXmppClient.h"
+#include "QXmppMessage.h"
+#include "QXmppClientExtension.h"
+
+//#include <iostream>
+
 #define FB_CHAT_HOST       "chat.facebook.com"
+
+//namespace
+//{
+
+//--------------------------------------------------------------------------------------------------
+// FbOwnMessageExtension
+//--------------------------------------------------------------------------------------------------
+
+// Whenever someone sends a message from facebook’s web interface while at the same time being
+// logged in another client, facebook sends the following non-standard IQ:
+//
+// <iq from="chat.facebook.com"
+//         to="andres.pagliano@chat.facebook.com/QXmpp_xxx"
+//         id="fbiq4C053818B6905"
+//         type="set">
+//     <own-message
+//             xmlns="http://www.facebook.com/xmpp/messages"
+//             to="-100003507576703@chat.facebook.com"
+//             self="false">
+//         <body>hola</body>
+//     </own-message>
+// </iq>
+
+class FbOwnMessageExtension : public QXmppClientExtension
+{
+public:
+
+    virtual bool handleStanza(const QDomElement &nodeRecv)
+    {
+        bool handled = false;
+
+        if(nodeRecv.tagName() == "iq")
+        {
+            QDomElement child = nodeRecv.firstChildElement();
+
+            if (child.tagName() == "own-message") {
+                QXmppMessage message;
+                message.parse(child);
+
+                //emit messageReceived(message);
+
+                handled = true;
+            }
+        }
+
+        return handled;
+    }
+};
+
+//--------------------------------------------------------------------------------------------------
+
+//} // namespace
+
+
+//--------------------------------------------------------------------------------------------------
+// FbChatbot
+//--------------------------------------------------------------------------------------------------
 
 Lvk::CA::FbChatbot::FbChatbot(QObject *parent)
     : XmppChatbot(parent)
 {
+    m_xmppClient->addExtension(new FbOwnMessageExtension());
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::CA::FbChatbot::connectToServer(const QString &user, const QString &passwd)
 {
     return XmppChatbot::connectToServer(user, passwd, FB_CHAT_HOST);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::CA::FbChatbot::connectToServer(const QString &user, const QString &passwd,
                                             const QString &host)
