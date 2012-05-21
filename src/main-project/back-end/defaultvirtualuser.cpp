@@ -29,7 +29,7 @@
 #include <QDir>
 #include <QDateTime>
 
-#define LOG_BASE_FILENAME       "conversations_"
+#define LOG_BASE_FILENAME       "history_"
 #define LOG_EXT_FILENAME        "log"
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 

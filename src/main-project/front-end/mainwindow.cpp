@@ -43,7 +43,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-#define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
+#define TEST_CONVERSATION_LOG_FILE  "tests_history.log"
 #define DEFAULT_RULES_FILE          "rules.crf"
 #define APP_ICON_FILE               ":/icons/app_icon"
 

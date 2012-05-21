@@ -84,7 +84,7 @@ Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
 
 QString nullChatbotId()
 {
-    static QString nullId = "0000-000000000000";
+    static QString nullId = "0000-0000-000000000000";
 
     return nullId;
 }
@@ -93,7 +93,7 @@ QString nullChatbotId()
 
 QString newChatbotId()
 {
-    QString id = QUuid::createUuid().toString().mid(20, 12);
+    QString id = QUuid::createUuid().toString().mid(15, 22);
 
     return id;
 }
