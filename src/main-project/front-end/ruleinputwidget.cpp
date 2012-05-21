@@ -32,7 +32,7 @@
 #include <QSpacerItem>
 
 #define TARGET_SPLIT_TOKEN  ","
-
+#define STR_ANY_USER        "Any user"
 
 //--------------------------------------------------------------------------------------------------
 // RuleInputWidget
@@ -86,7 +86,7 @@ void RuleInputWidget::setupUi()
 
     m_targetTextEdit->setDelimiter(TARGET_SPLIT_TOKEN);
     m_targetTextEdit->setVisible(false);
-    m_targetTextEdit->setDefaultText(tr("Any user"));
+    m_targetTextEdit->setDefaultText(tr(STR_ANY_USER));
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
 
@@ -189,7 +189,13 @@ Lvk::BE::TargetList RuleInputWidget::targets()
     QStringList dispTexts =
             m_targetTextEdit->text().split(TARGET_SPLIT_TOKEN, QString::SkipEmptyParts);
 
-    foreach (const QString &dispText, dispTexts) {
+    foreach (QString dispText, dispTexts) {
+        dispText = dispText.trimmed();
+
+        if (dispText == tr(STR_ANY_USER)) {
+            continue;
+        }
+
         ReverseRoster::const_iterator it = m_reverseRoster.find(dispText);
         if (it != m_reverseRoster.end()) {
             targets.append(*it);
