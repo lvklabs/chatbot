@@ -56,6 +56,11 @@ private:
 #define ELSE_REGEX      "\\{\\s*else\\s*\\}(.+)"
 #define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
 
+#define KEYWORD_REGEX   "\\*\\*\\s*$"
+
+#define STR_ERR_1       "A rule input cannot contain two or more variables"
+#define STR_ERR_2       "Rules cannot contain two or more different variable names"
+
 
 Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine()
     : AimlEngine()
@@ -85,10 +90,12 @@ void Lvk::Nlp::SimpleAimlEngine::initRegexs()
     m_varNameRegex = QRegExp(VAR_NAME_REGEX);
     m_ifRegex = QRegExp(localizedIfRegex);
     m_ifElseRegex = QRegExp(localizedIfElseRegex);
+    m_keywordRegex = QRegExp(KEYWORD_REGEX);
 
     m_varNameRegex.setCaseSensitive(false);
     m_ifRegex.setCaseSensitive(false);
     m_ifElseRegex.setCaseSensitive(false);
+    m_keywordRegex.setCaseSensitive(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -123,13 +130,14 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRules(Lvk::Nlp::RuleList &pureAiml
 {
     pureAimlRules.clear();
 
-    for (int i = 0; i < m_rules.size(); ++i) {
+    foreach (const Nlp::Rule &rule, m_rules) {
         try {
             Lvk::Nlp::Rule pureAimlRule;
-            buildPureAimlRule(pureAimlRule, m_rules[i]);
+            buildPureAimlRule(pureAimlRule, rule);
             pureAimlRules.append(pureAimlRule);
         } catch (std::exception &) {
             // Nothing to to. If the rule is invalid, we just skip it
+            // TODO better error handling
         }
     }
 }
@@ -157,40 +165,98 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInp
     varNameOnInput.clear();
 
     /*
-     * For each input, convert strings like:
-     *    Do you like [VarName]
-     *
-     * To pure AIML:
-     *    Do you like *
+     * For each input, transform variables and keyword operators.
+     * Both features are not supported in one single input
      */
 
     for (int i = 0; i < inputList.size(); ++i) {
         const QString &input = inputList[i];
-        QString pureAimlInput = input;
 
-        int pos = m_varNameRegex.indexIn(input);
-
-        // If variable decl found
-        if (pos != -1) {
-
-            if (pos != m_varNameRegex.lastIndexIn(input)) {
-                throw InvalidSyntaxException(
-                        QObject::tr("A rule input cannot contain two or more variables"));
-            }
-
-            if (!varNameOnInput.isNull() && varNameOnInput != m_varNameRegex.cap(1)) {
-                throw InvalidSyntaxException(
-                        QObject::tr("Rules cannot contain two or more different variable names"));
-            }
-
-            varNameOnInput = m_varNameRegex.cap(1);
-
-            pureAimlInput.replace(m_varNameRegex, " * ");
+        if (transformVariables(pureAimlInputList, varNameOnInput, input)) {
+            continue;
         }
 
-        pureAimlInputList.append(pureAimlInput);
+        if (transformKeywordOp(pureAimlInputList, input, i)) {
+            continue;
+        }
+
+        // Already pure AIML
+
+        pureAimlInputList.append(input);
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+/*
+ * Transform strings like:
+ *    Do you like [VarName]
+ *
+ * To pure AIML:
+ *    Do you like *
+ */
+
+bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputList,
+                                                    QString &varNameOnInput,
+                                                    const QString &input) const
+{
+    int pos = m_varNameRegex.indexIn(input);
+
+    // If variable decl found
+
+    if (pos != -1) {
+
+        if (pos != m_varNameRegex.lastIndexIn(input)) {
+            throw InvalidSyntaxException(QObject::tr(STR_ERR_1));
+        }
+        if (!varNameOnInput.isNull() && varNameOnInput != m_varNameRegex.cap(1)) {
+            throw InvalidSyntaxException(QObject::tr(STR_ERR_2));
+        }
+
+        varNameOnInput = m_varNameRegex.cap(1);
+
+        QString pureAimlInput = input;
+        pureAimlInput.replace(m_varNameRegex, " * ");
+        pureAimlInputList.append(pureAimlInput);
+    }
+
+    return pos != -1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+/*
+ * Transform strings like:
+ *    Footbal **
+ *
+ * To 4 pure AIML rules:
+ *    Footbal
+ *    _ Footbal
+ *    Footbal _
+ *    _ Footbal *
+ */
+
+bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputList,
+                                                    const QString &input, int /*i*/) const
+{
+    int pos = m_keywordRegex.indexIn(input);
+
+    // if keyword operator found
+
+    if (pos != -1) {
+        QString baseInput = input;
+
+        baseInput.remove(m_keywordRegex);
+
+        pureAimlInputList.append(baseInput);
+        pureAimlInputList.append(baseInput + " _");
+        pureAimlInputList.append("_ " + baseInput);
+        pureAimlInputList.append("_ " + baseInput + " *");
+    }
+
+    return pos != -1;
+}
+
 
 //--------------------------------------------------------------------------------------------------
 

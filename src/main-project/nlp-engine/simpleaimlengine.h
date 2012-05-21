@@ -81,9 +81,14 @@ private:
                                  const QString &varNameOnInput,
                                  const QStringList &outputList) const;
 
+    bool transformVariables(QStringList &pureAimlInputList, QString &varNameOnInput,
+                            const QString &input) const;
+    bool transformKeywordOp(QStringList &pureAimlInputList, const QString &input, int i) const;
+
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
     QRegExp m_ifRegex;
+    QRegExp m_keywordRegex;
 
 };
 
