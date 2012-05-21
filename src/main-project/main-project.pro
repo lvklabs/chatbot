@@ -69,6 +69,7 @@ HEADERS += \
     back-end/defaultvirtualuser.h \
     back-end/conversation.h \
     back-end/roster.h \
+    back-end/target.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
@@ -83,13 +84,13 @@ HEADERS += \
     chat-adapter/fbchatbot.h \
     chat-adapter/gtalkchatbot.h \
     chat-adapter/contactinfo.h \
+    chat-adapter/chatcorpus.h \
     common/random.h\
     common/version.h \
     common/versionrev.h \
     common/settings.h \
     common/settingskeys.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    back-end/target.h
 
 
 SOURCES += \
@@ -118,6 +119,7 @@ SOURCES += \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
     chat-adapter/chatbot.cpp \
+    chat-adapter/chatcorpus.cpp \
     common/random.cpp \
     common/settings.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
@@ -138,6 +140,8 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
 
 
 

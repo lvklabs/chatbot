@@ -81,23 +81,23 @@ public:
 
     virtual ContactInfoList blackListRoster() const;
 
-public slots:
-    void onConnected();
-
-    void onMessageReceived(const QXmppMessage &);
-
-    void onVCardReceived(const QXmppVCardIq &);
-
-    void onRosterReceived();
-
-    void onRosterChanged(const QString &);
-
 signals:
     void connected();
 
     void disconnected();
 
     void error(int err);
+
+protected slots:
+    virtual void onConnected();
+
+    virtual void onMessageReceived(const QXmppMessage &);
+
+    virtual void onVCardReceived(const QXmppVCardIq &);
+
+    virtual void onRosterReceived();
+
+    virtual void onRosterChanged(const QString &);
 
 protected:
     QXmppClient *m_xmppClient;

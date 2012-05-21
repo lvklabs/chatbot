@@ -31,9 +31,9 @@ namespace CA
 {
 
 /**
- * \brief GTalk chatbot
+ * \brief GTalkChatbot clas provides a GTalk chatbot
  *
- * This is a very thin layer over the Xmpp chatbot because GTalk chat is XMPP compliant
+ * GTalkChatbot is a very thin layer over the Xmpp chatbot because GTalk chat is XMPP compliant
  */
 
 class GTalkChatbot : public XmppChatbot

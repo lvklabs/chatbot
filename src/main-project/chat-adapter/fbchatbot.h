@@ -24,6 +24,8 @@
 
 #include "xmmpchatbot.h"
 
+class QXmppMessage;
+
 namespace Lvk
 {
 
@@ -31,9 +33,9 @@ namespace CA
 {
 
 /**
- * \brief Facebook chatbot
+ * \brief FbChatbot provides a Facebook chatbot
  *
- * This is a very thin layer over the Xmpp chatbot because fb chat is XMPP compliant
+ * FbChatbot is a very thin layer over the Xmpp chatbot because fb chat is XMPP compliant
  */
 
 class FbChatbot : public XmppChatbot
@@ -42,6 +44,9 @@ public:
     FbChatbot(QObject *parent = 0);
 
     void connectToServer(const QString &user, const QString &passwd);
+
+protected slots:
+    virtual void onMessageReceived(const QXmppMessage &);
 
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
