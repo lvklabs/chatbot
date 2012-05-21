@@ -1,3 +1,10 @@
+v0.08
+ - Implemented rules with 'targets' (i.e. rules that only applies if a given
+   username matches)
+ - Added a chabot id to each chatbot file.
+ - Saving chat history indexed by the chatbot id
+ - Saving all logs files in a configurable directory (By default ./logs)
+
 v0.07
  - Implemented "Save as", "Open", "New"
  - Implemented import and export
