@@ -155,12 +155,16 @@ bool Lvk::BE::CoreApp::load(const QString &filename, bool create /*= true*/)
 
     QFile file(m_filename);
 
-    if (file.exists() && file.open(QFile::ReadOnly)) {
-        success = read(file);
-    } else if (create && m_isFirstTime) {
-        success = loadDefaultFirstTimeRules();
+    if (file.exists()) {
+        if (file.open(QFile::ReadOnly)) {
+            success = read(file);
+        }
     } else if (create) {
-        success = loadDefaultRules();
+        if (m_isFirstTime) {
+            success = loadDefaultFirstTimeRules();
+        } else {
+            success = loadDefaultRules();
+        }
     }
 
     if (success) {
@@ -178,14 +182,12 @@ bool Lvk::BE::CoreApp::load(const QString &filename, bool create /*= true*/)
 
 bool Lvk::BE::CoreApp::save()
 {
-    bool success = true;
+    bool success = false;
 
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
         success = write(file);
-    } else {
-        success = false;
     }
 
     if (success) {
@@ -199,6 +201,9 @@ bool Lvk::BE::CoreApp::save()
 
 bool Lvk::BE::CoreApp::saveAs(const QString &filename)
 {
+    QString filenameBak = m_filename;
+    QString chatbotIdBak = m_chatbotId;
+
     deleteCurrentChatbot();
 
     m_filename = filename;
@@ -207,7 +212,8 @@ bool Lvk::BE::CoreApp::saveAs(const QString &filename)
     bool success = save();
 
     if (!success) {
-        close();
+        m_filename = filenameBak;
+        m_chatbotId = chatbotIdBak;
     }
 
     return success;
@@ -217,7 +223,7 @@ bool Lvk::BE::CoreApp::saveAs(const QString &filename)
 
 bool Lvk::BE::CoreApp::hasUnsavedChanges() const
 {
-    for (Rule::/* FIXME const_*/iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
+    for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         if ((*it)->status() == Rule::Unsaved) {
             return true;
         }

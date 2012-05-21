@@ -340,8 +340,11 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
         int code = showSaveChangesDialog();
 
         if (code == QMessageBox::Yes) {
-            saveChanges();
-            event->accept();
+            if (saveChanges()) {
+                event->accept();
+            } else {
+                event->ignore();
+            }
         } else if (code == QMessageBox::Cancel) {
             event->ignore();
         } else {
@@ -725,9 +728,12 @@ bool Lvk::FE::MainWindow::saveChanges()
             teachRule(selectedRule());
         }
 
-        m_coreApp->save();
+        saved = m_coreApp->save();
 
-        saved = true;
+        if (!saved) {
+            QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
+                                  "Please verify that you have write permissions."));
+        }
     }
 
     return saved;
@@ -746,15 +752,22 @@ bool Lvk::FE::MainWindow::saveAsChanges()
             filename.append("." + FILE_EXTENSION);
         }
 
+        QString filenameBak = m_filename;
+
         setFilename(filename);
 
         if (m_ruleEdited) {
             teachRule(selectedRule());
         }
 
-        m_coreApp->saveAs(m_filename);
+        saved = m_coreApp->saveAs(m_filename);
 
-        saved = true;
+        if (!saved) {
+            QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
+                                  "Please verify that you have write permissions."));
+
+            setFilename(filenameBak);
+        }
     }
 
     return saved;
