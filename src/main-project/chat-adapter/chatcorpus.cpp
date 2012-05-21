@@ -24,6 +24,8 @@
 #include <QFile>
 #include <QStringList>
 #include <QRegExp>
+#include <QMutex>
+#include <QMutexLocker>
 
 #define CORPUS_FILE     "./corpus.dat"
 
@@ -56,18 +58,23 @@ QFile Lvk::CA::ChatCorpus::m_corpusFile(CORPUS_FILE);
 
 QList<Lvk::CA::ChatCorpus::CorpusEntry> Lvk::CA::ChatCorpus::m_corpus;
 
+QMutex *Lvk::CA::ChatCorpus::m_mutex = new QMutex();
+
 //--------------------------------------------------------------------------------------------------
 
 Lvk::CA::ChatCorpus::ChatCorpus()
 {
     if (!m_init) {
-        load();
+        QMutexLocker locker(m_mutex);
+        if (!m_init) {
+            load();
 
-        if (!m_corpusFile.open(QFile::WriteOnly)) {
-            qWarning(QObject::tr("Warning: cannot open corpus file for writing"));
+            if (!m_corpusFile.open(QFile::WriteOnly)) {
+                qWarning(QObject::tr("Warning: cannot open corpus file for writing"));
+            }
+
+            m_init = true;
         }
-
-        m_init = true;
     }
 }
 
@@ -82,6 +89,8 @@ void Lvk::CA::ChatCorpus::add(const QString &user, const QString &sentence)
 
 void Lvk::CA::ChatCorpus::add(const CorpusEntry &entry)
 {
+    QMutexLocker locker(m_mutex);
+
     m_corpus.append(entry);
 
     if (m_corpusFile.isOpen()) {
@@ -95,8 +104,9 @@ void Lvk::CA::ChatCorpus::add(const CorpusEntry &entry)
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<Lvk::CA::ChatCorpus::CorpusEntry> & Lvk::CA::ChatCorpus::corpus()
+QList<Lvk::CA::ChatCorpus::CorpusEntry> Lvk::CA::ChatCorpus::corpus()
 {
+    QMutexLocker locker(m_mutex);
     return m_corpus;
 }
 
@@ -124,7 +134,7 @@ void Lvk::CA::ChatCorpus::load()
             line = QString::fromUtf8(buf);
             tokens = line.split(USER_SENT_SPLIT_TOKEN);
             if (tokens.size() == 2) {
-                add(tokens[0], tokens[1]);
+                m_corpus.append(qMakePair(tokens[0], tokens[1]));
             }
         }
     } while (len != -1);

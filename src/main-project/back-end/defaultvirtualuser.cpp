@@ -28,6 +28,9 @@
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 #define LOG_BASE_FILENAME       "history_"
 #define LOG_EXT_FILENAME        "log"
@@ -40,6 +43,22 @@
 
 
 //--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+QString getFromString(const Lvk::CA::ContactInfo &contact)
+{
+    return contact.fullname.size() > 0
+            ? contact.fullname + " " + USERNAME_START_TOKEN + contact.username + USERNAME_END_TOKEN
+            : contact.username;
+}
+
+} // namespace
+
+//--------------------------------------------------------------------------------------------------
 // DefaultVirtualUser
 //--------------------------------------------------------------------------------------------------
 
@@ -49,7 +68,8 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
     : QObject(parent),
       m_id(id),
       m_engine(engine),
-      m_logFile(0)
+      m_logFile(0),
+      m_rwLock(new QReadWriteLock())
 {
     Lvk::Common::Settings settings;
 
@@ -74,6 +94,7 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
 
 Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 {
+    delete m_rwLock;
     delete m_logFile;
 }
 
@@ -82,40 +103,50 @@ Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
                                                  const CA::ContactInfo &contact)
 {
-    if (!m_engine) {
-        logError("No engine set!");
-        return "";
-    }
+    // get response thread-safe
 
-    Nlp::Engine::MatchList matches;
-    QString response = m_engine->getResponse(input, contact.username, matches);
+    QString response;
+    getResponse(response, input, contact.username);
 
-    bool matched = !response.isEmpty() && matches.size() > 0;
-
-    if (!matched) {
-        if (m_evasives.size() > 0) {
-            response = m_evasives[Common::Random::getInt(0, m_evasives.size() - 1)];
-        } else {
-            logError("No evasives found!");
-            response = "";
-        }
-    }
+    // Make entry and log it
 
     QDateTime dateTime = QDateTime::currentDateTime();
+    bool matched = response.size() > 0;
 
-    QString from = !contact.fullname.isEmpty()
-            ? contact.fullname + " " + USERNAME_START_TOKEN + contact.username + USERNAME_END_TOKEN
-            : contact.username;
-
-    Conversation::Entry entry(dateTime, from, m_id, input, response, matched);
-
-    m_conversationHistory.append(entry);
+    Conversation::Entry entry(dateTime, getFromString(contact), m_id, input, response, matched);
 
     logConversationEntry(entry);
 
     emit newConversationEntry(entry);
 
     return response;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+
+void Lvk::BE::DefaultVirtualUser::getResponse(QString &response, const QString &input,
+                                              const QString &username)
+{
+    QWriteLocker locker(m_rwLock);
+
+    if (m_engine) {
+        Nlp::Engine::MatchList matches;
+        response = m_engine->getResponse(input, username, matches);
+
+        bool matched = !response.isEmpty() && matches.size() > 0;
+
+        if (!matched) {
+            if (m_evasives.size() > 0) {
+                response = m_evasives[Common::Random::getInt(0, m_evasives.size() - 1)];
+            } else {
+                logError("No evasives found!");
+                response.clear();
+            }
+        }
+    } else {
+        logError("No engine set!");
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -129,6 +160,7 @@ QPixmap Lvk::BE::DefaultVirtualUser::getAvatar()
 
 const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::getConversationHistory() const
 {
+    QReadLocker locker(m_rwLock);
     return m_conversationHistory;
 }
 
@@ -136,6 +168,7 @@ const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::getConversationHistor
 
 void Lvk::BE::DefaultVirtualUser::setNlpEngine(Nlp::Engine *engine)
 {
+    QWriteLocker locker(m_rwLock);
     m_engine = engine;
 }
 
@@ -143,6 +176,7 @@ void Lvk::BE::DefaultVirtualUser::setNlpEngine(Nlp::Engine *engine)
 
 void Lvk::BE::DefaultVirtualUser::setEvasives(const QStringList &evasives)
 {
+    QWriteLocker locker(m_rwLock);
     m_evasives = evasives;
 }
 
@@ -150,6 +184,10 @@ void Lvk::BE::DefaultVirtualUser::setEvasives(const QStringList &evasives)
 
 void Lvk::BE::DefaultVirtualUser::logConversationEntry(const Conversation::Entry &entry)
 {
+    QWriteLocker locker(m_rwLock);
+
+    m_conversationHistory.append(entry);
+
     m_logFile->write(entry.toString().toUtf8());
     m_logFile->write("\n");
     m_logFile->flush();

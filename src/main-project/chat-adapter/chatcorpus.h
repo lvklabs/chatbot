@@ -27,6 +27,8 @@
 #include <QString>
 #include <QFile>
 
+class QMutex;
+
 namespace Lvk
 {
 
@@ -53,12 +55,13 @@ public:
 
     void add(const CorpusEntry &entry);
 
-    const QList<CorpusEntry> &corpus();
+    QList<CorpusEntry> corpus();
 
 private:
     static bool m_init;
     static QFile m_corpusFile;
     static QList<CorpusEntry> m_corpus;
+    static QMutex *m_mutex;
 
     void load();
 };

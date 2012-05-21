@@ -28,6 +28,7 @@
 #include "conversation.h"
 
 class QFile;
+class QReadWriteLock;
 
 namespace Lvk
 {
@@ -73,7 +74,9 @@ private:
     QStringList m_evasives;
     Conversation m_conversationHistory;
     QFile *m_logFile;
+    QReadWriteLock *m_rwLock;
 
+    void getResponse(QString &response, const QString &input, const QString &username);
     void logConversationEntry(const Conversation::Entry &entry);
     void logError(const QString &msg);
 };
