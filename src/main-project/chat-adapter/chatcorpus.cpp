@@ -28,7 +28,7 @@
 #define CORPUS_FILE     "./corpus.dat"
 
 #define SENTENCE_SPLIT_TOKEN    "\n"
-#define USER_SENT_SPLIT_TOKEN   ":\t\t"
+#define USER_SENT_SPLIT_TOKEN   ":\t"
 
 
 //--------------------------------------------------------------------------------------------------
