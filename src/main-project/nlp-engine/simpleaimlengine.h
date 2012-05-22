@@ -53,7 +53,8 @@ namespace Nlp
  *         {else}
  *         No, I don't
  *
- * Furthermore, SimpleAimlEngine supports regex-like quantifiers + and * with the usual meaning.
+ * SimpleAimlEngine also supports regex-like quantifiers + and * where + means one or more words
+ * and * means zero or more words
  */
 
 class SimpleAimlEngine : public AimlEngine
