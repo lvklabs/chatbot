@@ -22,6 +22,7 @@
 #include "simpleaimlengine.h"
 #include "nlprule.h"
 
+#include <cmath>
 #include <exception>
 
 //--------------------------------------------------------------------------------------------------
@@ -51,7 +52,8 @@ private:
 // SimpleAimlEngine
 //--------------------------------------------------------------------------------------------------
 //
-// TODO this class became too complex! Time to create our own engine and stop using AIML
+// TODO this class became too complex! Time to create our own engine and stop using AIML ;)
+//
 
 #define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
 #define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
@@ -164,8 +166,8 @@ void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::Rule &newRule, const Nlp
 void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, ConvertionContext &ctx)
 {
     /*
-     * For each input, transform variables and keyword operators.
-     * Both features are not supported in one single input
+     * For each input, transform variables and operators.
+     * More than one feature in one single input is not supported
      */
 
     for (int i = 0; i < ctx.rule.input().size(); ++i) {
@@ -180,9 +182,9 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
             continue;
         }
 
-        // Already pure AIML
-
-        inputList.append(ctx.input);
+        if (convertOtherOps(inputList, ctx)) {
+            continue;
+        }
     }
 }
 
@@ -262,6 +264,58 @@ bool Lvk::Nlp::SimpleAimlEngine::convertKeywordOp(QStringList &inputList, Conver
     return pos != -1;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+/*
+ * Convert regex-like operators * and + to AIML. For instance:
+ *
+ *
+ * Transform strings like:
+ *    Football +
+ *
+ * To pure AIML rule:
+ *    Football *
+ *
+ *
+ * Transform strings like:
+ *    * Football *
+ *
+ * To 4 pure AIML rules:
+ *    Football
+ *    Football *
+ *    * Football
+ *    * Football *
+ *
+ * Note that operator * needs an exponential rule expansion!
+ */
+
+bool Lvk::Nlp::SimpleAimlEngine::convertOtherOps(QStringList &inputList, ConvertionContext &ctx)
+{
+    RuleId id = ctx.rule.id();
+
+    QStringList inputParts = ctx.input.split("*");
+
+    for (int i = 0; i < inputParts.size(); ++i) {
+        inputParts[i].replace('+', '*');
+    }
+
+    int variants = pow(2, inputParts.size() - 1) - 1;
+
+    variants = std::min(variants, 15); // Limit the exponential explosion of rule variants!
+
+    for (int v = 0; v <= variants; ++v) {
+        QString newInput = inputParts[0];
+        for (int i = 1; i < inputParts.size(); ++i) {
+            newInput += v & (0x1 << (i - 1)) ? " * " : " ";
+            newInput += inputParts[i];
+        }
+        inputList.append(newInput);
+        m_indexRemap[id][inputList.size() - 1] = ctx.inputIdx;
+    }
+
+
+    return true;
+}
 
 //--------------------------------------------------------------------------------------------------
 

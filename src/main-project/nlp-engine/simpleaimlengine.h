@@ -52,6 +52,8 @@ namespace Nlp
  *         Yes I like [VarName]
  *         {else}
  *         No, I don't
+ *
+ * Furthermore, SimpleAimlEngine supports regex-like quantifiers + and * with the usual meaning.
  */
 
 class SimpleAimlEngine : public AimlEngine
@@ -103,6 +105,7 @@ private:
     void convertInputList(QStringList &inputList, ConvertionContext &ctx);
     bool convertVariables(QStringList &inputList, ConvertionContext &ctx);
     bool convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
+    bool convertOtherOps(QStringList &inputList, ConvertionContext &ctx);
     void convertOutputList(QStringList &outputList, ConvertionContext &ctx);
 
     void remap(Engine::MatchList &matches);

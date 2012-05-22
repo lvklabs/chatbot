@@ -110,6 +110,7 @@ private:
 #define RULE_6_INPUT_4                      "+ rugby"
 #define RULE_6_INPUT_5                      "* soccer *"
 #define RULE_6_INPUT_6                      "+ volleyball +"
+#define RULE_6_INPUT_7                      "+ box * karate"
 #define RULE_6_OUTPUT_1                     "I prefer chess"
 
 #define USER_INPUT_6_1a                     "Basket"
@@ -125,22 +126,25 @@ private:
 #define USER_INPUT_6_3a                     "tennis"
 #define USER_INPUT_6_3b                     "tennis is a great sport"
 #define USER_INPUT_6_3c                     "You know tennis is a great sport"
-#define USER_INPUT_6_3d                     "What I hate tennis is basket"
+#define USER_INPUT_6_3d                     "What I hate most is tennis"
 
 #define USER_INPUT_6_4a                     "rugby"
 #define USER_INPUT_6_4b                     "rugby is a great sport"
 #define USER_INPUT_6_4c                     "You know rugby is a great sport"
-#define USER_INPUT_6_4d                     "What I hate rugby is basket"
+#define USER_INPUT_6_4d                     "What I hate most is rugby"
 
 #define USER_INPUT_6_5a                     "soccer"
 #define USER_INPUT_6_5b                     "soccer is a great sport"
 #define USER_INPUT_6_5c                     "You know soccer is a great sport"
-#define USER_INPUT_6_5d                     "What I hate soccer is basket"
+#define USER_INPUT_6_5d                     "What I hate most is soccer"
 
 #define USER_INPUT_6_6a                     "volleyball"
 #define USER_INPUT_6_6b                     "volleyball is a great sport"
 #define USER_INPUT_6_6c                     "You know volleyball is a great sport"
-#define USER_INPUT_6_6d                     "What I hate volleyball is basket"
+#define USER_INPUT_6_6d                     "What I hate most is volleyball"
+
+#define USER_INPUT_6_7a                     "What I hate most is box and karate"
+#define USER_INPUT_6_7b                     "box and karate"
 
 
 TestSimpleAimlEngine::TestSimpleAimlEngine()
@@ -193,7 +197,8 @@ void TestSimpleAimlEngine::setRules2()
 
     rules << Lvk::Nlp::Rule(RULE_6_ID,
                             QStringList() << RULE_6_INPUT_1 << RULE_6_INPUT_2 << RULE_6_INPUT_3
-                                          << RULE_6_INPUT_4 << RULE_6_INPUT_5 << RULE_6_INPUT_6,
+                                          << RULE_6_INPUT_4 << RULE_6_INPUT_5 << RULE_6_INPUT_6
+                                          << RULE_6_INPUT_7,
                             QStringList() << RULE_6_OUTPUT_1);
 
     m_engine->setRules(rules);
@@ -313,13 +318,15 @@ void TestSimpleAimlEngine::testEngineSyntaticSugar2_data()
     QTest::newRow("+ w + 3")  << USER_INPUT_6_6c << RULE_6_OUTPUT_1 << RULE_6_ID << 5;
     QTest::newRow("+ w + 4")  << USER_INPUT_6_6d << QString()       << RULE_6_ID << 0;
 
+    QTest::newRow("+ w * 1")  << USER_INPUT_6_7a << RULE_6_OUTPUT_1 << RULE_6_ID << 6;
+    QTest::newRow("+ w * 2")  << USER_INPUT_6_7b << QString()       << RULE_6_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void TestSimpleAimlEngine::testEngineSyntaticSugar2()
 {
-    QSKIP("Regex-like operators + and * are no implemented yet", SkipAll);
+    //QSKIP("Regex-like operators + and * are no implemented yet", SkipAll);
 
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
