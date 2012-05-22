@@ -75,7 +75,8 @@ private:
 
 #define RULE_4_ID                           3
 #define RULE_4_INPUT_1                      "Basket **"
-#define RULE_4_INPUT_2                      "Basketball **"
+#define RULE_4_INPUT_2                      "Tell me about some sport you play"
+#define RULE_4_INPUT_3                      "Basketball **"
 #define RULE_4_OUTPUT_1                     "I used to play basket but I'm not very skilled"
 
 #define USER_INPUT_4a                       "Basket"
@@ -106,7 +107,7 @@ TestSimpleAimlEngine::TestSimpleAimlEngine()
                             QStringList() << RULE_3_OUTPUT_1);
 
     rules << Lvk::Nlp::Rule(RULE_4_ID,
-                            QStringList() << RULE_4_INPUT_1 << RULE_4_INPUT_2,
+                            QStringList() << RULE_4_INPUT_1 << RULE_4_INPUT_2 << RULE_4_INPUT_3,
                             QStringList() << RULE_4_OUTPUT_1);
 
     m_engine->setRules(rules);
@@ -137,10 +138,10 @@ void TestSimpleAimlEngine::testEngineSyntaticSugar_data()
     QTest::newRow("Keyword Op 2")  << USER_INPUT_4b << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
     QTest::newRow("Keyword Op 3")  << USER_INPUT_4c << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
     QTest::newRow("Keyword Op 4")  << USER_INPUT_4d << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
-    QTest::newRow("Keyword Op 5")  << USER_INPUT_4e << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
-    QTest::newRow("Keyword Op 6")  << USER_INPUT_4f << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
-    QTest::newRow("Keyword Op 7")  << USER_INPUT_4g << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
-    QTest::newRow("Keyword Op 8")  << USER_INPUT_4h << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
+    QTest::newRow("Keyword Op 5")  << USER_INPUT_4e << RULE_4_OUTPUT_1 << RULE_4_ID << 2;
+    QTest::newRow("Keyword Op 6")  << USER_INPUT_4f << RULE_4_OUTPUT_1 << RULE_4_ID << 2;
+    QTest::newRow("Keyword Op 7")  << USER_INPUT_4g << RULE_4_OUTPUT_1 << RULE_4_ID << 2;
+    QTest::newRow("Keyword Op 8")  << USER_INPUT_4h << RULE_4_OUTPUT_1 << RULE_4_ID << 2;
 }
 
 //--------------------------------------------------------------------------------------------------

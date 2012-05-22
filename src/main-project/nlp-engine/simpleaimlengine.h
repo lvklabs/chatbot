@@ -98,7 +98,12 @@ private:
     // TODO create context struct
     mutable RuleId m_currentId;
     mutable QString m_currentVar;
-    mutable QHash<RuleId, QHash<int, int> > m_indexRemap;
+
+    // Remaps: AimlEngine input index -> SimpleAimlEngine input index
+    typedef QHash<int, int> IndexRemap;
+    typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
+
+    mutable RuleIndexRemap m_indexRemap;
 };
 
 } // namespace Nlp

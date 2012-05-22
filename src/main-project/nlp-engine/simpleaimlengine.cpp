@@ -369,9 +369,12 @@ void Lvk::Nlp::SimpleAimlEngine::remap(Engine::MatchList &matches)
         Nlp::RuleId ruleId = matches[i].first;
         int inputIndex = matches[i].second;
 
-        // TODO use iterators
-        if (m_indexRemap.contains(ruleId) && m_indexRemap[ruleId].contains(inputIndex)) {
-            matches[i].second = m_indexRemap[ruleId][inputIndex];
+        RuleIndexRemap::Iterator it = m_indexRemap.find(ruleId);
+        if (it != m_indexRemap.end()) {
+            IndexRemap::Iterator itt = it->find(inputIndex);
+            if (itt != it->end()) {
+                matches[i].second = itt.value();
+            }
         }
     }
 }
