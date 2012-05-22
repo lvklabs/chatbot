@@ -50,6 +50,8 @@ private:
 //--------------------------------------------------------------------------------------------------
 // SimpleAimlEngine
 //--------------------------------------------------------------------------------------------------
+//
+// TODO this class became too complex! Time to create our own engine and stop using AIML
 
 #define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
 #define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
@@ -147,23 +149,20 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRules(Lvk::Nlp::RuleList &pureAiml
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRule,
                                                    const Lvk::Nlp::Rule &rule) const
 {
-    QString varNameOnInput;
+    m_currentId = rule.id();
+    m_currentVar = QString();
 
     pureAimlRule.setId(rule.id());
     pureAimlRule.setTarget(rule.target());
-    buildPureAimlInputList(pureAimlRule.input(), varNameOnInput, rule.input());
-    buildPureAimlOutputList(pureAimlRule.output(), varNameOnInput, rule.output());
+    buildPureAimlInputList(pureAimlRule.input(), rule.input());
+    buildPureAimlOutputList(pureAimlRule.output(), rule.output());
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInputList,
-                                                        QString &varNameOnInput,
                                                         const QStringList &inputList) const
 {
-    pureAimlInputList.clear();
-    varNameOnInput.clear();
-
     /*
      * For each input, transform variables and keyword operators.
      * Both features are not supported in one single input
@@ -172,7 +171,7 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInp
     for (int i = 0; i < inputList.size(); ++i) {
         const QString &input = inputList[i];
 
-        if (transformVariables(pureAimlInputList, varNameOnInput, input)) {
+        if (transformVariables(pureAimlInputList, input)) {
             continue;
         }
 
@@ -197,7 +196,6 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInp
  */
 
 bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputList,
-                                                    QString &varNameOnInput,
                                                     const QString &input) const
 {
     int pos = m_varNameRegex.indexIn(input);
@@ -209,11 +207,11 @@ bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputLi
         if (pos != m_varNameRegex.lastIndexIn(input)) {
             throw InvalidSyntaxException(QObject::tr(STR_ERR_1));
         }
-        if (!varNameOnInput.isNull() && varNameOnInput != m_varNameRegex.cap(1)) {
+        if (!m_currentVar.isNull() && m_currentVar != m_varNameRegex.cap(1)) {
             throw InvalidSyntaxException(QObject::tr(STR_ERR_2));
         }
 
-        varNameOnInput = m_varNameRegex.cap(1);
+        m_currentVar = m_varNameRegex.cap(1);
 
         QString pureAimlInput = input;
         pureAimlInput.replace(m_varNameRegex, " * ");
@@ -237,7 +235,7 @@ bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputLi
  */
 
 bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputList,
-                                                    const QString &input, int /*i*/) const
+                                                    const QString &input, int i) const
 {
     int pos = m_keywordRegex.indexIn(input);
 
@@ -252,6 +250,11 @@ bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputLi
         pureAimlInputList.append(baseInput + " _");
         pureAimlInputList.append("_ " + baseInput);
         pureAimlInputList.append("_ " + baseInput + " *");
+
+        m_indexRemap[m_currentId][pureAimlInputList.size() - 4] = i;
+        m_indexRemap[m_currentId][pureAimlInputList.size() - 3] = i;
+        m_indexRemap[m_currentId][pureAimlInputList.size() - 2] = i;
+        m_indexRemap[m_currentId][pureAimlInputList.size() - 1] = i;
     }
 
     return pos != -1;
@@ -261,7 +264,6 @@ bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputLi
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOutputList,
-                                                         const QString &varNameOnInput,
                                                          const QStringList &outputList) const
 {
     pureAimlOutputList.clear();
@@ -324,7 +326,7 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
             if (pos != -1) {
                 QString varName = m_varNameRegex.cap(1);
 
-                if (varName == varNameOnInput) {
+                if (varName == m_currentVar) {
                     pureAimlOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
                 } else {
                     pureAimlOutput.replace("[" + varName + "]", "<get name=\"" + varName + "\" />",
@@ -336,12 +338,40 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
 
         }
 
-        if (!varNameOnInput.isNull()) {
+        if (!m_currentVar.isNull()) {
             pureAimlOutput.prepend("<think>"
-                                   "<set name=\"" + varNameOnInput + "\"><star/></set>"
+                                   "<set name=\"" + m_currentVar + "\"><star/></set>"
                                    "</think>");
         }
 
         pureAimlOutputList.append(pureAimlOutput);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QList<QString> Lvk::Nlp::SimpleAimlEngine::getAllResponses(const QString &input,
+                                                           const QString &target,
+                                                           Engine::MatchList &matches)
+{
+    QList<QString> responses = AimlEngine::getAllResponses(input, target, matches);
+
+    remap(matches);
+
+    return responses;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::SimpleAimlEngine::remap(Engine::MatchList &matches)
+{
+    for (int i = 0; i < matches.size(); ++i) {
+        Nlp::RuleId ruleId = matches[i].first;
+        int inputIndex = matches[i].second;
+
+        // TODO use iterators
+        if (m_indexRemap.contains(ruleId) && m_indexRemap[ruleId].contains(inputIndex)) {
+            matches[i].second = m_indexRemap[ruleId][inputIndex];
+        }
     }
 }

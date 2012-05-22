@@ -37,8 +37,8 @@ public:
     ~TestSimpleAimlEngine();
 
 private Q_SLOTS:
-    void testConditionals_data();
-    void testConditionals();
+    void testEngineSyntaticSugar_data();
+    void testEngineSyntaticSugar();
 
     //TODO void testLocalizedConditionals();
 
@@ -73,6 +73,20 @@ private:
 #define USER_INPUT_3                        "Do you remember where I was"
 #define USER_OUTPUT_3                       "Sure, you were in cordoba"
 
+#define RULE_4_ID                           3
+#define RULE_4_INPUT_1                      "Basket **"
+#define RULE_4_INPUT_2                      "Basketball **"
+#define RULE_4_OUTPUT_1                     "I used to play basket but I'm not very skilled"
+
+#define USER_INPUT_4a                       "Basket"
+#define USER_INPUT_4b                       "Basket is a great sport"
+#define USER_INPUT_4c                       "You know basket is a great sport"
+#define USER_INPUT_4d                       "What I hate most is basket"
+#define USER_INPUT_4e                       "Basketball"
+#define USER_INPUT_4f                       "Basketball is a great sport"
+#define USER_INPUT_4g                       "You know basketball is a great sport"
+#define USER_INPUT_4h                       "What I hate most is basketball"
+
 
 TestSimpleAimlEngine::TestSimpleAimlEngine()
     : m_engine(new Lvk::Nlp::SimpleAimlEngine())
@@ -91,6 +105,10 @@ TestSimpleAimlEngine::TestSimpleAimlEngine()
                             QStringList() << RULE_3_INPUT_1,
                             QStringList() << RULE_3_OUTPUT_1);
 
+    rules << Lvk::Nlp::Rule(RULE_4_ID,
+                            QStringList() << RULE_4_INPUT_1 << RULE_4_INPUT_2,
+                            QStringList() << RULE_4_OUTPUT_1);
+
     m_engine->setRules(rules);
 }
 
@@ -103,28 +121,38 @@ TestSimpleAimlEngine::~TestSimpleAimlEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestSimpleAimlEngine::testConditionals_data()
+void TestSimpleAimlEngine::testEngineSyntaticSugar_data()
 {
     QTest::addColumn<QString>("userInput");
     QTest::addColumn<QString>("expectedOutput");
     QTest::addColumn<int>("ruleId");
     QTest::addColumn<int>("ruleInputNumber");
 
-    QTest::newRow("SimpleAIML Var  1")  << USER_INPUT_1  << USER_OUTPUT_1  << RULE_1_ID << 0;
-    QTest::newRow("SimpleAIML Cond 1")  << USER_INPUT_2a << USER_OUTPUT_2a << RULE_2_ID << 0;
-    QTest::newRow("SimpleAIML Cond 2")  << USER_INPUT_2b << USER_OUTPUT_2b << RULE_2_ID << 0;
-    QTest::newRow("SimpleAIML Var  2")  << USER_INPUT_3  << USER_OUTPUT_3  << RULE_3_ID << 0;
+    QTest::newRow("Variable  1")   << USER_INPUT_1  << USER_OUTPUT_1   << RULE_1_ID << 0;
+    QTest::newRow("Conditional 1") << USER_INPUT_2a << USER_OUTPUT_2a  << RULE_2_ID << 0;
+    QTest::newRow("Conditional 2") << USER_INPUT_2b << USER_OUTPUT_2b  << RULE_2_ID << 0;
+    QTest::newRow("Variable  2")   << USER_INPUT_3  << USER_OUTPUT_3   << RULE_3_ID << 0;
 
+    QTest::newRow("Keyword Op 1")  << USER_INPUT_4a << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
+    QTest::newRow("Keyword Op 2")  << USER_INPUT_4b << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
+    QTest::newRow("Keyword Op 3")  << USER_INPUT_4c << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
+    QTest::newRow("Keyword Op 4")  << USER_INPUT_4d << RULE_4_OUTPUT_1 << RULE_4_ID << 0;
+    QTest::newRow("Keyword Op 5")  << USER_INPUT_4e << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
+    QTest::newRow("Keyword Op 6")  << USER_INPUT_4f << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
+    QTest::newRow("Keyword Op 7")  << USER_INPUT_4g << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
+    QTest::newRow("Keyword Op 8")  << USER_INPUT_4h << RULE_4_OUTPUT_1 << RULE_4_ID << 1;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TestSimpleAimlEngine::testConditionals()
+void TestSimpleAimlEngine::testEngineSyntaticSugar()
 {
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
+
+    // --- Get Responses ---
 
     Lvk::Nlp::Engine::MatchList matches;
 
@@ -137,6 +165,23 @@ void TestSimpleAimlEngine::testConditionals()
         QCOMPARE(matches[0].second, ruleInputNumber);
     } else {
         QVERIFY(output.isEmpty());
+        QCOMPARE(matches.size(), 0);
+    }
+
+    // --- Get All Responses ---
+
+    matches.clear();
+
+    QList<QString> outputs = m_engine->getAllResponses(userInput, "", matches);
+
+    if (!expectedOutput.isNull()) {
+        QVERIFY(outputs.size() > 0);
+        QCOMPARE(outputs[0], expectedOutput);
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
+        QCOMPARE(matches[0].second, ruleInputNumber);
+    } else {
+        QCOMPARE(outputs.size(), 0);
         QCOMPARE(matches.size(), 0);
     }
 }

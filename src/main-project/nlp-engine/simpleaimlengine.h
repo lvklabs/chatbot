@@ -24,6 +24,8 @@
 
 #include "aimlengine.h"
 
+#include <QHash>
+
 namespace Lvk
 {
 
@@ -65,6 +67,9 @@ public:
 
     virtual void setRules(const RuleList &rules);
 
+    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
+                                           MatchList &matches);
+
     class InvalidSyntaxException;
 
 private:
@@ -74,22 +79,26 @@ private:
 
     void buildPureAimlRules(RuleList &aimlRules) const;
     void buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRules, const Lvk::Nlp::Rule &rule) const;
+
     void buildPureAimlInputList(QStringList &pureAimlInputList,
-                                QString &varNameOnInput,
                                 const QStringList &inputList) const;
     void buildPureAimlOutputList(QStringList &pureAimlOutputList,
-                                 const QString &varNameOnInput,
                                  const QStringList &outputList) const;
 
-    bool transformVariables(QStringList &pureAimlInputList, QString &varNameOnInput,
-                            const QString &input) const;
+    bool transformVariables(QStringList &pureAimlInputList, const QString &input) const;
     bool transformKeywordOp(QStringList &pureAimlInputList, const QString &input, int i) const;
+
+    void remap(Engine::MatchList &matches);
 
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
     QRegExp m_ifRegex;
     QRegExp m_keywordRegex;
 
+    // TODO create context struct
+    mutable RuleId m_currentId;
+    mutable QString m_currentVar;
+    mutable QHash<RuleId, QHash<int, int> > m_indexRemap;
 };
 
 } // namespace Nlp
