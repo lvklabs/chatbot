@@ -73,37 +73,39 @@ public:
     class InvalidSyntaxException;
 
 private:
+
+    struct ConvertionContext
+    {
+        Lvk::Nlp::Rule rule;
+        QString varName;
+        int inputIdx;
+        QString input;
+    };
+
+    // Remaps: AimlEngine input index -> SimpleAimlEngine input index
+    typedef QHash<int, int> IndexRemap;
+    typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
+
     RuleList m_rules;
-
-    void initRegexs();
-
-    void buildPureAimlRules(RuleList &aimlRules) const;
-    void buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRules, const Lvk::Nlp::Rule &rule) const;
-
-    void buildPureAimlInputList(QStringList &pureAimlInputList,
-                                const QStringList &inputList) const;
-    void buildPureAimlOutputList(QStringList &pureAimlOutputList,
-                                 const QStringList &outputList) const;
-
-    bool transformVariables(QStringList &pureAimlInputList, const QString &input) const;
-    bool transformKeywordOp(QStringList &pureAimlInputList, const QString &input, int i) const;
-
-    void remap(Engine::MatchList &matches);
 
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
     QRegExp m_ifRegex;
     QRegExp m_keywordRegex;
 
-    // TODO create context struct
-    mutable RuleId m_currentId;
-    mutable QString m_currentVar;
+    RuleIndexRemap m_indexRemap;
 
-    // Remaps: AimlEngine input index -> SimpleAimlEngine input index
-    typedef QHash<int, int> IndexRemap;
-    typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
+    void initRegexs();
 
-    mutable RuleIndexRemap m_indexRemap;
+    void convertToPureAiml(RuleList &rules);
+    void convertToPureAiml(Lvk::Nlp::Rule &newRules, const Lvk::Nlp::Rule &rule);
+
+    void convertInputList(QStringList &inputList, ConvertionContext &ctx);
+    bool convertVariables(QStringList &inputList, ConvertionContext &ctx);
+    bool convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
+    void convertOutputList(QStringList &outputList, ConvertionContext &ctx);
+
+    void remap(Engine::MatchList &matches);
 };
 
 } // namespace Nlp

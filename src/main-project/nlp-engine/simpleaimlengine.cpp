@@ -116,27 +116,28 @@ Lvk::Nlp::RuleList & Lvk::Nlp::SimpleAimlEngine::rules()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
+void Lvk::Nlp::SimpleAimlEngine::setRules(const Nlp::RuleList &rules)
 {
     m_rules = rules;
+    m_indexRemap.clear();
 
-    RuleList pureAimlRules;
-    buildPureAimlRules(pureAimlRules);
+    RuleList newRules;
+    convertToPureAiml(newRules);
 
-    AimlEngine::setRules(pureAimlRules);
+    AimlEngine::setRules(newRules);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRules(Lvk::Nlp::RuleList &pureAimlRules) const
+void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::RuleList &newRules)
 {
-    pureAimlRules.clear();
+    newRules.clear();
 
     foreach (const Nlp::Rule &rule, m_rules) {
         try {
-            Lvk::Nlp::Rule pureAimlRule;
-            buildPureAimlRule(pureAimlRule, rule);
-            pureAimlRules.append(pureAimlRule);
+            Lvk::Nlp::Rule newRule;
+            convertToPureAiml(newRule, rule);
+            newRules.append(newRule);
         } catch (std::exception &) {
             // Nothing to to. If the rule is invalid, we just skip it
             // TODO better error handling
@@ -146,42 +147,42 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRules(Lvk::Nlp::RuleList &pureAiml
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRule,
-                                                   const Lvk::Nlp::Rule &rule) const
+void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::Rule &newRule, const Nlp::Rule &rule)
 {
-    m_currentId = rule.id();
-    m_currentVar = QString();
+    ConvertionContext ctx;
+    ctx.inputIdx = 0;
+    ctx.rule = rule;
 
-    pureAimlRule.setId(rule.id());
-    pureAimlRule.setTarget(rule.target());
-    buildPureAimlInputList(pureAimlRule.input(), rule.input());
-    buildPureAimlOutputList(pureAimlRule.output(), rule.output());
+    newRule.setId(rule.id());
+    newRule.setTarget(rule.target());
+    convertInputList(newRule.input(), ctx);
+    convertOutputList(newRule.output(), ctx);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInputList,
-                                                        const QStringList &inputList) const
+void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, ConvertionContext &ctx)
 {
     /*
      * For each input, transform variables and keyword operators.
      * Both features are not supported in one single input
      */
 
-    for (int i = 0; i < inputList.size(); ++i) {
-        const QString &input = inputList[i];
+    for (int i = 0; i < ctx.rule.input().size(); ++i) {
+        ctx.input = ctx.rule.input().at(i);
+        ctx.inputIdx = i;
 
-        if (transformVariables(pureAimlInputList, input)) {
+        if (convertVariables(inputList, ctx)) {
             continue;
         }
 
-        if (transformKeywordOp(pureAimlInputList, input, i)) {
+        if (convertKeywordOp(inputList, ctx)) {
             continue;
         }
 
         // Already pure AIML
 
-        pureAimlInputList.append(input);
+        inputList.append(ctx.input);
     }
 }
 
@@ -195,27 +196,26 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlInputList(QStringList &pureAimlInp
  *    Do you like *
  */
 
-bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputList,
-                                                    const QString &input) const
+bool Lvk::Nlp::SimpleAimlEngine::convertVariables(QStringList &inputList, ConvertionContext &ctx)
 {
-    int pos = m_varNameRegex.indexIn(input);
+    int pos = m_varNameRegex.indexIn(ctx.input);
 
     // If variable decl found
 
     if (pos != -1) {
 
-        if (pos != m_varNameRegex.lastIndexIn(input)) {
+        if (pos != m_varNameRegex.lastIndexIn(ctx.input)) {
             throw InvalidSyntaxException(QObject::tr(STR_ERR_1));
         }
-        if (!m_currentVar.isNull() && m_currentVar != m_varNameRegex.cap(1)) {
+        if (!ctx.varName.isNull() && ctx.varName != m_varNameRegex.cap(1)) {
             throw InvalidSyntaxException(QObject::tr(STR_ERR_2));
         }
 
-        m_currentVar = m_varNameRegex.cap(1);
+        ctx.varName = m_varNameRegex.cap(1);
 
-        QString pureAimlInput = input;
-        pureAimlInput.replace(m_varNameRegex, " * ");
-        pureAimlInputList.append(pureAimlInput);
+        QString newInput = ctx.input;
+        newInput.replace(m_varNameRegex, " * ");
+        inputList.append(newInput);
     }
 
     return pos != -1;
@@ -234,27 +234,29 @@ bool Lvk::Nlp::SimpleAimlEngine::transformVariables(QStringList &pureAimlInputLi
  *    _ Footbal *
  */
 
-bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputList,
-                                                    const QString &input, int i) const
+bool Lvk::Nlp::SimpleAimlEngine::convertKeywordOp(QStringList &inputList, ConvertionContext &ctx)
 {
-    int pos = m_keywordRegex.indexIn(input);
+    int pos = m_keywordRegex.indexIn(ctx.input);
 
     // if keyword operator found
 
     if (pos != -1) {
-        QString baseInput = input;
+        QString baseInput = ctx.input;
 
         baseInput.remove(m_keywordRegex);
 
-        pureAimlInputList.append(baseInput);
-        pureAimlInputList.append(baseInput + " _");
-        pureAimlInputList.append("_ " + baseInput);
-        pureAimlInputList.append("_ " + baseInput + " *");
+        inputList.append(baseInput);
+        inputList.append(baseInput + " _");
+        inputList.append("_ " + baseInput);
+        inputList.append("_ " + baseInput + " *");
 
-        m_indexRemap[m_currentId][pureAimlInputList.size() - 4] = i;
-        m_indexRemap[m_currentId][pureAimlInputList.size() - 3] = i;
-        m_indexRemap[m_currentId][pureAimlInputList.size() - 2] = i;
-        m_indexRemap[m_currentId][pureAimlInputList.size() - 1] = i;
+        RuleId id = ctx.rule.id();
+        int size = inputList.size();
+
+        m_indexRemap[id][size - 4] = ctx.inputIdx;
+        m_indexRemap[id][size - 3] = ctx.inputIdx;
+        m_indexRemap[id][size - 2] = ctx.inputIdx;
+        m_indexRemap[id][size - 1] = ctx.inputIdx;
     }
 
     return pos != -1;
@@ -263,10 +265,9 @@ bool Lvk::Nlp::SimpleAimlEngine::transformKeywordOp(QStringList &pureAimlInputLi
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOutputList,
-                                                         const QStringList &outputList) const
+void Lvk::Nlp::SimpleAimlEngine::convertOutputList(QStringList &outputList, ConvertionContext &ctx)
 {
-    pureAimlOutputList.clear();
+    outputList.clear();
 
     /*
      * For each output, convert strings like:
@@ -283,37 +284,37 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
      *    </condition>
      */
 
-    for (int i = 0; i < outputList.size(); ++i) {
+    for (int i = 0; i < ctx.rule.output().size(); ++i) {
 
         // TODO refactor!
 
-        QString output = outputList[i];
-        QString pureAimlOutput = outputList[i];
+        QString output = ctx.rule.output().at(i);
+        QString newOutput = output;
         int pos;
 
         // Parse If-Else
 
         pos = m_ifElseRegex.indexIn(output);
         if (pos != -1) {
-            pureAimlOutput = QString("<condition>"
-                                     "<li name=\"%1\" value=\"%2\">%3</li>"
-                                     "<li>%4</li>"
-                                     "</condition>")
-                                        .arg(m_ifElseRegex.cap(1))
-                                        .arg(m_ifElseRegex.cap(2).trimmed())
-                                        .arg(m_ifElseRegex.cap(3).trimmed())
-                                        .arg(m_ifElseRegex.cap(4).trimmed());
+            newOutput = QString("<condition>"
+                                "<li name=\"%1\" value=\"%2\">%3</li>"
+                                "<li>%4</li>"
+                                "</condition>")
+                                   .arg(m_ifElseRegex.cap(1))
+                                   .arg(m_ifElseRegex.cap(2).trimmed())
+                                   .arg(m_ifElseRegex.cap(3).trimmed())
+                                   .arg(m_ifElseRegex.cap(4).trimmed());
         } else {
             // Parse If
 
             pos = m_ifRegex.indexIn(output);
             if (pos != -1) {
-                pureAimlOutput = QString("<condition>"
-                                         "<li name=\"%1\" value=\"%2\">%3</li>"
-                                         "</condition>")
-                                            .arg(m_ifRegex.cap(1))
-                                            .arg(m_ifRegex.cap(2).trimmed())
-                                            .arg(m_ifRegex.cap(3).trimmed());
+                newOutput = QString("<condition>"
+                                    "<li name=\"%1\" value=\"%2\">%3</li>"
+                                    "</condition>")
+                                       .arg(m_ifRegex.cap(1))
+                                       .arg(m_ifRegex.cap(2).trimmed())
+                                       .arg(m_ifRegex.cap(3).trimmed());
             }
         }
 
@@ -326,11 +327,11 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
             if (pos != -1) {
                 QString varName = m_varNameRegex.cap(1);
 
-                if (varName == m_currentVar) {
-                    pureAimlOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
+                if (varName == ctx.varName) {
+                    newOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
                 } else {
-                    pureAimlOutput.replace("[" + varName + "]", "<get name=\"" + varName + "\" />",
-                                           Qt::CaseInsensitive);
+                    newOutput.replace("[" + varName + "]", "<get name=\"" + varName + "\" />",
+                                      Qt::CaseInsensitive);
                 }
 
                 pos++;
@@ -338,13 +339,13 @@ void Lvk::Nlp::SimpleAimlEngine::buildPureAimlOutputList(QStringList &pureAimlOu
 
         }
 
-        if (!m_currentVar.isNull()) {
-            pureAimlOutput.prepend("<think>"
-                                   "<set name=\"" + m_currentVar + "\"><star/></set>"
-                                   "</think>");
+        if (!ctx.varName.isNull()) {
+            newOutput.prepend("<think>"
+                              "<set name=\"" + ctx.varName + "\"><star/></set>"
+                              "</think>");
         }
 
-        pureAimlOutputList.append(pureAimlOutput);
+        outputList.append(newOutput);
     }
 }
 
