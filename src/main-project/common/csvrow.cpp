@@ -106,12 +106,12 @@ Lvk::Common::CsvRow::CsvRow(const QStringList &cells)
 
 Lvk::Common::CsvRow::CsvRow(const QString &str)
 {
-    fromString(str);
+    parseString(str);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvRow::fromString(const QString &str)
+void Lvk::Common::CsvRow::parseString(const QString &str)
 {
     clear();
 
@@ -177,9 +177,16 @@ void Lvk::Common::CsvRow::append(const QString &cell)
 
 //--------------------------------------------------------------------------------------------------
 
-QString & Lvk::Common::CsvRow::operator[](int n)
+const QString & Lvk::Common::CsvRow::operator[](int n) const
 {
     return m_cells[n];
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::Common::CsvRow::size() const
+{
+    return m_cells.size();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -202,4 +209,3 @@ bool Lvk::Common::CsvRow::operator!=(const Lvk::Common::CsvRow &other) const
 {
     return !this->operator ==(other);
 }
-

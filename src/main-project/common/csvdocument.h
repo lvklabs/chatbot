@@ -52,15 +52,11 @@ public:
 
     const QList<CsvRow> & rows() const;
 
-    CsvRow &operator[](int n);
+    const CsvRow &operator[](int n) const ;
 
     void append(const CsvRow &row);
 
     void append(const QString &rowStr);
-
-    void fromString(const QString &csvStr);
-
-    QString toString() const;
 
     void clear();
 
@@ -68,8 +64,12 @@ public:
 
     bool operator!=(const CsvDocument &other) const;
 
+    QString toString() const;
+
 private:
     QList<CsvRow> m_rows;
+
+    void parseString(const QString &csvStr);
 };
 
 } // namespace Common
