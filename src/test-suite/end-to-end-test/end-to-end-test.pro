@@ -76,6 +76,8 @@ HEADERS += \
     ../../main-project/chat-adapter/chatcorpus.h \
     ../../main-project/common/random.h\
     ../../main-project/common/settings.h \
+    ../../main-project/common/csvdocument.h \
+    ../../main-project/common/csvrow.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -111,6 +113,8 @@ SOURCES += \
     ../../main-project/chat-adapter/chatcorpus.cpp \
     ../../main-project/common/random.cpp \
     ../../main-project/common/settings.cpp \
+    ../../main-project/common/csvdocument.cpp \
+    ../../main-project/common/csvrow.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp

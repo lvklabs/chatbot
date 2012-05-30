@@ -90,6 +90,8 @@ HEADERS += \
     common/versionrev.h \
     common/settings.h \
     common/settingskeys.h \
+    common/csvdocument.h \
+    common/csvrow.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
 
 
@@ -122,6 +124,8 @@ SOURCES += \
     chat-adapter/chatcorpus.cpp \
     common/random.cpp \
     common/settings.cpp \
+    common/csvdocument.cpp \
+    common/csvrow.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
 
 
@@ -140,6 +144,10 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
+
+
 
 
 
