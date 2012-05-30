@@ -13,7 +13,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 ############################################
 # Update git revision in versionrev.h
 versionrev.target = common/versionrev.h
-win32:versionrev.commands = #FIXME
+win32:versionrev.commands = $$PWD/bin/update-revision.bat $$PWD
 else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
@@ -85,7 +85,6 @@ HEADERS += \
     chat-adapter/contactinfo.h \
     common/random.h\
     common/version.h \
-    common/versionrev.h \
     common/settings.h \
     common/settingskeys.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
