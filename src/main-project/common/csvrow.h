@@ -24,6 +24,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 
 namespace Lvk
@@ -44,6 +45,8 @@ class CsvRow
 {
 public:
     CsvRow();
+
+    CsvRow(const QStringList &cells);
 
     CsvRow(const QString &str);
 

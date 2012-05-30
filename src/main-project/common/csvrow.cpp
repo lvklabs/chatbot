@@ -95,6 +95,15 @@ Lvk::Common::CsvRow::CsvRow()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::Common::CsvRow::CsvRow(const QStringList &cells)
+{
+    foreach (const QString &cell, cells) {
+        append(cell);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::Common::CsvRow::CsvRow(const QString &str)
 {
     fromString(str);

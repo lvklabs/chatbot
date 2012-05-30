@@ -73,22 +73,14 @@ void CsvDocumentTest::testToFromStrings_data()
     doc2row1.append(CELL_1);
     doc2row1.append(CELL_2);
     doc2row1.append(CELL_3);
-    doc2row2.append(CELL_4);
-    doc2row2.append(CELL_5);
-    doc2row2.append(CELL_6);
+    doc2row2 = Lvk::Common::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
 
     doc2.append(doc2row1);
     doc2.append(doc2row2);
 
-    doc3row1.append(CELL_1);
-    doc3row1.append(CELL_2);
-    doc3row1.append(CELL_3);
-    doc3row2.append(CELL_4);
-    doc3row2.append(CELL_5);
-    doc3row2.append(CELL_6);
-    doc3row3.append(CELL_7u);
-    doc3row3.append(CELL_8u);
-    doc3row3.append(CELL_9u);
+    doc3row1 = Lvk::Common::CsvRow(QStringList() << CELL_1  << CELL_2  << CELL_3);
+    doc3row2 = Lvk::Common::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
+    doc3row3 = Lvk::Common::CsvRow(QStringList() << CELL_7u << CELL_8u << CELL_9u);
 
     doc3.append(doc3row1);
     doc3.append(doc3row2);
