@@ -61,6 +61,8 @@ HEADERS += \
     ../../main-project/back-end/coreapp.h \
     ../../main-project/back-end/defaultvirtualuser.h \
     ../../main-project/back-end/conversation.h \
+    ../../main-project/back-end/conversationwriter.h \
+    ../../main-project/back-end/conversationreader.h \
     ../../main-project/nlp-engine/nlpengine.h \
     ../../main-project/nlp-engine/nlprule.h \
     ../../main-project/nlp-engine/exactmatchengine.h \
@@ -101,6 +103,8 @@ SOURCES += \
     ../../main-project/back-end/coreapp.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \
     ../../main-project/back-end/conversation.cpp \
+    ../../main-project/back-end/conversationwriter.cpp \
+    ../../main-project/back-end/conversationreader.cpp \
     ../../main-project/nlp-engine/exactmatchengine.cpp \
     ../../main-project/nlp-engine/aimlengine.cpp \
     ../../main-project/nlp-engine/simpleaimlengine.cpp \

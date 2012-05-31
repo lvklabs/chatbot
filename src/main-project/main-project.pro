@@ -70,6 +70,8 @@ HEADERS += \
     back-end/conversation.h \
     back-end/roster.h \
     back-end/target.h \
+    back-end/conversationwriter.h \
+    back-end/conversationreader.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
@@ -92,6 +94,7 @@ HEADERS += \
     common/settingskeys.h \
     common/csvdocument.h \
     common/csvrow.h \
+    common/globalstrings.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
 
 
@@ -112,6 +115,8 @@ SOURCES += \
     back-end/coreapp.cpp \
     back-end/defaultvirtualuser.cpp \
     back-end/conversation.cpp \
+    back-end/conversationwriter.cpp \
+    back-end/conversationreader.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
@@ -144,6 +149,11 @@ LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 OTHER_FILES += \
     chatbot.rc
+
+
+
+
+
 
 
 

@@ -1,0 +1,10 @@
+#ifndef LVK_COMMON_GLOBALSTRINGS_H
+#define LVK_COMMON_GLOBALSTRINGS_H
+
+#define STR_GLOBAL_DATE_TIME_FORMAT            "dd-MM-yy hh:mm:ss"
+
+#define STR_CSV_CONV_ENTRY_MATCH               "match"
+#define STR_CSV_CONV_ENTRY_NO_MATCH            "no-match"
+#define STR_CSV_CONV_DATE_TIME_FORMAT          STR_GLOBAL_DATE_TIME_FORMAT
+
+#endif // LVK_COMMON_GLOBALSTRINGS_H

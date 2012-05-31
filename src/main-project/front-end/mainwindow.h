@@ -43,6 +43,11 @@ class QItemSelection;
 namespace Lvk
 {
 
+namespace BE
+{
+    class ConversationWriter;
+}
+
 namespace FE
 {
 
@@ -96,7 +101,7 @@ private:
     QItemSelectionModel *m_ruleTreeSelectionModel;
     bool m_ruleEdited;
     BE::Rule m_ruleBackup;
-    QFile *m_testConversationLog;
+    BE::ConversationWriter *m_testConversationLog;
     QString m_filename;
 
     enum {
@@ -138,7 +143,6 @@ private:
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
-    void logTestConversation(const BE::Conversation::Entry &entry);
     void updateBlackList();
     BE::CoreApp::ChatType uiChatSelected();
     void uiSelectChat(BE::CoreApp::ChatType type);

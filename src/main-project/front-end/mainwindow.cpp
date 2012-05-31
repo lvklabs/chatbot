@@ -30,6 +30,7 @@
 #include "version.h"
 #include "settings.h"
 #include "settingskeys.h"
+#include "conversationwriter.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -153,8 +154,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(APP_ICON_FILE));
 
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
-    m_testConversationLog = new QFile(logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE);
-    m_testConversationLog->open(QFile::Append);
+    QString testConvLogFilename = logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE;
+    m_testConversationLog = new Lvk::BE::ConversationWriter(testConvLogFilename);
 
     loadAllSettings();
 }
@@ -1353,14 +1354,13 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     highlightMatchedRules(matches);
 
     // Log conversation
-    BE::Conversation::Entry convEntry(QDateTime::currentDateTime(),
-                                      "test", "test",
-                                      input, response, !matches.isEmpty());
+    BE::Conversation::Entry entry(QDateTime::currentDateTime(),"test", "test", input, response,
+                                  !matches.isEmpty());
 
     // Disabled conversation history
-    //onNewChatConversation(convEntry);
+    //onNewChatConversation(entry);
 
-    logTestConversation(convEntry);
+    m_testConversationLog->write(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1392,16 +1392,6 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
         selectRule(evasivesRule());
 
         ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::logTestConversation(const BE::Conversation::Entry &entry)
-{
-    if (m_testConversationLog) {
-        m_testConversationLog->write(entry.toString() + "\n");
-        m_testConversationLog->flush();
     }
 }
 

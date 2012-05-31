@@ -41,6 +41,8 @@ namespace Nlp
 namespace BE
 {
 
+class ConversationWriter;
+
 /**
  * \brief Default implementation of the Abstract class Virtual User
  */
@@ -51,6 +53,7 @@ class DefaultVirtualUser : public QObject, public CA::VirtualUser
 
 public:
     DefaultVirtualUser(const QString &id, Nlp::Engine *engine = 0, QObject *parent = 0);
+
     ~DefaultVirtualUser();
 
     virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
@@ -60,6 +63,7 @@ public:
     const Conversation &getConversationHistory() const;
 
     void setNlpEngine(Nlp::Engine *engine);
+
     void setEvasives(const QStringList &evasives);
 
 signals:
@@ -73,7 +77,8 @@ private:
     Nlp::Engine *m_engine;
     QStringList m_evasives;
     Conversation m_conversationHistory;
-    QFile *m_logFile;
+    ConversationWriter *m_convWriter;
+
     QReadWriteLock *m_rwLock;
 
     void getResponse(QString &response, const QString &input, const QString &username);

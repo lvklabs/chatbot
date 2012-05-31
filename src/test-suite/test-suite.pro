@@ -8,5 +8,7 @@ SUBDIRS = \
     simple-aiml-engine-unit-test \
     csv-document-unit-test \
     end-to-end-test \
+    conversation-rw-unit-test
+
 
 
