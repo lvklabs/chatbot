@@ -53,15 +53,22 @@ public:
 
     const QString &delimiter();
 
+    void setText(const QString &text);
+
+    void setDefaultText(const QString &text);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
-    virtual bool event(QEvent *event);
+    virtual void focusOutEvent(QFocusEvent *event);
 
-    void paintEvent ( QPaintEvent * event );
+    virtual void focusInEvent(QFocusEvent *event);
+
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
+    virtual void paintEvent(QPaintEvent *event);
 
 private:
-    bool m_init;
     QString m_delimiter;
     QPoint m_globalPos;
     QStringList m_strList;
@@ -69,13 +76,14 @@ private:
     QString m_head;
     QString m_current;
     QString m_tail;
+    QString m_defaultString;
 
     void updateListWidgetGeometry();
     void updateTextParts();
 
 private slots:
     void onTargetTextEdited(QString);
-    void onTargetLostFocus();
+    void onListItemSelected();
 };
 
 } // namespace FE

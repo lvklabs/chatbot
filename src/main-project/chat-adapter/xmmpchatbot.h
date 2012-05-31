@@ -81,17 +81,6 @@ public:
 
     virtual ContactInfoList blackListRoster() const;
 
-public slots:
-    void onConnected();
-
-    void onMessageReceived(const QXmppMessage &);
-
-    void onVCardReceived(const QXmppVCardIq &);
-
-    void onRosterReceived();
-
-    void onRosterChanged(const QString &);
-
 signals:
     void connected();
 
@@ -99,15 +88,27 @@ signals:
 
     void error(int err);
 
+protected slots:
+    virtual void onConnected();
+
+    virtual void onMessageReceived(const QXmppMessage &);
+
+    virtual void onVCardReceived(const QXmppVCardIq &);
+
+    virtual void onRosterReceived();
+
+    virtual void onRosterChanged(const QString &);
+
+protected:
+    QXmppClient *m_xmppClient;
+    VirtualUser *m_virtualUser;
+
 private slots:
     void emitLocalError(QXmppClient::Error);
 
 private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
-
-    QXmppClient *m_xmppClient;
-    VirtualUser *m_virtualUser;
 
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;

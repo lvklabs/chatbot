@@ -24,12 +24,15 @@
 #include "nlpengine.h"
 #include "nlprule.h"
 #include "exactmatchengine.h"
+#include "simpleaimlengine.h"
+#include "defaultsanitizer.h"
 #include "random.h"
 #include "fbchatbot.h"
 #include "gtalkchatbot.h"
 #include "defaultvirtualuser.h"
 
 #include <QFile>
+#include <QUuid>
 #include <QDataStream>
 
 #include <iostream>
@@ -40,9 +43,62 @@
 #define CEF_MAGIC_NUMBER            (('c'<<0) | ('e'<<8) | ('f'<<16) | ('\0'<<24))
 #define CEF_FILE_FORMAT_VERSION     2
 
-// Backward compatibility: Magic number for file format version 1
-#define CRF_MAGIC_NUMBER_V1         (('l'<<0) | ('v'<<8) | ('k'<<16) | ('\0'<<24))
+namespace Lvk
+{
 
+namespace BE
+{
+
+typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
+typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+
+} // namespace BE
+
+} // namespace Lvk
+
+
+//--------------------------------------------------------------------------------------------------
+// Non-members Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+// Make Nlp::Rule from BE::Rule
+
+Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
+{
+    Lvk::Nlp::Rule nlpRule(id, rule->input(), rule->output());
+
+    QStringList targets;
+    foreach (const Lvk::BE::Target &t, rule->target()) {
+        targets.append(t.username);
+    }
+
+    nlpRule.setTarget(targets);
+
+    return nlpRule;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString nullChatbotId()
+{
+    static QString nullId = "00000000-0000-0000-0000-000000000000";
+
+    return nullId;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString newChatbotId()
+{
+    QString id = QUuid::createUuid().toString().mid(1, 36);
+
+    return id;
+}
+
+} // namespace
 
 
 //--------------------------------------------------------------------------------------------------
@@ -53,9 +109,10 @@ Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
     : QObject(parent),
       m_rootRule(new Rule()),
       m_evasivesRule(0),
-      m_nlpEngine(new Lvk::Nlp::ExactMatchEngine()),
+      m_nlpEngine(new Lvk::BE::DefaultEngine(new Lvk::BE::DefaultSanitizer())),
       m_nextRuleId(0),
       m_chatbot(0),
+      m_chatbotId(nullChatbotId()),
       m_isFirstTime(true)
 {
 }
@@ -69,6 +126,7 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nlpEngine(nlpEngine),
       m_nextRuleId(0),
       m_chatbot(0),
+      m_chatbotId(nullChatbotId()),
       m_isFirstTime(true)
 {
 }
@@ -85,7 +143,7 @@ Lvk::BE::CoreApp::~CoreApp()
 // Load, save, save as, close file
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::load(const QString &filename)
+bool Lvk::BE::CoreApp::load(const QString &filename, bool create /*= true*/)
 {
     if (!m_filename.isEmpty()) {
         close();
@@ -97,16 +155,22 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
     QFile file(m_filename);
 
-    if (file.exists() && file.open(QFile::ReadOnly)) {
-        success = read(file);
-    } else if (m_isFirstTime) {
-        success = loadDefaultFirstTimeRules();
-    } else {
-        success = loadDefaultRules();
+    if (file.exists()) {
+        if (file.open(QFile::ReadOnly)) {
+            success = read(file);
+        }
+    } else if (create) {
+        if (m_isFirstTime) {
+            success = loadDefaultFirstTimeRules();
+        } else {
+            success = loadDefaultRules();
+        }
     }
 
     if (success) {
         markAsSaved();
+    } else {
+        close();
     }
 
     refreshNlpEngine();
@@ -118,14 +182,12 @@ bool Lvk::BE::CoreApp::load(const QString &filename)
 
 bool Lvk::BE::CoreApp::save()
 {
-    bool success = true;
+    bool success = false;
 
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
         success = write(file);
-    } else {
-        success = false;
     }
 
     if (success) {
@@ -139,18 +201,29 @@ bool Lvk::BE::CoreApp::save()
 
 bool Lvk::BE::CoreApp::saveAs(const QString &filename)
 {
+    QString filenameBak = m_filename;
+    QString chatbotIdBak = m_chatbotId;
+
+    deleteCurrentChatbot();
+
     m_filename = filename;
+    m_chatbotId = newChatbotId();
 
-    save();
+    bool success = save();
 
-    return false;
+    if (!success) {
+        m_filename = filenameBak;
+        m_chatbotId = chatbotIdBak;
+    }
+
+    return success;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::CoreApp::hasUnsavedChanges() const
 {
-    for (Rule::/* FIXME const_*/iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
+    for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         if ((*it)->status() == Rule::Unsaved) {
             return true;
         }
@@ -178,9 +251,10 @@ void Lvk::BE::CoreApp::close()
 
     if (m_chatbot) {
         m_chatbot->disconnectFromServer();
-        delete m_chatbot;
-        m_chatbot = 0;
+        deleteCurrentChatbot();
     }
+
+    m_chatbotId = nullChatbotId();
 
     m_evasivesRule = 0;
 
@@ -193,6 +267,8 @@ void Lvk::BE::CoreApp::close()
     m_nextRuleId = 0;
 
     m_rulesHash.clear();
+
+    m_targets.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -207,10 +283,7 @@ bool Lvk::BE::CoreApp::read(QFile &file)
     quint32 version;
     istream >> version;
 
-    if (version == 1 && magicNumber != CRF_MAGIC_NUMBER_V1) {
-        return false;
-    }
-    if (version != 1 && magicNumber != CRF_MAGIC_NUMBER) {
+    if (magicNumber != CRF_MAGIC_NUMBER) {
         return false;
     }
 
@@ -220,6 +293,7 @@ bool Lvk::BE::CoreApp::read(QFile &file)
 
     m_rootRule = std::auto_ptr<Rule>(new Rule());
 
+    istream >> m_chatbotId;
     istream >> *m_rootRule;
 
     return true;
@@ -231,10 +305,11 @@ bool Lvk::BE::CoreApp::write(QFile &file)
 {
     QDataStream ostream(&file);
 
-    ostream.setVersion(QDataStream::Qt_4_0);
+    ostream.setVersion(QDataStream::Qt_4_7);
 
     ostream << (quint32)CRF_MAGIC_NUMBER;
     ostream << (quint32)CRF_FILE_FORMAT_VERSION;
+    ostream << m_chatbotId;
     ostream << *m_rootRule;
 
     return true;
@@ -292,7 +367,7 @@ bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &out
 
     QDataStream ostream(&file);
 
-    ostream.setVersion(QDataStream::Qt_4_0);
+    ostream.setVersion(QDataStream::Qt_4_7);
 
     ostream << (quint32)CEF_MAGIC_NUMBER;
     ostream << (quint32)CEF_FILE_FORMAT_VERSION;
@@ -355,7 +430,31 @@ QStringList Lvk::BE::CoreApp::getEvasives() const
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) const
+QString Lvk::BE::CoreApp::getTestUserResponse(const QString &input, MatchList &matches) const
+{
+    QString response;
+
+    // Try with all targets
+
+    foreach (const QString &target, m_targets) {
+        response = getResponse(input, target, matches);
+
+        if (!matches.isEmpty()) {
+            break;
+        }
+    }
+
+    if (matches.isEmpty()) {
+        response = getResponse(input, "", matches);
+    }
+
+    return response;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::CoreApp::getResponse(const QString &input, const QString &target,
+                                      MatchList &matches) const
 {
     matches.clear();
 
@@ -364,25 +463,19 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, MatchList &matches) 
     }
 
     Nlp::Engine::MatchList nlpRulesMatched;
-    QString response = m_nlpEngine->getResponse(input, nlpRulesMatched);
-
-
-    // TODO Refactor return
+    QString response = m_nlpEngine->getResponse(input, target, nlpRulesMatched);
 
     if (!nlpRulesMatched.isEmpty()) {
         Nlp::RuleId ruleId = nlpRulesMatched.first().first;
         int inputNumber = nlpRulesMatched.first().second;
         matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
-
-        return response;
     } else {
         QStringList evasives = getEvasives();
-        if (!evasives.isEmpty()) {
-            return evasives[Common::Random::getInt(0, evasives.size() - 1)];
-        } else {
-            return "";
-        }
+        response = !evasives.isEmpty() ?
+                    evasives[Common::Random::getInt(0, evasives.size() - 1)] : "";
     }
+
+    return response;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -392,6 +485,7 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
     m_evasivesRule = 0;
     m_nextRuleId = 0;
     m_rulesHash.clear();
+    m_targets.clear();
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
@@ -412,14 +506,23 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
     for (int i = 0; i < parentRule->childCount(); ++i) {
         const BE::Rule *child = parentRule->child(i);
         if (child->type() == Rule::OrdinaryRule) {
+            storeTargets(child->target());
             m_rulesHash[m_nextRuleId] = child;
-            Nlp::Rule nlpRule(m_nextRuleId++, child->input(), child->output());
-            nlpRules.append(nlpRule);
+            nlpRules.append(makeNlpRule(child, m_nextRuleId++));
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {
             buildNlpRulesOf(child, nlpRules);
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::CoreApp::storeTargets(const TargetList &targets)
+{
+    foreach (const Target &t, targets) {
+        m_targets.insert(t.username);
     }
 }
 
@@ -475,7 +578,7 @@ void Lvk::BE::CoreApp::createChatbot(ChatType type)
 
     m_currentChatbotType = type;
 
-    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_nlpEngine);
+    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_chatbotId, m_nlpEngine);
     virtualUser->setEvasives(getEvasives());
 
     m_chatbot->setVirtualUser(virtualUser);
@@ -487,10 +590,6 @@ void Lvk::BE::CoreApp::createChatbot(ChatType type)
 
 void Lvk::BE::CoreApp::deleteCurrentChatbot()
 {
-    if (!m_chatbot) {
-        return;
-    }
-
     delete m_chatbot;   // TODO consider using deleteLater()
     m_chatbot = 0;
 }
@@ -621,6 +720,8 @@ bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 
     evasives->setOutput(evasivesOutputList);
 
+    m_chatbotId = newChatbotId();
+
     return true;
 }
 
@@ -654,6 +755,8 @@ bool Lvk::BE::CoreApp::loadDefaultRules()
     QStringList evasivesOutputList;
 
     evasives->setOutput(evasivesOutputList);
+
+    m_chatbotId = newChatbotId();
 
     return true;
 }

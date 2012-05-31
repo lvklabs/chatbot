@@ -25,6 +25,7 @@
 #define SETTING_APP_LANGUAGE                        "Application/Language"
 
 #define SETTING_LAST_FILE                           "Files/LastFile"
+#define SETTING_LOGS_PATH                           "Files/LogsPath"
 
 #define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/Size"
 #define SETTING_MAIN_WINDOW_POS                     "MainWindow/Position"

@@ -61,6 +61,8 @@ HEADERS += \
     ../../main-project/back-end/coreapp.h \
     ../../main-project/back-end/defaultvirtualuser.h \
     ../../main-project/back-end/conversation.h \
+    ../../main-project/back-end/conversationwriter.h \
+    ../../main-project/back-end/conversationreader.h \
     ../../main-project/nlp-engine/nlpengine.h \
     ../../main-project/nlp-engine/nlprule.h \
     ../../main-project/nlp-engine/exactmatchengine.h \
@@ -73,8 +75,11 @@ HEADERS += \
     ../../main-project/chat-adapter/xmmpchatbot.h \
     ../../main-project/chat-adapter/fbchatbot.h \
     ../../main-project/chat-adapter/gtalkchatbot.h \
+    ../../main-project/chat-adapter/chatcorpus.h \
     ../../main-project/common/random.h\
     ../../main-project/common/settings.h \
+    ../../main-project/common/csvdocument.h \
+    ../../main-project/common/csvrow.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -98,6 +103,8 @@ SOURCES += \
     ../../main-project/back-end/coreapp.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \
     ../../main-project/back-end/conversation.cpp \
+    ../../main-project/back-end/conversationwriter.cpp \
+    ../../main-project/back-end/conversationreader.cpp \
     ../../main-project/nlp-engine/exactmatchengine.cpp \
     ../../main-project/nlp-engine/aimlengine.cpp \
     ../../main-project/nlp-engine/simpleaimlengine.cpp \
@@ -107,8 +114,11 @@ SOURCES += \
     ../../main-project/chat-adapter/fbchatbot.cpp \
     ../../main-project/chat-adapter/gtalkchatbot.cpp \
     ../../main-project/chat-adapter/chatbot.cpp \
+    ../../main-project/chat-adapter/chatcorpus.cpp \
     ../../main-project/common/random.cpp \
     ../../main-project/common/settings.cpp \
+    ../../main-project/common/csvdocument.cpp \
+    ../../main-project/common/csvrow.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp

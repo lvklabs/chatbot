@@ -41,14 +41,32 @@ class RosterItem
 public:
     RosterItem() { }
 
-    RosterItem(QString username, QString fullname) : username(username), fullname(fullname) { }
+    RosterItem(QString username, QString fullname)
+        : username(username), fullname(fullname)
+    { }
 
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
 
-    QDataStream &operator<<(QDataStream &out) { return out << username << fullname; }
+    const QString &displayText() const
+    {
+        return !fullname.isEmpty() ? fullname : username;
+    }
 
-    QDataStream &operator>>(QDataStream &in) { return in >> username >> fullname; }
+    bool operator==(const RosterItem &other) const
+    {
+        return username == other.username && fullname == other.fullname;
+    }
+
+    bool operator!=(const RosterItem &other) const
+    {
+        return !this->operator==(other);
+    }
+
+    bool operator<(const RosterItem &other) const
+    {
+        return username < other.username;
+    }
 };
 
 /**
@@ -61,8 +79,20 @@ typedef QList<RosterItem> Roster;
 } //namespace Lvk
 
 
+inline QDataStream &operator<<(QDataStream &out, const Lvk::BE::RosterItem &item)
+{
+    return out << item.username << item.fullname;
+}
+
+inline QDataStream &operator>>(QDataStream &in, Lvk::BE::RosterItem &item)
+{
+    return in >> item.username >> item.fullname;
+}
+
+
 Q_DECLARE_METATYPE(Lvk::BE::RosterItem)
 Q_DECLARE_METATYPE(Lvk::BE::Roster)
+
 
 
 #endif // LVK_BE_ROSTER_H

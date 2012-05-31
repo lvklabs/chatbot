@@ -24,14 +24,13 @@
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
-#include "simpleaimlengine.h"
-#include "defaultsanitizer.h"
 #include "exportdialog.h"
 #include "importdialog.h"
 #include "roster.h"
 #include "version.h"
 #include "settings.h"
 #include "settingskeys.h"
+#include "conversationwriter.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -40,11 +39,12 @@
 #include <QCloseEvent>
 #include <QIcon>
 #include <QFile>
+#include <QDir>
 #include <QFileDialog>
 #include <QApplication>
 #include <QDesktopWidget>
 
-#define TEST_CONVERSATION_LOG_FILE  "test_conversations.log"
+#define TEST_CONVERSATION_LOG_FILE  "tests_history.log"
 #define DEFAULT_RULES_FILE          "rules.crf"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
@@ -53,10 +53,6 @@
 
 #define FB_ICON_FILE               ":/icons/facebook_24x24.png"
 #define GMAIL_ICON_FILE            ":/icons/gmail_24x24.png"
-
-
-typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
-typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 
 
 //--------------------------------------------------------------------------------------------------
@@ -127,10 +123,10 @@ QString getFileExportFilters()
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(new DefaultEngine(new DefaultSanitizer()), parent)),
+    m_coreApp(new BE::CoreApp(this)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
-    m_testConversationLog(new QFile(TEST_CONVERSATION_LOG_FILE)),
+    m_testConversationLog(0),
     m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
@@ -139,6 +135,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     clear();
 
     Lvk::Common::Settings settings;
+
     QString lastFile = settings.value(SETTING_LAST_FILE, QString(DEFAULT_RULES_FILE)).toString();
     initCoreAndModelsWithFile(lastFile);
 
@@ -156,7 +153,9 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     setWindowIcon(QIcon(APP_ICON_FILE));
 
-    m_testConversationLog->open(QFile::Append);
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+    QString testConvLogFilename = logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE;
+    m_testConversationLog = new Lvk::BE::ConversationWriter(testConvLogFilename);
 
     loadAllSettings();
 }
@@ -195,7 +194,7 @@ void Lvk::FE::MainWindow::clear()
     m_coreApp->disconnectFromChat();
 
     setUiMode(ChatDisconnectedUiMode);
-    ui->usernameText->clear();
+    //ui->usernameText->clear();
     ui->passwordText->clear();
 
     // conversation tab widgets
@@ -268,6 +267,9 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
 
+    connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
+            SLOT(onRuleTargetEdited(QString)));
+
     // Test tab
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
@@ -339,8 +341,11 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
         int code = showSaveChangesDialog();
 
         if (code == QMessageBox::Yes) {
-            saveChanges();
-            event->accept();
+            if (saveChanges()) {
+                event->accept();
+            } else {
+                event->ignore();
+            }
         } else if (code == QMessageBox::Cancel) {
             event->ignore();
         } else {
@@ -690,7 +695,9 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
         QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",getFileFilters());
 
         if (!filename.isEmpty()) {
-            load(filename);
+            if (!load(filename)) {
+                clear();
+            }
         }
     }
 }
@@ -722,9 +729,12 @@ bool Lvk::FE::MainWindow::saveChanges()
             teachRule(selectedRule());
         }
 
-        m_coreApp->save();
+        saved = m_coreApp->save();
 
-        saved = true;
+        if (!saved) {
+            QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
+                                  "Please verify that you have write permissions."));
+        }
     }
 
     return saved;
@@ -743,15 +753,22 @@ bool Lvk::FE::MainWindow::saveAsChanges()
             filename.append("." + FILE_EXTENSION);
         }
 
+        QString filenameBak = m_filename;
+
         setFilename(filename);
 
         if (m_ruleEdited) {
             teachRule(selectedRule());
         }
 
-        m_coreApp->saveAs(m_filename);
+        saved = m_coreApp->saveAs(m_filename);
 
-        saved = true;
+        if (!saved) {
+            QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
+                                  "Please verify that you have write permissions."));
+
+            setFilename(filenameBak);
+        }
     }
 
     return saved;
@@ -765,7 +782,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
     bool success = initCoreAndModelsWithFile(filename);
 
-    if (!success) {
+    if (success) {
+        ui->conversationHistory->setConversation(m_coreApp->conversationHistory());
+    } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
 
@@ -1107,13 +1126,14 @@ void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
     } else if (rule->type() == BE::Rule::OrdinaryRule) {
         setUiMode(EditRuleUiMode);
         ui->categoryNameTextEdit->clear();
-        ui->ruleInputWidget->setInputList(rule->input());
-        ui->ruleOutputWidget->setOutputList(rule->output());
+        ui->ruleInputWidget->setTargets(rule->target());
+        ui->ruleInputWidget->setInput(rule->input());
+        ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
         setUiMode(EditEvasivesUiMode);
         ui->categoryNameTextEdit->clear();
         ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->setOutputList(rule->output());
+        ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         setUiMode(EditCategoryUiMode);
         ui->categoryNameTextEdit->setText(rule->name());
@@ -1168,6 +1188,13 @@ void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onRuleTargetEdited(const QString &/*ruleInput*/)
+{
+    onRuleEdited();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onRuleEdited()
 {
     const BE::Rule *selRule = selectedRule();
@@ -1177,6 +1204,7 @@ void Lvk::FE::MainWindow::onRuleEdited()
 
         m_ruleBackup.setStatus(selRule->status());
         m_ruleBackup.setName(selRule->name());
+        m_ruleBackup.setTarget(selRule->target());
         m_ruleBackup.setInput(selRule->input());
         m_ruleBackup.setOutput(selRule->output());
 
@@ -1245,10 +1273,11 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     }
 
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        rule->setInput(ui->ruleInputWidget->inputList());
-        rule->setOutput(ui->ruleOutputWidget->outputList());
+        rule->setTarget(ui->ruleInputWidget->targets());
+        rule->setInput(ui->ruleInputWidget->input());
+        rule->setOutput(ui->ruleOutputWidget->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
-        rule->setOutput(ui->ruleOutputWidget->outputList());
+        rule->setOutput(ui->ruleOutputWidget->output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         rule->setName(ui->categoryNameTextEdit->text());
     }
@@ -1274,10 +1303,11 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
     // Refresh rule IO widgets
     if (rule->type() == BE::Rule::OrdinaryRule) {
-        ui->ruleInputWidget->setInputList(m_ruleBackup.input());
-        ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
+        ui->ruleInputWidget->setTargets(m_ruleBackup.target());
+        ui->ruleInputWidget->setInput(m_ruleBackup.input());
+        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
-        ui->ruleOutputWidget->setOutputList(m_ruleBackup.output());
+        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
         ui->categoryNameTextEdit->setText(m_ruleBackup.name());
     }
@@ -1313,7 +1343,7 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString input = ui->testInputText->text();
     BE::CoreApp::MatchList matches;
 
-    QString response = m_coreApp->getResponse(input, matches);
+    QString response = m_coreApp->getTestUserResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
 
@@ -1324,14 +1354,13 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     highlightMatchedRules(matches);
 
     // Log conversation
-    BE::Conversation::Entry convEntry(QDateTime::currentDateTime(),
-                                      "test", "test",
-                                      input, response, !matches.isEmpty());
+    BE::Conversation::Entry entry(QDateTime::currentDateTime(),"test", "test", input, response,
+                                  !matches.isEmpty());
 
     // Disabled conversation history
-    //onNewChatConversation(convEntry);
+    //onNewChatConversation(entry);
 
-    logTestConversation(convEntry);
+    m_testConversationLog->write(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1363,16 +1392,6 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &ma
         selectRule(evasivesRule());
 
         ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::logTestConversation(const BE::Conversation::Entry &entry)
-{
-    if (m_testConversationLog) {
-        m_testConversationLog->write(entry.toString() + "\n");
-        m_testConversationLog->flush();
     }
 }
 

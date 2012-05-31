@@ -266,7 +266,7 @@
        </widget>
        <widget class="QWidget" name="chatTab">
         <attribute name="title">
-         <string>Connect with chat</string>
+         <string>Connect</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_8">
          <item row="0" column="1">

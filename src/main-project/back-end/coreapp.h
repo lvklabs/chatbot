@@ -27,12 +27,14 @@
 #include <QStringList>
 #include <QHash>
 #include <QPair>
+#include <QSet>
 
 #include <memory>
 
 #include "nlprule.h"
 #include "conversation.h"
 #include "roster.h"
+#include "target.h"
 
 class QFile;
 
@@ -71,7 +73,7 @@ public:
 
     ~CoreApp();
 
-    bool load(const QString &filename);
+    bool load(const QString &filename, bool create = true);
 
     bool saveAs(const QString &filename);
 
@@ -95,7 +97,9 @@ public:
 
     typedef QList< QPair<const Rule *, int> > MatchList;
 
-    QString getResponse(const QString &input, MatchList &matches) const;
+    QString getResponse(const QString &input, const QString &target, MatchList &matches) const;
+
+    QString getTestUserResponse(const QString &input, MatchList &matches) const;
 
     void refreshNlpEngine();
 
@@ -139,13 +143,16 @@ private:
     Nlp::RuleId m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
+    QString m_chatbotId;
     ChatType m_currentChatbotType;
     bool m_isFirstTime;
+    QSet<QString> m_targets;
 
     void markAsSaved();
 
-
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
+
+    void storeTargets(const TargetList &targets);
 
     QStringList getEvasives() const;
 

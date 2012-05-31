@@ -43,6 +43,7 @@ typedef unsigned long RuleId;
  *
  * A NLP rule is simply an structure that contains a list of input strings and a list of output
  * strings. How these input and output strings are interpreted depends on the engine implemenation.
+ * Alternatively, it can contain a list of targets to which the rule is intended to apply.
  *
  * @see ExactMatchEngine, AimlEngine, SimpleAimlEngine
  */
@@ -56,6 +57,8 @@ public:
     Rule(RuleId id, const QStringList &input, const QStringList &output)
         : m_id(id), m_input(input), m_output(output) {}
 
+    Rule(RuleId id, const QStringList &input, const QStringList &output, const QStringList &target)
+        : m_id(id), m_input(input), m_output(output), m_target(target) {}
 
     RuleId id() const { return m_id; }
 
@@ -75,11 +78,19 @@ public:
 
     void setOuput(const QStringList &output) { m_output = output; }
 
+
+    const QStringList &target() const { return m_target; }
+
+    QStringList &target() { return m_target; }
+
+    void setTarget(const QStringList &target) { m_target = target; }
+
 private:
 
     RuleId m_id;
     QStringList m_input;
     QStringList m_output;
+    QStringList m_target;
 };
 
 

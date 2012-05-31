@@ -16,12 +16,14 @@ PROJECT_PATH = $$PWD
 
 INCLUDEPATH += \
     ../../main-project/nlp-engine \
+    ../../main-project/common \
     ../../third-party
 
 HEADERS += \
     ../../main-project/nlp-engine/aimlengine.h \
     ../../main-project/nlp-engine/nullsanitizer.h \
     ../../main-project/nlp-engine/defaultsanitizer.h \
+    ../../main-project/common/settings.h \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
@@ -29,6 +31,7 @@ SOURCES += \
     ../../main-project/nlp-engine/aimlengine.cpp \
     ../../main-project/nlp-engine/nullsanitizer.cpp \
     ../../main-project/nlp-engine/defaultsanitizer.cpp \
+    ../../main-project/common/settings.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
 
 

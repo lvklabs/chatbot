@@ -21,15 +21,21 @@
 
 #include "xmmpchatbot.h"
 #include "chatvirtualuser.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
 #include "QXmppVCardManager.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVCardIq.h"
+#include "QXmppMucManager.h"
 
+
+#include <QDir>
 #include <QMutex>
 #include <QMutexLocker>
+#include <iostream>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -78,9 +84,12 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
     // Xmpp Logger
 
+    Lvk::Common::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+
     QXmppLogger *xmppLogger = new QXmppLogger(this);
     xmppLogger->setLoggingType(QXmppLogger::FileLogging);
-    xmppLogger->setLogFilePath("./xmpp.log");
+    xmppLogger->setLogFilePath(logsPath + QDir::separator() + "./xmpp.log");
     xmppLogger->setMessageTypes(QXmppLogger::AnyMessage);
     m_xmppClient->setLogger(xmppLogger);
 }
@@ -100,6 +109,14 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
 void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
                                           const QString &domain)
 {
+//    QXmppConfiguration conf;
+//    conf.setDomain(domain);
+//    conf.setUser(user);
+//    conf.setPassword(passwd);
+//    conf.setResource("");
+//    conf.setAutoAcceptSubscriptions(true);
+//    m_xmppClient->connectToServer(conf);
+
     m_xmppClient->connectToServer(user + "@" + domain, passwd);
 }
 

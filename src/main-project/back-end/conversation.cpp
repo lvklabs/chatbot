@@ -20,29 +20,10 @@
  */
 
 #include "conversation.h"
+#include "globalstrings.h"
 
 #include <QStringList>
 #include <QRegExp>
-
-//--------------------------------------------------------------------------------------------------
-// Helpers
-//--------------------------------------------------------------------------------------------------
-
-namespace
-{
-
-QString sanitize(const QString &str)
-{
-    return QString(str)
-            .replace("\n", " ")
-            .replace("\r", " ")
-            .replace("\t", " ")
-            .replace("+-->", "+ -->")
-            .replace("!-->", "! -->");
-}
-
-} //namespace
-
 
 //--------------------------------------------------------------------------------------------------
 // Conversation::Entry
@@ -66,38 +47,7 @@ Lvk::BE::Conversation::Entry::Entry(const QDateTime &dateTime, const QString &fr
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Conversation::Entry::Entry(const QString &str)
-    : match(false)
-{
-    QRegExp regex("(\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)"
-                  " (.*) -> (.*): (.*) ([!+])--> (.*)");
-
-    if (regex.exactMatch(str)) {
-        dateTime = QDateTime::fromString(regex.cap(1), DATE_TIME_LOG_FORMAT);
-        from     = regex.cap(2);
-        to       = regex.cap(3);
-        msg      = regex.cap(4);
-        match    = regex.cap(5) == "+" ? true : false;
-        response = regex.cap(6);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-QString Lvk::BE::Conversation::Entry::toString() const
-{
-    return QString("%1 %2 -> %3: %4 %5--> %6")
-            .arg(QDateTime::currentDateTime().toString(DATE_TIME_LOG_FORMAT))
-            .arg(sanitize(from))
-            .arg(sanitize(to))
-            .arg(sanitize(msg))
-            .arg(match ? "+" : "!")
-            .arg(sanitize(response));
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::Conversation::Entry::isNull()
+bool Lvk::BE::Conversation::Entry::isNull() const
 {
     return dateTime.isNull()
             && from.isNull()
@@ -108,38 +58,43 @@ bool Lvk::BE::Conversation::Entry::isNull()
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Conversation::Entry::clear()
+{
+    dateTime = QDateTime();
+    from.clear();
+    to.clear();
+    msg.clear();
+    response.clear();
+    match = false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Conversation::Entry::operator==(const Lvk::BE::Conversation::Entry &other) const
+{
+    QString strDate      = dateTime.toString(STR_GLOBAL_DATE_TIME_FORMAT);
+    QString strOtherDate = other.dateTime.toString(STR_GLOBAL_DATE_TIME_FORMAT);
+
+    return  strDate     == strOtherDate
+            && from     == other.from
+            && to       == other.to
+            && msg      == other.msg
+            && response == other.response
+            && match    == other.match;
+}
+
+bool Lvk::BE::Conversation::Entry::operator!=(const Lvk::BE::Conversation::Entry &other) const
+{
+    return !this->operator==(other);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Conversation
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Conversation::Conversation()
 {
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::BE::Conversation::Conversation(const QString &str)
-{
-    QStringList lines = str.split("\n", QString::SkipEmptyParts);
-
-    for (int i = 0; i < lines.size(); ++i) {
-        Conversation::Entry entry(lines[i]);
-        if (!entry.isNull()) {
-            m_entries.append(entry);
-        }
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-QString Lvk::BE::Conversation::toString() const
-{
-    QString str;
-
-    for (int i = 0; i < m_entries.size(); ++i) {
-        str += m_entries[i].toString() + "\n";
-    }
-
-    return str;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -170,4 +125,24 @@ void Lvk::BE::Conversation::append(const Lvk::BE::Conversation::Entry &entry)
     m_entries.append(entry);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Conversation::clear()
+{
+    m_entries.clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Conversation::operator==(const Lvk::BE::Conversation &other) const
+{
+    return m_entries == other.m_entries;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Conversation::operator!=(const Lvk::BE::Conversation &other) const
+{
+    return !this->operator==(other);
+}
 

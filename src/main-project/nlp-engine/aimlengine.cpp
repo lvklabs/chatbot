@@ -22,13 +22,17 @@
 #include "aimlengine.h"
 #include "nlprule.h"
 #include "nullsanitizer.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include "ProgramQ/aimlparser.h"
 
 #include <QStringList>
 #include <QFile>
+#include <QDir>
 #include <cassert>
 
+#define ANY_USER        "LvkNlpAimlEngineAnyUser"
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -66,6 +70,23 @@ int getInputNumber(long categoryId)
     return categoryId & INPUT_NUMBER_MASK;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+// AIML does not support our concept of "target", i.e. rules that are defined only
+// for a user or group of users. In order achieve that, for each target we are enconding the
+// target as a new word with form "TSTART" + Sanitized(target) + "TEND". Then we prepend this
+// new word to input of the rule
+
+QString inputWithTarget(const QString &input, const QString &target)
+{
+    if (target != ANY_USER) {
+        return "TSTART" + QString(target).replace(QRegExp("[^a-zA-Z0-9]"),"X") + "TEND "
+                + input;
+    } else {
+        return input;
+    }
+}
+
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -75,7 +96,7 @@ int getInputNumber(long categoryId)
 Lvk::Nlp::AimlEngine::AimlEngine()
     : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::NullSanitizer())
 {
-    init();
+    resetParser();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -83,7 +104,7 @@ Lvk::Nlp::AimlEngine::AimlEngine()
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
     : m_aimlParser(0), m_sanitizer(sanitizer)
 {
-    init();
+    resetParser();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -96,10 +117,15 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::AimlEngine::init()
+void Lvk::Nlp::AimlEngine::resetParser()
 {
-    QFile *logfile = new QFile("aiml_parser.log");
+    Lvk::Common::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+
+    QFile *logfile = new QFile(logsPath + QDir::separator() + "aiml_parser.log");
     logfile->open(QFile::WriteOnly);
+
+    delete m_aimlParser;
     m_aimlParser = new AIMLParser(logfile);
 }
 
@@ -125,6 +151,9 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 
     QString aiml;
     buildAiml(aiml);
+
+    resetParser();
+
     m_aimlParser->loadAimlFromString(aiml);
 }
 
@@ -132,10 +161,18 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 
 QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &matches)
 {
+    return getResponse(input, ANY_USER, matches);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, const QString &target,
+                                          MatchList &matches)
+{
     matches.clear();
 
     MatchList allMatches;
-    QList<QString> responses = getAllResponses(input, allMatches);
+    QList<QString> responses = getAllResponses(input, target, allMatches);
 
     if (!allMatches.empty()) {
         matches.append(allMatches.first());
@@ -151,10 +188,18 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, MatchList &match
 
 QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
-    QString sanitizedInput = m_sanitizer->sanitize(input);
+    return getAllResponses(input, ANY_USER, matches);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
+                                                     MatchList &matches)
+{
+    QString szInput = m_sanitizer->sanitize(input);
 
     QList<long> categoriesId;
-    QString response = m_aimlParser->getResponse(sanitizedInput, categoriesId);
+    QString response = m_aimlParser->getResponse(inputWithTarget(szInput, target), categoriesId);
 
     QList<QString> responses;
 
@@ -163,6 +208,9 @@ QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, Match
 
         long catId = categoriesId.last();
         matches.append(QPair<RuleId, int>(getRuleId(catId), getInputNumber(catId)));
+    } else if (target != ANY_USER) {
+        // No response found with the given target, fallback to rules with any user:
+        return getAllResponses(input, ANY_USER, matches);
     }
 
     return responses;
@@ -176,15 +224,34 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
     aiml += "<aiml>";
 
     for (int i = 0; i < m_rules.size(); ++i) {
-        QStringList input = m_sanitizer->sanitize(m_rules[i].input());
-        const QStringList &output = m_rules[i].output();
+        buildAiml(aiml, m_rules[i]);
+    }
 
-        for (int j = 0; j < input.size(); ++j) {
-            QString categoryId = QString::number(getCategoryId(m_rules[i].id(), j));
+    aiml += "</aiml>";
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
+{
+    QStringList input = m_sanitizer->sanitize(rule.input());
+    const QStringList &output = rule.output();
+
+    for (int j = 0; j < input.size(); ++j) {
+        QStringList target = rule.target();
+
+        if (target.isEmpty()) {
+            target.append(ANY_USER);
+        }
+
+        for (int k = 0; k < target.size(); ++k) {
+            // id is not part of AIML standar. It's an LVK extension to know which
+            // rule has matched
+            QString categoryId = QString::number(getCategoryId(rule.id(), j));
 
             aiml += "<category>";
             aiml += "<id>" + categoryId + "</id>";
-            aiml += "<pattern>" + input[j] + "</pattern>";
+            aiml += "<pattern>" + inputWithTarget(input[j], target[k]) + "</pattern>";
 
             if (output.size() == 1) {
                 aiml += "<template>" + output[0] + "</template>";
@@ -199,8 +266,4 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
             aiml += "</category>";
         }
     }
-
-    aiml += "</aiml>";
 }
-
-

@@ -20,8 +20,29 @@
  */
 
 #include "settings.h"
+#include "settingskeys.h"
+
+//--------------------------------------------------------------------------------------------------
+// Settings
+//--------------------------------------------------------------------------------------------------
 
 Lvk::Common::Settings::Settings(QObject *parent) :
     QSettings(parent)
 {
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QVariant Lvk::Common::Settings::value(const QString &key, const QVariant &defaultValue_) const
+{
+    QVariant defaultValue = defaultValue_;
+
+    if (defaultValue.isNull()) {
+        // Add here system-wide default values for known keys
+        if (key == SETTING_LOGS_PATH) {
+            defaultValue = QString("./logs");
+        }
+    }
+
+    return QSettings::value(key, defaultValue);
 }

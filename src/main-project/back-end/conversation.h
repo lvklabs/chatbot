@@ -30,7 +30,6 @@ namespace Lvk
 {
 
 namespace BE
-
 {
 
 /**
@@ -40,40 +39,101 @@ namespace BE
 class Conversation
 {
 public:
-    Conversation();
-    Conversation(const QString &str);
 
     /**
-     * \brief The Entry Class provides a single conversation entry between a user and the chatbot
+     * Constructs an empty Conversation object.
      */
+    Conversation();
 
+    /**
+     * \brief The Entry class provides a single conversation entry between a user and the chatbot
+     *
+     * A conversation entry is an object that provides information about a mesage-response
+     * between the user and the chatbot such as date-time, "from" user, "to" user, message,
+     * response and if there were a match in the chatbot rules.
+     *
+     * @see Conversation class
+     */
     class Entry
     {
     public:
+        /**
+         * Constructs an empty Entry object.
+         */
         Entry();
-        Entry(const QString &str);
+
+        /**
+         * Constructs an Entry object with the given date-time, from, to, message, response and
+         * match
+         */
         Entry(const QDateTime &dateTime, const QString &from, const QString &to, const QString &msg,
               const QString &response, bool match);
 
-        QDateTime dateTime;
-        QString from;
-        QString to;
-        QString msg;
-        QString response;
-        bool match;
+        QDateTime dateTime; //! Entry date-time
+        QString from;       //! From user
+        QString to;         //! To user
+        QString msg;        //! Message
+        QString response;   //! Response
+        bool match;         //! True if there were match; false otherwise.
 
-        bool isNull();
+        /**
+         * An entry is null if all class attributes are null.
+         * Returns true if this entry is null; otherwise returns false.
+         */
+        bool isNull() const;
 
-        QString toString() const;
+        /**
+         * Clears the contents of the entry.
+         */
+        void clear();
+
+        /**
+         * Returns true if this entry is equal to entry @param other; otherwise returns false.
+         */
+        bool operator==(const Entry &other) const;
+
+        /**
+         * Returns true if this entry is not equal to entry @param other; otherwise returns false.
+         */
+        bool operator!=(const Entry &other) const;
     };
 
+    /**
+     * Sets the given entries to the conversation.
+     */
     void setEntries(const QList<Entry> &entries);
+
+    /**
+     * Returns the entries of the conversation.
+     */
     QList<Entry> &entries();
+
+    /**
+     * Returns the entries of the conversation.
+     */
     const QList<Entry> &entries() const;
 
+    /**
+     * Appends the given entry to the conversation.
+     */
     void append(const Entry &entry);
 
-    QString toString() const;
+    /**
+     * Removes all entries in the conversation.
+     */
+    void clear();
+
+    /**
+     * Returns true if this conversation is equal to conversation @param other;
+     * otherwise returns false.
+     */
+    bool operator==(const Conversation &other) const;
+
+    /**
+     * Returns true if this conversation is not equal to conversation @param other;
+     * otherwise returns false.
+     */
+    bool operator!=(const Conversation &other) const;
 
 private:
     QList<Entry> m_entries;

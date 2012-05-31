@@ -39,6 +39,8 @@ class Settings : public QSettings
 public:
     explicit Settings(QObject *parent = 0);
 
+    virtual QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+
 };
 
 } // namespace Common

@@ -25,9 +25,7 @@
 #include <QListWidgetItem>
 #include <QKeyEvent>
 #include <QStringList>
-
-//#include <iostream>
-
+#include <QToolTip>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -84,21 +82,14 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_init(false), m_delimiter(" "), m_listWidget(new QListWidget(this))
+    QLineEdit(parent), m_delimiter(" "), m_listWidget(new QListWidget(this))
 {
     m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
-    connect(this, SIGNAL(textEdited(QString)), SLOT(onTargetTextEdited(QString)));
-    connect(this, SIGNAL(lostFocus()),         SLOT(onTargetLostFocus()));
+    setText(m_defaultString);
 
-    ///////////////////////////////////////
-    // TODO remove!
-//    m_strList.append("Andres Pagliano");
-//    m_strList.append("Andres Calamaro");
-//    m_strList.append("Andrea Prodan");
-//    m_strList.append("Luciana Benotti");
-//    m_strList.append("Emilia Echeveste");
-    ///////////////////////////////////////
+    connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
+    connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -114,22 +105,66 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
         m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
     }
     if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
-        QString t1; // text before cursor position
-        QString t2; // text after cursor position
-        if (m_tail.isEmpty()) {
-            t1 = m_head + m_listWidget->currentItem()->text() + m_delimiter;
-            //t2 = "";
-        } else {
-            t1 = m_head + m_listWidget->currentItem()->text();
-            t2 = m_tail;
-        }
-        setText(t1 + t2);
-        setCursorPosition(t1.size());
-
+        onListItemSelected();
+    }
+    if (key == Qt::Key_Escape) {
         m_listWidget->hide();
     }
 
     QLineEdit::keyPressEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
+{
+    if (text().trimmed().isEmpty()) {
+        QLineEdit::setText(m_defaultString);
+    }
+
+    m_listWidget->hide();
+
+    QLineEdit::focusOutEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
+{
+    if (text().trimmed() == m_defaultString) {
+        QLineEdit::setText("");
+    }
+
+    // If empty, display full list
+    if (text().isEmpty()) {
+        onTargetTextEdited("");
+    }
+
+    QLineEdit::focusInEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::mouseReleaseEvent(QMouseEvent *)
+{
+    // If empty, display full list
+    if (text().isEmpty()) {
+        onTargetTextEdited("");
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
+{
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // FIXME How to detect that the window has been moved in order to update the position of
+    //       the list widget ? As workaround I'm using the pain't event to refresh the position
+    //       periodically.
+    updateListWidgetGeometry();
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    QLineEdit::paintEvent(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -160,43 +195,83 @@ const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
     return m_delimiter;
 }
 
+
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
+void Lvk::FE::AutocompleteTextEdit::setDefaultText(const QString &text)
 {
-    if (!m_init) {
-        updateListWidgetGeometry();
-        m_init = true;
-    }
+    m_defaultString = text;
+}
 
-    updateTextParts();
+//--------------------------------------------------------------------------------------------------
 
-    m_listWidget->clear();
-
-    QString current = m_current.trimmed();
-
-    if (current.size() > 0) {
-        foreach (const QString &str, m_strList) {
-            if (str.contains(current, false)) {
-                m_listWidget->addItem(str);
-            }
-            if (m_listWidget->count() == 1) {
-                m_listWidget->setCurrentRow(0);
-            }
-        }
-    }
-
-    if (m_listWidget->count() > 0) {
-        m_listWidget->show();
+void Lvk::FE::AutocompleteTextEdit::setText(const QString &text)
+{
+    if (!text.isEmpty()) {
+        QLineEdit::setText(text);
     } else {
-        m_listWidget->hide();
+        QLineEdit::setText(m_defaultString);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::onTargetLostFocus()
+void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 {
+    updateTextParts();
+
+    m_listWidget->clear();
+
+    if (m_strList.isEmpty()) {
+        // FIXME Add new class methods to set the tooltip
+        QToolTip::showText(mapToGlobal(QPoint(0, height()/2)),
+                           tr("Tip: Go to the 'Connect to chat' tab and connect using your\n"
+                              "Facebook or Gmail account to get a list of contacts"), this);
+    } else {
+        QString current = m_current.trimmed();
+
+        //if (current.size() > 0) {
+            foreach (const QString &str, m_strList) {
+                if (str.contains(current, false)) {
+                    m_listWidget->addItem(str);
+                }
+                if (m_listWidget->count() == 1) {
+                    m_listWidget->setCurrentRow(0);
+                }
+            }
+        //}
+
+
+        if (m_listWidget->count() > 0) {
+            m_listWidget->show();
+        } else {
+            m_listWidget->hide();
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
+{
+    if (m_listWidget->currentRow() == -1) {
+        return;
+    }
+
+    QString t1; // text before cursor position
+    QString t2; // text after cursor position
+    if (m_tail.isEmpty()) {
+        t1 = m_head + m_listWidget->currentItem()->text() + m_delimiter;
+        //t2 = "";
+    } else {
+        t1 = m_head + m_listWidget->currentItem()->text();
+        t2 = m_tail;
+    }
+    setText(t1 + t2);
+    setCursorPosition(t1.size());
+
+    emit textEdited(text());
+
     m_listWidget->hide();
 }
 
@@ -211,27 +286,6 @@ void Lvk::FE::AutocompleteTextEdit::updateListWidgetGeometry()
 
         m_listWidget->setGeometry(globalPos.x(), globalPos.y() + height(), 300, 200);
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::FE::AutocompleteTextEdit::event(QEvent *event)
-{
-    // FIXME
-    //std::cout << event->type() << std::endl;
-
-    return QLineEdit::event(event);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
-{
-    // FIXME
-    //std::cout << "paintEvent" << std::endl;
-    //updateListWidgetGeometry();
-
-    QLineEdit::paintEvent(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -262,8 +316,12 @@ void Lvk::FE::AutocompleteTextEdit::updateTextParts()
     m_current = text.mid(prevDelimPos+delimSize, nextDelimPos - (prevDelimPos+delimSize));
     m_tail    = text.mid(nextDelimPos);
 
-//    std::cout << "[" << m_head.toStdString()    << "] "
-//              << "[" << m_current.toStdString() << "] "
-//              << "[" << m_tail.toStdString()    << "]"
-//              << std::endl;
+	//    std::cout << "[" << m_head.toStdString()    << "] "
+	//              << "[" << m_current.toStdString() << "] "
+	//              << "[" << m_tail.toStdString()    << "]"
+    //              << std::endl;
 }
+
+
+
+

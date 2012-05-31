@@ -24,6 +24,8 @@
 
 #include "aimlengine.h"
 
+#include <QHash>
+
 namespace Lvk
 {
 
@@ -50,6 +52,9 @@ namespace Nlp
  *         Yes I like [VarName]
  *         {else}
  *         No, I don't
+ *
+ * SimpleAimlEngine also supports regex-like quantifiers + and * where + means one or more words
+ * and * means zero or more words
  */
 
 class SimpleAimlEngine : public AimlEngine
@@ -65,26 +70,46 @@ public:
 
     virtual void setRules(const RuleList &rules);
 
+    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
+                                           MatchList &matches);
+
     class InvalidSyntaxException;
 
 private:
+
+    struct ConvertionContext
+    {
+        Lvk::Nlp::Rule rule;
+        QString varName;
+        int inputIdx;
+        QString input;
+    };
+
+    // Remaps: AimlEngine input index -> SimpleAimlEngine input index
+    typedef QHash<int, int> IndexRemap;
+    typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
+
     RuleList m_rules;
-
-    void initRegexs();
-
-    void buildPureAimlRules(RuleList &aimlRules) const;
-    void buildPureAimlRule(Lvk::Nlp::Rule &pureAimlRules, const Lvk::Nlp::Rule &rule) const;
-    void buildPureAimlInputList(QStringList &pureAimlInputList,
-                                QString &varNameOnInput,
-                                const QStringList &inputList) const;
-    void buildPureAimlOutputList(QStringList &pureAimlOutputList,
-                                 const QString &varNameOnInput,
-                                 const QStringList &outputList) const;
 
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
     QRegExp m_ifRegex;
+    QRegExp m_keywordRegex;
 
+    RuleIndexRemap m_indexRemap;
+
+    void initRegexs();
+
+    void convertToPureAiml(RuleList &rules);
+    void convertToPureAiml(Lvk::Nlp::Rule &newRules, const Lvk::Nlp::Rule &rule);
+
+    void convertInputList(QStringList &inputList, ConvertionContext &ctx);
+    bool convertVariables(QStringList &inputList, ConvertionContext &ctx);
+    bool convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
+    bool convertOtherOps(QStringList &inputList, ConvertionContext &ctx);
+    void convertOutputList(QStringList &outputList, ConvertionContext &ctx);
+
+    void remap(Engine::MatchList &matches);
 };
 
 } // namespace Nlp

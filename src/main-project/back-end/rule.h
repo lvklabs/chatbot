@@ -27,6 +27,8 @@
 #include <QStringList>
 #include <QVariant>
 
+#include "target.h"
+
 namespace Lvk
 {
 
@@ -98,8 +100,8 @@ public:
 
     Rule(const QString &name, Type type, Rule *parent = 0);
 
-    Rule(const QString &name, const QStringList &input, const QStringList &ouput,
-             Rule *parent = 0);
+    Rule(const QString &name, const QStringList &input, const QStringList &output,
+         Rule *parent = 0);
 
     Rule(const Rule &other, bool deepCopy = false);
 
@@ -111,11 +113,9 @@ public:
 
     bool operator!=(const Rule &other) const;
 
-
     Rule *parent();
 
     const Rule *parent() const;
-
 
     QList<Rule*> &children();
 
@@ -135,29 +135,29 @@ public:
 
     int childCount() const;
 
-
     void clear();
-
 
     Rule *child(int number);
 
     const Rule *child(int number) const;
 
-
     Rule *nextSibling();
 
     const Rule *nextSibling() const;
-
 
     Type type() const;
 
     void setType(Type type);
 
-
     const QString &name() const;
 
     void setName(const QString &name);
 
+    TargetList &target();
+
+    const TargetList &target() const;
+
+    void setTarget(const TargetList &target);
 
     QStringList &input();
 
@@ -165,27 +165,24 @@ public:
 
     void setInput(const QStringList &input);
 
-
     QStringList &output();
 
     const QStringList &output() const;
 
     void setOutput(const QStringList &output);
 
-
     bool enabled() const;
 
     void setEnabled(bool enabled);
-
 
     Qt::CheckState checkState() const;
 
     void setCheckState(Qt::CheckState state);
 
-
     Status status() const;
 
     void setStatus(Status status);
+
 
     /**
       * \brief Rule iterator
@@ -198,6 +195,7 @@ public:
         Rule* operator*() { return m_rule; }
     };
 
+
     /**
       * \brief Rule const iterator
       */
@@ -208,6 +206,7 @@ public:
 
         const Rule* operator*() const { return m_rule; }
     };
+
 
     iterator begin() { return iterator(this); }
 
@@ -225,6 +224,7 @@ private:
     QString m_name;
     QStringList m_input;
     QStringList m_output;
+    TargetList m_target;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;

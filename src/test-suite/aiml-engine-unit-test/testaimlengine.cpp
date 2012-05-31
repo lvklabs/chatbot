@@ -58,6 +58,9 @@ private Q_SLOTS:
     void testMatchWithDefaultSanitizer_data();
     void testMatchWithDefaultSanitizer();
 
+    void testMatchWithTarget_data();
+    void testMatchWithTarget();
+
     void cleanupTestCase();
 
 private:
@@ -68,6 +71,7 @@ private:
     void setRules1();
     void setRules2();
     void setRules3();
+    void setRules4();
 };
 
 TestAimlEngine::TestAimlEngine()
@@ -92,6 +96,10 @@ TestAimlEngine::TestAimlEngine()
 #define u_DIAERESIS "\xc3\xbc"
 #define U_DIAERESIS "\xc3\x9c"
 
+#define TARGET_USER_1                       "-1234123431@chat.facebook.com"
+#define TARGET_USER_2                       "-1234123432@chat.facebook.com"
+#define TARGET_USER_3                       "John R. Smith"
+#define TARGET_USER_4                       "Ju" a_ACUTE "n P" e_ACUTE "rez"
 
 #define RULE_1_ID                           1
 #define RULE_1_INPUT_1                      "Hello"
@@ -125,6 +133,10 @@ TestAimlEngine::TestAimlEngine()
 #define RULE_6_INPUT_2                      "C" O_ACUTE "MO SE LLAMA TU BARRIO?"
 #define RULE_6_OUTPUT_1                     "G" u_DIAERESIS "emes"
 
+#define RULE_7_ID                           7
+#define RULE_7_INPUT_1                      "Do you like soccer?"
+#define RULE_7_OUTPUT_1                     "Sure!"
+
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
@@ -142,6 +154,7 @@ TestAimlEngine::TestAimlEngine()
 #define USER_INPUT_7d                       "Have you seen the latest cars that BMW have launched?"
 #define USER_INPUT_8a                       "Do you like cats?"
 #define USER_INPUT_8b                       "Do you like robots?"
+#define USER_INPUT_8c                       "Do you like soccer?"
 #define USER_INPUT_9a                       "Cual es tu barrio"
 #define USER_INPUT_9b                       "Cu" a_ACUTE "l es tu barrio?"
 #define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO????"
@@ -227,6 +240,41 @@ void TestAimlEngine::setRules3()
 
     m_engineWithDefSanitizer->setRules(rules);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules4()
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_1_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1,
+                            QStringList() << TARGET_USER_1);
+
+    rules << Lvk::Nlp::Rule(RULE_2_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1,
+                            QStringList() << TARGET_USER_2);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1,
+                            QStringList() << RULE_3_OUTPUT_1,
+                            QStringList() << TARGET_USER_2 << QString::fromUtf8(TARGET_USER_4));
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_6_ID,
+                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
+                                          << QString::fromUtf8(RULE_6_INPUT_2),
+                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1),
+                            QStringList() << TARGET_USER_1 << TARGET_USER_2 << TARGET_USER_3);
+
+    m_engine->setRules(rules);
+}
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -451,6 +499,64 @@ void TestAimlEngine::testMatchWithDefaultSanitizer()
         QCOMPARE(matches.size(), 0);
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::testMatchWithTarget_data()
+{
+    QTest::addColumn<QString>("targetUser");
+    QTest::addColumn<QString>("userInput");
+    QTest::addColumn<QString>("expectedOutput");
+    QTest::addColumn<int>("ruleId");
+    QTest::addColumn<int>("ruleInputNumber");
+
+    QTest::newRow("Match, user 1")      << TARGET_USER_1 << USER_INPUT_1a
+                                        << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
+
+    QTest::newRow("Match, user 2")      << TARGET_USER_2 << USER_INPUT_1a
+                                        << RULE_1_OUTPUT_1 << RULE_2_ID << 0;
+
+    QTest::newRow("No Match, user 3")   << TARGET_USER_3 << USER_INPUT_1a
+                                        << QString() << -1 << -1;
+
+    QTest::newRow("No Match, user 4")   << QString::fromUtf8(TARGET_USER_4)
+                                        << USER_INPUT_1a << QString() << -1 << -1;
+
+    QTest::newRow("NoTargets, match 1") << TARGET_USER_1 << USER_INPUT_8c
+                                        << RULE_7_OUTPUT_1 << RULE_7_ID << 0;
+
+    QTest::newRow("NoTargets, match 2") << QString::fromUtf8(TARGET_USER_4) << USER_INPUT_8c
+                                        << RULE_7_OUTPUT_1 << RULE_7_ID << 0;
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::testMatchWithTarget()
+{
+    QFETCH(QString, targetUser);
+    QFETCH(QString, userInput);
+    QFETCH(QString, expectedOutput);
+    QFETCH(int, ruleId);
+    QFETCH(int, ruleInputNumber);
+
+    setRules4();
+
+    Lvk::Nlp::Engine::MatchList matches;
+
+    QString output = m_engine->getResponse(userInput, targetUser, matches);
+
+    if (!expectedOutput.isNull()) {
+        QCOMPARE(output, expectedOutput);
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
+        QCOMPARE(matches[0].second, ruleInputNumber);
+    } else {
+        QVERIFY(output.isEmpty());
+        QCOMPARE(matches.size(), 0);
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // Test entry point

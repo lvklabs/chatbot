@@ -15,7 +15,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH += \
-    ../../main-project/nlp-engine \
+    ../../main-project/nlp-engine ../../main-project/common \
     ../../third-party
 
 HEADERS += \
@@ -23,6 +23,7 @@ HEADERS += \
     ../../main-project/nlp-engine/simpleaimlengine.h \
     ../../main-project/nlp-engine/nullsanitizer.h \
     ../../main-project/nlp-engine/defaultsanitizer.h \
+    ../../main-project/common/settings.h \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
@@ -31,6 +32,7 @@ SOURCES += \
     ../../main-project/nlp-engine/simpleaimlengine.cpp \
     ../../main-project/nlp-engine/nullsanitizer.cpp \
     ../../main-project/nlp-engine/defaultsanitizer.cpp \
+    ../../main-project/common/settings.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
