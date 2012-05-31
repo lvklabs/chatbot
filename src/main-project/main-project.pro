@@ -1,7 +1,7 @@
 TARGET = chatbot
 
 QT += \
-    ui \
+    gui \
     xml \           #required for ProgramQ
     qt3support \    #required for ProgramQ
     network         #required for QXmpp
