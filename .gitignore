@@ -4,4 +4,5 @@
 *~
 *.autosave
 versionrev.h
+.test-suite-shadow-build
 
