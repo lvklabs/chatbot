@@ -105,12 +105,12 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
     // get response thread-safe
 
     QString response;
-    getResponse(response, input, contact.username);
+    bool matched;
+    getResponse(response, matched, input, contact.username);
 
     // Make entry and log it
 
     QDateTime dateTime = QDateTime::currentDateTime();
-    bool matched = response.size() > 0;
     Conversation::Entry entry(dateTime, getFromString(contact), m_id, input, response, matched);
 
     {
@@ -127,16 +127,15 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
 //--------------------------------------------------------------------------------------------------
 
 
-void Lvk::BE::DefaultVirtualUser::getResponse(QString &response, const QString &input,
-                                              const QString &username)
+void Lvk::BE::DefaultVirtualUser::getResponse(QString &response, bool &matched,
+                                              const QString &input, const QString &username)
 {
     QWriteLocker locker(m_rwLock);
 
     if (m_engine) {
         Nlp::Engine::MatchList matches;
         response = m_engine->getResponse(input, username, matches);
-
-        bool matched = !response.isEmpty() && matches.size() > 0;
+        matched = !response.isEmpty() && matches.size() > 0;
 
         if (!matched) {
             if (m_evasives.size() > 0) {

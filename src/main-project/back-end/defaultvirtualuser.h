@@ -81,7 +81,7 @@ private:
 
     QReadWriteLock *m_rwLock;
 
-    void getResponse(QString &response, const QString &input, const QString &username);
+    void getResponse(QString &response, bool &match, const QString &input, const QString &username);
     void logConversationEntry(const Conversation::Entry &entry);
     void logError(const QString &msg);
 };
