@@ -20,18 +20,17 @@
  */
 
 #include "chatcorpus.h"
+#include "csvdocument.h"
+#include "globalstrings.h"
 
 #include <QFile>
 #include <QStringList>
 #include <QRegExp>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDateTime>
 
 #define CORPUS_FILE     "./corpus.dat"
-
-#define SENTENCE_SPLIT_TOKEN    "\n"
-#define USER_SENT_SPLIT_TOKEN   ":\t"
-
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -42,7 +41,7 @@ namespace
 
 QString sanitize(const QString &str)
 {
-    return QString(str).replace(QRegExp("\\s+"), " ");
+    return str.simplified();
 }
 
 } // namespace
@@ -63,6 +62,13 @@ QMutex *Lvk::CA::ChatCorpus::m_mutex = new QMutex();
 //--------------------------------------------------------------------------------------------------
 
 Lvk::CA::ChatCorpus::ChatCorpus()
+{
+    init();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::ChatCorpus::init()
 {
     if (!m_init) {
         QMutexLocker locker(m_mutex);
@@ -94,10 +100,13 @@ void Lvk::CA::ChatCorpus::add(const CorpusEntry &entry)
     m_corpus.append(entry);
 
     if (m_corpusFile.isOpen()) {
-        m_corpusFile.write(sanitize(entry.first).toUtf8());
-        m_corpusFile.write(USER_SENT_SPLIT_TOKEN);
-        m_corpusFile.write(sanitize(entry.second).toUtf8());
-        m_corpusFile.write(SENTENCE_SPLIT_TOKEN);
+        Common::CsvRow row;
+        row.append(QDateTime::currentDateTime().toString(STR_CHAT_CORPUS_DATE_TIME_FORMAT));
+        row.append(sanitize(entry.first));
+        row.append(sanitize(entry.second));
+
+        m_corpusFile.write(row.toString().toUtf8());
+        m_corpusFile.write("\n");
         m_corpusFile.flush();
     }
 }
@@ -115,26 +124,27 @@ QList<Lvk::CA::ChatCorpus::CorpusEntry> Lvk::CA::ChatCorpus::corpus()
 void Lvk::CA::ChatCorpus::load()
 {
     if (!m_corpusFile.exists()) {
+        // Nothing to do
         return;
     }
     if (!m_corpusFile.open(QFile::ReadOnly)) {
         qWarning(QObject::tr("Warning: cannot open corpus file for reading"));
-
         return;
     }
 
     char buf[10*1024];
     qint64 len = 0;
     QString line;
-    QStringList tokens;
+    Common::CsvRow row;
 
     do {
         len = m_corpusFile.readLine(buf, sizeof(buf));
         if (len > 0) {
             line = QString::fromUtf8(buf);
-            tokens = line.split(USER_SENT_SPLIT_TOKEN);
-            if (tokens.size() == 2) {
-                m_corpus.append(qMakePair(tokens[0], tokens[1]));
+            row = Common::CsvRow(line);
+
+            if (row.size() == 3) {
+                m_corpus.append(qMakePair(row[1], row[2]));
             }
         }
     } while (len != -1);

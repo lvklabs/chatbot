@@ -38,31 +38,50 @@ namespace CA
 /**
  * \brief The ChatCorpus class provides corpus of chat conversations held by the real user.
  *
- * The ChatCorpus class stores and retrieves chat conversations held by the real user (i.e. not the
- * chabot) to be used later (mainly) in NLP algorithms. The class maintains only one big corpus.
- * Currently only FbChatbot class uses ChatCorpus. FbChatbot can "sniff" the real user and it
- * stores sniffed conversations.
+ * The ChatCorpus class provides methods to store and retrieve chat conversations held by the
+ * real user (i.e. not the chabot) to be used later to train NLP algorithms. The class maintains
+ * only one big corpus. It is not possible to instantiate different corpora.
+ *
+ * Currently, only FbChatbot class uses ChatCorpus. FbChatbot can "hear" chat conversations
+ * from the real user but GtalkChatbot does not.
  */
 
 class ChatCorpus
 {
 public:
-    ChatCorpus();
 
     typedef QPair<QString, QString> CorpusEntry; //! CorpusEntry provides a pair (user, sentence)
 
+    /**
+     * Constructs a ChatCorpus object initialized with the default data file.
+     */
+    ChatCorpus();
+
+    /**
+     * Adds a new entry with the given user name and sentence to the corpus.
+     */
     void add(const QString &user, const QString &sentence);
 
+    /**
+     * Adds the given entry to the corpus.
+     */
     void add(const CorpusEntry &entry);
 
+    /**
+     * Returns all the entries in the corpus.
+     */
     QList<CorpusEntry> corpus();
 
 private:
+    ChatCorpus(const ChatCorpus&);
+    ChatCorpus& operator=(const ChatCorpus&);
+
     static bool m_init;
     static QFile m_corpusFile;
     static QList<CorpusEntry> m_corpus;
     static QMutex *m_mutex;
 
+    void init();
     void load();
 };
 
