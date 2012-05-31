@@ -29,15 +29,15 @@ qmake $project_dir
 make
 
 if [ "$run_unit" == "yes" ]; then
-  (cd csv-document-unit-test && ./csvDocumentUnitTest )
-  (cd conversation-rw-unit-test && ./conversationRwTest )
-  (cd default-sanitizer-unit-test && ./defaultSanitizerUnitTest ) 
-  (cd aiml-engine-unit-test && ./aimlEngineUnitTest )
-  (cd simple-aiml-engine-unit-test && ./simpleAimlEngineUnitTest )
+  ( cd csv-document-unit-test && ./csvDocumentUnitTest )
+  ( cd conversation-rw-unit-test && ./conversationRwTest )
+  ( cd default-sanitizer-unit-test && ./defaultSanitizerUnitTest ) 
+  ( cd aiml-engine-unit-test && ./aimlEngineUnitTest )
+  ( cd simple-aiml-engine-unit-test && ./simpleAimlEngineUnitTest )
 fi
 
 if [ "$run_e2e" == "yes" ]; then
-  (cd end-to-end-test && ./endToEndTest )
+  ( cd end-to-end-test && ./endToEndTest )
 fi
 
 cd $project_dir
