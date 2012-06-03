@@ -6,5 +6,7 @@ if [ -d doc ]; then
   cd ..
 else
   echo "Error: Directory doc/ not found!"
+  echo "       Run this script from src/main-project/ directory."
+  exit 1
 fi
 
