@@ -38,7 +38,7 @@
 // RuleInputWidget
 //--------------------------------------------------------------------------------------------------
 
-RuleInputWidget::RuleInputWidget(QWidget *parent) :
+Lvk::FE::RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
@@ -57,13 +57,13 @@ RuleInputWidget::RuleInputWidget(QWidget *parent) :
 
 //--------------------------------------------------------------------------------------------------
 
-RuleInputWidget::~RuleInputWidget()
+Lvk::FE::RuleInputWidget::~RuleInputWidget()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setupUi()
+void Lvk::FE::RuleInputWidget::setupUi()
 {
     setLayout(m_layout);
 
@@ -98,7 +98,7 @@ void RuleInputWidget::setupUi()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::connectSignals()
+void Lvk::FE::RuleInputWidget::connectSignals()
 {
     connect(m_selectUsersButton, SIGNAL(clicked()), SLOT(onSelectUsersButtonClicked()));
 
@@ -111,14 +111,14 @@ void RuleInputWidget::connectSignals()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::installEventFilter(QObject *eventFilter)
+void Lvk::FE::RuleInputWidget::installEventFilter(QObject *eventFilter)
 {
     m_eventFilter = eventFilter;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
+bool Lvk::FE::RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
 {
     if (m_eventFilter) {
         if (!m_eventFilter->eventFilter(this, event)) {
@@ -131,7 +131,7 @@ bool RuleInputWidget::eventFilter(QObject */*object*/, QEvent *event)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::clear()
+void Lvk::FE::RuleInputWidget::clear()
 {
     m_input->clear();
     m_targetTextEdit->clear();
@@ -147,7 +147,7 @@ void RuleInputWidget::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList RuleInputWidget::input()
+QStringList Lvk::FE::RuleInputWidget::input()
 {
     QStringList inputList = m_inputVariants->toPlainText().split("\n", QString::SkipEmptyParts);
     inputList.prepend(m_input->text());
@@ -157,7 +157,7 @@ QStringList RuleInputWidget::input()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setInput(const QStringList &inputList)
+void Lvk::FE::RuleInputWidget::setInput(const QStringList &inputList)
 {
     QString input, inputVariants;
 
@@ -182,7 +182,7 @@ void RuleInputWidget::setInput(const QStringList &inputList)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::TargetList RuleInputWidget::targets()
+Lvk::BE::TargetList Lvk::FE::RuleInputWidget::targets()
 {
     Lvk::BE::TargetList targets;
 
@@ -209,7 +209,7 @@ Lvk::BE::TargetList RuleInputWidget::targets()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
+void Lvk::FE::RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
 {
     QString targetText;
 
@@ -225,7 +225,7 @@ void RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
+void Lvk::FE::RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
 {
     m_reverseRoster.clear();
 
@@ -241,21 +241,21 @@ void RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setFocusOnInput()
+void Lvk::FE::RuleInputWidget::setFocusOnInput()
 {
     m_input->setFocus();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::setFocusOnInputVariants()
+void Lvk::FE::RuleInputWidget::setFocusOnInputVariants()
 {
     m_inputVariants->setFocus();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::highlightInput(int number)
+void Lvk::FE::RuleInputWidget::highlightInput(int number)
 {
     static const QString HIGHLIGHT_INPUT_CSS = "background-color: rgba(0,128,0,128);";
 
@@ -270,7 +270,7 @@ void RuleInputWidget::highlightInput(int number)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::clearHighlight()
+void Lvk::FE::RuleInputWidget::clearHighlight()
 {
     m_inputVariants->setStyleSheet("");
     m_input->setStyleSheet("");
@@ -278,21 +278,21 @@ void RuleInputWidget::clearHighlight()
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::connectTextChangedSignal()
+void Lvk::FE::RuleInputWidget::connectTextChangedSignal()
 {
     connect(m_inputVariants, SIGNAL(textChanged()), SIGNAL(inputVariantsEdited()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::disconnectTextChangedSignal()
+void Lvk::FE::RuleInputWidget::disconnectTextChangedSignal()
 {
     disconnect(m_inputVariants, SIGNAL(textChanged()), this, SIGNAL(inputVariantsEdited()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleInputWidget::onSelectUsersButtonClicked()
+void Lvk::FE::RuleInputWidget::onSelectUsersButtonClicked()
 {
     m_targetLabel->setText(tr("If:"));
     m_selectUsersButton->setVisible(false);

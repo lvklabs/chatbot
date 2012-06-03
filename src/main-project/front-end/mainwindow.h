@@ -55,7 +55,7 @@ class RuleTreeModel;
 
 
 /**
- * \brief This class is the application main window
+ * \brief The MainWindow class is the application main window
  */
 
 class MainWindow : public QMainWindow

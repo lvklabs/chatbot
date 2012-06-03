@@ -32,7 +32,7 @@
 // RosterWidget
 //--------------------------------------------------------------------------------------------------
 
-RosterWidget::RosterWidget(QWidget *parent) :
+Lvk::FE::RosterWidget::RosterWidget(QWidget *parent) :
     QWidget(parent), m_allUsersCheckBox(new QCheckBox()), m_rosterListWidget(new QListWidget()),
     m_filterText(new QLineEdit())
 {
@@ -48,7 +48,7 @@ RosterWidget::RosterWidget(QWidget *parent) :
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::setupWidget()
+void Lvk::FE::RosterWidget::setupWidget()
 {
     setLayout(new QVBoxLayout());
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -70,8 +70,8 @@ void RosterWidget::setupWidget()
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::setRoster(const Lvk::BE::Roster &roster,
-                             Qt::CheckState initialState /*= Qt::Checked*/)
+void Lvk::FE::RosterWidget::setRoster(const Lvk::BE::Roster &roster,
+                                      Qt::CheckState initialState /*= Qt::Checked*/)
 {
     m_roster = roster;
 
@@ -93,7 +93,8 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster,
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::setRoster(const Lvk::BE::Roster &roster, const Lvk::BE::Roster &uncheckedSubset)
+void Lvk::FE::RosterWidget::setRoster(const Lvk::BE::Roster &roster,
+                                      const Lvk::BE::Roster &uncheckedSubset)
 {
     setRoster(roster, Qt::Checked);
 
@@ -121,35 +122,35 @@ void RosterWidget::setRoster(const Lvk::BE::Roster &roster, const Lvk::BE::Roste
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Roster &RosterWidget::roster()
+const Lvk::BE::Roster &Lvk::FE::RosterWidget::roster()
 {
     return m_roster;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster RosterWidget::checkedRoster()
+Lvk::BE::Roster Lvk::FE::RosterWidget::checkedRoster()
 {
     return filterRosteryBy(Qt::Checked);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster RosterWidget::uncheckedRoster()
+Lvk::BE::Roster Lvk::FE::RosterWidget::uncheckedRoster()
 {
     return filterRosteryBy(Qt::Unchecked);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Qt::CheckState RosterWidget::allUsersCheckState()
+Qt::CheckState Lvk::FE::RosterWidget::allUsersCheckState()
 {
     return m_allUsersCheckBox->checkState();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::clear()
+void Lvk::FE::RosterWidget::clear()
 {
     m_rosterListWidget->clear();
     m_roster.clear();
@@ -159,7 +160,7 @@ void RosterWidget::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster RosterWidget::filterRosteryBy(Qt::CheckState state)
+Lvk::BE::Roster Lvk::FE::RosterWidget::filterRosteryBy(Qt::CheckState state)
 {
     Lvk::BE::Roster filteredRoster;
     for (int i = 0; i < m_rosterListWidget->count(); ++i){
@@ -172,7 +173,7 @@ Lvk::BE::Roster RosterWidget::filterRosteryBy(Qt::CheckState state)
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::onAllUsersClicked()
+void Lvk::FE::RosterWidget::onAllUsersClicked()
 {
     Qt::CheckState state = m_allUsersCheckBox->checkState();
 
@@ -190,7 +191,7 @@ void RosterWidget::onAllUsersClicked()
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
+void Lvk::FE::RosterWidget::onRosterItemClicked(QListWidgetItem *item)
 {
     Qt::CheckState itemState = item->checkState();
 
@@ -209,7 +210,7 @@ void RosterWidget::onRosterItemClicked(QListWidgetItem *item)
 
 //--------------------------------------------------------------------------------------------------
 
-void RosterWidget::onFilterTextChanged(const QString &)
+void Lvk::FE::RosterWidget::onFilterTextChanged(const QString &)
 {
     for (int i = 0; i < m_rosterListWidget->count(); ++i) {
         QListWidgetItem *item = m_rosterListWidget->item(i);

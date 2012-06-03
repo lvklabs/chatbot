@@ -37,7 +37,6 @@ namespace FE
  * \brief The AutoCompleteTextEdit class provides a widget that is used to edit text like a
  *        QPlainTextEdit but it also displays a list that suggests words to autocomplete
  */
-
 class AutocompleteTextEdit : public QLineEdit
 {
     Q_OBJECT

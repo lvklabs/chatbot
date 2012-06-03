@@ -25,10 +25,15 @@
 #include <QPlainTextEdit>
 #include <QStringList>
 
+namespace Lvk
+{
+
+namespace FE
+{
+
 /**
  * \brief The RuleInputWidget class provides a widget to edit or display NLP rule outputs
  */
-
 class RuleOutputWidget : public QPlainTextEdit
 {
     Q_OBJECT
@@ -57,5 +62,9 @@ private:
     void connectTextChangedSignal();
     void disconnectTextChangedSignal();
 };
+
+} // namespace FE
+
+} // namespace Lvk
 
 #endif // RULEOUTPUTWIDGET_H

@@ -32,11 +32,16 @@ class QTableWidget;
 class QModelIndex;
 class TestMainWindow;
 
+namespace Lvk
+{
+
+namespace FE
+{
+
 /**
  * \brief The ConversationHistoryWidget provides a widget to display conversation history beetwen
  *        the chatbot and chat users
  */
-
 class ConversationHistoryWidget : public QSplitter
 {
     friend class ::TestMainWindow;
@@ -68,5 +73,9 @@ private:
 private slots:
     void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
 };
+
+} // namespace FE
+
+} // namespace Lvk
 
 #endif // CONVERSATIONHISTORYWIDGET_H

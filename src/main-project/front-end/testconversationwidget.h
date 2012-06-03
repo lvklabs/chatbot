@@ -25,6 +25,12 @@
 #include <QTextEdit>
 #include <QString>
 
+namespace Lvk
+{
+
+namespace FE
+{
+
 /**
  * \brief TestConversationWidget provides a widget to display test conversations with the chatbot.
  *
@@ -48,5 +54,9 @@ public:
     void appendConversation(const QString &userInput, const QString &botOuput, bool match);
 
 };
+
+} // namespace FE
+
+} // namespace Lvk
 
 #endif // TESTCONVERSATIONWIDGET_H

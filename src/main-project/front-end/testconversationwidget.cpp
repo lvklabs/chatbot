@@ -23,14 +23,19 @@
 
 #include <QScrollBar>
 
+//--------------------------------------------------------------------------------------------------
+// TestConversationWidget
+//--------------------------------------------------------------------------------------------------
 
-TestConversationWidget::TestConversationWidget(QWidget *parent) :
+Lvk::FE::TestConversationWidget::TestConversationWidget(QWidget *parent) :
     QTextEdit(parent)
 {
 }
 
-void TestConversationWidget::appendConversation(const QString &userInput, const QString &botOuput_,
-                                                bool match)
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::TestConversationWidget::appendConversation(const QString &userInput,
+                                                         const QString &botOuput_, bool match)
 {
     QString botOuput = botOuput_;
 

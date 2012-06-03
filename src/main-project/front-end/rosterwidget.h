@@ -34,13 +34,19 @@ class QCheckBox;
 class QListWidgetItem;
 class QLineEdit;
 
+namespace Lvk
+{
+
+namespace FE
+{
+
 /**
  * \brief The ConversationHistoryWidget provides a widget to display a roster of chat users
  */
-
 class RosterWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit RosterWidget(QWidget *parent = 0);
 
@@ -76,5 +82,9 @@ private:
     void setupWidget();
     Lvk::BE::Roster filterRosteryBy(Qt::CheckState);
 };
+
+} // namespace FE
+
+} // namespace Lvk
 
 #endif // ROSTERWIDGET_H

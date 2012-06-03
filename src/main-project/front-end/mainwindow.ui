@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="trainTab">
         <attribute name="title">
@@ -181,7 +181,7 @@
               <widget class="QLineEdit" name="categoryNameTextEdit"/>
              </item>
              <item>
-              <widget class="RuleInputWidget" name="ruleInputWidget" native="true">
+              <widget class="Lvk::FE::RuleInputWidget" name="ruleInputWidget" native="true">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -198,7 +198,7 @@
               </widget>
              </item>
              <item>
-              <widget class="RuleOutputWidget" name="ruleOutputWidget">
+              <widget class="Lvk::FE::RuleOutputWidget" name="ruleOutputWidget">
                <property name="mouseTracking">
                 <bool>true</bool>
                </property>
@@ -531,7 +531,7 @@
                 </spacer>
                </item>
                <item row="3" column="0">
-                <widget class="RosterWidget" name="rosterWidget" native="true">
+                <widget class="Lvk::FE::RosterWidget" name="rosterWidget" native="true">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -575,7 +575,7 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="ConversationHistoryWidget" name="conversationHistory" native="true">
+            <widget class="Lvk::FE::ConversationHistoryWidget" name="conversationHistory" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -639,7 +639,7 @@
           </layout>
          </item>
          <item>
-          <widget class="TestConversationWidget" name="testConversationText">
+          <widget class="Lvk::FE::TestConversationWidget" name="testConversationText">
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -763,29 +763,29 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RuleOutputWidget</class>
+   <class>Lvk::FE::RuleOutputWidget</class>
    <extends>QPlainTextEdit</extends>
    <header>ruleoutputwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>RuleInputWidget</class>
+   <class>Lvk::FE::RuleInputWidget</class>
    <extends>QWidget</extends>
    <header>ruleinputwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TestConversationWidget</class>
+   <class>Lvk::FE::TestConversationWidget</class>
    <extends>QTextEdit</extends>
    <header>testconversationwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>ConversationHistoryWidget</class>
+   <class>Lvk::FE::ConversationHistoryWidget</class>
    <extends>QWidget</extends>
    <header>conversationhistorywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>RosterWidget</class>
+   <class>Lvk::FE::RosterWidget</class>
    <extends>QWidget</extends>
    <header>rosterwidget.h</header>
    <container>1</container>

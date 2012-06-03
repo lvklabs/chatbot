@@ -21,11 +21,12 @@
 
 #include "ruleoutputwidget.h"
 
+
 //--------------------------------------------------------------------------------------------------
 // RuleOutputWidget
 //--------------------------------------------------------------------------------------------------
 
-RuleOutputWidget::RuleOutputWidget(QWidget *parent) :
+Lvk::FE::RuleOutputWidget::RuleOutputWidget(QWidget *parent) :
     QPlainTextEdit(parent)
 {
     connectTextChangedSignal();
@@ -33,14 +34,14 @@ RuleOutputWidget::RuleOutputWidget(QWidget *parent) :
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList RuleOutputWidget::output()
+QStringList Lvk::FE::RuleOutputWidget::output()
 {
     return toPlainText().split("\n", QString::SkipEmptyParts);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::setOutput(const QStringList &outputList)
+void Lvk::FE::RuleOutputWidget::setOutput(const QStringList &outputList)
 {
     QString output;
 
@@ -56,7 +57,7 @@ void RuleOutputWidget::setOutput(const QStringList &outputList)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::highlightOuput(int /*number*/)
+void Lvk::FE::RuleOutputWidget::highlightOuput(int /*number*/)
 {
     static const QString HIGHLIGHT_INPUT_CSS = "background-color: rgba(255,128,128,128);";
 
@@ -65,28 +66,28 @@ void RuleOutputWidget::highlightOuput(int /*number*/)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::clearHighlight()
+void Lvk::FE::RuleOutputWidget::clearHighlight()
 {
     setStyleSheet("");
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::connectTextChangedSignal()
+void Lvk::FE::RuleOutputWidget::connectTextChangedSignal()
 {
     connect(this, SIGNAL(textChanged()), SIGNAL(outputTextEdited()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::disconnectTextChangedSignal()
+void Lvk::FE::RuleOutputWidget::disconnectTextChangedSignal()
 {
     disconnect(this, SIGNAL(textChanged()), this, SIGNAL(outputTextEdited()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::setPlainText(const QString &text)
+void Lvk::FE::RuleOutputWidget::setPlainText(const QString &text)
 {
     // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
     disconnectTextChangedSignal();
@@ -96,7 +97,7 @@ void RuleOutputWidget::setPlainText(const QString &text)
 
 //--------------------------------------------------------------------------------------------------
 
-void RuleOutputWidget::clear()
+void Lvk::FE::RuleOutputWidget::clear()
 {
     // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
     disconnectTextChangedSignal();

@@ -112,7 +112,7 @@ QString getFullname(const QString &from)
 // ConversationHistoryWidget
 //--------------------------------------------------------------------------------------------------
 
-ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
+Lvk::FE::ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
     : QSplitter(Qt::Horizontal, parent)
 {
     setupWidget();
@@ -120,8 +120,8 @@ ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
 
 //--------------------------------------------------------------------------------------------------
 
-ConversationHistoryWidget::ConversationHistoryWidget(const Lvk::BE::Conversation &conv,
-                                                     QWidget *parent)
+Lvk::FE::ConversationHistoryWidget::ConversationHistoryWidget(const Lvk::BE::Conversation &conv,
+                                                              QWidget *parent)
     : QSplitter(Qt::Horizontal, parent)
 {
     setupWidget();
@@ -131,7 +131,7 @@ ConversationHistoryWidget::ConversationHistoryWidget(const Lvk::BE::Conversation
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::setupWidget()
+void Lvk::FE::ConversationHistoryWidget::setupWidget()
 {
     // Date-Contact table
     m_dateContactTable = new QTableWidget(this);
@@ -177,7 +177,7 @@ void ConversationHistoryWidget::setupWidget()
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::clear()
+void Lvk::FE::ConversationHistoryWidget::clear()
 {
     m_dateContactTable->clearContents();
     m_dateContactTable->setRowCount(0);
@@ -188,7 +188,8 @@ void ConversationHistoryWidget::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Conversation::Entry
+                                                              &entry)
 {
     QString key = hashKey(entry);
 
@@ -218,8 +219,8 @@ void ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Conversation
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::currentRowChanged(const QModelIndex &current,
-                                                  const QModelIndex &/*previous*/)
+void Lvk::FE::ConversationHistoryWidget::currentRowChanged(const QModelIndex &current,
+                                                           const QModelIndex &/*previous*/)
 {
     m_conversationTable->clearContents();
     m_conversationTable->setRowCount(0);
@@ -237,7 +238,8 @@ void ConversationHistoryWidget::currentRowChanged(const QModelIndex &current,
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry
+                                                                 &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
     QString match = entry.match ? tr("Ok") : tr("Fail!");
@@ -261,7 +263,8 @@ void ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversat
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry
+                                                                &entry)
 {
     QString date = entry.dateTime.toString(DATE_FORMAT);
     QString username = getUsername(entry.from);
@@ -291,7 +294,7 @@ void ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversati
 
 //--------------------------------------------------------------------------------------------------
 
-void ConversationHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
+void Lvk::FE::ConversationHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
 {
     clear();
 

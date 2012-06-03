@@ -44,15 +44,9 @@ namespace FE
 
 class AutocompleteTextEdit;
 
-} //namespace FE
-
-} //namespace Lvk
-
-
 /**
  * \brief The RuleInputWidget class provides a widget to edit or display NLP rule inputs
  */
-
 class RuleInputWidget : public QWidget
 {
     Q_OBJECT
@@ -119,5 +113,9 @@ private:
 private slots:
     void onSelectUsersButtonClicked();
 };
+
+} //namespace FE
+
+} //namespace Lvk
 
 #endif // RULEINPUTWIDGET_H
