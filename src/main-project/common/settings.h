@@ -31,14 +31,23 @@ namespace Common
 {
 
 /**
- * The Settings class provides persistent platform-independent application settings.
+ * \brief The Settings class provides persistent platform-independent application settings.
+ *
+ * Settings is a thin wrapper over the QSettings class.
  */
 class Settings : public QSettings
 {
     Q_OBJECT
+
 public:
+    /**
+     * Constructs a Settings object with the given parent
+     */
     explicit Settings(QObject *parent = 0);
 
+    /**
+     * Returns the value for the given key. If the key doesn't exist, returns defaultValue.
+     */
     virtual QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
 
 };

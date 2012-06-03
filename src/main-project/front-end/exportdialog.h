@@ -31,7 +31,7 @@ namespace FE
 {
 
 /**
- * The ExportDialog class provides a dialog that allow users to select rules to export to
+ * \brief The ExportDialog class provides a dialog that allow users to select rules to export to
  */
 
 class ExportDialog : public PortDialog
@@ -39,8 +39,15 @@ class ExportDialog : public PortDialog
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs an ExportDialog widget which is a child of the given parent.
+     */
     explicit ExportDialog(QWidget *parent = 0);
 
+    /**
+     * Constructs an ExportDialog widget with the given title, model and parent widget.
+     */
     ExportDialog(const QString &title, RuleTreeModel *model, QWidget *parent = 0);
 };
 

@@ -42,7 +42,10 @@ namespace FE
 {
 
 /**
- * The PortDialog class is the base class of import and export dialogs
+ * \brief The PortDialog class is the base class of import and export dialogs
+ *
+ * The PortDialog class displays a dialog where users can select which rules to export or
+ * import.
  *
  * @see ImportDialog, ExportDialog
  */
@@ -52,13 +55,29 @@ class PortDialog : public QDialog
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs a PortDialog widget which is a child of the given parent.
+     */
     explicit PortDialog(QWidget *parent = 0);
 
+    /**
+     * Constructs an ImportDialog widget with the given title, message, accept button text,
+     * model and parent widget.
+     */
     PortDialog(const QString &title, const QString &msg, const QString &acceptButtonText,
                RuleTreeModel *model, QWidget *parent = 0);
 
+    /**
+     * Destroys the widget.
+     */
     ~PortDialog();
 
+    /**
+     * Shows the widget as a modal dialog, blocking until the user closes it.
+     * Returns a StandardButton value indicating the standard button that was clicked and
+     * the container parameter contains all the rules that were checked.
+     */
     int exec(BE::Rule *container);
 
 private:

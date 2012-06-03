@@ -38,20 +38,24 @@ namespace Nlp
  * SimpleAimlEngine supports handy variable names and if-else conditionals. For instance instead of
  * writing:
  *
- * Input:  Do you like *
- * Output: <think><set name="like"><star/></set></think>
- *         <condition>
- *             <li name="like" value="football"> Yes I like <star/></li>
- *             <li>No, I don't</li>
- *         </condition>
+   \verbatim
+   Input:  Do you like *
+   Output: <think><set name="like"><star/></set></think>
+           <condition>
+               <li name="like" value="football"> Yes I like <star/></li>
+               <li>No, I don't</li>
+           </condition>
+   \endverbatim
  *
  * With SimpleAimlEngine we can write:
  *
- * Input:  Do you like [VarName]
- * Output: {if [VarName] = football}
- *         Yes I like [VarName]
- *         {else}
- *         No, I don't
+   \verbatim
+   Input:  Do you like [VarName]
+   Output: {if [VarName] = football}
+           Yes I like [VarName]
+           {else}
+           No, I don't
+   \endverbatim
  *
  * SimpleAimlEngine also supports regex-like quantifiers + and * where + means one or more words
  * and * means zero or more words
@@ -60,19 +64,45 @@ namespace Nlp
 class SimpleAimlEngine : public AimlEngine
 {
 public:
+
+    /**
+     * Construtcs a SimpleAimlEngine object with the default sanitizer.
+     *
+     * \see DefaultSanitizer
+     */
     SimpleAimlEngine();
 
+    /**
+     * Construtcs a SimpleAimlEngine object with the given sanitizer.
+     */
     SimpleAimlEngine(Sanitizer *sanitizer);
 
+    /**
+     * Returns a const reference to the current rules being used by the engine.
+     */
     virtual const RuleList &rules() const;
 
+    /**
+     * Returns a reference to the current rules being used by the engine.
+     */
     virtual RuleList &rules();
 
+    /**
+     * Sets the given rules to the engine.
+     */
     virtual void setRules(const RuleList &rules);
 
+    /**
+     * Gets all responses that matches the given input and target.
+     * Returns a list with all the responses. The IDs of those
+     * rules that have matched is returned in the matches parameter.
+     */
     virtual QList<QString> getAllResponses(const QString &input, const QString &target,
                                            MatchList &matches);
 
+    /**
+     * \brief Class thrown when an invalid syntax was found while parsing rules.
+     */
     class InvalidSyntaxException;
 
 private:

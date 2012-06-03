@@ -29,6 +29,10 @@
 // SimpleAimlEngine::InvalidSyntaxException
 //--------------------------------------------------------------------------------------------------
 
+/**
+ * \brief Class thrown when an invalid syntax was found while parsing rules.
+ */
+
 class Lvk::Nlp::SimpleAimlEngine::InvalidSyntaxException : public std::exception
 {
 public:

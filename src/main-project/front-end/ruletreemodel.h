@@ -36,8 +36,15 @@ namespace FE
 {
 
 /**
- * \brief This class implementes the abstract class QAbstractItemModel to display a tree of @class
- *        Rule in a QTreeView class
+ * \brief The RuleTreeModel class provides a model for storing a tree of rules.
+ *
+ * RuleTreeModel implements the QAbstractItemModel interface, which means that the model can be
+ * used to provide data in any view that supports that interface (such as QListView, QTableView
+ * and QTreeView).
+ *
+ * This class is most commonly used with QTreeView to display a hierarchy of rules.
+ *
+ * \see BE::Rule
  */
 
 class RuleTreeModel : public QAbstractItemModel

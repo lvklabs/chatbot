@@ -29,12 +29,15 @@ namespace Common
 {
 
 /**
- * Handy class to generate random numbers
+ * \brief The Random class generares random numbers.
  */
 
 class Random
 {
 public:
+    /**
+     * Returns a random integer between the range [min,max]
+     */
     static int getInt(int min, int max);
 
 private:

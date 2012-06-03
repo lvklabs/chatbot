@@ -26,16 +26,25 @@
 #include <QString>
 
 /**
- * Custom widget to display local conversations with the chatbot
+ * \brief TestConversationWidget provides a widget to display test conversations with the chatbot.
+ *
+ * By "test conversation" we mean tests that were performed in the "Test" tab.
  */
-
 class TestConversationWidget : public QTextEdit
 {
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs a TestConversationWidget with the given parent
+     */
     explicit TestConversationWidget(QWidget *parent = 0);
 
+    /**
+     * Appends a conversation to the widget with the given user input, chatbot output. The
+     * match flag is used to display the chatbot output as a successful match or not.
+     */
     void appendConversation(const QString &userInput, const QString &botOuput, bool match);
 
 };

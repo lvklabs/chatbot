@@ -31,7 +31,7 @@ namespace FE
 {
 
 /**
- * The ImportDialog class provides a dialog that allow users to select rules to import to
+ * \brief The ImportDialog class provides a dialog that allow users to select rules to import to.
  */
 
 class ImportDialog : public PortDialog
@@ -39,8 +39,15 @@ class ImportDialog : public PortDialog
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs an ImportDialog widget which is a child of the given parent.
+     */
     explicit ImportDialog(QWidget *parent = 0);
 
+    /**
+     * Constructs an ImportDialog widget with the given title, model and parent widget.
+     */
     ImportDialog(const QString &title, RuleTreeModel *model, QWidget *parent = 0);
 };
 
