@@ -5,4 +5,5 @@
 *.autosave
 versionrev.h
 .test-suite-shadow-build
+src/main-project/doc/html
 
