@@ -65,8 +65,15 @@ cat > $header_file <<EOF
 namespace $outer_namespace
 {
 
+/// \addtogroup $outer_namespace
+/// @{
+
 namespace $namespace
 {
+
+/// \ingroup $outer_namespace
+/// \addtogroup $namespace
+/// @{
 
 /**
  * \brief $classname class 
@@ -79,7 +86,11 @@ public:
 
 };
 
+/// @}
+
 } // namespace $namespace
+
+/// @}
 
 } // namespace $outer_namespace
 
