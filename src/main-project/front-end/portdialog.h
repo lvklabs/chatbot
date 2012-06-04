@@ -38,8 +38,15 @@ class QItemSelection;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The PortDialog class is the base class of import and export dialogs
@@ -99,7 +106,11 @@ private slots:
 };
 
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

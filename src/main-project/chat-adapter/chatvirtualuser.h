@@ -29,8 +29,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 /**
  * \brief VirtualUser class provides information to the chatbot to behave like a human being
@@ -51,9 +58,13 @@ public:
     virtual QPixmap getAvatar() = 0;
 };
 
-} //namespace CA
+/// @}
 
-} //namespace Lvk
+} // namespace CA
+
+/// @}
+
+} // namespace Lvk
 
 
 #endif // LVK_CA_CHATVIRTUALUSER_H

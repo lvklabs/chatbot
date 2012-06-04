@@ -27,8 +27,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 /**
  * \brief GTalkChatbot clas provides a GTalk chatbot
@@ -47,8 +54,13 @@ private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 };
 
-} //namespace CA
+/// @}
 
-} //namespace Lvk
+
+} // namespace CA
+
+/// @}
+
+} // namespace Lvk
 
 #endif // LVK_CA_GTALKCHATBOT_H

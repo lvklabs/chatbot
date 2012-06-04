@@ -30,8 +30,15 @@ class QString;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 /**
  * \brief The ConversationReader class provides a format independent interface for reading
@@ -90,7 +97,11 @@ private:
     QIODevice *m_device;
 };
 
+/// @}
+
 } // namespace BE
+
+/// @}
 
 } // namespace Lvk
 

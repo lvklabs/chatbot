@@ -29,8 +29,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 /**
  * \brief Rule ID
@@ -100,7 +107,11 @@ private:
 
 typedef QList<Rule> RuleList;
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

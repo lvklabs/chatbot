@@ -39,8 +39,15 @@ class QPushButton;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 class AutocompleteTextEdit;
 
@@ -114,8 +121,12 @@ private slots:
     void onSelectUsersButtonClicked();
 };
 
-} //namespace FE
+/// @}
 
-} //namespace Lvk
+} // namespace FE
+
+/// @}
+
+} // namespace Lvk
 
 #endif // RULEINPUTWIDGET_H

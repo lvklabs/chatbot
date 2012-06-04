@@ -30,8 +30,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Common
 {
+
+/// \ingroup Lvk
+/// \addtogroup Common
+/// @{
 
 /**
  * \brief The CsvRow class represents a row in a CSV document.
@@ -72,7 +79,11 @@ private:
     void parseString(const QString &str);
 };
 
+/// @}
+
 } // namespace Common
+
+/// @}
 
 } // namespace Lvk
 

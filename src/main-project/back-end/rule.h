@@ -32,8 +32,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 /**
  * \brief This class provides a NLP rule plus some metadata
@@ -235,7 +242,11 @@ private:
 QDataStream &operator<<(QDataStream &stream, const Rule &rule);
 QDataStream &operator>>(QDataStream &stream, Rule &rule);
 
+/// @}
+
 } // namespace BE
+
+/// @}
 
 } // namespace Lvk
 

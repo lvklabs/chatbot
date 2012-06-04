@@ -29,8 +29,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 /**
  * \brief The Conversation Class provides a conversation held between a user and the chatbot
@@ -139,7 +146,11 @@ private:
     QList<Entry> m_entries;
 };
 
+/// @}
+
 } // namespace BE
+
+/// @}
 
 } // namespace Lvk
 

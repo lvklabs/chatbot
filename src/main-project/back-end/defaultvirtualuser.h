@@ -33,6 +33,9 @@ class QReadWriteLock;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
     class Engine;
@@ -40,6 +43,10 @@ namespace Nlp
 
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 class ConversationWriter;
 
@@ -86,8 +93,13 @@ private:
     void logError(const QString &msg);
 };
 
-} //namespace BE
+/// @}
 
-} //namespace Lvk
+
+} // namespace BE
+
+/// @}
+
+} // namespace Lvk
 
 #endif // LVK_BE_DEFAULTVIRTUALUSER_H

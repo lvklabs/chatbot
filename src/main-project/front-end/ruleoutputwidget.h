@@ -28,8 +28,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The RuleInputWidget class provides a widget to edit or display NLP rule outputs
@@ -63,7 +70,11 @@ private:
     void disconnectTextChangedSignal();
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

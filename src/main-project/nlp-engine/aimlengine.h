@@ -29,8 +29,15 @@ class AIMLParser;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 class Sanitizer;
 
@@ -105,7 +112,11 @@ private:
     void buildAiml(QString &aiml, const Rule &rule);
 };
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

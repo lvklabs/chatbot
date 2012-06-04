@@ -105,8 +105,7 @@ QString getFullname(const QString &from)
     return fullname;
 }
 
-
-} //namespace
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 // ConversationHistoryWidget

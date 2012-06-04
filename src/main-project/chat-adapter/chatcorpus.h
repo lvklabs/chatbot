@@ -32,8 +32,15 @@ class QMutex;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 /**
  * \brief The ChatCorpus class provides corpus of chat conversations held by the real user.
@@ -85,7 +92,11 @@ private:
     void load();
 };
 
+/// @}
+
 } // namespace CA
+
+/// @}
 
 } // namespace Lvk
 

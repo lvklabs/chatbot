@@ -28,8 +28,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 /**
  * \brief Abstract interface for all NLP Sanitizers
@@ -59,7 +66,11 @@ public:
     virtual ~Sanitizer() {}
 };
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

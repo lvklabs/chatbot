@@ -31,8 +31,15 @@ class QString;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 class VirtualUser;
 
@@ -69,7 +76,11 @@ signals:
     void error(int err);
 };
 
+/// @}
+
 } // namespace CA
+
+/// @}
 
 } // namespace Lvk
 

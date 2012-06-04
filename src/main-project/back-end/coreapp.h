@@ -41,6 +41,9 @@ class QFile;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
     class Engine;
@@ -53,6 +56,10 @@ namespace CA
 
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 class Rule;
 
@@ -167,7 +174,11 @@ private:
     bool loadDefaultFirstTimeRules();
 };
 
+/// @}
+
 } // namespace BE
+
+/// @}
 
 } // namespace Lvk
 

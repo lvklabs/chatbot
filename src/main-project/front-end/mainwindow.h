@@ -43,6 +43,9 @@ class QItemSelection;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
     class ConversationWriter;
@@ -50,6 +53,10 @@ namespace BE
 
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 class RuleTreeModel;
 
@@ -190,7 +197,11 @@ private slots:
     void onExitMenuTriggered();
 };
 
+/// @}
+
 } // namespace Lvk
+
+/// @}
 
 } // namespace FE
 

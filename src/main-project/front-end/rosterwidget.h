@@ -37,8 +37,15 @@ class QLineEdit;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The ConversationHistoryWidget provides a widget to display a roster of chat users
@@ -83,7 +90,11 @@ private:
     Lvk::BE::Roster filterRosteryBy(Qt::CheckState);
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

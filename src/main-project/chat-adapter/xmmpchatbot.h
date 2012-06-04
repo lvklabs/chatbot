@@ -37,8 +37,15 @@ class QWaitCondition;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 class ContactInfo;
 
@@ -129,7 +136,11 @@ private:
     bool isInBlackList(const QString &jid);
 };
 
-} //namespace CA
+/// @}
+
+} // namespace CA
+
+/// @}
 
 } //namespace Lvk
 

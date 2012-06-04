@@ -29,8 +29,15 @@ class QXmppMessage;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
+
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 /**
  * \brief FbChatbot provides a Facebook chatbot
@@ -53,8 +60,12 @@ private:
 
 };
 
-} //namespace CA
+/// @}
 
-} //namespace Lvk
+} // namespace CA
+
+/// @}
+
+} // namespace Lvk
 
 #endif // LVK_CA_FBCHATBOT_H

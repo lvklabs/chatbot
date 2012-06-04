@@ -30,8 +30,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Common
 {
+
+/// \ingroup Lvk
+/// \addtogroup Common
+/// @{
 
 /**
  * \brief The CsvDocument class represents a CSV document.
@@ -72,7 +79,11 @@ private:
     void parseString(const QString &csvStr);
 };
 
+/// @}
+
 } // namespace Common
+
+/// @}
 
 } // namespace Lvk
 

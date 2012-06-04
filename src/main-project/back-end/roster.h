@@ -29,9 +29,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
 
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 /**
  * \brief RosterItem class provides information about a user in the roster
@@ -74,9 +80,13 @@ public:
  */
 typedef QList<RosterItem> Roster;
 
-} //namespace BE
+/// @}
 
-} //namespace Lvk
+} // namespace BE
+
+/// @}
+
+} // namespace Lvk
 
 
 inline QDataStream &operator<<(QDataStream &out, const Lvk::BE::RosterItem &item)

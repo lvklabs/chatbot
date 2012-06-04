@@ -27,8 +27,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 /**
  * \brief Default implementation of the Sanitizer interface
@@ -44,7 +51,11 @@ public:
 
 };
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

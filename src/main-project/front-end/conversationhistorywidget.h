@@ -35,12 +35,23 @@ class TestMainWindow;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The ConversationHistoryWidget provides a widget to display conversation history beetwen
  *        the chatbot and chat users
+ *
+ * The ConversationHistoryWidget is used in the "History" tab.
+ *
+ * \see BE::Conversation
  */
 class ConversationHistoryWidget : public QSplitter
 {
@@ -49,6 +60,7 @@ class ConversationHistoryWidget : public QSplitter
     Q_OBJECT
 public:
     explicit ConversationHistoryWidget(QWidget *parent = 0);
+
     explicit ConversationHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
 
     void clear();
@@ -74,7 +86,11 @@ private slots:
     void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

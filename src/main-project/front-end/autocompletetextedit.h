@@ -30,8 +30,15 @@ class QListWidget;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The AutoCompleteTextEdit class provides a widget that is used to edit text like a
@@ -85,7 +92,11 @@ private slots:
     void onListItemSelected();
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

@@ -29,8 +29,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 /**
  * \brief SimpleAimlEngine is a wrapper over the AimlEngine to provide a simpler syntax than AIML
@@ -142,7 +149,11 @@ private:
     void remap(Engine::MatchList &matches);
 };
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

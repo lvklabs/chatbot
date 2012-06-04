@@ -27,8 +27,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Nlp
 {
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
 
 /**
  * \brief Exact match case insentive NLP engine
@@ -63,7 +70,11 @@ private:
     RuleList m_rules;
 };
 
+/// @}
+
 } // namespace Nlp
+
+/// @}
 
 } // namespace Lvk
 

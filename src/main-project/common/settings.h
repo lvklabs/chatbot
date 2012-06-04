@@ -27,8 +27,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Common
 {
+
+/// \ingroup Lvk
+/// \addtogroup Common
+/// @{
 
 /**
  * \brief The Settings class provides persistent platform-independent application settings.
@@ -52,7 +59,11 @@ public:
 
 };
 
+/// @}
+
 } // namespace Common
+
+/// @}
 
 } // namespace Lvk
 

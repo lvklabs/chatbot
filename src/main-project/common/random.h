@@ -25,13 +25,19 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace Common
 {
+
+/// \ingroup Lvk
+/// \addtogroup Common
+/// @{
 
 /**
  * \brief The Random class generares random numbers.
  */
-
 class Random
 {
 public:
@@ -45,7 +51,11 @@ private:
     Random(Random&);
 };
 
+/// @}
+
 } // namespace Common
+
+/// @}
 
 } // namespace Lvk
 

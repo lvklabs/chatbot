@@ -8,8 +8,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 
 /**
@@ -25,9 +32,13 @@ typedef RosterItem Target;
 
 typedef QList<Target> TargetList;
 
-} //namespace BE
+/// @}
 
-} //namespace Lvk
+} // namespace BE
+
+/// @}
+
+} // namespace Lvk
 
 
 #endif // LVK_BE_TARGET_H

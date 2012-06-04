@@ -27,8 +27,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The ExportDialog class provides a dialog that allow users to select rules to export to
@@ -51,7 +58,11 @@ public:
     ExportDialog(const QString &title, RuleTreeModel *model, QWidget *parent = 0);
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 

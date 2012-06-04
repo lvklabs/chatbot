@@ -31,8 +31,15 @@ class QByteArray;
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
+
+/// \ingroup Lvk
+/// \addtogroup BE
+/// @{
 
 /**
  * \brief The ConversationWriter class provides a format independent interface for writing chat
@@ -98,7 +105,11 @@ private:
     bool flush();
 };
 
+/// @}
+
 } // namespace BE
+
+/// @}
 
 } // namespace Lvk
 

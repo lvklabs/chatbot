@@ -28,9 +28,15 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace CA
 {
 
+/// \ingroup Lvk
+/// \addtogroup CA
+/// @{
 
 /**
  * \brief ContactInfo struct provides information about a chat contact
@@ -54,8 +60,12 @@ struct ContactInfo
  */
 typedef QList<ContactInfo> ContactInfoList;
 
-} //namespace CA
+/// @}
 
-} //namespace Lvk
+} // namespace CA
+
+/// @}
+
+} // namespace Lvk
 
 #endif // LVK_CA_CONTACTINFO_H

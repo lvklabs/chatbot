@@ -27,6 +27,9 @@
 namespace Lvk
 {
 
+/// \addtogroup Lvk
+/// @{
+
 namespace BE
 {
     class Rule;
@@ -34,6 +37,10 @@ namespace BE
 
 namespace FE
 {
+
+/// \ingroup Lvk
+/// \addtogroup FE
+/// @{
 
 /**
  * \brief The RuleTreeModel class provides a model for storing a tree of rules.
@@ -135,7 +142,11 @@ private:
     bool m_isUserCheckable;
 };
 
+/// @}
+
 } // namespace FE
+
+/// @}
 
 } // namespace Lvk
 
