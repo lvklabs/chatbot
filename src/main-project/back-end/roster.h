@@ -40,7 +40,7 @@ namespace BE
 /// @{
 
 /**
- * \brief RosterItem class provides information about a user in the roster
+ * \brief The RosterItem class provides information about a user in the roster
  */
 class RosterItem
 {

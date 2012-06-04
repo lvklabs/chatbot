@@ -39,7 +39,7 @@ namespace FE
 /// @{
 
 /**
- * \brief The RuleInputWidget class provides a widget to edit or display NLP rule outputs
+ * \brief The RuleOutputWidget class provides a widget to edit or display NLP rule outputs
  */
 class RuleOutputWidget : public QPlainTextEdit
 {

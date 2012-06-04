@@ -43,7 +43,7 @@ namespace BE
 /// @{
 
 /**
- * \brief This class provides a NLP rule plus some metadata
+ * \brief The Rule class provides a NLP rule plus some metadata
  */
 
 class Rule
@@ -192,7 +192,7 @@ public:
 
 
     /**
-      * \brief Rule iterator
+      * \brief The iterator class provides a STL-like Rule iterator
       */
     class iterator : public generic_iterator<Rule *>
     {
@@ -204,7 +204,7 @@ public:
 
 
     /**
-      * \brief Rule const iterator
+      * \brief The const_iterator class provides a STL-like Rule const iterator
       */
     class const_iterator : public generic_iterator<const Rule *>
     {

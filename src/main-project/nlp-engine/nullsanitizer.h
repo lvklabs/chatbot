@@ -38,7 +38,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The NullSanitizer provides a sanitizer that does nothing
+ * \brief The NullSanitizer class provides a sanitizer that does nothing
  */
 
 class NullSanitizer : public Sanitizer

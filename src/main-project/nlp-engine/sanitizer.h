@@ -39,20 +39,22 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Abstract interface for all NLP Sanitizers
+ * \brief The Sanitizer class provides an abstract interface for all sanitizers.
+ *
+ * A Sanitizer removes harmful and/or not useless characters from strings. For instance,
+ * a sanitzer may remove extra whitespaces, null or non-ASCII characters.
  */
-
 class Sanitizer
 {
 public:
 
     /**
-     * \brief Sanitizes the given string
+     * Sanitizes the string \a str
      */
     virtual QString sanitize(const QString &str) const = 0;
 
     /**
-     * \brief Sanitizes each string of the given list
+     * Sanitizes each string of the list \a list
      */
     virtual QStringList sanitize(const QStringList &list) const
     {
@@ -63,6 +65,9 @@ public:
         return sanitizedList;
     }
 
+    /**
+     * Destroys the object.
+     */
     virtual ~Sanitizer() {}
 };
 

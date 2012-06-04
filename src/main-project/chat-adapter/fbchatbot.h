@@ -40,7 +40,7 @@ namespace CA
 /// @{
 
 /**
- * \brief FbChatbot provides a Facebook chatbot
+ * \brief The FbChatbot class provides a Facebook chatbot
  *
  * FbChatbot is a very thin layer over the Xmpp chatbot because fb chat is XMPP compliant
  */

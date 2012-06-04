@@ -42,7 +42,7 @@ namespace Nlp
 class Sanitizer;
 
 /**
- * \brief NLP Engine based on AIML (Artificial Intelligence Markup Language)
+ * \brief NLP engine based on AIML (Artificial Intelligence Markup Language)
  *
  * The AimlEngine class supports most of the AIML features. The class maps input strings into the
  * pattern tag and output strings into the template tags. For instance, given a rule:

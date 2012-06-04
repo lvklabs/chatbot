@@ -51,7 +51,8 @@ namespace BE
 class ConversationWriter;
 
 /**
- * \brief Default implementation of the Abstract class Virtual User
+ * \brief The DefaultVirtualUser class provides the default implementation of the interface
+ *        VirtualUser
  */
 
 class DefaultVirtualUser : public QObject, public CA::VirtualUser

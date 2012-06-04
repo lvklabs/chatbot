@@ -48,7 +48,7 @@ namespace FE
 /// @{
 
 /**
- * \brief The ConversationHistoryWidget provides a widget to display a roster of chat users
+ * \brief The RosterWidget class provides a widget to display, filter and select chat users.
  */
 class RosterWidget : public QWidget
 {

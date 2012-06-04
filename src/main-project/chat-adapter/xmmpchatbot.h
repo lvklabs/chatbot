@@ -50,7 +50,7 @@ namespace CA
 class ContactInfo;
 
 /**
- * \brief Chatbot for XMPP chat servers
+ * \brief The XmppChatbot class provides a chatbot for XMPP chat servers
  */
 
 class XmppChatbot : public Chatbot

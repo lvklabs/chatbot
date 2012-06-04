@@ -39,7 +39,8 @@ namespace FE
 /// @{
 
 /**
- * \brief TestConversationWidget provides a widget to display test conversations with the chatbot.
+ * \brief The TestConversationWidget class provides a widget to display test conversations with
+ *        the chatbot.
  *
  * By "test conversation" we mean tests that were performed in the "Test" tab.
  */

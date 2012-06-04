@@ -40,7 +40,7 @@ namespace CA
 /// @{
 
 /**
- * \brief VirtualUser class provides information to the chatbot to behave like a human being
+ * \brief The VirtualUser class provides information to the chatbot to behave like a human being.
  *
  * VirtualUser class provides two methods: one to get a response and another one
  * to show a custom avatar

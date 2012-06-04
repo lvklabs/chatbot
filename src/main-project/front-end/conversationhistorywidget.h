@@ -46,8 +46,8 @@ namespace FE
 /// @{
 
 /**
- * \brief The ConversationHistoryWidget provides a widget to display conversation history beetwen
- *        the chatbot and chat users
+ * \brief The ConversationHistoryWidget class provides a widget to display conversation history
+ *        beetwen the chatbot and chat users
  *
  * The ConversationHistoryWidget is used in the "History" tab.
  *

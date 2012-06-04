@@ -40,7 +40,7 @@ namespace BE
 /// @{
 
 /**
- * \brief The Conversation Class provides a conversation held between a user and the chatbot
+ * \brief The Conversation class provides a chat conversation between a user and the chatbot
  */
 
 class Conversation

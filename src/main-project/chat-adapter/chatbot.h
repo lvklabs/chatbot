@@ -45,7 +45,7 @@ class VirtualUser;
 
 
 /**
- * \brief Abstract interface for all chatbots
+ * \brief The Chatbot class provides the abstract interface for all chatbots
  */
 class Chatbot : public QObject
 {

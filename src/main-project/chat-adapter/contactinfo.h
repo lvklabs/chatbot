@@ -39,7 +39,7 @@ namespace CA
 /// @{
 
 /**
- * \brief ContactInfo struct provides information about a chat contact
+ * \brief The ContactInfo class provides information about a chat contact
  */
 struct ContactInfo
 {

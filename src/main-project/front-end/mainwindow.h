@@ -62,7 +62,7 @@ class RuleTreeModel;
 
 
 /**
- * \brief The MainWindow class is the application main window
+ * \brief The MainWindow class provides the application main window.
  */
 
 class MainWindow : public QMainWindow
@@ -72,10 +72,40 @@ class MainWindow : public QMainWindow
     friend class ::TestMainWindow;
 
 public:
+
+    /**
+     * Constructs a MainWindow with \a parent.
+     */
     explicit MainWindow(QWidget *parent = 0);
+
+    /**
+     * Destroys the window.
+     */
     ~MainWindow();
 
+    /**
+     * Clears the content of the window including rules, test chats, chat history and disconnects
+     * from chat
+     */
     void clear();
+
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
+    virtual bool eventFilter(QObject *object, QEvent *event);
+
+private:
+    MainWindow(MainWindow&);
+    MainWindow& operator=(MainWindow&);
+
+    Ui::MainWindow *ui;
+    BE::CoreApp *m_coreApp;
+    RuleTreeModel *m_ruleTreeModel;
+    QItemSelectionModel *m_ruleTreeSelectionModel;
+    bool m_ruleEdited;
+    BE::Rule m_ruleBackup;
+    BE::ConversationWriter *m_testConversationLog;
+    QString m_filename;
 
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
@@ -92,24 +122,6 @@ public:
     };
 
     void setUiMode(UiMode mode);
-
-    virtual bool eventFilter(QObject *object, QEvent *event);
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private:
-    MainWindow(MainWindow&);
-    MainWindow& operator=(MainWindow&);
-
-    Ui::MainWindow *ui;
-    BE::CoreApp *m_coreApp;
-    RuleTreeModel *m_ruleTreeModel;
-    QItemSelectionModel *m_ruleTreeSelectionModel;
-    bool m_ruleEdited;
-    BE::Rule m_ruleBackup;
-    BE::ConversationWriter *m_testConversationLog;
-    QString m_filename;
 
     enum {
         DisconnectedFromChat,

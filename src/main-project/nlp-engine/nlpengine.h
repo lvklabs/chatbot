@@ -41,7 +41,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Abstract interface for all NLP Engines
+ * \brief The Engine class provides an abstract interface for all NLP Engines
  */
 
 class Engine

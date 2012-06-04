@@ -40,7 +40,8 @@ namespace Nlp
 /// @{
 
 /**
- * \brief SimpleAimlEngine is a wrapper over the AimlEngine to provide a simpler syntax than AIML
+ * \brief The SimpleAimlEngine class is a wrapper over the AimlEngine to provide a simpler
+ *        syntax than AIML
  *
  * SimpleAimlEngine supports handy variable names and if-else conditionals. For instance instead of
  * writing:
