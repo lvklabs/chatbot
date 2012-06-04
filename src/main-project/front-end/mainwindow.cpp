@@ -134,7 +134,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     clear();
 
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
 
     QString lastFile = settings.value(SETTING_LAST_FILE, QString(DEFAULT_RULES_FILE)).toString();
     initCoreAndModelsWithFile(lastFile);
@@ -376,7 +376,7 @@ void Lvk::FE::MainWindow::saveAllSettings()
     saveChatSettings();
 
     if (!m_filename.isEmpty()) {
-        Lvk::Common::Settings settings;
+        Lvk::Cmn::Settings settings;
         settings.setValue(SETTING_LAST_FILE, m_filename);
     }
 }
@@ -385,7 +385,7 @@ void Lvk::FE::MainWindow::saveAllSettings()
 
 void Lvk::FE::MainWindow::loadMainWindowSettings()
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     if (settings.contains(SETTING_MAIN_WINDOW_SIZE) && settings.contains(SETTING_MAIN_WINDOW_POS)) {
         resize(settings.value(SETTING_MAIN_WINDOW_SIZE).toSize());
@@ -407,7 +407,7 @@ void Lvk::FE::MainWindow::loadMainWindowSettings()
 
 void Lvk::FE::MainWindow::loadChatSettings()
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     int chatType = settings.value(SETTING_DEFAULT_CHAT_SERVER_TYPE).toInt();
     uiSelectChat(static_cast<BE::CoreApp::ChatType>(chatType));
@@ -419,7 +419,7 @@ void Lvk::FE::MainWindow::loadChatSettings()
 
 void Lvk::FE::MainWindow::saveMainWindowSettings()
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     settings.setValue(SETTING_MAIN_WINDOW_SIZE, size());
     settings.setValue(SETTING_MAIN_WINDOW_POS, pos());
@@ -430,7 +430,7 @@ void Lvk::FE::MainWindow::saveMainWindowSettings()
 
 void Lvk::FE::MainWindow::saveChatSettings()
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     settings.setValue(SETTING_DEFAULT_CHAT_SERVER_TYPE, uiChatSelected());
     settings.setValue(SETTING_DEFAULT_CHAT_USERNAME, ui->usernameText->text());
@@ -440,7 +440,7 @@ void Lvk::FE::MainWindow::saveChatSettings()
 
 Lvk::BE::Roster Lvk::FE::MainWindow::getBlackListSettings(const QString &chatAccount)
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
 
@@ -460,7 +460,7 @@ Lvk::BE::Roster Lvk::FE::MainWindow::getBlackListSettings(const QString &chatAcc
 void Lvk::FE::MainWindow::saveBlackListSettings(const BE::Roster &blackList,
                                                 const QString &chatAccount)
 {
-    Common::Settings settings;
+    Cmn::Settings settings;
 
     QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
 

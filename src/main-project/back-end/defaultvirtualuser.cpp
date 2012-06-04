@@ -73,7 +73,7 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
       m_convWriter(0),
       m_rwLock(new QReadWriteLock())
 {
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
 
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
     QString logFilename = LOG_BASE_FILENAME + id + "." + LOG_EXT_FILENAME;
@@ -139,7 +139,7 @@ void Lvk::BE::DefaultVirtualUser::getResponse(QString &response, bool &matched,
 
         if (!matched) {
             if (m_evasives.size() > 0) {
-                response = m_evasives[Common::Random::getInt(0, m_evasives.size() - 1)];
+                response = m_evasives[Cmn::Random::getInt(0, m_evasives.size() - 1)];
             } else {
                 response.clear();
             }

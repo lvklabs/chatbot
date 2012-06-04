@@ -46,20 +46,20 @@ void sanitize(QString &s)
 // CsvDocument
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::CsvDocument::CsvDocument()
+Lvk::Cmn::CsvDocument::CsvDocument()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::CsvDocument::CsvDocument(const QString &csvStr)
+Lvk::Cmn::CsvDocument::CsvDocument(const QString &csvStr)
 {
     parseString(csvStr);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvDocument::parseString(const QString &csvStr)
+void Lvk::Cmn::CsvDocument::parseString(const QString &csvStr)
 {
     clear();
 
@@ -76,7 +76,7 @@ void Lvk::Common::CsvDocument::parseString(const QString &csvStr)
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Common::CsvDocument::toString() const
+QString Lvk::Cmn::CsvDocument::toString() const
 {
     QString str;
 
@@ -95,49 +95,49 @@ QString Lvk::Common::CsvDocument::toString() const
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<Lvk::Common::CsvRow> & Lvk::Common::CsvDocument::rows() const
+const QList<Lvk::Cmn::CsvRow> & Lvk::Cmn::CsvDocument::rows() const
 {
     return m_rows;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::Common::CsvRow & Lvk::Common::CsvDocument::operator[](int n) const
+const Lvk::Cmn::CsvRow & Lvk::Cmn::CsvDocument::operator[](int n) const
 {
     return m_rows[n];
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvDocument::append(const CsvRow &row)
+void Lvk::Cmn::CsvDocument::append(const CsvRow &row)
 {
     m_rows.append(row);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvDocument::append(const QString &rowStr)
+void Lvk::Cmn::CsvDocument::append(const QString &rowStr)
 {
     m_rows.append(CsvRow(rowStr));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvDocument::clear()
+void Lvk::Cmn::CsvDocument::clear()
 {
     m_rows.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Common::CsvDocument::operator==(const CsvDocument &other) const
+bool Lvk::Cmn::CsvDocument::operator==(const CsvDocument &other) const
 {
     return m_rows == other.m_rows;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Common::CsvDocument::operator!=(const CsvDocument &other) const
+bool Lvk::Cmn::CsvDocument::operator!=(const CsvDocument &other) const
 {
     return !this->operator==(other);
 }

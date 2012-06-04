@@ -2,7 +2,7 @@
 
 \defgroup Lvk LVK Chatbot
 
-LVK Chatbot is made-up with following modules: \ref FE, \ref BE \ref Nlp, \ref CA, \ref Common
+LVK Chatbot is made-up with following modules: \ref FE, \ref BE \ref Nlp, \ref CA, \ref Cmn
 
 
 \defgroup FE Front-end
@@ -28,7 +28,7 @@ The NLP engine module provides a Natural Language Processing engine that is used
 The Chat Adapters module provides connection to chat servers such as GTalk and Facebook Chat.
 
 
-\defgroup Common Common
+\defgroup Cmn Common
 
 The Common module provides classes, macros, strings and other declarations that are common to all modules.
 

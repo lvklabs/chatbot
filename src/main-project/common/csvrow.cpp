@@ -89,13 +89,13 @@ bool isAllSpace(const QString &s)
 // CsvRow
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::CsvRow::CsvRow()
+Lvk::Cmn::CsvRow::CsvRow()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::CsvRow::CsvRow(const QStringList &cells)
+Lvk::Cmn::CsvRow::CsvRow(const QStringList &cells)
 {
     foreach (const QString &cell, cells) {
         append(cell);
@@ -104,14 +104,14 @@ Lvk::Common::CsvRow::CsvRow(const QStringList &cells)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::CsvRow::CsvRow(const QString &str)
+Lvk::Cmn::CsvRow::CsvRow(const QString &str)
 {
     parseString(str);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvRow::parseString(const QString &str)
+void Lvk::Cmn::CsvRow::parseString(const QString &str)
 {
     clear();
 
@@ -140,7 +140,7 @@ void Lvk::Common::CsvRow::parseString(const QString &str)
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Common::CsvRow::toString() const
+QString Lvk::Cmn::CsvRow::toString() const
 {
     QString str;
 
@@ -159,14 +159,14 @@ QString Lvk::Common::CsvRow::toString() const
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<QString> & Lvk::Common::CsvRow::cells() const
+const QList<QString> & Lvk::Cmn::CsvRow::cells() const
 {
     return m_cells;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvRow::append(const QString &cell)
+void Lvk::Cmn::CsvRow::append(const QString &cell)
 {
     if (!cell.contains('\n')) {
         m_cells.append(cell);
@@ -177,35 +177,35 @@ void Lvk::Common::CsvRow::append(const QString &cell)
 
 //--------------------------------------------------------------------------------------------------
 
-const QString & Lvk::Common::CsvRow::operator[](int n) const
+const QString & Lvk::Cmn::CsvRow::operator[](int n) const
 {
     return m_cells[n];
 }
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Common::CsvRow::size() const
+int Lvk::Cmn::CsvRow::size() const
 {
     return m_cells.size();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Common::CsvRow::clear()
+void Lvk::Cmn::CsvRow::clear()
 {
     m_cells.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Common::CsvRow::operator==(const Lvk::Common::CsvRow &other) const
+bool Lvk::Cmn::CsvRow::operator==(const Lvk::Cmn::CsvRow &other) const
 {
     return m_cells == other.m_cells;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Common::CsvRow::operator!=(const Lvk::Common::CsvRow &other) const
+bool Lvk::Cmn::CsvRow::operator!=(const Lvk::Cmn::CsvRow &other) const
 {
     return !this->operator ==(other);
 }

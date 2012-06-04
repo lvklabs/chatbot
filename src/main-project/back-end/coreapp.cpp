@@ -472,7 +472,7 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, const QString &targe
     } else {
         QStringList evasives = getEvasives();
         response = !evasives.isEmpty() ?
-                    evasives[Common::Random::getInt(0, evasives.size() - 1)] : "";
+                    evasives[Cmn::Random::getInt(0, evasives.size() - 1)] : "";
     }
 
     return response;

@@ -119,7 +119,7 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 
 void Lvk::Nlp::AimlEngine::resetParser()
 {
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
     QFile *logfile = new QFile(logsPath + QDir::separator() + "aiml_parser.log");

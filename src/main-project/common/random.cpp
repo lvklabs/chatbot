@@ -24,7 +24,7 @@
 #include <QDateTime>
 #include <cstdlib>
 
-int Lvk::Common::Random::getInt(int min, int max)
+int Lvk::Cmn::Random::getInt(int min, int max)
 {
     static unsigned int seed = 0;
 

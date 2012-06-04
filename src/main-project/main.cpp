@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 void setLanguage(QApplication &app)
 {
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
     QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es")).toString();
 
     QTranslator *translator = new QTranslator();
@@ -70,7 +70,7 @@ void setLanguage(QApplication &app)
 
 void makeDirStructure()
 {
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
     QDir qdir;

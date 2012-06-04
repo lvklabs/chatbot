@@ -100,7 +100,7 @@ void Lvk::CA::ChatCorpus::add(const CorpusEntry &entry)
     m_corpus.append(entry);
 
     if (m_corpusFile.isOpen()) {
-        Common::CsvRow row;
+        Cmn::CsvRow row;
         row.append(QDateTime::currentDateTime().toString(STR_CHAT_CORPUS_DATE_TIME_FORMAT));
         row.append(sanitize(entry.first));
         row.append(sanitize(entry.second));
@@ -135,13 +135,13 @@ void Lvk::CA::ChatCorpus::load()
     char buf[10*1024];
     qint64 len = 0;
     QString line;
-    Common::CsvRow row;
+    Cmn::CsvRow row;
 
     do {
         len = m_corpusFile.readLine(buf, sizeof(buf));
         if (len > 0) {
             line = QString::fromUtf8(buf);
-            row = Common::CsvRow(line);
+            row = Cmn::CsvRow(line);
 
             if (row.size() == 3) {
                 m_corpus.append(qMakePair(row[1], row[2]));

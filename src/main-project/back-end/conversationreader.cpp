@@ -34,7 +34,7 @@
 namespace
 {
 
-void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Common::CsvRow & row)
+void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Cmn::CsvRow & row)
 {
     entry.clear();
 
@@ -50,13 +50,13 @@ void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Common::CsvRow &
 
 //--------------------------------------------------------------------------------------------------
 
-void makeConversation(Lvk::BE::Conversation & conv, const Lvk::Common::CsvDocument & doc)
+void makeConversation(Lvk::BE::Conversation & conv, const Lvk::Cmn::CsvDocument & doc)
 {
     conv.clear();
 
     Lvk::BE::Conversation::Entry entry;
 
-    foreach (const Lvk::Common::CsvRow &row, doc.rows()) {
+    foreach (const Lvk::Cmn::CsvRow &row, doc.rows()) {
         makeEntry(entry, row);
         if (!entry.isNull()) {
             conv.append(entry);
@@ -111,7 +111,7 @@ bool Lvk::BE::ConversationReader::read(Lvk::BE::Conversation *conv)
     // TODO use readLine()
     QString data = QString::fromUtf8(m_device->readAll().constData());
 
-    Common::CsvDocument doc(data);
+    Cmn::CsvDocument doc(data);
     makeConversation(*conv, doc);
 
     return true;
@@ -129,7 +129,7 @@ bool Lvk::BE::ConversationReader::read(Conversation::Entry *entry)
     qint64 len = m_device->readLine(buf, sizeof(buf));
 
     if (len != -1) {
-        Common::CsvRow row(QString::fromUtf8(buf));
+        Cmn::CsvRow row(QString::fromUtf8(buf));
         makeEntry(*entry, row);
     }
 

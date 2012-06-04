@@ -43,7 +43,7 @@ inline QString sanitize(const QString &str)
 
 //--------------------------------------------------------------------------------------------------
 
-void makeCsvRow(Lvk::Common::CsvRow & row, const Lvk::BE::Conversation::Entry & entry)
+void makeCsvRow(Lvk::Cmn::CsvRow & row, const Lvk::BE::Conversation::Entry & entry)
 {
     row.clear();
     row.append(entry.dateTime.toString(STR_CSV_CONV_DATE_TIME_FORMAT));
@@ -56,9 +56,9 @@ void makeCsvRow(Lvk::Common::CsvRow & row, const Lvk::BE::Conversation::Entry & 
 
 //--------------------------------------------------------------------------------------------------
 
-void makeCsvDoc(Lvk::Common::CsvDocument & doc, const Lvk::BE::Conversation & conv)
+void makeCsvDoc(Lvk::Cmn::CsvDocument & doc, const Lvk::BE::Conversation & conv)
 {
-    Lvk::Common::CsvRow row;
+    Lvk::Cmn::CsvRow row;
 
     doc.clear();
 
@@ -115,7 +115,7 @@ bool Lvk::BE::ConversationWriter::write(const Lvk::BE::Conversation &conv)
         return false;
     }
 
-    Common::CsvDocument doc;
+    Cmn::CsvDocument doc;
     makeCsvDoc(doc, conv);
 
     return writeln(doc.toString().toUtf8()) && flush();
@@ -129,7 +129,7 @@ bool Lvk::BE::ConversationWriter::write(const Conversation::Entry &entry)
         return false;
     }
 
-    Common::CsvRow row;
+    Cmn::CsvRow row;
     makeCsvRow(row, entry);
 
     return writeln(row.toString().toUtf8()) && flush();

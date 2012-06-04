@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_COMMON_SETTINGSKEYS_H
-#define LVK_COMMON_SETTINGSKEYS_H
+#ifndef LVK_CMN_SETTINGSKEYS_H
+#define LVK_CMN_SETTINGSKEYS_H
 
 #define SETTING_APP_LANGUAGE                        "Application/Language"
 
@@ -35,4 +35,4 @@
 #define SETTING_DEFAULT_CHAT_SERVER_TYPE            "Chat/ServerType"
 #define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
 
-#endif // LVK_COMMON_SETTINGSKEYS_H
+#endif // LVK_CMN_SETTINGSKEYS_H

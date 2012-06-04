@@ -26,14 +26,14 @@
 // Settings
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Common::Settings::Settings(QObject *parent) :
+Lvk::Cmn::Settings::Settings(QObject *parent) :
     QSettings(parent)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QVariant Lvk::Common::Settings::value(const QString &key, const QVariant &defaultValue_) const
+QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultValue_) const
 {
     QVariant defaultValue = defaultValue_;
 

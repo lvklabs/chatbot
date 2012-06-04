@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_COMMON_SETTINGS_H
-#define LVK_COMMON_SETTINGS_H
+#ifndef LVK_CMN_SETTINGS_H
+#define LVK_CMN_SETTINGS_H
 
 #include <QSettings>
 
@@ -30,11 +30,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Common
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup Common
+/// \addtogroup Cmn
 /// @{
 
 /**
@@ -61,11 +61,11 @@ public:
 
 /// @}
 
-} // namespace Common
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_COMMON_SETTINGS_H
+#endif // LVK_CMN_SETTINGS_H

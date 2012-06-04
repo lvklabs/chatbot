@@ -84,7 +84,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
     // Xmpp Logger
 
-    Lvk::Common::Settings settings;
+    Lvk::Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
     QXmppLogger *xmppLogger = new QXmppLogger(this);

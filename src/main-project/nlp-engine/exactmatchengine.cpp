@@ -134,7 +134,7 @@ QList<QString> Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input,
 
         if (inputIndex != -1) {
             if (target.isEmpty() || indexOf(target, ruleTarget) != -1) {
-                int randomOutput = Common::Random::getInt(0, ruleOuput.size() - 1);
+                int randomOutput = Cmn::Random::getInt(0, ruleOuput.size() - 1);
                 responses.append(ruleOuput[randomOutput]);
                 matches.append(qMakePair(m_rules[i].id(), inputIndex));
             }

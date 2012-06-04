@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_COMMON_VERSION_H
-#define LVK_COMMON_VERSION_H
+#ifndef LVK_CMN_VERSION_H
+#define LVK_CMN_VERSION_H
 
 #include "versionrev.h"
 
@@ -33,4 +33,4 @@
 #define APP_URL_CONTACT     "www.lvklabs.com"
 #define APP_MAIL_CONTACT    "contact@lvklabs.com"
 
-#endif // LVK_COMMON_VERSION_H
+#endif // LVK_CMN_VERSION_H
