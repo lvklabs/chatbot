@@ -6,6 +6,7 @@ v0.08
  - Saving all logs files in a configurable directory (By default ./logs)
  - Implemented "listening" mode for Facebook chatbots
  - Saving chat corpus and chat history with format CSV instead of custom format
+ - Implemented operators +, * and **
 
 v0.07
  - Implemented "Save as", "Open", "New"
