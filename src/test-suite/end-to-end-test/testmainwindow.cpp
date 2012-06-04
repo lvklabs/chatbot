@@ -216,7 +216,7 @@ void TestMainWindow::UiSetRuleHierarchy1()
 {
     m_window->m_ruleTreeModel->clear();
 
-    Lvk::BE::Rule *rootRule = m_window->m_coreApp->rootRule();
+    Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
 
     Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule,rootRule);
     Lvk::BE::Rule *cat2 = new Lvk::BE::Rule(CATEGORY_2_NAME, Lvk::BE::Rule::ContainerRule,rootRule);
@@ -262,7 +262,7 @@ void TestMainWindow::UiSetRuleHierarchy1()
 
     m_window->m_ruleTreeModel->appendItem(evasives);
 
-    m_window->m_coreApp->refreshNlpEngine();
+    m_window->m_appFacade->refreshNlpEngine();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -271,7 +271,7 @@ void TestMainWindow::UiSetRuleHierarchy2()
 {
     m_window->m_ruleTreeModel->clear();
 
-    Lvk::BE::Rule *rootRule = m_window->m_coreApp->rootRule();
+    Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
 
     Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule, rootRule);
 
@@ -288,7 +288,7 @@ void TestMainWindow::UiSetRuleHierarchy2()
     m_window->m_ruleTreeModel->appendItem(rule1);
     m_window->m_ruleTreeModel->appendItem(evasives);
 
-    m_window->m_coreApp->refreshNlpEngine();
+    m_window->m_appFacade->refreshNlpEngine();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -393,15 +393,15 @@ void TestMainWindow::testImportExport()
 
     // Export & Import
 
-    QVERIFY(m_window->m_coreApp->exportRules(container, EXPORTED_FILE));
+    QVERIFY(m_window->m_appFacade->exportRules(container, EXPORTED_FILE));
 
     QVERIFY(QFile::exists(EXPORTED_FILE));
 
-    QVERIFY(m_window->m_coreApp->importRules(EXPORTED_FILE));
+    QVERIFY(m_window->m_appFacade->importRules(EXPORTED_FILE));
 
     // Verify if rules have been imported
 
-    const Lvk::BE::Rule *rootRule = m_window->m_coreApp->rootRule();
+    const Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
     const Lvk::BE::Rule *evasiveRule = m_window->evasivesRule();
 
     QVERIFY(rootRule);
@@ -685,7 +685,7 @@ void TestMainWindow::testChatbotResponseAndHistory()
 //    std::cout << " - Verifying conversation log history..." << std::endl;
 
 //    QFile conversationLog(CHAT_CONVERSATIONS_LOG_BASENAME
-//                          + m_window->m_coreApp->m_chatbotId
+//                          + m_window->m_appFacade->m_chatbotId
 //                           + QString(".") + CHAT_CONVERSATIONS_LOG_EXT);
 
 //    QVERIFY(conversationLog.open(QFile::ReadOnly));

@@ -4,8 +4,8 @@
 #include "csvrow.h"
 #include "csvdocument.h"
 
-Q_DECLARE_METATYPE(Lvk::Common::CsvRow)
-Q_DECLARE_METATYPE(Lvk::Common::CsvDocument)
+Q_DECLARE_METATYPE(Lvk::Cmn::CsvRow)
+Q_DECLARE_METATYPE(Lvk::Cmn::CsvDocument)
 
 //--------------------------------------------------------------------------------------------------
 // CsvDocumentTest
@@ -52,19 +52,19 @@ CsvDocumentTest::CsvDocumentTest()
 void CsvDocumentTest::testToFromStrings_data()
 {
     QTest::addColumn<QString>("csvString");
-    QTest::addColumn<Lvk::Common::CsvDocument>("expectedCsvDoc");
+    QTest::addColumn<Lvk::Cmn::CsvDocument>("expectedCsvDoc");
 
-    Lvk::Common::CsvRow doc1row1;
-    Lvk::Common::CsvRow doc2row1;
-    Lvk::Common::CsvRow doc2row2;
-    Lvk::Common::CsvRow doc3row1;
-    Lvk::Common::CsvRow doc3row2;
-    Lvk::Common::CsvRow doc3row3;
+    Lvk::Cmn::CsvRow doc1row1;
+    Lvk::Cmn::CsvRow doc2row1;
+    Lvk::Cmn::CsvRow doc2row2;
+    Lvk::Cmn::CsvRow doc3row1;
+    Lvk::Cmn::CsvRow doc3row2;
+    Lvk::Cmn::CsvRow doc3row3;
 
-    Lvk::Common::CsvDocument emptyDoc;
-    Lvk::Common::CsvDocument doc1;
-    Lvk::Common::CsvDocument doc2;
-    Lvk::Common::CsvDocument doc3;
+    Lvk::Cmn::CsvDocument emptyDoc;
+    Lvk::Cmn::CsvDocument doc1;
+    Lvk::Cmn::CsvDocument doc2;
+    Lvk::Cmn::CsvDocument doc3;
 
     doc1row1.append(CELL_1);
 
@@ -73,14 +73,14 @@ void CsvDocumentTest::testToFromStrings_data()
     doc2row1.append(CELL_1);
     doc2row1.append(CELL_2);
     doc2row1.append(CELL_3);
-    doc2row2 = Lvk::Common::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
+    doc2row2 = Lvk::Cmn::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
 
     doc2.append(doc2row1);
     doc2.append(doc2row2);
 
-    doc3row1 = Lvk::Common::CsvRow(QStringList() << CELL_1  << CELL_2  << CELL_3);
-    doc3row2 = Lvk::Common::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
-    doc3row3 = Lvk::Common::CsvRow(QStringList() << CELL_7u << CELL_8u << CELL_9u);
+    doc3row1 = Lvk::Cmn::CsvRow(QStringList() << CELL_1  << CELL_2  << CELL_3);
+    doc3row2 = Lvk::Cmn::CsvRow(QStringList() << CELL_4  << CELL_5  << CELL_6);
+    doc3row3 = Lvk::Cmn::CsvRow(QStringList() << CELL_7u << CELL_8u << CELL_9u);
 
     doc3.append(doc3row1);
     doc3.append(doc3row2);
@@ -103,9 +103,9 @@ void CsvDocumentTest::testToFromStrings_data()
 void CsvDocumentTest::testToFromStrings()
 {
     QFETCH(QString, csvString);
-    QFETCH(Lvk::Common::CsvDocument, expectedCsvDoc);
+    QFETCH(Lvk::Cmn::CsvDocument, expectedCsvDoc);
 
-    Lvk::Common::CsvDocument csvDoc(csvString);
+    Lvk::Cmn::CsvDocument csvDoc(csvString);
 
     QCOMPARE(csvDoc, expectedCsvDoc);
     QCOMPARE(csvDoc.toString(), csvString);

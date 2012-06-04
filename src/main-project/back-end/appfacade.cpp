@@ -19,7 +19,7 @@
  *
  */
 
-#include "coreapp.h"
+#include "appfacade.h"
 #include "rule.h"
 #include "nlpengine.h"
 #include "nlprule.h"
@@ -105,7 +105,7 @@ QString newChatbotId()
 // Constructors & destructor
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
+Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_rootRule(new Rule()),
       m_evasivesRule(0),
@@ -119,7 +119,7 @@ Lvk::BE::CoreApp::CoreApp(QObject *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
+Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
       m_rootRule(new Rule()),
       m_evasivesRule(0),
@@ -133,7 +133,7 @@ Lvk::BE::CoreApp::CoreApp(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::~CoreApp()
+Lvk::BE::AppFacade::~AppFacade()
 {
     delete m_chatbot;
     delete m_nlpEngine;
@@ -143,7 +143,7 @@ Lvk::BE::CoreApp::~CoreApp()
 // Load, save, save as, close file
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::load(const QString &filename, bool create /*= true*/)
+bool Lvk::BE::AppFacade::load(const QString &filename, bool create /*= true*/)
 {
     if (!m_filename.isEmpty()) {
         close();
@@ -180,7 +180,7 @@ bool Lvk::BE::CoreApp::load(const QString &filename, bool create /*= true*/)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::save()
+bool Lvk::BE::AppFacade::save()
 {
     bool success = false;
 
@@ -199,7 +199,7 @@ bool Lvk::BE::CoreApp::save()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::saveAs(const QString &filename)
+bool Lvk::BE::AppFacade::saveAs(const QString &filename)
 {
     QString filenameBak = m_filename;
     QString chatbotIdBak = m_chatbotId;
@@ -221,7 +221,7 @@ bool Lvk::BE::CoreApp::saveAs(const QString &filename)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::hasUnsavedChanges() const
+bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 {
     for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         if ((*it)->status() == Rule::Unsaved) {
@@ -234,7 +234,7 @@ bool Lvk::BE::CoreApp::hasUnsavedChanges() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::markAsSaved()
+void Lvk::BE::AppFacade::markAsSaved()
 {
     for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         (*it)->setStatus(Rule::Saved);
@@ -243,7 +243,7 @@ void Lvk::BE::CoreApp::markAsSaved()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::close()
+void Lvk::BE::AppFacade::close()
 {
     if (m_nlpEngine) {
         m_nlpEngine->setRules(Nlp::RuleList());
@@ -273,7 +273,7 @@ void Lvk::BE::CoreApp::close()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::read(QFile &file)
+bool Lvk::BE::AppFacade::read(QFile &file)
 {
     QDataStream istream(&file);
 
@@ -301,7 +301,7 @@ bool Lvk::BE::CoreApp::read(QFile &file)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::write(QFile &file)
+bool Lvk::BE::AppFacade::write(QFile &file)
 {
     QDataStream ostream(&file);
 
@@ -319,14 +319,14 @@ bool Lvk::BE::CoreApp::write(QFile &file)
 // Import/Export
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::importRules(const QString &inputFile)
+bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 {
     BE::Rule container;
 
     return importRules(&container, inputFile) && mergeRules(&container);
 }
 
-bool Lvk::BE::CoreApp::importRules(BE::Rule *container, const QString &inputFile)
+bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFile)
 {
     QFile file(inputFile);
 
@@ -357,7 +357,7 @@ bool Lvk::BE::CoreApp::importRules(BE::Rule *container, const QString &inputFile
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &outputFile)
+bool Lvk::BE::AppFacade::exportRules(const BE::Rule *container, const QString &outputFile)
 {
     QFile file(outputFile);
 
@@ -378,7 +378,7 @@ bool Lvk::BE::CoreApp::exportRules(const BE::Rule *container, const QString &out
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
+bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
 {
     foreach (Lvk::BE::Rule *rule, container->children()) {
         switch (rule->type()) {
@@ -409,28 +409,28 @@ bool Lvk::BE::CoreApp::mergeRules(BE::Rule *container)
 // Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::BE::CoreApp::rootRule()
+Lvk::BE::Rule * Lvk::BE::AppFacade::rootRule()
 {
     return m_rootRule.get();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::BE::CoreApp::evasivesRule()
+Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 {
     return m_evasivesRule;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList Lvk::BE::CoreApp::getEvasives() const
+QStringList Lvk::BE::AppFacade::getEvasives() const
 {
     return m_evasivesRule ? const_cast<const BE::Rule*>(m_evasivesRule)->output() : QStringList();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::CoreApp::getTestUserResponse(const QString &input, MatchList &matches) const
+QString Lvk::BE::AppFacade::getTestUserResponse(const QString &input, MatchList &matches) const
 {
     QString response;
 
@@ -453,7 +453,7 @@ QString Lvk::BE::CoreApp::getTestUserResponse(const QString &input, MatchList &m
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::CoreApp::getResponse(const QString &input, const QString &target,
+QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &target,
                                       MatchList &matches) const
 {
     matches.clear();
@@ -480,7 +480,7 @@ QString Lvk::BE::CoreApp::getResponse(const QString &input, const QString &targe
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::refreshNlpEngine()
+void Lvk::BE::AppFacade::refreshNlpEngine()
 {
     m_evasivesRule = 0;
     m_nextRuleId = 0;
@@ -497,7 +497,7 @@ void Lvk::BE::CoreApp::refreshNlpEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList &nlpRules)
+void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList &nlpRules)
 {
     if (!parentRule) {
         return;
@@ -519,7 +519,7 @@ void Lvk::BE::CoreApp::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleList
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::storeTargets(const TargetList &targets)
+void Lvk::BE::AppFacade::storeTargets(const TargetList &targets)
 {
     foreach (const Target &t, targets) {
         m_targets.insert(t.username);
@@ -530,7 +530,7 @@ void Lvk::BE::CoreApp::storeTargets(const TargetList &targets)
 // Chat methods
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatType type, const QString &user,
+void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const QString &user,
                                      const QString &passwd)
 {
     if (m_chatbot && m_currentChatbotType != type) {
@@ -555,7 +555,7 @@ void Lvk::BE::CoreApp::connectToChat(Lvk::BE::CoreApp::ChatType type, const QStr
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::disconnectFromChat()
+void Lvk::BE::AppFacade::disconnectFromChat()
 {
     if (m_chatbot) {
         m_chatbot->disconnectFromServer();
@@ -564,7 +564,7 @@ void Lvk::BE::CoreApp::disconnectFromChat()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::createChatbot(ChatType type)
+void Lvk::BE::AppFacade::createChatbot(ChatType type)
 {
     if (type != FbChat && type != GTalkChat) {
         return;
@@ -588,7 +588,7 @@ void Lvk::BE::CoreApp::createChatbot(ChatType type)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::deleteCurrentChatbot()
+void Lvk::BE::AppFacade::deleteCurrentChatbot()
 {
     delete m_chatbot;   // TODO consider using deleteLater()
     m_chatbot = 0;
@@ -596,7 +596,7 @@ void Lvk::BE::CoreApp::deleteCurrentChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::refreshEvasivesToChatbot()
+void Lvk::BE::AppFacade::refreshEvasivesToChatbot()
 {
     if (m_chatbot && m_chatbot->virtualUser()) {
         DefaultVirtualUser *virtualUser =
@@ -610,7 +610,7 @@ void Lvk::BE::CoreApp::refreshEvasivesToChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::connectChatClientSignals()
+void Lvk::BE::AppFacade::connectChatClientSignals()
 {
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
@@ -624,7 +624,7 @@ void Lvk::BE::CoreApp::connectChatClientSignals()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster Lvk::BE::CoreApp::roster()
+Lvk::BE::Roster Lvk::BE::AppFacade::roster()
 {
     Roster roster;
 
@@ -640,7 +640,7 @@ Lvk::BE::Roster Lvk::BE::CoreApp::roster()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::CoreApp::setBlackListRoster(const Roster &roster)
+void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 {
     if (m_chatbot) {
         CA::ContactInfoList infoList;
@@ -653,7 +653,7 @@ void Lvk::BE::CoreApp::setBlackListRoster(const Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
+const Lvk::BE::Conversation & Lvk::BE::AppFacade::conversationHistory()
 {
     if (!m_chatbot) {
         createChatbot(FbChat);
@@ -675,7 +675,7 @@ const Lvk::BE::Conversation & Lvk::BE::CoreApp::conversationHistory()
 //--------------------------------------------------------------------------------------------------
 // TODO localize
 
-bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
+bool Lvk::BE::AppFacade::loadDefaultFirstTimeRules()
 {
     m_isFirstTime = false;
 
@@ -727,7 +727,7 @@ bool Lvk::BE::CoreApp::loadDefaultFirstTimeRules()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::CoreApp::loadDefaultRules()
+bool Lvk::BE::AppFacade::loadDefaultRules()
 {
     m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
 

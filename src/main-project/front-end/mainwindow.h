@@ -24,7 +24,7 @@
 
 #include <QMainWindow>
 
-#include "coreapp.h"
+#include "appfacade.h"
 #include "conversation.h"
 #include "rule.h"
 
@@ -99,7 +99,7 @@ private:
     MainWindow& operator=(MainWindow&);
 
     Ui::MainWindow *ui;
-    BE::CoreApp *m_coreApp;
+    BE::AppFacade *m_appFacade;
     RuleTreeModel *m_ruleTreeModel;
     QItemSelectionModel *m_ruleTreeSelectionModel;
     bool m_ruleEdited;
@@ -154,7 +154,7 @@ private:
     void teachRule(BE::Rule *rule);
     void undoRule(BE::Rule *rule);
     void handleRuleEdited(BE::Rule *rule);
-    void highlightMatchedRules(const BE::CoreApp::MatchList &matches);
+    void highlightMatchedRules(const BE::AppFacade::MatchList &matches);
 
     void showRuleOnWidget(const BE::Rule *rule);
     void refreshRuleOnWidget();
@@ -163,8 +163,8 @@ private:
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
     void updateBlackList();
-    BE::CoreApp::ChatType uiChatSelected();
-    void uiSelectChat(BE::CoreApp::ChatType type);
+    BE::AppFacade::ChatType uiChatSelected();
+    void uiSelectChat(BE::AppFacade::ChatType type);
 
     bool hasUnsavedChanges();
     int showSaveChangesDialog();

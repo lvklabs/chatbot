@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_BE_COREAPP_H
-#define LVK_BE_COREAPP_H
+#ifndef LVK_BE_APPFACADE_H
+#define LVK_BE_APPFACADE_H
 
 #include <QObject>
 #include <QString>
@@ -65,20 +65,25 @@ class Rule;
 
 
 /**
- * \brief This class provides the core functionality of the application.
+ * \brief The AppFacade class provides the core functionality of the application.
+ *
+ * The AppFacade class provides a unified and simplified interface to several subsystems
+ * of the application that makes the subsystems easier to use.
+ *
+ * The most important subsystems are the NLP engine and the chat adapters.
  */
 
-class CoreApp : public QObject
+class AppFacade : public QObject
 {
     Q_OBJECT
 
 public:
 
-    CoreApp(QObject *parent = 0);
+    AppFacade(QObject *parent = 0);
 
-    CoreApp(Nlp::Engine *nlpEngine, QObject *parent = 0);
+    AppFacade(Nlp::Engine *nlpEngine, QObject *parent = 0);
 
-    ~CoreApp();
+    ~AppFacade();
 
     bool load(const QString &filename, bool create = true);
 
@@ -140,8 +145,8 @@ signals:
     void newConversationEntry(const BE::Conversation::Entry &entry);
 
 private:
-    CoreApp(CoreApp&);
-    CoreApp& operator=(CoreApp&);
+    AppFacade(AppFacade&);
+    AppFacade& operator=(AppFacade&);
 
     QString m_filename;
     std::auto_ptr<Rule> m_rootRule;
@@ -182,4 +187,4 @@ private:
 
 } // namespace Lvk
 
-#endif // LVK_BE_COREAPP_H
+#endif // LVK_BE_APPFACADE_H

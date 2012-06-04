@@ -20,7 +20,7 @@
  */
 
 #include "mainwindow.h"
-#include "coreapp.h"
+#include "appfacade.h"
 #include "ruletreemodel.h"
 #include "rule.h"
 #include "ui_mainwindow.h"
@@ -90,7 +90,7 @@ Lvk::BE::Roster rosterUsersfromString(const QString &s)
 //--------------------------------------------------------------------------------------------------
 // Cannonic representation for chat accounts used to persist some settings
 
-QString canonicAccount(const QString &username, Lvk::BE::CoreApp::ChatType type)
+QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
 }
@@ -123,7 +123,7 @@ QString getFileExportFilters()
 Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_coreApp(new BE::CoreApp(this)),
+    m_appFacade(new BE::AppFacade(this)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
     m_testConversationLog(0),
@@ -145,7 +145,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui->ruleInputWidget->installEventFilter(this);
     ui->ruleOutputWidget->installEventFilter(this);
 
-    ui->conversationHistory->setConversation(m_coreApp->conversationHistory());
+    ui->conversationHistory->setConversation(m_appFacade->conversationHistory());
 
     selectFirstRule();
 
@@ -165,7 +165,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 Lvk::FE::MainWindow::~MainWindow()
 {
     delete m_testConversationLog;
-    delete m_coreApp;
+    delete m_appFacade;
     delete ui;
 }
 
@@ -191,7 +191,7 @@ void Lvk::FE::MainWindow::clear()
     //ui->fbChatRadio->setChecked(true);
     ui->rosterWidget->clear();
     m_connectionStatus = DisconnectedFromChat;
-    m_coreApp->disconnectFromChat();
+    m_appFacade->disconnectFromChat();
 
     setUiMode(ChatDisconnectedUiMode);
     //ui->usernameText->clear();
@@ -215,14 +215,14 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
     setFilename(filename);
 
     if (!filename.isEmpty()) {
-        success = m_coreApp->load(filename);
+        success = m_appFacade->load(filename);
     } else {
-        m_coreApp->close();
+        m_appFacade->close();
     }
 
     delete m_ruleTreeModel;
 
-    m_ruleTreeModel = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
+    m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
 
@@ -282,9 +282,9 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
     connect(ui->disconnectButton, SIGNAL(clicked()), SLOT(onDisconnectButtonPressed()));
 
-    connect(m_coreApp, SIGNAL(connected()),          SLOT(onConnectionOk()));
-    connect(m_coreApp, SIGNAL(disconnected()),       SLOT(onDisconnection()));
-    connect(m_coreApp, SIGNAL(connectionError(int)), SLOT(onConnectionError(int)));
+    connect(m_appFacade, SIGNAL(connected()),          SLOT(onConnectionOk()));
+    connect(m_appFacade, SIGNAL(disconnected()),       SLOT(onDisconnection()));
+    connect(m_appFacade, SIGNAL(connectionError(int)), SLOT(onConnectionError(int)));
 
     connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
 
@@ -292,7 +292,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Conversations tab
 
-    connect(m_coreApp,
+    connect(m_appFacade,
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 }
@@ -410,7 +410,7 @@ void Lvk::FE::MainWindow::loadChatSettings()
     Cmn::Settings settings;
 
     int chatType = settings.value(SETTING_DEFAULT_CHAT_SERVER_TYPE).toInt();
-    uiSelectChat(static_cast<BE::CoreApp::ChatType>(chatType));
+    uiSelectChat(static_cast<BE::AppFacade::ChatType>(chatType));
 
     ui->usernameText->setText(settings.value(SETTING_DEFAULT_CHAT_USERNAME).toString());
 }
@@ -601,14 +601,14 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
 {
-    return m_coreApp->rootRule();
+    return m_appFacade->rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule * Lvk::FE::MainWindow::evasivesRule()
 {
-    return m_coreApp->evasivesRule();
+    return m_appFacade->evasivesRule();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -729,7 +729,7 @@ bool Lvk::FE::MainWindow::saveChanges()
             teachRule(selectedRule());
         }
 
-        saved = m_coreApp->save();
+        saved = m_appFacade->save();
 
         if (!saved) {
             QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
@@ -761,7 +761,7 @@ bool Lvk::FE::MainWindow::saveAsChanges()
             teachRule(selectedRule());
         }
 
-        saved = m_coreApp->saveAs(m_filename);
+        saved = m_appFacade->saveAs(m_filename);
 
         if (!saved) {
             QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
@@ -783,7 +783,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
     bool success = initCoreAndModelsWithFile(filename);
 
     if (success) {
-        ui->conversationHistory->setConversation(m_coreApp->conversationHistory());
+        ui->conversationHistory->setConversation(m_appFacade->conversationHistory());
     } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
@@ -809,7 +809,7 @@ void Lvk::FE::MainWindow::setFilename(const QString &filename)
 
 bool Lvk::FE::MainWindow::hasUnsavedChanges()
 {
-    return m_ruleEdited || m_coreApp->hasUnsavedChanges();
+    return m_ruleEdited || m_appFacade->hasUnsavedChanges();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -839,7 +839,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
     if (!filename.isEmpty()) {
 
         BE::Rule container;
-        if (m_coreApp->importRules(&container, filename)) {
+        if (m_appFacade->importRules(&container, filename)) {
             FE::RuleTreeModel *model = new FE::RuleTreeModel(&container, this);
 
             FE::ImportDialog importDialog(IMPORT_TITLE, model, this);
@@ -849,7 +849,7 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
 
                 // FIXME do not use notifyDataAboutToChange
                 m_ruleTreeModel->notifyDataAboutToChange();
-                if (!m_coreApp->mergeRules(&selectedRulesContainer)) {
+                if (!m_appFacade->mergeRules(&selectedRulesContainer)) {
                     QMessageBox::critical(this, IMPORT_TITLE, tr("Cannot import file ") + filename);
                 }
                 // FIXME do not use notifyDataChanged
@@ -869,7 +869,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
 {
     const QString EXPORT_TITLE = tr("Export Rules");
 
-    FE::RuleTreeModel *model = new FE::RuleTreeModel(m_coreApp->rootRule(), this);
+    FE::RuleTreeModel *model = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
 
     FE::ExportDialog exportDialog(EXPORT_TITLE, model, this);
 
@@ -884,7 +884,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
                 filename.append("." + FILE_EXPORT_EXTENSION);
             }
 
-            if (!m_coreApp->exportRules(&container, filename)) {
+            if (!m_appFacade->exportRules(&container, filename)) {
                 QMessageBox::critical(this, EXPORT_TITLE, tr("Cannot export file ") + filename);
             }
         }
@@ -1287,7 +1287,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
 
-    m_coreApp->refreshNlpEngine();
+    m_appFacade->refreshNlpEngine();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1341,9 +1341,9 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     }
 
     QString input = ui->testInputText->text();
-    BE::CoreApp::MatchList matches;
+    BE::AppFacade::MatchList matches;
 
-    QString response = m_coreApp->getTestUserResponse(input, matches);
+    QString response = m_appFacade->getTestUserResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
 
@@ -1374,7 +1374,7 @@ void Lvk::FE::MainWindow::onClearTestConversationButtonPressed()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::highlightMatchedRules(const BE::CoreApp::MatchList &matches)
+void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &matches)
 {
     ui->ruleInputWidget->clearHighlight();
     ui->ruleOutputWidget->clearHighlight();
@@ -1407,7 +1407,7 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
             m_connectionStatus =  ConnectingToChat;
             setUiMode(ChatConnectingUiMode);
 
-            m_coreApp->connectToChat(uiChatSelected(),
+            m_appFacade->connectToChat(uiChatSelected(),
                                      ui->usernameText->text(),
                                      ui->passwordText->text());
         } else {
@@ -1426,7 +1426,7 @@ void Lvk::FE::MainWindow::onDisconnectButtonPressed()
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
 
-        m_coreApp->disconnectFromChat();
+        m_appFacade->disconnectFromChat();
     }
 }
 
@@ -1437,14 +1437,14 @@ void Lvk::FE::MainWindow::onConnectionOk()
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
-    BE::Roster roster = m_coreApp->roster();
+    BE::Roster roster = m_appFacade->roster();
 
     QString account = canonicAccount(ui->usernameText->text(), uiChatSelected());
     BE::Roster blackListRoster = getBlackListSettings(account);
 
     ui->ruleInputWidget->setRoster(roster);
     ui->rosterWidget->setRoster(roster, blackListRoster);
-    m_coreApp->setBlackListRoster(blackListRoster);
+    m_appFacade->setBlackListRoster(blackListRoster);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1487,18 +1487,18 @@ void Lvk::FE::MainWindow::onRosterSelectionChanged()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::CoreApp::ChatType Lvk::FE::MainWindow::uiChatSelected()
+Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
 {
-    return ui->gtalkChatRadio->isChecked() ? BE::CoreApp::GTalkChat : BE::CoreApp::FbChat;
+    return ui->gtalkChatRadio->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::uiSelectChat(BE::CoreApp::ChatType type)
+void Lvk::FE::MainWindow::uiSelectChat(BE::AppFacade::ChatType type)
 {
-    if (type == BE::CoreApp::GTalkChat) {
+    if (type == BE::AppFacade::GTalkChat) {
         ui->gtalkChatRadio->setChecked(true);
-    } else if (type == BE::CoreApp::FbChat) {
+    } else if (type == BE::AppFacade::FbChat) {
         ui->fbChatRadio->setChecked(true);
     }
 }
@@ -1511,7 +1511,7 @@ void Lvk::FE::MainWindow::updateBlackList()
 
     BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
 
-    m_coreApp->setBlackListRoster(blackList);
+    m_appFacade->setBlackListRoster(blackList);
 
     saveBlackListSettings(blackList, account);
 }

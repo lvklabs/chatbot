@@ -58,11 +58,12 @@ HEADERS += \
     ../../main-project/front-end/rosterwidget.h \
     ../../main-project/front-end/autocompletetextedit.h \
     ../../main-project/back-end/rule.h \
-    ../../main-project/back-end/coreapp.h \
+    ../../main-project/back-end/appfacade.h \
     ../../main-project/back-end/defaultvirtualuser.h \
     ../../main-project/back-end/conversation.h \
     ../../main-project/back-end/conversationwriter.h \
     ../../main-project/back-end/conversationreader.h \
+    ../../main-project/back-end/contactinfo.h \
     ../../main-project/nlp-engine/nlpengine.h \
     ../../main-project/nlp-engine/nlprule.h \
     ../../main-project/nlp-engine/exactmatchengine.h \
@@ -83,7 +84,6 @@ HEADERS += \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
-    ../../main-project/back-end/contactinfo.h
 
 
 SOURCES += \
@@ -100,7 +100,7 @@ SOURCES += \
     ../../main-project/front-end/rosterwidget.cpp \
     ../../main-project/front-end/autocompletetextedit.cpp \
     ../../main-project/back-end/rule.cpp \
-    ../../main-project/back-end/coreapp.cpp \
+    ../../main-project/back-end/appfacade.cpp \
     ../../main-project/back-end/defaultvirtualuser.cpp \
     ../../main-project/back-end/conversation.cpp \
     ../../main-project/back-end/conversationwriter.cpp \
