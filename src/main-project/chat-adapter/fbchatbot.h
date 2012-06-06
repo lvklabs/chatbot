@@ -50,7 +50,7 @@ class FbChatbot : public XmppChatbot
 public:
     FbChatbot(QObject *parent = 0);
 
-    void connectToServer(const QString &user, const QString &passwd);
+    virtual void connectToServer(const QString &user, const QString &passwd);
 
 protected slots:
     virtual void onMessageReceived(const QXmppMessage &);

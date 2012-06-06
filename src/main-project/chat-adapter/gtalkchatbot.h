@@ -48,7 +48,7 @@ class GTalkChatbot : public XmppChatbot
 public:
     GTalkChatbot(QObject *parent = 0);
 
-    void connectToServer(const QString &user, const QString &passwd);
+    virtual void connectToServer(const QString &user, const QString &passwd);
 
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);

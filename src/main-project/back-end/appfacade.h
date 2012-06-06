@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QHash>
 #include <QPair>
+#include <QVariant>
 #include <QSet>
 
 #include <memory>
@@ -95,6 +96,10 @@ public:
 
     void close();
 
+    void setMetadata(const QString &key, const QVariant &value);
+
+    const QVariant &metadata(const QString &key) const;
+
     bool importRules(const QString &inputFile);
 
     bool importRules(BE::Rule *container, const QString &inputFile);
@@ -124,7 +129,11 @@ public:
         UnknownServerError  ///< Error due to unknown server
     };
 
-    void connectToChat(ChatType chatType, const QString &user, const QString &passwd);
+    void verifyAccount(ChatType accountType, const QString &user, const QString &passwd);
+
+    void cancelVerifyAccount();
+
+    void connectToChat(ChatType accountType, const QString &user, const QString &passwd);
 
     void disconnectFromChat();
 
@@ -136,6 +145,10 @@ public:
 
 signals:
 
+    void accountOk();
+
+    void accountError(int err);
+
     void connected();
 
     void disconnected();
@@ -144,11 +157,21 @@ signals:
 
     void newConversationEntry(const BE::Conversation::Entry &entry);
 
+private slots:
+
+    void onAccountOk();
+
+    void onAccountError(int err);
+
 private:
     AppFacade(AppFacade&);
     AppFacade& operator=(AppFacade&);
 
+    typedef QHash<QString, QVariant> FileMetadata;
+
     QString m_filename;
+    FileMetadata m_metadata;
+    bool m_metadataUnsaved;
     std::auto_ptr<Rule> m_rootRule;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
@@ -156,6 +179,7 @@ private:
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
     QString m_chatbotId;
+    CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
     bool m_isFirstTime;
     QSet<QString> m_targets;
@@ -168,7 +192,7 @@ private:
 
     QStringList getEvasives() const;
 
-    void createChatbot(ChatType type);
+    void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
     void refreshEvasivesToChatbot();
     void connectChatClientSignals();

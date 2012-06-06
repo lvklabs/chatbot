@@ -98,18 +98,12 @@ private:
     MainWindow(MainWindow&);
     MainWindow& operator=(MainWindow&);
 
-    Ui::MainWindow *ui;
-    BE::AppFacade *m_appFacade;
-    RuleTreeModel *m_ruleTreeModel;
-    QItemSelectionModel *m_ruleTreeSelectionModel;
-    bool m_ruleEdited;
-    BE::Rule m_ruleBackup;
-    BE::ConversationWriter *m_testConversationLog;
-    QString m_filename;
-    QString m_lastFilename;
-
-    BE::Rule *addCategory(const QString &name);
-    BE::Rule *addRule(const QString &name, BE::Rule *category);
+    enum UiTabsLayout {
+        NullLayout,
+        WelcomeTabsLayout,
+        VerifyAccountTabsLayout,
+        TeachTabsLayout
+    };
 
     enum UiMode {
         WelcomeTabUiMode,
@@ -123,10 +117,28 @@ private:
         ChatDisconnectedUiMode,
         ChatConnectingUiMode,
         ChatConnectionFailedUiMode,
-        ChatConnectionOkUiMode
+        ChatConnectionOkUiMode,
+        ChangeAccountUiMode,
+        ChangeAccountConnectingUiMode,
+        ChangeAccountFailedUiMode
     };
 
+    Ui::MainWindow *ui;
+    BE::AppFacade *m_appFacade;
+    RuleTreeModel *m_ruleTreeModel;
+    QItemSelectionModel *m_ruleTreeSelectionModel;
+    bool m_ruleEdited;
+    BE::Rule m_ruleBackup;
+    BE::ConversationWriter *m_testConversationLog;
+    QString m_filename;
+    QString m_lastFilename;
+    UiTabsLayout m_tabsLayout;
+
+    BE::Rule *addCategory(const QString &name);
+    BE::Rule *addRule(const QString &name, BE::Rule *category);
+
     void setUiMode(UiMode mode);
+    void updateTabsLayout(UiMode mode);
 
     enum {
         DisconnectedFromChat,
@@ -167,9 +179,11 @@ private:
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
+    Lvk::BE::AppFacade::ChatType fileMetadataChatType();
+    QString fileMetadataUsername();
+
     void updateBlackList();
     BE::AppFacade::ChatType uiChatSelected();
-    void uiSelectChat(BE::AppFacade::ChatType type);
 
     bool hasUnsavedChanges();
     int showSaveChangesDialog();
@@ -198,6 +212,8 @@ private slots:
     void onVerifyAccountButtonPressed();
     void onVerifyAccountOk();
     void onVerifyAccountError(int err);
+    void onChangeAccountButtonPressed();
+    void onCancelChangeAccountButtonPressed();
 
     void onConnectButtonPressed();
     void onDisconnectButtonPressed();

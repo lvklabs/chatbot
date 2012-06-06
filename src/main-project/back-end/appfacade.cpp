@@ -98,6 +98,20 @@ QString newChatbotId()
     return id;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
+{
+    switch (type) {
+    case Lvk::BE::AppFacade::FbChat:
+        return new Lvk::CA::FbChatbot();
+    case Lvk::BE::AppFacade::GTalkChat:
+        return new Lvk::CA::GTalkChatbot();
+    default:
+        return 0;
+    }
+}
+
 } // namespace
 
 
@@ -107,12 +121,14 @@ QString newChatbotId()
 
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
+      m_metadataUnsaved(false),
       m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(new Lvk::BE::DefaultEngine(new Lvk::BE::DefaultSanitizer())),
       m_nextRuleId(0),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
+      m_tmpChatbot(0),
       m_isFirstTime(true)
 {
 }
@@ -121,12 +137,14 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
 
 Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
+      m_metadataUnsaved(false),
       m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
       m_nextRuleId(0),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
+      m_tmpChatbot(0),
       m_isFirstTime(true)
 {
 }
@@ -136,6 +154,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 Lvk::BE::AppFacade::~AppFacade()
 {
     delete m_chatbot;
+    delete m_tmpChatbot;
     delete m_nlpEngine;
 }
 
@@ -223,6 +242,10 @@ bool Lvk::BE::AppFacade::saveAs(const QString &filename)
 
 bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 {
+    if (m_metadataUnsaved) {
+        return true;
+    }
+
     for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         if ((*it)->status() == Rule::Unsaved) {
             return true;
@@ -266,6 +289,10 @@ void Lvk::BE::AppFacade::close()
 
     m_nextRuleId = 0;
 
+    m_metadataUnsaved = false;
+
+    m_metadata.clear();
+
     m_rulesHash.clear();
 
     m_targets.clear();
@@ -298,6 +325,14 @@ bool Lvk::BE::AppFacade::read(QFile &file)
     istream >> m_chatbotId;
     istream >> *m_rootRule;
 
+    if (!istream.atEnd()) {
+        istream >> m_metadata;
+    }
+
+    if (istream.status() != QDataStream::Ok) {
+        return false;
+    }
+
     return true;
 }
 
@@ -313,8 +348,32 @@ bool Lvk::BE::AppFacade::write(QFile &file)
     ostream << (quint32)CRF_FILE_FORMAT_VERSION;
     ostream << m_chatbotId;
     ostream << *m_rootRule;
+    ostream << m_metadata;
 
     return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setMetadata(const QString &key, const QVariant &value)
+{
+    m_metadata[key] = value;
+
+    m_metadataUnsaved = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QVariant & Lvk::BE::AppFacade::metadata(const QString &key) const
+{
+    FileMetadata::const_iterator it = m_metadata.find(key);
+
+    if (it != m_metadata.end()) {
+        return *it;
+    } else {
+        static const QVariant null;
+        return null;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -327,6 +386,8 @@ bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 
     return importRules(&container, inputFile) && mergeRules(&container);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFile)
 {
@@ -532,27 +593,76 @@ void Lvk::BE::AppFacade::storeTargets(const TargetList &targets)
 // Chat methods
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const QString &user,
+                                       const QString &passwd)
+{
+    // FIXME add mutex
+
+    // CHECK
+    // If there is already a verification in progress, we abort it by deleting the object
+    if (m_tmpChatbot) {
+        delete m_tmpChatbot;
+    }
+
+    m_tmpChatbot = newChatbot(type);
+
+    if (m_tmpChatbot) {
+        connect(m_tmpChatbot, SIGNAL(connected()), SLOT(onAccountOk()));
+        connect(m_tmpChatbot, SIGNAL(error(int)), SLOT(onAccountError(int)));
+        m_tmpChatbot->connectToServer(user, passwd);
+    } else {
+        emit accountError(UnknownServerError);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::cancelVerifyAccount()
+{
+    delete m_tmpChatbot;
+    m_chatbot = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::onAccountOk()
+{
+    // TODO persist roster
+
+    m_tmpChatbot->deleteLater();
+    m_tmpChatbot = 0;
+
+    emit accountOk();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::onAccountError(int err)
+{
+    m_tmpChatbot->deleteLater();
+    m_tmpChatbot = 0;
+
+    emit accountError(err);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const QString &user,
-                                     const QString &passwd)
+                                       const QString &passwd)
 {
     if (m_chatbot && m_currentChatbotType != type) {
-        m_chatbot->disconnectFromServer();
-
         deleteCurrentChatbot();
     }
 
     if (!m_chatbot) {
-        createChatbot(type);
+        setupChatbot(type);
     }
 
-    if (type == FbChat) {
-        dynamic_cast<CA::FbChatbot *>(m_chatbot)->connectToServer(user, passwd);
-    } else if (type == GTalkChat) {
-        dynamic_cast<CA::GTalkChatbot *>(m_chatbot)->connectToServer(user, passwd);
+    if (m_chatbot) {
+        m_chatbot->connectToServer(user, passwd);
     } else {
-        // TODO handle error
+        emit connectionError(UnknownServerError);
     }
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -566,18 +676,13 @@ void Lvk::BE::AppFacade::disconnectFromChat()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::createChatbot(ChatType type)
+void Lvk::BE::AppFacade::setupChatbot(ChatType type)
 {
     if (type != FbChat && type != GTalkChat) {
         return;
     }
 
-    if (type == FbChat) {
-        m_chatbot = new CA::FbChatbot();
-    } else if (type == GTalkChat) {
-        m_chatbot = new CA::GTalkChatbot();
-    }
-
+    m_chatbot = newChatbot(type);
     m_currentChatbotType = type;
 
     DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_chatbotId, m_nlpEngine);
@@ -592,7 +697,7 @@ void Lvk::BE::AppFacade::createChatbot(ChatType type)
 
 void Lvk::BE::AppFacade::deleteCurrentChatbot()
 {
-    delete m_chatbot;   // TODO consider using deleteLater()
+    delete m_chatbot;
     m_chatbot = 0;
 }
 
@@ -635,6 +740,8 @@ Lvk::BE::Roster Lvk::BE::AppFacade::roster()
         foreach (const CA::ContactInfo &info, infoList) {
             roster.append(RosterItem(info.username, info.fullname));
         }
+    } else {
+        // TODO retrieve persisted roster
     }
 
     return roster;
@@ -658,7 +765,7 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 const Lvk::BE::Conversation & Lvk::BE::AppFacade::conversationHistory()
 {
     if (!m_chatbot) {
-        createChatbot(FbChat);
+        setupChatbot(FbChat);
     }
 
     DefaultVirtualUser *virtualUser =
@@ -762,9 +869,3 @@ bool Lvk::BE::AppFacade::loadDefaultRules()
 
     return true;
 }
-
-
-
-
-
-

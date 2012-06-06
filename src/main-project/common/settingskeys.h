@@ -35,8 +35,6 @@
 #define SETTING_MAIN_WINDOW_RULE_TREE_W             "MainWindow/RuleTreeWidget/Width"
 #define SETTING_MAIN_WINDOW_RULE_EDIT_W             "MainWindow/RuleEditWidget/Width"
 
-#define SETTING_DEFAULT_CHAT_USERNAME               "Chat/Username"
-#define SETTING_DEFAULT_CHAT_SERVER_TYPE            "Chat/ServerType"
 #define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
 
 #endif // LVK_CMN_SETTINGSKEYS_H

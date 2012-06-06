@@ -126,6 +126,8 @@ private:
     ContactInfoList m_blackListRoster;
     QSet<QString> m_blackListSet;
 
+    virtual void connectToServer(const QString &, const QString &) {}
+
     ContactInfo getContactInfo(const QString &bareJid) const;
 
     QXmppVCardIq getVCard(const QString &bareJid);
