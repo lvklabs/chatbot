@@ -269,6 +269,8 @@ void Lvk::BE::AppFacade::close()
     m_rulesHash.clear();
 
     m_targets.clear();
+
+    markAsSaved();
 }
 
 //--------------------------------------------------------------------------------------------------

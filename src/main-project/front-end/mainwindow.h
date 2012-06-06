@@ -106,11 +106,16 @@ private:
     BE::Rule m_ruleBackup;
     BE::ConversationWriter *m_testConversationLog;
     QString m_filename;
+    QString m_lastFilename;
 
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
     enum UiMode {
+        WelcomeTabUiMode,
+        VerifyAccountUiMode,
+        VerifyAccountConnectingUiMode,
+        VerifyAccountFailedUiMode,
         RuleSelectionEmptyUiMode,
         EditCategoryUiMode,
         EditRuleUiMode,
@@ -190,6 +195,10 @@ private slots:
     void onTestInputTextEntered();
     void onClearTestConversationButtonPressed();
 
+    void onVerifyAccountButtonPressed();
+    void onVerifyAccountOk();
+    void onVerifyAccountError(int err);
+
     void onConnectButtonPressed();
     void onDisconnectButtonPressed();
     void onConnectionOk();
@@ -201,6 +210,7 @@ private slots:
 
     void onNewMenuTriggered();
     void onOpenMenuTriggered();
+    void onOpenLastFileMenuTriggered();
     void onSaveMenuTriggered();
     void onSaveAsMenuTriggered();
     void onImportMenuTriggered();

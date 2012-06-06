@@ -45,7 +45,6 @@
 #include <QDesktopWidget>
 
 #define TEST_CONVERSATION_LOG_FILE  "tests_history.log"
-#define DEFAULT_RULES_FILE          "rules.crf"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
@@ -130,26 +129,19 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
-    ui->teachTabsplitter->setSizes(QList<int>() << 10 << 10);
+
+    Lvk::Cmn::Settings settings;
+    m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
 
     clear();
 
-    Lvk::Cmn::Settings settings;
-
-    QString lastFile = settings.value(SETTING_LAST_FILE, QString(DEFAULT_RULES_FILE)).toString();
-    initCoreAndModelsWithFile(lastFile);
+    initCoreAndModelsWithFile(QString());
 
     connectSignals();
 
     ui->testInputText->installEventFilter(this);
     ui->ruleInputWidget->installEventFilter(this);
     ui->ruleOutputWidget->installEventFilter(this);
-
-    ui->conversationHistory->setConversation(m_appFacade->conversationHistory());
-
-    selectFirstRule();
-
-    ui->categoriesTree->setFocus();
 
     setWindowIcon(QIcon(APP_ICON_FILE));
 
@@ -183,7 +175,6 @@ void Lvk::FE::MainWindow::clear()
 
     // train tab widgets
     // TODO clear ui->categoriesTree
-    setUiMode(RuleSelectionEmptyUiMode);
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
 
@@ -204,6 +195,8 @@ void Lvk::FE::MainWindow::clear()
     ui->testConversationText->clear();
     ui->testInputText->clear();
     ui->clearTestConversationButton->setEnabled(false);
+
+    setUiMode(WelcomeTabUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -249,6 +242,19 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
     connect(ui->actionImport,      SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
     connect(ui->actionExport,      SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
+
+    // init tab
+
+    connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenMenuTriggered()));
+    connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastFileMenuTriggered()));
+    connect(ui->createChatbotButton,   SIGNAL(clicked()), SLOT(onNewMenuTriggered()));
+    connect(ui->verifyAccountButton,   SIGNAL(clicked()), SLOT(onVerifyAccountButtonPressed()));
+
+    connect(ui->passwordText_v, SIGNAL(returnPressed()), SLOT(onVerifyAccountButtonPressed()));
+
+    connect(m_appFacade, SIGNAL(connected()),          SLOT(onVerifyAccountOk()));
+    //connect(m_appFacade, SIGNAL(disconnected()),       SLOT(onDisconnection()));
+    connect(m_appFacade, SIGNAL(connectionError(int)), SLOT(onVerifyAccountError(int)));
 
     // Edit rules tabs
 
@@ -378,6 +384,7 @@ void Lvk::FE::MainWindow::saveAllSettings()
     if (!m_filename.isEmpty()) {
         Lvk::Cmn::Settings settings;
         settings.setValue(SETTING_LAST_FILE, m_filename);
+        m_lastFilename = m_filename;
     }
 }
 
@@ -401,6 +408,17 @@ void Lvk::FE::MainWindow::loadMainWindowSettings()
     if (settings.value(SETTING_MAIN_WINDOW_MAXIMIZED).toBool()) {
         showMaximized();
     }
+
+
+    QList<int> centralSplSizes;
+    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
+    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
+    ui->centralSplitter->setSizes(centralSplSizes);
+
+    QList<int> teachSplSizes;
+    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
+    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
+    ui->teachTabsplitter->setSizes(teachSplSizes);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -424,6 +442,11 @@ void Lvk::FE::MainWindow::saveMainWindowSettings()
     settings.setValue(SETTING_MAIN_WINDOW_SIZE, size());
     settings.setValue(SETTING_MAIN_WINDOW_POS, pos());
     settings.setValue(SETTING_MAIN_WINDOW_MAXIMIZED, isMaximized());
+
+    settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
+    settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
+    settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
+    settings.setValue(SETTING_MAIN_WINDOW_RULE_EDIT_W, ui->teachTabsplitter->sizes().at(1));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -482,9 +505,86 @@ void Lvk::FE::MainWindow::saveBlackListSettings(const BE::Roster &blackList,
 
 void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
+    // Set visible tabs ////////////////////////////////////
+
     switch (mode) {
 
-    // Edit rules tab //////////////////////////////////////////////////////
+    case WelcomeTabUiMode:
+    case VerifyAccountUiMode:
+    case VerifyAccountConnectingUiMode:
+    case VerifyAccountFailedUiMode:
+        ui->actionSave->setEnabled(false);
+        ui->actionSaveAs->setEnabled(false);
+        ui->actionImport->setEnabled(false);
+        ui->actionExport->setEnabled(false);
+
+        ui->initTab->setVisible(true);
+        ui->trainTab->setVisible(false);
+        ui->chatTab->setVisible(false);
+        ui->conversationsTab->setVisible(false);
+        ui->rightSideTabWidget->setVisible(false);
+
+        ui->mainTabWidget->addTab(ui->initTab, tr("Init"));
+        ui->mainTabWidget->removePage(ui->trainTab);
+        ui->mainTabWidget->removePage(ui->chatTab);
+        ui->mainTabWidget->removePage(ui->conversationsTab);
+        break;
+
+    default:
+        ui->actionSave->setEnabled(true);
+        ui->actionSaveAs->setEnabled(true);
+        ui->actionImport->setEnabled(true);
+        ui->actionExport->setEnabled(true);
+
+        ui->initTab->setVisible(false);
+        ui->trainTab->setVisible(true);
+        ui->chatTab->setVisible(true);
+        ui->conversationsTab->setVisible(true);
+        ui->rightSideTabWidget->setVisible(true);
+
+
+        ui->mainTabWidget->removePage(ui->initTab);
+        ui->mainTabWidget->addTab(ui->trainTab, tr("Teach"));
+        ui->mainTabWidget->addTab(ui->chatTab, tr("Connect"));
+        ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
+        break;
+    }
+
+    // Set up tabs ///////////////////////////////////////
+
+    switch (mode) {
+
+        // init tab //
+
+    case WelcomeTabUiMode:
+        ui->initStackWidget->setCurrentIndex(0);
+        ui->openLastChatbotButton->setVisible(m_lastFilename.size() > 0);
+        break;
+
+    case VerifyAccountUiMode:
+    case VerifyAccountFailedUiMode:
+        ui->initStackWidget->setCurrentIndex(1);
+        ui->verifyAccountButton->setEnabled(true);
+        ui->usernameText_v->setEnabled(true);
+        ui->passwordText_v->setEnabled(true);
+        ui->fbChatRadio_v->setEnabled(true);
+        ui->gtalkChatRadio_v->setEnabled(true);
+        ui->connectionProgressBar_v->setVisible(false);
+        ui->connectionStatusLabel_v->setVisible(false);
+        break;
+
+    case VerifyAccountConnectingUiMode:
+        ui->initStackWidget->setCurrentIndex(1);
+        ui->verifyAccountButton->setEnabled(false);
+        ui->usernameText_v->setEnabled(false);
+        ui->passwordText_v->setEnabled(false);
+        ui->fbChatRadio_v->setEnabled(false);
+        ui->gtalkChatRadio_v->setEnabled(false);
+        ui->connectionProgressBar_v->setVisible(true);
+        ui->connectionStatusLabel_v->setVisible(true);
+        break;
+
+        // Edit rules tab //
 
     case RuleSelectionEmptyUiMode:
         ui->categoryNameLabel->setVisible(false);
@@ -539,7 +639,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
         break;
 
-    // Chat connection tab /////////////////////////////////////////////////
+    // Chat connection tab //
 
     case ChatDisconnectedUiMode:
         ui->connectToChatStackWidget->setCurrentIndex(0);
@@ -668,6 +768,7 @@ void Lvk::FE::MainWindow::onNewMenuTriggered()
 
     if (!canceled) {
         clear();
+        setUiMode(VerifyAccountUiMode);
     }
 }
 
@@ -695,9 +796,26 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
         QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",getFileFilters());
 
         if (!filename.isEmpty()) {
-            if (!load(filename)) {
+            if (load(filename)) {
+                setUiMode(EditRuleUiMode);
+                selectFirstRule();
+            } else {
                 clear();
             }
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onOpenLastFileMenuTriggered()
+{
+    if (!m_lastFilename.isEmpty()) {
+        if (load(m_lastFilename)) {
+            setUiMode(EditRuleUiMode);
+            selectFirstRule();
+        } else {
+            clear();
         }
     }
 }
@@ -1396,6 +1514,61 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 }
 
 //--------------------------------------------------------------------------------------------------
+// Verify account
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
+{
+    if (!ui->usernameText_v->text().isEmpty()) {
+        setUiMode(VerifyAccountConnectingUiMode);
+
+        m_appFacade->disconnectFromChat();
+        m_appFacade->connectToChat(ui->gtalkChatRadio_v->isChecked() ?
+                                       BE::AppFacade::GTalkChat : BE::AppFacade::FbChat,
+                                   ui->usernameText_v->text(),
+                                   ui->passwordText_v->text());
+    } else {
+        QMessageBox::information(this, tr("Invalid username"), tr("Please provide a username"));
+
+        ui->usernameText_v->setFocus();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onVerifyAccountOk()
+{
+    if (!ui->initTab->isVisible()) {
+        return;
+    }
+
+    setUiMode(EditRuleUiMode);
+
+    BE::Roster roster = m_appFacade->roster();
+    ui->ruleInputWidget->setRoster(roster);
+    //m_appFacade->setBlackListRoster(roster);
+    m_appFacade->disconnectFromChat();
+
+    // TODO persist roster
+
+    QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onVerifyAccountError(int /*err*/)
+{
+    if (!ui->initTab->isVisible()) {
+        return;
+    }
+
+    setUiMode(VerifyAccountFailedUiMode);
+
+    QMessageBox::critical(this, tr("Account error"), tr("The account could not be verified. "
+                          "Please check your username and password and internet connection"));
+}
+
+//--------------------------------------------------------------------------------------------------
 // Chat connection
 //--------------------------------------------------------------------------------------------------
 
@@ -1422,6 +1595,10 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 
 void Lvk::FE::MainWindow::onDisconnectButtonPressed()
 {
+    if (ui->initTab->isVisible()) {
+        return;
+    }
+
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
@@ -1434,6 +1611,10 @@ void Lvk::FE::MainWindow::onDisconnectButtonPressed()
 
 void Lvk::FE::MainWindow::onConnectionOk()
 {
+    if (ui->initTab->isVisible()) {
+        return;
+    }
+
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
@@ -1451,10 +1632,14 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
 void Lvk::FE::MainWindow::onConnectionError(int err)
 {
+    if (ui->initTab->isVisible()) {
+        return;
+    }
+
     m_connectionStatus = ConnectionError;
     setUiMode(ChatConnectionFailedUiMode);
 
-    ui->rosterWidget->clear();
+    //ui->rosterWidget->clear();
     ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
                                        QString::number(err));
 }
@@ -1463,11 +1648,15 @@ void Lvk::FE::MainWindow::onConnectionError(int err)
 
 void Lvk::FE::MainWindow::onDisconnection()
 {
+    if (ui->initTab->isVisible()) {
+        return;
+    }
+
     if (m_connectionStatus != ConnectionError) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
 
-        ui->rosterWidget->clear();
+        //ui->rosterWidget->clear();
     }
 }
 

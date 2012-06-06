@@ -15,6 +15,10 @@
         <file alias="undo_24x24.png">res/undo_24x24.png</file>
         <file alias="app_icon">res/chatbot_icon_128x228.png</file>
         <file alias="users_32x32.png">res/users_32x32.png</file>
+        <file>res/new_chatbot.png</file>
+        <file>res/open_chatbot.png</file>
+        <file>res/verify_chatbot.png</file>
+        <file>res/open_last_chatbot.png</file>
     </qresource>
     <qresource prefix="/strings">
         <file alias="strings_es.qm">strings_es.qm</file>

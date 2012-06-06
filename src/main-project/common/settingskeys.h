@@ -30,6 +30,10 @@
 #define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/Size"
 #define SETTING_MAIN_WINDOW_POS                     "MainWindow/Position"
 #define SETTING_MAIN_WINDOW_MAXIMIZED               "MainWindow/Maximized"
+#define SETTING_MAIN_WINDOW_MAIN_TAB_W              "MainWindow/MainTabWidget/Width"
+#define SETTING_MAIN_WINDOW_TEST_TAB_W              "MainWindow/TestTabWidget/Width"
+#define SETTING_MAIN_WINDOW_RULE_TREE_W             "MainWindow/RuleTreeWidget/Width"
+#define SETTING_MAIN_WINDOW_RULE_EDIT_W             "MainWindow/RuleEditWidget/Width"
 
 #define SETTING_DEFAULT_CHAT_USERNAME               "Chat/Username"
 #define SETTING_DEFAULT_CHAT_SERVER_TYPE            "Chat/ServerType"
