@@ -152,10 +152,12 @@ private:
 
     void loadAllSettings();
     void loadMainWindowSettings();
+    void loadSplittersSettings();
     void loadChatSettings();
 
     void saveAllSettings();
     void saveMainWindowSettings();
+    void saveSplittersSettings();
     void saveChatSettings();
 
     void saveBlackListSettings(const BE::Roster &blackList, const QString &account);
@@ -233,6 +235,8 @@ private slots:
     void onExportMenuTriggered();
     void onAboutMenuTriggered();
     void onExitMenuTriggered();
+
+    void onSplitterMoved(int, int);
 };
 
 /// @}

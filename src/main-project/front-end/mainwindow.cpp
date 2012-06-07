@@ -279,6 +279,8 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
             SLOT(onRuleTargetEdited(QString)));
 
+    connect(ui->centralSplitter, SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
+
     // Test tab
 
     connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
@@ -418,15 +420,15 @@ void Lvk::FE::MainWindow::loadMainWindowSettings()
     }
 
 
-    QList<int> centralSplSizes;
-    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
-    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
-    ui->centralSplitter->setSizes(centralSplSizes);
+        QList<int> centralSplSizes;
+        centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
+        centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
+        ui->centralSplitter->setSizes(centralSplSizes);
 
-    QList<int> teachSplSizes;
-    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
-    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
-    ui->teachTabsplitter->setSizes(teachSplSizes);
+        QList<int> teachSplSizes;
+        teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
+        teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
+        ui->teachTabsplitter->setSizes(teachSplSizes);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -446,10 +448,12 @@ void Lvk::FE::MainWindow::saveMainWindowSettings()
     settings.setValue(SETTING_MAIN_WINDOW_POS, pos());
     settings.setValue(SETTING_MAIN_WINDOW_MAXIMIZED, isMaximized());
 
-    settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
-    settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
-    settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
-    settings.setValue(SETTING_MAIN_WINDOW_RULE_EDIT_W, ui->teachTabsplitter->sizes().at(1));
+    if (m_tabsLayout == TeachTabsLayout) {
+        settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
+        settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
+        settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
+        settings.setValue(SETTING_MAIN_WINDOW_RULE_EDIT_W, ui->teachTabsplitter->sizes().at(1));
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1767,3 +1771,23 @@ QString Lvk::FE::MainWindow::fileMetadataUsername()
 {
     return m_appFacade->metadata(FILE_METADATA_USERNAME).toString();
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onSplitterMoved(int, int)
+{
+    saveSplittersSettings();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::loadSplittersSettings()
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveSplittersSettings()
+{
+}
+
