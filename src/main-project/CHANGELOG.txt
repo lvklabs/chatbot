@@ -7,6 +7,8 @@ v0.08
  - Implemented "listening" mode for Facebook chatbots
  - Saving chat corpus and chat history with format CSV instead of custom format
  - Implemented operators +, * and **
+ - Added welcome screen
+ - Chat account fixed in creation time to a chatbot rule file
 
 v0.07
  - Implemented "Save as", "Open", "New"

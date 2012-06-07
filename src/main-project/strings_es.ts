@@ -563,27 +563,27 @@ Deseas enseñar los cambios hechos?</translation>
 <context>
     <name>Lvk::FE::RuleInputWidget</name>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="44"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="45"/>
         <source>If: Any user</source>
         <translation>Si: Cualquier usuario</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="45"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="46"/>
         <source>Edit users</source>
         <translation>Editar usuarios</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="47"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="48"/>
         <source>Writes:</source>
         <translation>Escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="49"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="50"/>
         <source>Or any of these variants:</source>
         <translation>O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="297"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="298"/>
         <source>If:</source>
         <translation>Si:</translation>
     </message>
@@ -1051,6 +1051,11 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <location filename="chat-adapter/chatcorpus.cpp" line="131"/>
         <source>Warning: cannot open corpus file for reading</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="front-end/ruleinputwidget.cpp" line="36"/>
+        <source>Any user</source>
+        <translation>Cualquier usuario</translation>
     </message>
 </context>
 <context>
