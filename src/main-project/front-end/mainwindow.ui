@@ -503,7 +503,7 @@
                  <item>
                   <widget class="QLabel" name="curUsernameLabel">
                    <property name="text">
-                    <string>andres.pagliano</string>
+                    <string/>
                    </property>
                    <property name="textFormat">
                     <enum>Qt::RichText</enum>
