@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QDir>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "version.h"
@@ -30,6 +31,7 @@
 
 void makeDirStructure();
 void setLanguage(QApplication &app);
+void makeDir(const QString &name);
 
 //--------------------------------------------------------------------------------------------------
 // main
@@ -71,14 +73,22 @@ void setLanguage(QApplication &app)
 void makeDirStructure()
 {
     Lvk::Cmn::Settings settings;
-    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
+    makeDir(settings.value(SETTING_LOGS_PATH).toString());
+    makeDir(settings.value(SETTING_DATA_PATH).toString());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void makeDir(const QString &name)
+{
     QDir qdir;
 
-    if (!qdir.exists(logsPath)) {
-        if (!qdir.mkpath(logsPath)) {
-            qCritical("Critical: Cannot create logs path");
+    if (!qdir.exists(name)) {
+        if (!qdir.mkpath(name)) {
+            qCritical() << "Critical: Cannot create path " << name;
             exit(1);
         }
     }
 }
+

@@ -42,6 +42,9 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
         if (key == SETTING_LOGS_PATH) {
             defaultValue = QString("./logs");
         }
+        if (key == SETTING_DATA_PATH) {
+            defaultValue = QString("./data");
+        }
     }
 
     return QSettings::value(key, defaultValue);

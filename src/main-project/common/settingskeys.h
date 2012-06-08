@@ -26,6 +26,7 @@
 
 #define SETTING_LAST_FILE                           "Files/LastFile"
 #define SETTING_LOGS_PATH                           "Files/LogsPath"
+#define SETTING_DATA_PATH                           "Files/DataPath"
 
 #define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/Size"
 #define SETTING_MAIN_WINDOW_POS                     "MainWindow/Position"
