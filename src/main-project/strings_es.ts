@@ -437,9 +437,14 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="1636"/>
+        <source>If you change your account some rules might not work anymore.
+Are you sure you want to change your account?</source>
+        <translation>Si cambias tu cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro de que deseas cambiar tu cuenta?</translation>
+    </message>
+    <message>
         <source>If you change your account... FIXME.
 Are you sure?</source>
-        <translation>Si cambias la cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro que deseas cambiar la cuenta asociada a tu chatbot? </translation>
+        <translation type="obsolete">Si cambias la cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro que deseas cambiar la cuenta asociada a tu chatbot? </translation>
     </message>
     <message>
         <source>The rule/category could not be removed because of an internalerror</source>
@@ -563,27 +568,32 @@ Deseas enseñar los cambios hechos?</translation>
 <context>
     <name>Lvk::FE::RuleInputWidget</name>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="45"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="43"/>
         <source>If: Any user</source>
         <translation>Si: Cualquier usuario</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="46"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="44"/>
         <source>Edit users</source>
         <translation>Editar usuarios</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="48"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="46"/>
         <source>Writes:</source>
         <translation>Escribe:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="50"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="48"/>
         <source>Or any of these variants:</source>
         <translation>O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="298"/>
+        <location filename="front-end/ruleinputwidget.cpp" line="51"/>
+        <source>Any user</source>
+        <translation>Cualquier usuario</translation>
+    </message>
+    <message>
+        <location filename="front-end/ruleinputwidget.cpp" line="297"/>
         <source>If:</source>
         <translation>Si:</translation>
     </message>
@@ -1053,9 +1063,8 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="front-end/ruleinputwidget.cpp" line="36"/>
         <source>Any user</source>
-        <translation>Cualquier usuario</translation>
+        <translation type="obsolete">Cualquier usuario</translation>
     </message>
 </context>
 <context>

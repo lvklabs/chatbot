@@ -1633,7 +1633,11 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int /*err*/)
 void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
 {
     QString title = tr("Change Account");
-    QString msg = tr("If you change your account... FIXME.\nAre you sure?");
+    QString msg = tr("If you change your account some rules might not work anymore.\n"
+                     "Are you sure you want to change your account?");
+
+    // TODO display which will not work anymore
+
     QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
 
     if (QMessageBox::question(this, title, msg, buttons) == QMessageBox::Yes) {

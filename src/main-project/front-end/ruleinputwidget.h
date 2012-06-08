@@ -108,6 +108,7 @@ private:
     QLabel                        *m_inputVariantsLabel;
     QPlainTextEdit                *m_inputVariants;
     QObject                       *m_eventFilter;
+    QString                        m_strAnyUser;
 
     typedef QHash<QString, Lvk::BE::RosterItem> ReverseRoster;
     ReverseRoster m_reverseRoster;

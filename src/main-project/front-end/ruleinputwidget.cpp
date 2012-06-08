@@ -32,7 +32,6 @@
 #include <QSpacerItem>
 
 #define TARGET_SPLIT_TOKEN  ","
-#define STR_ANY_USER        "Any user"
 
 //--------------------------------------------------------------------------------------------------
 // RuleInputWidget
@@ -48,7 +47,8 @@ Lvk::FE::RuleInputWidget::RuleInputWidget(QWidget *parent) :
     m_input(new QLineEdit(this)),
     m_inputVariantsLabel(new QLabel(tr("Or any of these variants:"), this)),
     m_inputVariants(new QPlainTextEdit(this)),
-    m_eventFilter(0)
+    m_eventFilter(0),
+    m_strAnyUser(tr("Any user"))
 {
     setupUi();
 
@@ -86,7 +86,7 @@ void Lvk::FE::RuleInputWidget::setupUi()
 
     m_targetTextEdit->setDelimiter(TARGET_SPLIT_TOKEN);
     m_targetTextEdit->setVisible(false);
-    m_targetTextEdit->setDefaultText(tr(STR_ANY_USER));
+    m_targetTextEdit->setDefaultText(m_strAnyUser);
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
 
@@ -192,7 +192,7 @@ Lvk::BE::TargetList Lvk::FE::RuleInputWidget::targets()
     foreach (QString dispText, dispTexts) {
         dispText = dispText.trimmed();
 
-        if (dispText == tr(STR_ANY_USER)) {
+        if (dispText == m_strAnyUser) {
             continue;
         }
 
