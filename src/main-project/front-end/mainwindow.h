@@ -123,16 +123,18 @@ private:
         ChangeAccountFailedUiMode
     };
 
-    Ui::MainWindow *ui;
-    BE::AppFacade *m_appFacade;
-    RuleTreeModel *m_ruleTreeModel;
-    QItemSelectionModel *m_ruleTreeSelectionModel;
-    bool m_ruleEdited;
-    BE::Rule m_ruleBackup;
-    BE::ConversationWriter *m_testConversationLog;
-    QString m_filename;
-    QString m_lastFilename;
-    UiTabsLayout m_tabsLayout;
+    Ui::MainWindow          *ui;
+    BE::AppFacade           *m_appFacade;
+    RuleTreeModel           *m_ruleTreeModel;
+    QItemSelectionModel     *m_ruleTreeSelectionModel;
+    bool                     m_ruleEdited;
+    BE::Rule                 m_ruleBackup;
+    BE::ConversationWriter  *m_testConversationLog;
+    QString                  m_filename;
+    QString                  m_fileUsername;
+    BE::AppFacade::ChatType  m_fileChatType;
+    QString                  m_lastFilename;
+    UiTabsLayout             m_tabsLayout;
 
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
@@ -160,9 +162,6 @@ private:
     void saveSplittersSettings();
     void saveChatSettings();
 
-    void saveBlackListSettings(const BE::Roster &blackList, const QString &account);
-    Lvk::BE::Roster getBlackListSettings(const QString &account);
-
     void selectFirstRule();
 
     void selectRule(const BE::Rule *rule);
@@ -180,9 +179,6 @@ private:
 
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
-
-    Lvk::BE::AppFacade::ChatType fileMetadataChatType();
-    QString fileMetadataUsername();
 
     void updateBlackList();
     BE::AppFacade::ChatType uiChatSelected();
@@ -212,7 +208,7 @@ private slots:
     void onClearTestConversationButtonPressed();
 
     void onVerifyAccountButtonPressed();
-    void onVerifyAccountOk();
+    void onVerifyAccountOk(const BE::Roster &roster);
     void onVerifyAccountError(int err);
     void onChangeAccountButtonPressed();
     void onCancelChangeAccountButtonPressed();

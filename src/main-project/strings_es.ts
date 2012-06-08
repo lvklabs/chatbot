@@ -471,8 +471,8 @@ Are you sure?</source>
 Do you want to save the changes made to the category?</source>
         <oldsource>The category &apos;%0&apos; has changed.
 Do you want to teach the changes made to the category?</oldsource>
-        <translation>El nombre de la categoría &apos;%0&apos; ha cambiado.
-Deseas guardar los cambios hechos?</translation>
+        <translation type="unfinished">El nombre de la categoría &apos;%0&apos; ha cambiado.
+¿Deseas guardar los cambios hechos?</translation>
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="1430"/>
@@ -483,8 +483,8 @@ Deseas guardar los cambios hechos?</translation>
         <location filename="front-end/mainwindow.cpp" line="1431"/>
         <source>The rule &apos;%0&apos; has changed.
 Do you want to teach the changes made to the rule?</source>
-        <translation>La regla &apos;%0&apos; ha cambiado.
-Deseas enseñar los cambios hechos?</translation>
+        <translation type="unfinished">La regla &apos;%0&apos; ha cambiado.
+¿Deseas enseñar los cambios hechos?</translation>
     </message>
     <message>
         <location filename="front-end/mainwindow.cpp" line="1084"/>

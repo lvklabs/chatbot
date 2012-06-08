@@ -45,8 +45,15 @@ namespace BE
 class RosterItem
 {
 public:
+
+    /**
+     * Constructs an empty RosterItem object
+     */
     RosterItem() { }
 
+    /**
+     * Constructs a RosterItem object with \a username and \a fullname
+     */
     RosterItem(QString username, QString fullname)
         : username(username), fullname(fullname)
     { }
@@ -54,21 +61,33 @@ public:
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
 
+    /**
+     * Returns the string used to display roster item;
+     */
     const QString &displayText() const
     {
         return !fullname.isEmpty() ? fullname : username;
     }
 
+    /**
+     * Returns true if this object is equal to \a other. Otherwise; returns false.
+     */
     bool operator==(const RosterItem &other) const
     {
         return username == other.username && fullname == other.fullname;
     }
 
+    /**
+     * Returns true if this object is not equal to \a other. Otherwise; returns false.
+     */
     bool operator!=(const RosterItem &other) const
     {
         return !this->operator==(other);
     }
 
+    /**
+     * Returns true if this object is less than \a other. Otherwise; returns false.
+     */
     bool operator<(const RosterItem &other) const
     {
         return username < other.username;
@@ -89,11 +108,17 @@ typedef QList<RosterItem> Roster;
 } // namespace Lvk
 
 
+/**
+ *  Writes the roster item \a item to the specified \a out stream.
+ */
 inline QDataStream &operator<<(QDataStream &out, const Lvk::BE::RosterItem &item)
 {
     return out << item.username << item.fullname;
 }
 
+/**
+ *  Reads from the specified \a in stream into the roster item \a item.
+ */
 inline QDataStream &operator>>(QDataStream &in, Lvk::BE::RosterItem &item)
 {
     return in >> item.username >> item.fullname;
@@ -102,7 +127,5 @@ inline QDataStream &operator>>(QDataStream &in, Lvk::BE::RosterItem &item)
 
 Q_DECLARE_METATYPE(Lvk::BE::RosterItem)
 Q_DECLARE_METATYPE(Lvk::BE::Roster)
-
-
 
 #endif // LVK_BE_ROSTER_H

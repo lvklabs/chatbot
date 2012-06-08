@@ -117,6 +117,8 @@ private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
 
+    QString m_user;
+    QString m_domain;
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;
@@ -134,6 +136,8 @@ private:
     void requestVCard(const QString &bareJid);
 
     Error convertToLocalError(QXmppClient::Error err);
+
+    void rebuildLocalRoster() const;
 
     bool isInBlackList(const QString &jid);
 };

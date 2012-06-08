@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QList>
+#include <QDataStream>
 
 namespace Lvk
 {
@@ -43,17 +44,41 @@ namespace CA
  */
 struct ContactInfo
 {
+    /**
+     * Constructs an empty ContactInfo object
+     */
     ContactInfo() {}
 
+    /**
+     * Constructs a ContactInfo object with \a username and \a fullname
+     */
     ContactInfo(QString username, QString fullname) : username(username), fullname(fullname) {}
 
     QString username; //! Username used to log in the chat service
     QString fullname; //! Full name
 
-    /** Returns true if the struct is null */
+    /**
+     * Returns true if all class attributes are null
+     */
     bool isNull() { return username.isNull() && fullname.isNull(); }
+
 };
 
+/**
+ *  Writes the contact information \a info to the specified \a out stream.
+ */
+inline QDataStream &operator<<(QDataStream &out, const Lvk::CA::ContactInfo &info)
+{
+    return out << info.username << info.fullname;
+}
+
+/**
+ *  Reads from the specified \a in stream into the contact information \a info .
+ */
+inline QDataStream &operator>>(QDataStream &in, Lvk::CA::ContactInfo &info)
+{
+    return in >> info.username >> info.fullname;
+}
 
 /**
  * \brief The ContactInfoList class provides a list of contact information

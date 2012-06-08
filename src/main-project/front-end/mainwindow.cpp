@@ -64,31 +64,6 @@
 namespace
 {
 
-// These two first helpers are workarounds to save black list settings with QSettings.
-// See saveBlackListSettings() and loadBlackListSettings() methods for more details.
-
-QString rosterUsersToString(const Lvk::BE::Roster &roster)
-{
-    QString s;
-    foreach (const Lvk::BE::RosterItem &item, roster) {
-        s.append(item.username).append(";");
-    }
-
-    return s;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::BE::Roster rosterUsersfromString(const QString &s)
-{
-    Lvk::BE::Roster roster;
-    foreach (const QString &username, s.split(";")) {
-        roster.append(Lvk::BE::RosterItem(username, ""));
-    }
-
-    return roster;
-}
-
 //--------------------------------------------------------------------------------------------------
 // Cannonic representation for chat accounts used to persist some settings
 
@@ -115,6 +90,52 @@ QString getFileExportFilters()
             + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
 }
 
+//--------------------------------------------------------------------------------------------------
+// Save roster to filename
+
+inline void saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
+{
+    QFile file(filename);
+    if (file.open(QFile::WriteOnly)) {
+        QDataStream out(&file);
+        out << roster;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// load roster from filename
+
+inline void loadRoster(Lvk::BE::Roster &roster, const QString &filename)
+{
+    QFile file(filename);
+    if (file.open(QFile::ReadOnly)) {
+        QDataStream in(&file);
+        in >> roster;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// get persisted roster filename for the give  cannonic account
+
+inline QString rosterFilename(QString account)
+{
+    Lvk::Cmn::Settings settings;
+    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
+
+    return dataPath + QDir::separator() + "roster_" + account + ".dat";
+}
+
+//--------------------------------------------------------------------------------------------------
+// get persisted black list roster filename for the given cannonic account
+
+inline QString blackRosterFilename(QString account)
+{
+    Lvk::Cmn::Settings settings;
+    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
+
+    return dataPath + QDir::separator() + "black_roster_" + account + ".dat";
+}
+
 } // namespace
 
 
@@ -138,8 +159,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
 
     clear();
-
-    initCoreAndModelsWithFile(QString());
 
     connectSignals();
 
@@ -219,6 +238,11 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 
     delete m_ruleTreeModel;
 
+    m_fileChatType = static_cast<BE::AppFacade::ChatType>
+            (m_appFacade->metadata(FILE_METADATA_CHAT_TYPE).toInt());
+
+    m_fileUsername = m_appFacade->metadata(FILE_METADATA_USERNAME).toString();
+
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
@@ -256,8 +280,8 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->passwordText_v, SIGNAL(returnPressed()), SLOT(onVerifyAccountButtonPressed()));
 
-    connect(m_appFacade, SIGNAL(accountOk()),       SLOT(onVerifyAccountOk()));
-    connect(m_appFacade, SIGNAL(accountError(int)), SLOT(onVerifyAccountError(int)));
+    connect(m_appFacade, SIGNAL(accountOk(BE::Roster)), SLOT(onVerifyAccountOk(BE::Roster)));
+    connect(m_appFacade, SIGNAL(accountError(int)),     SLOT(onVerifyAccountError(int)));
 
     // Edit rules tabs
 
@@ -382,6 +406,7 @@ void Lvk::FE::MainWindow::loadAllSettings()
 {
     loadMainWindowSettings();
     loadChatSettings();
+    loadSplittersSettings();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -390,6 +415,7 @@ void Lvk::FE::MainWindow::saveAllSettings()
 {
     saveMainWindowSettings();
     saveChatSettings();
+    saveSplittersSettings();
 
     if (!m_filename.isEmpty()) {
         Lvk::Cmn::Settings settings;
@@ -418,17 +444,23 @@ void Lvk::FE::MainWindow::loadMainWindowSettings()
     if (settings.value(SETTING_MAIN_WINDOW_MAXIMIZED).toBool()) {
         showMaximized();
     }
+}
 
+//--------------------------------------------------------------------------------------------------
 
-        QList<int> centralSplSizes;
-        centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
-        centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
-        ui->centralSplitter->setSizes(centralSplSizes);
+void Lvk::FE::MainWindow::loadSplittersSettings()
+{
+    Cmn::Settings settings;
 
-        QList<int> teachSplSizes;
-        teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
-        teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
-        ui->teachTabsplitter->setSizes(teachSplSizes);
+    QList<int> centralSplSizes;
+    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
+    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
+    ui->centralSplitter->setSizes(centralSplSizes);
+
+    QList<int> teachSplSizes;
+    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
+    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
+    ui->teachTabsplitter->setSizes(teachSplSizes);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -447,8 +479,15 @@ void Lvk::FE::MainWindow::saveMainWindowSettings()
     settings.setValue(SETTING_MAIN_WINDOW_SIZE, size());
     settings.setValue(SETTING_MAIN_WINDOW_POS, pos());
     settings.setValue(SETTING_MAIN_WINDOW_MAXIMIZED, isMaximized());
+}
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::saveSplittersSettings()
+{
     if (m_tabsLayout == TeachTabsLayout) {
+        Cmn::Settings settings;
+
         settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
         settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
         settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
@@ -462,46 +501,6 @@ void Lvk::FE::MainWindow::saveChatSettings()
 {
     // Nothing to save
 }
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::BE::Roster Lvk::FE::MainWindow::getBlackListSettings(const QString &chatAccount)
-{
-    Cmn::Settings settings;
-
-    QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
-
-    // Not working:
-    //
-    // QVariant v = settings.value(key);
-    // BE::Roster blackList = v.value<BE::Roster>();
-    //
-    // Workaround:
-
-    QString s = settings.value(key).toString();
-    return rosterUsersfromString(s);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::saveBlackListSettings(const BE::Roster &blackList,
-                                                const QString &chatAccount)
-{
-    Cmn::Settings settings;
-
-    QString key = SETTING_BLACK_LIST_ROSTER + QString("/") + chatAccount;
-
-    // Not working:
-    //
-    // QVariant v;
-    // v.setValue(ui->rosterWidget->uncheckedRoster());
-    // settings.setValue(key, v);
-    //
-    // Workaround:
-
-    settings.setValue(key, rosterUsersToString(blackList));
-}
-
 
 //--------------------------------------------------------------------------------------------------
 // UI Modes
@@ -580,8 +579,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     // Chat connection tab //
 
     case ChatDisconnectedUiMode:
-        ui->curUsernameLabel->setText(fileMetadataUsername());
-        ui->chatTypeIcon->setPixmap(fileMetadataChatType() == BE::AppFacade::FbChat ?
+        ui->curUsernameLabel->setText(m_fileUsername);
+        ui->chatTypeIcon->setPixmap(m_fileChatType == BE::AppFacade::FbChat ?
                                         QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
@@ -611,8 +610,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case ChatConnectionOkUiMode:
         ui->connectToChatStackWidget->setCurrentIndex(1);
-        ui->disconnectButton->setText(tr("Disconnect ") + fileMetadataUsername());
-        ui->disconnectButton->setIcon(fileMetadataChatType() == BE::AppFacade::FbChat ?
+        ui->disconnectButton->setText(tr("Disconnect ") + m_fileUsername);
+        ui->disconnectButton->setIcon(m_fileChatType == BE::AppFacade::FbChat ?
                                           QIcon(FB_ICON_FILE) : QIcon(GMAIL_ICON_FILE));
         // Not visible anymore:
         ui->passwordText->setEnabled(false);
@@ -877,6 +876,7 @@ void Lvk::FE::MainWindow::onOpenLastFileMenuTriggered()
 {
     if (!m_lastFilename.isEmpty()) {
         if (load(m_lastFilename)) {
+            // TODO refactor duplicated code
             setUiMode(ChatDisconnectedUiMode);
             setUiMode(EditRuleUiMode);
             selectFirstRule();
@@ -967,7 +967,13 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
     bool success = initCoreAndModelsWithFile(filename);
 
     if (success) {
+        // load conversation history
         ui->conversationHistory->setConversation(m_appFacade->conversationHistory());
+
+        // load persisted roster
+        BE::Roster roster;
+        loadRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
+        ui->ruleInputWidget->setRoster(roster);
     } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
@@ -1600,13 +1606,18 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountOk()
+void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 {
-    m_appFacade->setMetadata(FILE_METADATA_CHAT_TYPE, uiChatSelected());
-    m_appFacade->setMetadata(FILE_METADATA_USERNAME, ui->usernameText_v->text());
-
-    BE::Roster roster = m_appFacade->roster();
     ui->ruleInputWidget->setRoster(roster);
+
+    m_fileChatType = uiChatSelected();
+    m_fileUsername = ui->usernameText_v->text();
+
+    m_appFacade->setMetadata(FILE_METADATA_CHAT_TYPE, m_fileChatType);
+    m_appFacade->setMetadata(FILE_METADATA_USERNAME, m_fileUsername);
+
+    // persist roster
+    saveRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
 
     if (m_tabsLayout == WelcomeTabsLayout) {
         setUiMode(ChatDisconnectedUiMode);
@@ -1633,10 +1644,8 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int /*err*/)
 void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
 {
     QString title = tr("Change Account");
-    QString msg = tr("If you change your account some rules might not work anymore.\n"
-                     "Are you sure you want to change your account?");
-
-    // TODO display which will not work anymore
+    QString msg   = tr("If you change your account some rules might not work anymore.\n"
+                       "Are you sure you want to change your account?");
 
     QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
 
@@ -1668,8 +1677,7 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
         m_connectionStatus =  ConnectingToChat;
         setUiMode(ChatConnectingUiMode);
 
-        m_appFacade->connectToChat(fileMetadataChatType(), fileMetadataUsername(),
-                                   ui->passwordText->text());
+        m_appFacade->connectToChat(m_fileChatType, m_fileUsername, ui->passwordText->text());
     }
 }
 
@@ -1694,10 +1702,13 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
     BE::Roster roster = m_appFacade->roster();
 
-    QString account = canonicAccount(fileMetadataUsername(), fileMetadataChatType());
-    BE::Roster blackListRoster = getBlackListSettings(account);
+    saveRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
 
     ui->ruleInputWidget->setRoster(roster);
+
+    BE::Roster blackListRoster;
+    loadRoster(blackListRoster, blackRosterFilename(canonicAccount(m_fileUsername,m_fileChatType)));
+
     ui->rosterWidget->setRoster(roster, blackListRoster);
     m_appFacade->setBlackListRoster(blackListRoster);
 }
@@ -1708,8 +1719,6 @@ void Lvk::FE::MainWindow::onConnectionError(int err)
 {
     m_connectionStatus = ConnectionError;
     setUiMode(ChatConnectionFailedUiMode);
-
-    //ui->rosterWidget->clear();
 
     ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
                                        QString::number(err));
@@ -1722,8 +1731,6 @@ void Lvk::FE::MainWindow::onDisconnection()
     if (m_connectionStatus != ConnectionError) {
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
-
-        //ui->rosterWidget->clear();
     }
 }
 
@@ -1752,28 +1759,11 @@ Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
 
 void Lvk::FE::MainWindow::updateBlackList()
 {
-    QString account = canonicAccount(fileMetadataUsername(), fileMetadataChatType());
-
     BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
 
     m_appFacade->setBlackListRoster(blackList);
 
-    saveBlackListSettings(blackList, account);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::fileMetadataChatType()
-{
-    return static_cast<BE::AppFacade::ChatType>
-            (m_appFacade->metadata(FILE_METADATA_CHAT_TYPE).toInt());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-QString Lvk::FE::MainWindow::fileMetadataUsername()
-{
-    return m_appFacade->metadata(FILE_METADATA_USERNAME).toString();
+    saveRoster(blackList, blackRosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1783,15 +1773,4 @@ void Lvk::FE::MainWindow::onSplitterMoved(int, int)
     saveSplittersSettings();
 }
 
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::loadSplittersSettings()
-{
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::saveSplittersSettings()
-{
-}
 

@@ -66,7 +66,7 @@ namespace
 
 // Make Nlp::Rule from BE::Rule
 
-Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
+inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
 {
     Lvk::Nlp::Rule nlpRule(id, rule->input(), rule->output());
 
@@ -82,7 +82,7 @@ Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
 
 //--------------------------------------------------------------------------------------------------
 
-QString nullChatbotId()
+inline QString nullChatbotId()
 {
     static QString nullId = "00000000-0000-0000-0000-000000000000";
 
@@ -91,7 +91,7 @@ QString nullChatbotId()
 
 //--------------------------------------------------------------------------------------------------
 
-QString newChatbotId()
+inline QString newChatbotId()
 {
     QString id = QUuid::createUuid().toString().mid(1, 36);
 
@@ -100,7 +100,7 @@ QString newChatbotId()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
+inline Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
 {
     switch (type) {
     case Lvk::BE::AppFacade::FbChat:
@@ -110,6 +110,34 @@ Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
     default:
         return 0;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+// convert CA::ContactInfoList to BE::Roster
+
+inline Lvk::BE::Roster toBERoster(const Lvk::CA::ContactInfoList &infoList)
+{
+    Lvk::BE::Roster roster;
+
+    foreach (const Lvk::CA::ContactInfo &info, infoList) {
+        roster.append(Lvk::BE::RosterItem(info.username, info.fullname));
+    }
+
+    return roster;
+}
+
+//--------------------------------------------------------------------------------------------------
+// convert BE::Roster to CA::ContactInfoList
+
+inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roster)
+{
+    Lvk::CA::ContactInfoList infoList;
+
+    foreach (const Lvk::BE::RosterItem &item, roster) {
+        infoList.append(Lvk::CA::ContactInfo(item.username, item.username));
+    }
+
+    return infoList;
 }
 
 } // namespace
@@ -627,12 +655,12 @@ void Lvk::BE::AppFacade::cancelVerifyAccount()
 
 void Lvk::BE::AppFacade::onAccountOk()
 {
-    // TODO persist roster
+    Roster roster = toBERoster(m_tmpChatbot->roster());
 
     m_tmpChatbot->deleteLater();
     m_tmpChatbot = 0;
 
-    emit accountOk();
+    emit accountOk(roster);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -736,12 +764,7 @@ Lvk::BE::Roster Lvk::BE::AppFacade::roster()
     Roster roster;
 
     if (m_chatbot) {
-        CA::ContactInfoList infoList = m_chatbot->roster();
-        foreach (const CA::ContactInfo &info, infoList) {
-            roster.append(RosterItem(info.username, info.fullname));
-        }
-    } else {
-        // TODO retrieve persisted roster
+        roster = toBERoster(m_chatbot->roster());
     }
 
     return roster;
@@ -752,11 +775,7 @@ Lvk::BE::Roster Lvk::BE::AppFacade::roster()
 void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 {
     if (m_chatbot) {
-        CA::ContactInfoList infoList;
-        foreach (const RosterItem &item, roster) {
-            infoList.append(CA::ContactInfo(item.username, item.username));
-        }
-        m_chatbot->setBlackListRoster(infoList);
+        m_chatbot->setBlackListRoster(toCAContactInfoList(roster));
     }
 }
 

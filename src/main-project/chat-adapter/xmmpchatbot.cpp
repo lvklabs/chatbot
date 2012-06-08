@@ -31,7 +31,6 @@
 #include "QXmppVCardIq.h"
 #include "QXmppMucManager.h"
 
-
 #include <QDir>
 #include <QMutex>
 #include <QMutexLocker>
@@ -44,7 +43,7 @@
 namespace
 {
 
-QString getBareJid(const QString &from)
+inline QString getBareJid(const QString &from)
 {
     return from.split("/").at(0);
 }
@@ -107,8 +106,11 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
-                                          const QString &domain)
+                                           const QString &domain)
 {
+    m_user = user;
+    m_domain = domain;
+
 //    QXmppConfiguration conf;
 //    conf.setDomain(domain);
 //    conf.setUser(user);
@@ -151,11 +153,7 @@ Lvk::CA::ContactInfoList Lvk::CA::XmppChatbot::roster() const
     QMutexLocker locker(m_rosterMutex);
 
     if (m_rosterHasChanged) {
-        m_roster.clear();
-
-        foreach (const QString &jid, m_xmppClient->rosterManager().getRosterBareJids()) {
-            m_roster.append(getContactInfo(jid));
-        }
+        rebuildLocalRoster();
     }
 
     return m_roster;
@@ -299,7 +297,10 @@ void Lvk::CA::XmppChatbot::onConnected()
 
 void Lvk::CA::XmppChatbot::onRosterReceived()
 {
-    m_rosterHasChanged = true;
+    {
+        QMutexLocker locker(m_rosterMutex);
+        rebuildLocalRoster();
+    }
 
     emit connected();
 }
@@ -311,3 +312,12 @@ void Lvk::CA::XmppChatbot::onRosterChanged(const QString &/*bareJid*/)
     m_rosterHasChanged = true;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
+{
+    m_roster.clear();
+    foreach (const QString &jid, m_xmppClient->rosterManager().getRosterBareJids()) {
+        m_roster.append(getContactInfo(jid));
+    }
+}
