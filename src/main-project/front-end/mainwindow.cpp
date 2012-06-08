@@ -303,7 +303,8 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
             SLOT(onRuleTargetEdited(QString)));
 
-    connect(ui->centralSplitter, SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
+    connect(ui->centralSplitter,  SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
+    connect(ui->teachTabsplitter, SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
 
     // Test tab
 
@@ -459,7 +460,7 @@ void Lvk::FE::MainWindow::loadSplittersSettings()
 
     QList<int> teachSplSizes;
     teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
-    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.55).toInt();
+    teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_EDIT_W, width()*0.7*0.55).toInt();
     ui->teachTabsplitter->setSizes(teachSplSizes);
 }
 
@@ -1007,7 +1008,7 @@ bool Lvk::FE::MainWindow::hasUnsavedChanges()
 int Lvk::FE::MainWindow::showSaveChangesDialog()
 {
     QString text = !m_filename.isEmpty() ?
-                tr("Do you want to save the changes in " + m_filename + "?") :
+                tr("Do you want to save the changes in ") + m_filename + "?" :
                 tr("Do you want to save the changes?");
 
     QMessageBox msg(QMessageBox::Question, tr("Save changes"), text,
