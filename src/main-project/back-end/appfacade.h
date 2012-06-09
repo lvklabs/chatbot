@@ -284,7 +284,6 @@ private:
     QString m_chatbotId;
     CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
-    bool m_isFirstTime;
     QSet<QString> m_targets;
 
     void markAsSaved();
@@ -303,7 +302,6 @@ private:
     bool read(QFile &file);
     bool write(QFile &file);
     bool loadDefaultRules();
-    bool loadDefaultFirstTimeRules();
 };
 
 /// @}

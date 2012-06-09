@@ -162,6 +162,8 @@ private:
     void saveSplittersSettings();
     void saveChatSettings();
 
+    void startEditMode();
+
     void selectFirstRule();
 
     void selectRule(const BE::Rule *rule);

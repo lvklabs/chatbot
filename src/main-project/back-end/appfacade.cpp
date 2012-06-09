@@ -156,8 +156,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_nextRuleId(0),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
-      m_tmpChatbot(0),
-      m_isFirstTime(true)
+      m_tmpChatbot(0)
 {
 }
 
@@ -172,8 +171,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nextRuleId(0),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
-      m_tmpChatbot(0),
-      m_isFirstTime(true)
+      m_tmpChatbot(0)
 {
 }
 
@@ -207,11 +205,7 @@ bool Lvk::BE::AppFacade::load(const QString &filename, bool create /*= true*/)
             success = read(file);
         }
     } else if (create) {
-        if (m_isFirstTime) {
-            success = loadDefaultFirstTimeRules();
-        } else {
-            success = loadDefaultRules();
-        }
+        success = loadDefaultRules();
     }
 
     if (success) {
@@ -801,89 +795,30 @@ const Lvk::BE::Conversation & Lvk::BE::AppFacade::conversationHistory()
 //--------------------------------------------------------------------------------------------------
 // Misc
 //--------------------------------------------------------------------------------------------------
-// TODO localize
-
-bool Lvk::BE::AppFacade::loadDefaultFirstTimeRules()
-{
-    m_isFirstTime = false;
-
-    m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
-
-    BE::Rule *catGreetings    = new BE::Rule("Saludos");
-
-    catGreetings->setType(BE::Rule::ContainerRule);
-
-    m_rootRule->appendChild(catGreetings);
-
-    QStringList rule1InputList;
-    QStringList rule1OutputList;
-    rule1InputList  << QString("Hola") << QString("Holaa") << QString("Holaaa")
-                    << QString("Hola *");
-    rule1OutputList << QString("Hola!") << QString("Que haces che!");
-
-    QStringList rule2InputList;
-    QStringList rule2OutputList;
-    rule2InputList  << QString("Buenas") << QString("Buen dia") << QString("Buenas tardes")
-                    << QString("Que haces *");
-    rule2OutputList << QString("Buenas, Como estas?");
-
-    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
-    BE::Rule * rule2 = new BE::Rule("", rule2InputList, rule2OutputList);
-
-    catGreetings->appendChild(rule1);
-    catGreetings->appendChild(rule2);
-
-    // evasives
-
-    BE::Rule *evasives    = new BE::Rule("Si no entiende");
-    evasives->setType(BE::Rule::EvasiveRule);
-
-    m_rootRule->appendChild(evasives);
-
-    m_evasivesRule = evasives;
-
-    QStringList evasivesOutputList;
-    evasivesOutputList << QString("Perdon, no entiendo")
-                       << QString("No entiendo, puedes explicarlo de otra manera?");
-
-    evasives->setOutput(evasivesOutputList);
-
-    m_chatbotId = newChatbotId();
-
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::loadDefaultRules()
 {
     m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
 
-    // initial category
+    BE::Rule *catGreetings    = new BE::Rule(tr("Greetings"));
 
-    BE::Rule *cat1  = new BE::Rule("Categoria");
+    catGreetings->setType(BE::Rule::ContainerRule);
 
-    cat1->setType(BE::Rule::ContainerRule);
+    QStringList rule1InputList;
+    QStringList rule1OutputList;
+    rule1InputList  << QString(tr("Hello"));
+    rule1OutputList << QString(tr("Hello!"));
 
-    m_rootRule->appendChild(cat1);
+    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
 
-    BE::Rule * rule1 = new BE::Rule("");
+    catGreetings->appendChild(rule1);
 
-    cat1->appendChild(rule1);
-
-    // evasives
-
-    BE::Rule *evasives    = new BE::Rule("Si no entiende");
+    BE::Rule *evasives  = new BE::Rule(tr("Evasives"));
     evasives->setType(BE::Rule::EvasiveRule);
 
+    m_rootRule->appendChild(catGreetings);
     m_rootRule->appendChild(evasives);
-
     m_evasivesRule = evasives;
-
-    QStringList evasivesOutputList;
-
-    evasives->setOutput(evasivesOutputList);
-
     m_chatbotId = newChatbotId();
 
     return true;

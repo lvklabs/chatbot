@@ -861,9 +861,7 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
 
         if (!filename.isEmpty()) {
             if (load(filename)) {
-                setUiMode(ChatDisconnectedUiMode);
-                setUiMode(EditRuleUiMode);
-                selectFirstRule();
+                startEditMode();
             } else {
                 clear();
             }
@@ -877,10 +875,7 @@ void Lvk::FE::MainWindow::onOpenLastFileMenuTriggered()
 {
     if (!m_lastFilename.isEmpty()) {
         if (load(m_lastFilename)) {
-            // TODO refactor duplicated code
-            setUiMode(ChatDisconnectedUiMode);
-            setUiMode(EditRuleUiMode);
-            selectFirstRule();
+            startEditMode();
         } else {
             clear();
         }
@@ -1363,6 +1358,15 @@ void Lvk::FE::MainWindow::selectRule(const BE::Rule *rule)
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::startEditMode()
+{
+    setUiMode(ChatDisconnectedUiMode);
+    setUiMode(EditRuleUiMode);
+    selectFirstRule();
+}
+
+//--------------------------------------------------------------------------------------------------
 // Rule edition & undo
 //--------------------------------------------------------------------------------------------------
 
@@ -1620,9 +1624,8 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
     // persist roster
     saveRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
 
-    if (m_tabsLayout == WelcomeTabsLayout) {
-        setUiMode(ChatDisconnectedUiMode);
-        setUiMode(EditRuleUiMode);
+    if (m_tabsLayout == VerifyAccountTabsLayout) {
+        startEditMode();
     } else {
         setUiMode(ChatDisconnectedUiMode);
     }
