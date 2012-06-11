@@ -23,8 +23,13 @@
 #define LVK_CA_FBCHATBOT_H
 
 #include "xmmpchatbot.h"
+#include "chatcorpus.h"
+
+#include <QHash>
+#include <QList>
 
 class QXmppMessage;
+class QXmppClientExtension;
 
 namespace Lvk
 {
@@ -34,6 +39,8 @@ namespace Lvk
 
 namespace CA
 {
+
+class ChatThreadContainer;
 
 /// \ingroup Lvk
 /// \addtogroup CA
@@ -54,8 +61,12 @@ public:
     /**
      * Constructs a Facebook chatbot with parent object \a parent
      */
-
     FbChatbot(QObject *parent = 0);
+
+    /**
+     * Destroys the object
+     */
+    ~FbChatbot();
 
     /**
      * Connects to the Facebook Chat server using \a user and \a password.
@@ -70,6 +81,8 @@ protected slots:
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 
+    ChatThreadContainer  *m_chatThreads;
+    QXmppClientExtension *m_ownMsgExtension;
 };
 
 /// @}

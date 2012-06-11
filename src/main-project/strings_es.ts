@@ -41,6 +41,27 @@
     </message>
 </context>
 <context>
+    <name>FbOwnMessageExtension</name>
+    <message>
+        <source>chatbot save</source>
+        <translation type="obsolete">chatbot guardar</translation>
+    </message>
+    <message>
+        <source>chatbot discard</source>
+        <translation type="obsolete">chatbot borrar</translation>
+    </message>
+    <message>
+        <source>[chatbot] Saved!</source>
+        <oldsource>chatbot: Saved!</oldsource>
+        <translation type="obsolete">[chatbot] Guardado!</translation>
+    </message>
+    <message>
+        <source>[chatbot] Discarded!</source>
+        <oldsource>chatbot: Discarded!</oldsource>
+        <translation type="obsolete">[chatbot] Borrado!</translation>
+    </message>
+</context>
+<context>
     <name>Lvk::BE::AppFacade</name>
     <message>
         <location filename="back-end/appfacade.cpp" line="801"/>
@@ -1085,6 +1106,26 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
     <message>
         <source>Any user</source>
         <translation type="obsolete">Cualquier usuario</translation>
+    </message>
+    <message>
+        <location filename="chat-adapter/fbchatbot.cpp" line="115"/>
+        <source>chatbot save</source>
+        <translation>chatbot guardar</translation>
+    </message>
+    <message>
+        <location filename="chat-adapter/fbchatbot.cpp" line="116"/>
+        <source>chatbot discard</source>
+        <translation>chatbot borrar</translation>
+    </message>
+    <message>
+        <location filename="chat-adapter/fbchatbot.cpp" line="146"/>
+        <source>[chatbot] Saved!</source>
+        <translation>[chatbot] Guardado!</translation>
+    </message>
+    <message>
+        <location filename="chat-adapter/fbchatbot.cpp" line="149"/>
+        <source>[chatbot] Discarded!</source>
+        <translation>[chatbot] Borrado!</translation>
     </message>
 </context>
 <context>
