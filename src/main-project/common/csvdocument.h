@@ -53,24 +53,56 @@ namespace Cmn
 class CsvDocument
 {
 public:
+
+    /**
+     * Constructs an emtpy CSV document
+     */
     CsvDocument();
 
+    /**
+     * Constructs a CSV document parsing string \a csvStr
+     */
     CsvDocument(const QString &csvStr);
 
+    /**
+     * Returns the list of rows of the document
+     */
     const QList<CsvRow> & rows() const;
 
+    /**
+     * Returns the row at position \a n
+     */
     const CsvRow &operator[](int n) const ;
 
+    /**
+     * Appends the given \a row to the document
+     */
     void append(const CsvRow &row);
 
+    /**
+     * Converts the string \a rowStr to CsvRow and appends it to the document
+     */
     void append(const QString &rowStr);
 
+
+    /**
+     * Clears the document by removing all rows.
+     */
     void clear();
 
+    /**
+     * Returns true if this document is equal to \a other. Otherwise; false.
+     */
     bool operator==(const CsvDocument &other) const;
 
+    /**
+     * Returns true if this document is not equal to \a other. Otherwise; false.
+     */
     bool operator!=(const CsvDocument &other) const;
 
+    /**
+     * Returns the string representation of the CSV document.
+     */
     QString toString() const;
 
 private:

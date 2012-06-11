@@ -43,7 +43,7 @@ namespace BE
 /// @{
 
 /**
- * \brief The Rule class provides a NLP rule plus some metadata
+ * \brief The Rule class provides a NLP rule with metadata to display it in the front-end.
  */
 
 class Rule

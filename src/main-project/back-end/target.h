@@ -20,17 +20,21 @@ namespace BE
 
 
 /**
- * \brief Target class provides information about a rule target
+ * \brief Target class provides information about a rule target.
+ *
+ * By default, rules apply to any user. Use rule targets to create rules that apply only
+ * to a list of contacts.
  */
-
 typedef RosterItem Target;
 
 
 /**
- * \brief The TargetList class provides a list of targets
+ * \brief The TargetList class provides a list of targets.
+ *
+ * \see Target
  */
-
 typedef QList<Target> TargetList;
+
 
 /// @}
 

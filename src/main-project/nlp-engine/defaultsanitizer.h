@@ -47,6 +47,10 @@ namespace Nlp
 class DefaultSanitizer : public Sanitizer
 {
 public:
+
+    /**
+     * Sanitizes the string \a str
+     */
     virtual QString sanitize(const QString &str) const;
 
 };

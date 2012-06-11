@@ -45,32 +45,66 @@ namespace Cmn
  *
  * The CsvRow class represents a row in a CSV document.
  *
- * @see CsvDocument class
+ * \see CsvDocument class
  */
 
 class CsvRow
 {
 public:
+
+    /**
+     * Constructs an empty CSV row
+     */
     CsvRow();
 
+    /**
+     * Constructs a CSV row with the given \a cells
+     */
     CsvRow(const QStringList &cells);
 
+    /**
+     * Constructs a CSV row parsing string \a str
+     */
     CsvRow(const QString &str);
 
+    /**
+     * Returns the list of cells in the row
+     */
     const QList<QString> & cells() const;
 
+    /**
+     * Appends a new cell to the row
+     */
     void append(const QString &cell);
 
+    /**
+     * Returns the amount of cells in the row
+     */
     int size() const;
 
+    /**
+     * Returns the cell at position \a n
+     */
     const QString &operator[](int n) const ;
 
+    /**
+     * Removes all cells
+     */
     void clear();
 
+    /**
+     * Returns true if this row is equal to \a other. Otherwise; false.
+     */
     bool operator==(const CsvRow &other) const;
 
+    /**
+     * Returns true if this row is not equal to \a other. Otherwise; false.
+     */
     bool operator!=(const CsvRow &other) const;
 
+    /**
+     * Returns the string representation of the row.
+     */
     QString toString() const;
 
 private:
