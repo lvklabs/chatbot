@@ -104,9 +104,9 @@ Q_DECLARE_METATYPE(Lvk::BE::Rule*)
 #define GMAIL_USER_2_PASSWD_WRONG           "xxx"
 #define GMAIL_USER_2_REAL_NAME              "andres.test2@gmail.com" //"andres test2"
 
-#define FB_USER_1                           "andres.pagliano" // FIXME create new account
-#define FB_USER_1_PASSWD_OK                 "FIXME"
-#define FB_USER_1_PASSWD_WRONG              "xxx"
+#define FB_USER_1                           "andres.xmpp"
+#define FB_USER_1_PASSWD_OK                 "xmpp1234"
+#define FB_USER_1_PASSWD_WRONG              "xmpp123"
 
 // Log Files ---------------------------------------------------------------------------------------
 
@@ -295,14 +295,10 @@ void TestMainWindow::UiSetRuleHierarchy2()
 
 void TestMainWindow::UiConnect(const QString &username, const QString &password, int chatType)
 {
-    QTest::keyClicks(m_window->ui->usernameText, username);
-    QTest::keyClicks(m_window->ui->passwordText, password);
+    m_window->m_fileChatType = static_cast<Lvk::BE::AppFacade::ChatType>(chatType);
+    m_window->m_fileUsername = username;
 
-    if (chatType == Facebook) {
-        m_window->ui->fbChatRadio->setChecked(true);
-    } else if (chatType == Gmail){
-        m_window->ui->gtalkChatRadio->setChecked(true);
-    }
+    QTest::keyClicks(m_window->ui->passwordText, password);
 
     m_window->onConnectButtonPressed();
 }
@@ -548,16 +544,16 @@ void TestMainWindow::testChatConnection_data()
 
 void TestMainWindow::testChatConnection()
 {
-    std::cout << "Running testChatConnection()..." << std::endl;
+    std::cout << "Running TestMainWindow::testChatConnection()..." << std::endl;
 
     QFETCH(QString, username);
     QFETCH(QString, password);
     QFETCH(int, chatType);
     QFETCH(bool, valid);
 
-    if (chatType == Facebook && valid) {
-        QSKIP("", SkipSingle);
-    }
+//    if (chatType == Facebook && valid) {
+//        QSKIP("", SkipSingle);
+//    }
 
     std::cout << " - Connecting with username: " << username.toStdString() << "@"
               << (chatType == Facebook ? FB_CHAT_DOMAIN : GMAIL_DOMAIN)
@@ -632,7 +628,7 @@ void TestMainWindow::testChatbotResponseAndHistory_data()
 
 void TestMainWindow::testChatbotResponseAndHistory()
 {
-    std::cout << "Running testChatbotResponse()..." << std::endl;
+    std::cout << "Running TestMainWindow::testChatbotResponse()..." << std::endl;
 
     QFETCH(QString, user1);
     QFETCH(QString, passwd1);
