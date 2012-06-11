@@ -73,7 +73,7 @@ inline QDataStream &operator<<(QDataStream &out, const Lvk::CA::ContactInfo &inf
 }
 
 /**
- *  Reads from the specified \a in stream into the contact information \a info .
+ *  Reads from the specified \a in stream into the contact information \a info.
  */
 inline QDataStream &operator>>(QDataStream &in, Lvk::CA::ContactInfo &info)
 {

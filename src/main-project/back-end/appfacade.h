@@ -196,7 +196,8 @@ public:
      * Connects to a chat server of type \a accountType with user \a user, and password \a
      * passwd. This method should not be called if there is a connection already in progress,
      * in that case call disconnectFromChat().
-     * Emits \a connected, \a disconnected or \a connectionError.
+     * Emits \a connected on success. Otherwise; emits \a connectionError.
+     * If the connection ends prematurely, emits \a disconnected.
      */
     void connectToChat(ChatType accountType, const QString &user, const QString &passwd);
 

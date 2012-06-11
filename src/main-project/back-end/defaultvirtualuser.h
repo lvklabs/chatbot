@@ -52,7 +52,7 @@ class ConversationWriter;
 
 /**
  * \brief The DefaultVirtualUser class provides the default implementation of the interface
- *        VirtualUser
+ *        VirtualUser.
  */
 
 class DefaultVirtualUser : public QObject, public CA::VirtualUser
@@ -60,21 +60,51 @@ class DefaultVirtualUser : public QObject, public CA::VirtualUser
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs a virtual user with id \a id, NLP engine \a engine and parent object \a parent.
+     */
     DefaultVirtualUser(const QString &id, Nlp::Engine *engine = 0, QObject *parent = 0);
 
+    /**
+     * Destroys the object
+     */
     ~DefaultVirtualUser();
 
+    /**
+     * Returns a response for the given \a input and \a contact.
+     */
     virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
 
+    /**
+     * Returns the avatar of the virtual user.
+     */
     virtual QPixmap getAvatar();
 
+    /**
+     * Returns the chat conversation history of the current virtual user id.
+     */
     const Conversation &getConversationHistory() const;
 
+    /**
+     * Sets the NLP engine that is used to get responses.
+     */
     void setNlpEngine(Nlp::Engine *engine);
 
+    /**
+     * Sets the list of evasives.
+     * Evasives are senteces used by the virtual user when there is no match in the NLP engine.
+     * If there is no match, an evasive is chosen and returned as response.
+     */
     void setEvasives(const QStringList &evasives);
 
 signals:
+
+    /**
+     * This signal is emitted whenever the virtual user receives a chat message. \a entry
+     * contains the received message, the chatbot response and other useful information.
+     * \see BE::Conversation::Entry
+     */
     void newConversationEntry(const BE::Conversation::Entry &entry);
 
 private:

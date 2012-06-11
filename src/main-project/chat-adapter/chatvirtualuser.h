@@ -48,13 +48,20 @@ namespace CA
 class VirtualUser
 {
 public:
-    /** Class destructor */
+
+    /**
+     * Destroys the object
+     */
     virtual ~VirtualUser() {}
 
-    /** Get a response for the given input and chat contact */
+    /**
+     * Returns a response for the given \a input and \a contact.
+     */
     virtual QString getResponse(const QString &input, const ContactInfo &contact) = 0;
 
-    /** Virtual user custom avatar */
+    /**
+     * Returns the avatar of the virtual user.
+     */
     virtual QPixmap getAvatar() = 0;
 };
 

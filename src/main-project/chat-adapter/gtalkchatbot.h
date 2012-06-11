@@ -38,16 +38,30 @@ namespace CA
 /// @{
 
 /**
- * \brief The GTalkChatbot class provides a GTalk chatbot
+ * \brief The GTalkChatbot class provides a chatbot for Google GTalk.
+ *
+ * GTalk is the chat service of Google. GTalkChatbot works with the GTalk client, GMail chat and
+ * any other Google service that uses chat.
  *
  * GTalkChatbot is a very thin layer over the Xmpp chatbot because GTalk chat is XMPP compliant
+ *
+ * \see XmppChatbot
  */
 
 class GTalkChatbot : public XmppChatbot
 {
 public:
+
+    /**
+     * Constructs a GTalk chatbot with parent object \a parent
+     */
     GTalkChatbot(QObject *parent = 0);
 
+    /**
+     * Connects to the GTalk server using \a user and \a password.
+     * Emits \a connected signal on success. Otherwise; emits \a connectionError.
+     * If the connection ends prematurely, emits \a disconnected.
+     */
     virtual void connectToServer(const QString &user, const QString &passwd);
 
 private:

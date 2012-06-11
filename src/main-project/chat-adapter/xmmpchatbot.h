@@ -50,7 +50,9 @@ namespace CA
 class ContactInfo;
 
 /**
- * \brief The XmppChatbot class provides a chatbot for XMPP chat servers
+ * \brief The XmppChatbot class provides a chatbot for XMPP chat servers.
+ *
+ * XMPP is also known as Jabber.
  */
 
 class XmppChatbot : public Chatbot
@@ -58,8 +60,15 @@ class XmppChatbot : public Chatbot
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs a XMPP chatbot with parent object \a parent
+     */
     XmppChatbot(QObject *parent = 0);
 
+    /**
+     * Destroys the chatbot and disconnects from the chat server if nescessary.
+     */
     ~XmppChatbot();
 
     /**
@@ -72,27 +81,63 @@ public:
         InternalError       ///< Internal error
     };
 
-    // Lvk::CA::ChatClient interface
-
+    /**
+     * Connects to the chat server at \a domain using \a user and \a password
+     * Emits \a connected signal on success. Otherwise; emits \a connectionError.
+     * If the connection ends prematurely, emits \a disconnected.
+     */
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &domain);
 
+    /**
+     * Disconnects from chat server.
+     */
     virtual void disconnectFromServer();
 
+    /**
+     * Sets the virtual user.
+     */
     virtual void setVirtualUser(VirtualUser *virtualUser);
 
+    /**
+     * Returns the virtual user.
+     */
     virtual VirtualUser *virtualUser();
 
+    /**
+     * Returns the roster. i.e. the list of all chat contacts.
+     */
     virtual ContactInfoList roster() const;
 
+    /**
+     * Sets the black list roster \a blackList.
+     * The black list roster is the list of contacts that the chatbot is forbidden to talk to.
+     * By default, this list is empty.
+     */
     virtual void setBlackListRoster(const ContactInfoList &blackList);
 
+    /**
+     * Returns the black list roster.
+     * The black list roster is the list of contacts that the chatbot is forbidden to talk to.
+     * By default, this list is empty.
+     */
     virtual ContactInfoList blackListRoster() const;
 
 signals:
+
+    /**
+     * This signal is emitted after invoking connectToServer() if the connection was successful.
+     */
     void connected();
 
+    /**
+     * This signal is emitted after invoking connectToServer() if the connection has ended.
+     */
     void disconnected();
 
+    /**
+     * This signal es emitted after invoking connectToServer() if there was an error while trying
+     * to connect to the chat server.
+     */
     void error(int err);
 
 protected slots:

@@ -40,16 +40,28 @@ namespace CA
 /// @{
 
 /**
- * \brief The FbChatbot class provides a Facebook chatbot
+ * \brief The FbChatbot class provides a chatbot for Facebook Chat.
  *
- * FbChatbot is a very thin layer over the Xmpp chatbot because fb chat is XMPP compliant
+ * FbChatbot is a very thin layer over the Xmpp chatbot because Facebook chat is XMPP compliant.
+ *
+ * \see XmppChatbot
  */
 
 class FbChatbot : public XmppChatbot
 {
 public:
+
+    /**
+     * Constructs a Facebook chatbot with parent object \a parent
+     */
+
     FbChatbot(QObject *parent = 0);
 
+    /**
+     * Connects to the Facebook Chat server using \a user and \a password.
+     * Emits \a connected signal on success. Otherwise; emits \a connectionError.
+     * If the connection ends prematurely, emits \a disconnected.
+     */
     virtual void connectToServer(const QString &user, const QString &passwd);
 
 protected slots:
