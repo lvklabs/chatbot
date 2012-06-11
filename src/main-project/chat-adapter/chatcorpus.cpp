@@ -75,7 +75,7 @@ void Lvk::CA::ChatCorpus::init()
         if (!m_init) {
             load();
 
-            if (!m_corpusFile.open(QFile::WriteOnly)) {
+            if (!m_corpusFile.open(QFile::Append)) {
                 qWarning(QObject::tr("Warning: cannot open corpus file for writing"));
             }
 
