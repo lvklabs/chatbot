@@ -93,24 +93,30 @@ QString getFileExportFilters()
 //--------------------------------------------------------------------------------------------------
 // Save roster to filename
 
-inline void saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
+inline bool saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
 {
     QFile file(filename);
     if (file.open(QFile::WriteOnly)) {
         QDataStream out(&file);
         out << roster;
+        return out.status() == QDataStream::Ok;
+    } else {
+        return false;
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 // load roster from filename
 
-inline void loadRoster(Lvk::BE::Roster &roster, const QString &filename)
+inline bool loadRoster(Lvk::BE::Roster &roster, const QString &filename)
 {
     QFile file(filename);
     if (file.open(QFile::ReadOnly)) {
         QDataStream in(&file);
         in >> roster;
+        return in.status() == QDataStream::Ok;
+    } else {
+        return false;
     }
 }
 
@@ -589,6 +595,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Disconnected"));
         ui->connectionStatusLabel->setStyleSheet("");
+        ui->rosterWidget->clear();
         break;
 
     case ChatConnectingUiMode:
@@ -605,7 +612,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection error"));
+        ui->connectionStatusLabel->setText(tr("Connection error. "
+                                              "Please verify your username and password."));
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
 
@@ -633,6 +641,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->gtalkChatRadio_v->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
+        ui->passwordText->setText("");
         break;
 
     case VerifyAccountUiMode:
@@ -647,6 +656,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->gtalkChatRadio_v->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
+        ui->passwordText->setText("");
         break;
 
     case ChangeAccountConnectingUiMode:
@@ -1711,7 +1721,11 @@ void Lvk::FE::MainWindow::onConnectionOk()
     ui->ruleInputWidget->setRoster(roster);
 
     BE::Roster blackListRoster;
-    loadRoster(blackListRoster, blackRosterFilename(canonicAccount(m_fileUsername,m_fileChatType)));
+    QString account = canonicAccount(m_fileUsername,m_fileChatType);
+
+    if (!loadRoster(blackListRoster, blackRosterFilename(account))) {
+        blackListRoster = roster; // By default all contacts are in the black list
+    }
 
     ui->rosterWidget->setRoster(roster, blackListRoster);
     m_appFacade->setBlackListRoster(blackListRoster);
@@ -1719,13 +1733,10 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onConnectionError(int err)
+void Lvk::FE::MainWindow::onConnectionError(int /*err*/)
 {
     m_connectionStatus = ConnectionError;
     setUiMode(ChatConnectionFailedUiMode);
-
-    ui->connectionStatusLabel->setText(ui->connectionStatusLabel->text() + " #" +
-                                       QString::number(err));
 }
 
 //--------------------------------------------------------------------------------------------------
