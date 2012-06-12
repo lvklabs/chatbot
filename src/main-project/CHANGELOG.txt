@@ -1,6 +1,9 @@
 v0.09
  - Persisting chat roster.
  - Persisting black list roster in ./data directory. Not using config file anymore
+ - By default, when chatbot is connected all contacts are unchecked in the roster
+ - Added order "chatbot save" and "chatbot discard" to tell the chabot to persist
+   or discard a chat conversation.
  - Bug fixed: #15 
 
 v0.08
