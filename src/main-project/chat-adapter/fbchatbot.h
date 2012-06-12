@@ -25,6 +25,7 @@
 #include "xmmpchatbot.h"
 #include "chatcorpus.h"
 
+#include <QMutex>
 #include <QHash>
 #include <QList>
 
@@ -48,8 +49,6 @@ class ChatThreadContainer;
 
 /**
  * \brief The FbChatbot class provides a chatbot for Facebook Chat.
- *
- * FbChatbot is a very thin layer over the Xmpp chatbot because Facebook chat is XMPP compliant.
  *
  * \see XmppChatbot
  */
@@ -78,11 +77,27 @@ public:
 protected slots:
     virtual void onMessageReceived(const QXmppMessage &);
 
+protected:
+    void timerEvent(QTimerEvent *event);
+
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 
-    ChatThreadContainer  *m_chatThreads;
-    QXmppClientExtension *m_ownMsgExtension;
+    void askSaveInactiveThreads();
+
+    ChatThreadContainer     *m_chatThreads;
+    QXmppClientExtension    *m_ownMsgExtension;
+
+    struct ChatThreadInfo
+    {
+        uint lastMessageTime;
+        QString username;
+        bool asked;
+    };
+
+    QHash<QString, ChatThreadInfo>  m_threadsInfo;
+    uint m_inactivityThreshold;
+    QMutex m_threadsInfoMutex;
 };
 
 /// @}

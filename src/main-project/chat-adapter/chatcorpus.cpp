@@ -86,9 +86,15 @@ void Lvk::CA::ChatCorpus::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::ChatCorpus::add(const QString &user, const QString &sentence)
+void Lvk::CA::ChatCorpus::add(const QString &user, const QString &message, const QString &thread)
 {
-    add(qMakePair(user, sentence));
+    CorpusEntry entry;
+    entry.timestamp = QDateTime::currentDateTime();
+    entry.thread = thread;
+    entry.username = user;
+    entry.message = message;
+
+    add(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -101,9 +107,10 @@ void Lvk::CA::ChatCorpus::add(const CorpusEntry &entry)
 
     if (m_corpusFile.isOpen()) {
         Cmn::CsvRow row;
-        row.append(QDateTime::currentDateTime().toString(STR_CHAT_CORPUS_DATE_TIME_FORMAT));
-        row.append(sanitize(entry.first));
-        row.append(sanitize(entry.second));
+        row.append(entry.timestamp.toString(STR_CHAT_CORPUS_DATE_TIME_FORMAT));
+        row.append(sanitize(entry.thread));
+        row.append(sanitize(entry.username));
+        row.append(sanitize(entry.message));
 
         m_corpusFile.write(row.toString().toUtf8());
         m_corpusFile.write("\n");
@@ -143,11 +150,18 @@ void Lvk::CA::ChatCorpus::load()
             line = QString::fromUtf8(buf);
             row = Cmn::CsvRow(line);
 
-            if (row.size() == 3) {
-                m_corpus.append(qMakePair(row[1], row[2]));
+            if (row.size() == 4) {
+                CorpusEntry entry;
+                entry.timestamp = QDateTime::fromString(row[0], STR_CHAT_CORPUS_DATE_TIME_FORMAT);
+                entry.thread    = row[1];
+                entry.username  = row[2];
+                entry.message   = row[3];
+
+                m_corpus.append(entry);
             }
         }
     } while (len != -1);
 
     m_corpusFile.close();
 }
+

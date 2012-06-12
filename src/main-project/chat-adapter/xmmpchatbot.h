@@ -155,6 +155,8 @@ protected:
     QXmppClient *m_xmppClient;
     VirtualUser *m_virtualUser;
 
+    bool isInBlackList(const QString &jid);
+
 private slots:
     void emitLocalError(QXmppClient::Error);
 
@@ -183,8 +185,6 @@ private:
     Error convertToLocalError(QXmppClient::Error err);
 
     void rebuildLocalRoster() const;
-
-    bool isInBlackList(const QString &jid);
 };
 
 /// @}

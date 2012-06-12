@@ -26,6 +26,7 @@
 #include <QPair>
 #include <QString>
 #include <QFile>
+#include <QDateTime>
 
 class QMutex;
 
@@ -57,7 +58,16 @@ class ChatCorpus
 {
 public:
 
-    typedef QPair<QString, QString> CorpusEntry; //! CorpusEntry provides a pair (user, sentence)
+    /**
+     * The CorpusEntry class provides a single entry of the corpus
+     */
+    struct CorpusEntry
+    {
+        QDateTime timestamp; ///< Entry timestamp
+        QString thread;      ///< Conversation thread ID
+        QString username;    ///< Username
+        QString message;     ///< Message
+    };
 
     /**
      * Constructs a ChatCorpus object initialized with the default data file.
@@ -65,14 +75,15 @@ public:
     ChatCorpus();
 
     /**
-     * Adds a new entry with the given user name and sentence to the corpus.
-     */
-    void add(const QString &user, const QString &sentence);
-
-    /**
-     * Adds the given entry to the corpus.
+     * Adds the \a entry to the corpus.
      */
     void add(const CorpusEntry &entry);
+
+    /**
+     * Adds a new entry with \a username, \a message and \a thread to the corpus.
+     * The timestamp is set to the current date and time.
+     */
+    void add(const QString &username, const QString &message, const QString &thread);
 
     /**
      * Returns all the entries in the corpus.

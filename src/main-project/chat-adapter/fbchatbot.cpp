@@ -21,6 +21,8 @@
 
 #include "fbchatbot.h"
 #include "chatcorpus.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include <QMutex>
 #include <QMutexLocker>
@@ -31,6 +33,36 @@
 #include "QXmppClientExtension.h"
 
 #define FB_CHAT_HOST        "chat.facebook.com"
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+inline Lvk::CA::ChatCorpus::CorpusEntry makeEntry(const QString &thread, const QString &user,
+                                                  const QString &msg)
+{
+    Lvk::CA::ChatCorpus::CorpusEntry entry;
+
+    entry.timestamp = QDateTime::currentDateTime();
+    entry.thread = thread;
+    entry.username = user;
+    entry.message = msg;
+
+    return entry;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString getThreadId(const QXmppMessage &msg, bool ownMsg)
+{
+    return "thread_" + msg.thread() + "_" + (ownMsg ? msg.to() : msg.from());
+}
+
+} // namespace
+
 
 //--------------------------------------------------------------------------------------------------
 // ChatThreadContainer
@@ -47,11 +79,14 @@ namespace CA
 
 class ChatThreadContainer
 {
+    typedef QHash< QString, QList<Lvk::CA::ChatCorpus::CorpusEntry> > ChatThreadContainerPrivate;
+
 public:
+
     void append(const QString &threadId, const QString &user, const QString &body)
     {
         QMutexLocker locker(&m_mutex);
-        m_entries[threadId].append(Lvk::CA::ChatCorpus::CorpusEntry(user, body));
+        m_entries[threadId].append(makeEntry(threadId, user, body));
     }
 
     void discard(const QString &threadId)
@@ -73,8 +108,7 @@ public:
 
 private:
     QMutex m_mutex;
-
-    QHash< QString, QList<Lvk::CA::ChatCorpus::CorpusEntry> > m_entries;
+    ChatThreadContainerPrivate m_entries;
 };
 
 } // namespace CA
@@ -114,6 +148,8 @@ public:
         : m_chatThreads(threadContainer),
           SAVE_ORDER(QObject::tr("chatbot save").simplified().toLower()),
           DISCARD_ORDER(QObject::tr("chatbot discard").simplified().toLower()),
+          YES(QObject::tr("yes").simplified().toLower()),
+          NO(QObject::tr("no").simplified().toLower()),
           USER_ME("Me")
     { }
 
@@ -139,24 +175,57 @@ public:
 
     void handleOwnMessage(const QXmppMessage &msg)
     {
+        QString threadId = getThreadId(msg, true);
         QString szBody = msg.body().simplified().toLower();
 
-        if (szBody == SAVE_ORDER) {
-            m_chatThreads->persist(msg.thread());
+        bool asked = askedToSave(threadId);
+
+        if (szBody == SAVE_ORDER || (asked && szBody == YES)) {
+            m_chatThreads->persist(threadId);
             client()->sendMessage(msg.to(), QObject::tr("[chatbot] Saved!"));
-        } else if (szBody == DISCARD_ORDER) {
-            m_chatThreads->discard(msg.thread());
+        } else if (szBody == DISCARD_ORDER || (asked && szBody == NO)) {
+            m_chatThreads->discard(threadId);
             client()->sendMessage(msg.to(), QObject::tr("[chatbot] Discarded!"));
         } else {
-            m_chatThreads->append(msg.thread(), USER_ME, msg.body());
+            m_chatThreads->append(threadId, USER_ME, msg.body());
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // TODO refactor
+
+    void setAskedToSave(bool asked, const QString &threadId)
+    {
+        QMutexLocker locker(&m_askedMutex);
+        m_asked[threadId] = asked;
+    }
+
+    bool askedToSave(const QString &threadId)
+    {
+        QMutexLocker locker(&m_askedMutex);
+
+        bool asked = false;
+
+        QHash<QString, bool>::iterator it = m_asked.find(threadId);
+        if (it != m_asked.end()) {
+            asked = it.value();
+        }
+
+        return asked;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
 
 private:
     Lvk::CA::ChatThreadContainer *m_chatThreads;
 
+    QHash<QString, bool> m_asked;
+    QMutex m_askedMutex;
+
     const QString SAVE_ORDER;
     const QString DISCARD_ORDER;
+    const QString YES;
+    const QString NO;
     const QString USER_ME;
 };
 
@@ -173,6 +242,13 @@ Lvk::CA::FbChatbot::FbChatbot(QObject *parent)
       m_ownMsgExtension(new FbOwnMessageExtension(m_chatThreads))
 {
     m_xmppClient->addExtension(m_ownMsgExtension);
+
+    Cmn::Settings settings;
+    m_inactivityThreshold = settings.value(SETTING_INACTIVITY_THRESHOLD, 60*15).toUInt(); // 15 min
+
+    if (settings.value(SETTING_SAVE_CONV_REMINDER, true).toBool()) {
+        startTimer(1000*60); // 1 min
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -181,7 +257,8 @@ Lvk::CA::FbChatbot::~FbChatbot()
 {
     m_xmppClient->removeExtension(m_ownMsgExtension);
 
-    delete m_chatThreads;
+    // FIXME leak:
+    //delete m_chatThreads;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -205,9 +282,60 @@ void Lvk::CA::FbChatbot::onMessageReceived(const QXmppMessage &msg)
 {
     if (msg.type() == QXmppMessage::Chat || msg.type() == QXmppMessage::GroupChat) {
         if (msg.body().size() > 0) {
-            m_chatThreads->append(msg.thread(), msg.from(), msg.body());
+            QString threadId = getThreadId(msg, false);
+
+            m_chatThreads->append(threadId, msg.from(), msg.body());
+
+            /////////////////////////////////////////////////////////////////////////////
+            // TODO refactor
+            // For each thread, save the timestamps of the last message that has arrived.
+            ChatThreadInfo info;
+            info.lastMessageTime = QDateTime::currentDateTime().toTime_t();
+            info.username = msg.from();
+            info.asked = false;
+
+            QMutexLocker locker(&m_threadsInfoMutex);
+            m_threadsInfo[threadId] = info;
+            ////////////////////////////////////////////////////////////////////////////
         }
     }
 
     XmppChatbot::onMessageReceived(msg);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::FbChatbot::timerEvent(QTimerEvent */*event*/)
+{
+    askSaveInactiveThreads();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO refactor
+
+void Lvk::CA::FbChatbot::askSaveInactiveThreads()
+{
+    uint currentTime = QDateTime::currentDateTime().toTime_t();
+
+    QMutexLocker locker(&m_threadsInfoMutex);
+
+    QHash<QString, ChatThreadInfo>::iterator it;
+    for (it = m_threadsInfo.begin(); it != m_threadsInfo.end(); ++it) {
+        ChatThreadInfo &info = *it;
+
+        if (!isInBlackList(info.username)) {
+            if (info.asked == false && currentTime - info.lastMessageTime > m_inactivityThreshold) {
+                QString msg = tr("[chatbot] Do you want to save this conversation?");
+                m_xmppClient->sendMessage(info.username, msg);
+                info.asked = true;
+            }
+
+            dynamic_cast<FbOwnMessageExtension *>(m_ownMsgExtension)
+                    ->setAskedToSave(info.asked, it.key());
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
