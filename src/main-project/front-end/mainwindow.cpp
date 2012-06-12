@@ -236,11 +236,7 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 
     setFilename(filename);
 
-    if (!filename.isEmpty()) {
-        success = m_appFacade->load(filename);
-    } else {
-        m_appFacade->close();
-    }
+    success = m_appFacade->load(filename);
 
     delete m_ruleTreeModel;
 
