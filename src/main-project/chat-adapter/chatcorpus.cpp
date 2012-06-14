@@ -30,7 +30,7 @@
 #include <QMutexLocker>
 #include <QDateTime>
 
-#define CORPUS_FILE     "./corpus.dat"
+#define CORPUS_FILE     "./data/puclic_corpus.dat"
 
 //--------------------------------------------------------------------------------------------------
 // Helpers

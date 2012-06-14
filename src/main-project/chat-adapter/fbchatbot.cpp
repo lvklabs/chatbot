@@ -23,6 +23,7 @@
 #include "chatcorpus.h"
 #include "settings.h"
 #include "settingskeys.h"
+#include "globalstrings.h"
 
 #include <QMutex>
 #include <QMutexLocker>
@@ -33,6 +34,14 @@
 #include "QXmppClientExtension.h"
 
 #define FB_CHAT_HOST        "chat.facebook.com"
+
+/////////////////////////////////////////////
+
+#define CORPUS_FILE         "./data/corpus.dat"
+
+static QFile g_corpusFile(CORPUS_FILE);
+
+/////////////////////////////////////////////
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -87,6 +96,13 @@ public:
     {
         QMutexLocker locker(&m_mutex);
         m_entries[threadId].append(makeEntry(threadId, user, body));
+
+        //////////////////////////////////////////////////////////////////////////
+        g_corpusFile.write(QString("%1,%2,%3,%4\n")
+                           .arg(QDateTime::currentDateTime().toString(STR_GLOBAL_DATE_TIME_FORMAT), threadId, user, body)
+                           .toUtf8());
+        g_corpusFile.flush();
+        //////////////////////////////////////////////////////////////////////////
     }
 
     void discard(const QString &threadId)
@@ -249,6 +265,12 @@ Lvk::CA::FbChatbot::FbChatbot(QObject *parent)
     if (settings.value(SETTING_SAVE_CONV_REMINDER, true).toBool()) {
         startTimer(1000*60); // 1 min
     }
+
+    /////////////////////////////////////////////
+    if (!g_corpusFile.isOpen()) {
+        g_corpusFile.open(QFile::Append);
+    }
+    /////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------

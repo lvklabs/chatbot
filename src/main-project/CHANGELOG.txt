@@ -1,3 +1,6 @@
+v0.11
+ - Saving two corpora: corpus.dat and public_corpus.dat
+
 v0.10
  - Updated localization of some strings
  - Added botmaster name to the message that ask to save a conversation
