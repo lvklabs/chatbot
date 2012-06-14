@@ -241,7 +241,7 @@ void Lvk::FE::ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::
                                                                  &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
-    QString match = entry.match ? tr("Ok") : tr("Fail!");
+    QString match = entry.match ? tr("Ok") : tr("No response found!");
 
     int nextRow = m_conversationTable->rowCount();
     m_conversationTable->insertRow(nextRow);

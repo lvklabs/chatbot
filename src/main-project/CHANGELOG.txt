@@ -1,4 +1,5 @@
 v0.10
+ - Updated localization of some strings
  - Fixed bugs: #16
 
 v0.09
