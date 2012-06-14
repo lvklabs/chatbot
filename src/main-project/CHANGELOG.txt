@@ -1,6 +1,7 @@
 v0.10
  - Updated localization of some strings
- - Fixed bugs: #16
+ - Added botmaster name to the message that ask to save a conversation
+ - Fixed bug: #16
 
 v0.09
  - Persisting chat roster.

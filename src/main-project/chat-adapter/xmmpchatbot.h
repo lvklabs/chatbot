@@ -154,6 +154,9 @@ protected slots:
 protected:
     QXmppClient *m_xmppClient;
     VirtualUser *m_virtualUser;
+    QString      m_user;
+    QString      m_domain;
+    QString      m_name;
 
     bool isInBlackList(const QString &jid);
 
@@ -164,8 +167,6 @@ private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
 
-    QString m_user;
-    QString m_domain;
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;

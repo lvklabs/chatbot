@@ -231,6 +231,10 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
         return;
     }
 
+    if (m_name.isEmpty()) {
+        m_name = getVCard(getBareJid(msg.to())).fullName();
+    }
+
     QString bareJid = getBareJid(msg.from());
 
     if (!isInBlackList(bareJid)) {
@@ -290,7 +294,7 @@ void Lvk::CA::XmppChatbot::onVCardReceived(const QXmppVCardIq &vCard)
 
 void Lvk::CA::XmppChatbot::onConnected()
 {
-    // Nothing to do
+    requestVCard(""); // own vcard
 }
 
 //--------------------------------------------------------------------------------------------------

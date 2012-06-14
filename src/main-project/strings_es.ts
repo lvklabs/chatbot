@@ -1127,39 +1127,48 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Cualquier usuario</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="149"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="150"/>
         <source>chatbot save</source>
         <translation>chatbot guardar</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="150"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="151"/>
         <source>chatbot discard</source>
         <translation>chatbot borrar</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="151"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="152"/>
         <source>yes</source>
         <translation>si</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="152"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="153"/>
         <source>no</source>
         <translation>no</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="185"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="186"/>
         <source>[chatbot] Saved!</source>
         <translation>[chatbot] Guardado!</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="188"/>
+        <location filename="chat-adapter/fbchatbot.cpp" line="189"/>
         <source>[chatbot] Discarded!</source>
         <translation>[chatbot] Borrado!</translation>
     </message>
     <message>
-        <location filename="chat-adapter/fbchatbot.cpp" line="330"/>
-        <source>[chatbot] Do you want to save this conversation?</source>
+        <location filename="chat-adapter/fbchatbot.cpp" line="332"/>
+        <source>[chatbot] do you want to save this conversation?</source>
         <translation>[chatbot] ¿Deseas guardar esta conversación?</translation>
+    </message>
+    <message>
+        <location filename="chat-adapter/fbchatbot.cpp" line="333"/>
+        <source>[chatbot] %1 do you want to save this conversation?</source>
+        <translation>[chatbot] ¿%1 deseas guardar esta conversación?</translation>
+    </message>
+    <message>
+        <source>[chatbot] Do you want to save this conversation?</source>
+        <translation type="obsolete">[chatbot] ¿Deseas guardar esta conversación?</translation>
     </message>
 </context>
 <context>

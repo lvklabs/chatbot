@@ -327,7 +327,11 @@ void Lvk::CA::FbChatbot::askSaveInactiveThreads()
 
         if (!isInBlackList(info.username)) {
             if (info.asked == false && currentTime - info.lastMessageTime > m_inactivityThreshold) {
-                QString msg = QObject::tr("[chatbot] Do you want to save this conversation?");
+                QString msg = m_name.isEmpty()
+                        ? QObject::tr("[chatbot] do you want to save this conversation?")
+                        : QObject::tr("[chatbot] %1 do you want to save this conversation?")
+                          .arg(m_name.split(" ").at(0));
+
                 m_xmppClient->sendMessage(info.username, msg);
                 info.asked = true;
             }
