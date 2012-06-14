@@ -1220,7 +1220,9 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
        if (msg.exec() == QMessageBox::Yes) {
             bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
 
-            if (!removed) {
+            if (removed) {
+                m_appFacade->refreshNlpEngine();
+            } else {
                 dialogTitle = tr("Internal error");
                 dialogText = tr("The rule/category could not be removed because of an internal"
                                 " error");
