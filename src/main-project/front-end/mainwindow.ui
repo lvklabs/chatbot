@@ -46,7 +46,7 @@
                  <item row="1" column="0" colspan="5">
                   <widget class="QLabel" name="welcomeLabel">
                    <property name="text">
-                    <string>¡Bienvenido! ¿Que deseas hacer?</string>
+                    <string>Welcome! What do you want to do?</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -458,7 +458,7 @@
             <number>1</number>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="connectionPage">
             <layout class="QGridLayout" name="gridLayout_11">
@@ -570,7 +570,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Change...</string>
+                    <string>Change account...</string>
                    </property>
                   </widget>
                  </item>
@@ -625,6 +625,9 @@
                  </property>
                  <property name="text">
                   <string>Disconnected</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
