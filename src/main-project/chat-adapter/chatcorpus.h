@@ -52,6 +52,8 @@ namespace CA
  *
  * Currently, only FbChatbot class uses ChatCorpus. FbChatbot can "hear" chat conversations
  * from the real user but GtalkChatbot does not.
+ *
+ * TODO explain log format
  */
 
 class ChatCorpus
