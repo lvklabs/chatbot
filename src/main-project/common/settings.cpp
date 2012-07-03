@@ -22,12 +22,14 @@
 #include "settings.h"
 #include "settingskeys.h"
 
+#define SETTINGS_FILENAME   "./chatbot.conf"
+
 //--------------------------------------------------------------------------------------------------
 // Settings
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Settings::Settings(QObject *parent) :
-    QSettings(parent)
+Lvk::Cmn::Settings::Settings(QObject *parent)
+    : QSettings(SETTINGS_FILENAME, QSettings::IniFormat, parent)
 {
 }
 

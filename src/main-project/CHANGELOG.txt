@@ -2,6 +2,7 @@ v0.12
  - Updated some strings to Spanish Argentina
  - Renamed localization file strings_es.qm to lang/chatbot_es_AR.qm
  - Reminder to save conversation in public_corpus.dat disabled by default
+ - Using new configuration file ./chatbot.conf
 
 v0.11
  - Saving two corpora: corpus.dat and public_corpus.dat
