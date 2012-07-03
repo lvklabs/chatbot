@@ -17,6 +17,7 @@ else
   cp -v runtime/* $pkg_dir
   cp -v .build/chatbot $pkg_dir
   cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG
+  cp -vR ../../lang $pkg_dir
 
   tar -czvf sadosky-linux32-$1.tar.gz $pkg_dir
 fi

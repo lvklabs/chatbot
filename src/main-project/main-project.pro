@@ -8,6 +8,8 @@ QT += \
 
 TEMPLATE = app
 
+PROJECT_PATH = $$PWD
+
 QMAKE_CXXFLAGS += -Wall -Wextra
 
 ############################################
@@ -140,62 +142,25 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
-RC_FILE = chatbot.rc
-
-TRANSLATIONS = strings_es.ts
+RC_FILE = \
+    chatbot.rc
 
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
+
+TRANSLATIONS = \
+    lang/strings_es_AR.ts
 
 OTHER_FILES += \
     chatbot.rc
 
+win32 {
+    copylang.commands = xcopy /y /i $$PROJECT_PATH\\lang .
+} else {
+    copylang.commands = cp -R $$PROJECT_PATH/lang .
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+QMAKE_EXTRA_TARGETS += copylang
+POST_TARGETDEPS += copylang
 
 
 

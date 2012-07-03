@@ -61,10 +61,10 @@ int main(int argc, char *argv[])
 void setLanguage(QApplication &app)
 {
     Lvk::Cmn::Settings settings;
-    QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es")).toString();
+    QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es_AR")).toString();
 
     QTranslator *translator = new QTranslator();
-    translator->load(":/strings/strings_" + lang);
+    translator->load("./lang/lang_" + lang + ".qm");
     app.installTranslator(translator);
 }
 

@@ -20,7 +20,4 @@
         <file>res/verify_chatbot.png</file>
         <file>res/open_last_chatbot.png</file>
     </qresource>
-    <qresource prefix="/strings">
-        <file alias="strings_es.qm">strings_es.qm</file>
-    </qresource>
 </RCC>

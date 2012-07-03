@@ -1,3 +1,7 @@
+v0.12
+ - Updated some strings to Spanish Argentina
+ - Renamed localization file strings_es.qm to lang/lang_es_AR.qm
+
 v0.11
  - Saving two corpora: corpus.dat and public_corpus.dat
 
