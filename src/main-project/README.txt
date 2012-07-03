@@ -6,7 +6,11 @@ LVK CHATBOT README
   $ qmake && make 
 
   NOTE: Requires Qt SDK >= 4.7.0 
+                 QXmpp  >= 0.3.0 (*)
 
+  (*) QXmpp full sources are already provided in src/third-party/QXmpp
+      For win32 and linux32 precompiled static libraries are already 
+      provided in src/third-party/QXmpp/lib
 
 
  -- To Run:
@@ -37,6 +41,6 @@ LVK CHATBOT README
  $ cd ../test-suite
  $ ./run-test-suite.sh
 
-  NOTE: Requires Qt SDK >= 4.7.0
+  NOTE: Same dependencies to compile the main project
 
 
