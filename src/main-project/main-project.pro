@@ -154,7 +154,7 @@ OTHER_FILES += \
     chatbot.rc
 
 win32 {
-    copylang.commands = xcopy /y /i $$PROJECT_PATH\\lang .
+    #TODO
 } else {
     copylang.commands = cp -R $$PROJECT_PATH/lang .
 }
