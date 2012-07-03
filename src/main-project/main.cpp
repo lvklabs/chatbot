@@ -63,9 +63,15 @@ void setLanguage(QApplication &app)
     Lvk::Cmn::Settings settings;
     QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es_AR")).toString();
 
-    QTranslator *translator = new QTranslator();
-    translator->load("./lang/lang_" + lang + ".qm");
-    app.installTranslator(translator);
+    /* Qt common strings */
+    QTranslator *qtTranslator = new QTranslator();
+    qtTranslator->load("./lang/qt_" + lang + ".qm");
+    app.installTranslator(qtTranslator);
+
+    /* Chatbot specific strings */
+    QTranslator *chatbotTranslator = new QTranslator();
+    chatbotTranslator->load("./lang/chatbot_" + lang + ".qm");
+    app.installTranslator(chatbotTranslator);
 }
 
 //--------------------------------------------------------------------------------------------------
