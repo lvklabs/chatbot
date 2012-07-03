@@ -2,6 +2,7 @@
 
 if [ -z "$1" ]; then
   echo "Usage: " `basename $0` "<version>"
+  exit 1
 else
   echo "----------------"
   echo "Packaging v$1"
@@ -10,16 +11,17 @@ else
   set -e
   
   pkg_dir=chatbot-linux32-$1
+
+  rm -rf $pkg_dir
+
   mkdir -p $pkg_dir
+  mkdir -p $pkg_dir/lang  
 
-  rm -f $pkg_dir/*
-
-  cp -v runtime/* $pkg_dir
+  cp -vR runtime/* $pkg_dir
   cp -v .build/chatbot $pkg_dir
   cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG
-  cp -vR ../../lang $pkg_dir
+  cp -vR ../../lang/*.qm $pkg_dir/lang
 
   tar -czvf sadosky-linux32-$1.tar.gz $pkg_dir
 fi
-
 
