@@ -642,7 +642,7 @@ void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const 
 void Lvk::BE::AppFacade::cancelVerifyAccount()
 {
     delete m_tmpChatbot;
-    m_chatbot = 0;
+    m_tmpChatbot = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
