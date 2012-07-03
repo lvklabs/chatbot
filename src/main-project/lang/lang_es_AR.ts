@@ -192,7 +192,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
     <message>
         <location filename="front-end/importdialog.cpp" line="36"/>
         <source>Select the rules you want to import to:</source>
-        <translation type="unfinished">Seleccioná las reglas que querés importar:</translation>
+        <translation>Seleccioná las reglas que querés importar:</translation>
     </message>
 </context>
 <context>
