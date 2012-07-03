@@ -262,7 +262,7 @@ Lvk::CA::FbChatbot::FbChatbot(QObject *parent)
     Cmn::Settings settings;
     m_inactivityThreshold = settings.value(SETTING_INACTIVITY_THRESHOLD, 60*15).toUInt(); // 15 min
 
-    if (settings.value(SETTING_SAVE_CONV_REMINDER, true).toBool()) {
+    if (settings.value(SETTING_SAVE_CONV_REMINDER, false).toBool()) {
         startTimer(1000*60); // 1 min
     }
 
