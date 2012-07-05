@@ -39,8 +39,8 @@ fi
 set -e
 
 `echo $lupdate_bin` $main_project_pro
-`echo $linguist_bin` lang/lang_es_AR.ts
-`echo $lrelease_bin` lang/lang_es_AR.ts
+`echo $linguist_bin` lang/chatbot_es_AR.ts
+`echo $lrelease_bin` lang/chabot_es_AR.ts
 rm -f ../main-project-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__*/qrc_resources.*
 
 
