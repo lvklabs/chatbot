@@ -96,19 +96,21 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
 void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 {
-    int key = event->key();
+    if (m_listWidget->isVisible()) {
+        int key = event->key();
 
-    if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
-        m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
-    }
-    if (key == Qt::Key_Up && m_listWidget->currentRow() > 0) {
-        m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
-    }
-    if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
-        onListItemSelected();
-    }
-    if (key == Qt::Key_Escape) {
-        m_listWidget->hide();
+        if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
+            m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
+        }
+        if (key == Qt::Key_Up && m_listWidget->currentRow() > 0) {
+            m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
+        }
+        if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
+            onListItemSelected();
+        }
+        if (key == Qt::Key_Escape) {
+            m_listWidget->hide();
+        }
     }
 
     QLineEdit::keyPressEvent(event);
