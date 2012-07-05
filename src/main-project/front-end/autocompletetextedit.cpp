@@ -109,9 +109,9 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
 void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 {
-    if (m_container->isVisible()) {
-        int key = event->key();
+    int key = event->key();
 
+    if (m_container->isVisible()) {
         if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
             m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
         }
@@ -121,9 +121,10 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
         if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
             onListItemSelected();
         }
-        if (key == Qt::Key_Escape) {
-            m_container->hide();
-        }
+    }
+
+    if (key == Qt::Key_Escape) {
+        m_container->setVisible(!m_container->isVisible());
     }
 
     QLineEdit::keyPressEvent(event);
