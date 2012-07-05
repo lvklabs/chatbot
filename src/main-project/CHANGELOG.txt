@@ -1,6 +1,7 @@
 v0.13
  - Tab changes focus of multiline input texts
  - Updated some strings to Spanish Argentina
+ - Bugs fixed: #7, #14, #17
 
 v0.12
  - Updated some strings to Spanish Argentina
