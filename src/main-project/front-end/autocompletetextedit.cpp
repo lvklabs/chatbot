@@ -26,6 +26,8 @@
 #include <QKeyEvent>
 #include <QStringList>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QDebug>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -82,9 +84,20 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_delimiter(" "), m_listWidget(new QListWidget(this))
+    QLineEdit(parent),
+    m_delimiter(" "),
+    m_container(new QFrame(this->window())),
+    m_listWidget(new QListWidget())
 {
-    m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    m_container->setWindowFlags(m_container->windowFlags() | Qt::WindowStaysOnTopHint);
+    m_container->setVisible(false);
+    //m_container->setFrameShape(QFrame::StyledPanel);
+    m_container->setLayout(new QVBoxLayout());
+    m_container->setGeometry(QRect());
+
+    m_container->layout()->addWidget(m_listWidget);
+    m_container->layout()->setMargin(0);
+    m_listWidget->setFocusPolicy(Qt::NoFocus);
 
     setText(m_defaultString);
 
@@ -96,7 +109,7 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
 void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 {
-    if (m_listWidget->isVisible()) {
+    if (m_container->isVisible()) {
         int key = event->key();
 
         if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
@@ -109,7 +122,7 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
             onListItemSelected();
         }
         if (key == Qt::Key_Escape) {
-            m_listWidget->hide();
+            m_container->hide();
         }
     }
 
@@ -124,7 +137,7 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
         QLineEdit::setText(m_defaultString);
     }
 
-    m_listWidget->hide();
+    m_container->hide();
 
     QLineEdit::focusOutEvent(event);
 }
@@ -133,6 +146,9 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
+    QPoint p = mapTo(m_container->parentWidget(), pos());
+    m_container->setGeometry(p.x(), p.y() + 5, 300, 200);
+
     if (text().trimmed() == m_defaultString) {
         QLineEdit::setText("");
     }
@@ -159,13 +175,6 @@ void Lvk::FE::AutocompleteTextEdit::mouseReleaseEvent(QMouseEvent *)
 
 void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    // FIXME How to detect that the window has been moved in order to update the position of
-    //       the list widget ? As workaround I'm using the pain't event to refresh the position
-    //       periodically.
-    updateListWidgetGeometry();
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
     QLineEdit::paintEvent(event);
 }
 
@@ -245,9 +254,9 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 
 
         if (m_listWidget->count() > 0) {
-            m_listWidget->show();
+            m_container->show();
         } else {
-            m_listWidget->hide();
+            m_container->hide();
         }
     }
 }
@@ -274,20 +283,7 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
 
     emit textEdited(text());
 
-    m_listWidget->hide();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::AutocompleteTextEdit::updateListWidgetGeometry()
-{
-    QPoint globalPos = mapToGlobal(QPoint(0,0));
-
-    if (m_globalPos != globalPos) {
-        m_globalPos =  globalPos;
-
-        m_listWidget->setGeometry(globalPos.x(), globalPos.y() + height(), 300, 200);
-    }
+    m_container->hide();
 }
 
 //--------------------------------------------------------------------------------------------------
