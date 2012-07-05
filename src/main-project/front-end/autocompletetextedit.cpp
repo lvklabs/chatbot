@@ -146,8 +146,7 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
-    QPoint p = mapTo(m_container->parentWidget(), pos());
-    m_container->setGeometry(p.x(), p.y() + 5, 300, 200);
+    updateContainerGeometry();
 
     if (text().trimmed() == m_defaultString) {
         QLineEdit::setText("");
@@ -173,9 +172,20 @@ void Lvk::FE::AutocompleteTextEdit::mouseReleaseEvent(QMouseEvent *)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
+void Lvk::FE::AutocompleteTextEdit::resizeEvent(QResizeEvent *event)
 {
-    QLineEdit::paintEvent(event);
+    updateContainerGeometry();
+
+    QLineEdit::resizeEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::moveEvent(QMoveEvent *event)
+{
+    updateContainerGeometry();
+
+    QLineEdit::moveEvent(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -205,7 +215,6 @@ const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
 {
     return m_delimiter;
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -271,6 +280,7 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
 
     QString t1; // text before cursor position
     QString t2; // text after cursor position
+
     if (m_tail.isEmpty()) {
         t1 = m_head + m_listWidget->currentItem()->text() + m_delimiter;
         //t2 = "";
@@ -284,6 +294,14 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
     emit textEdited(text());
 
     m_container->hide();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::updateContainerGeometry()
+{
+    QPoint p = mapTo(m_container->parentWidget(), pos());
+    m_container->setGeometry(p.x(), p.y() + 3, std::min(300, width()), 200);
 }
 
 //--------------------------------------------------------------------------------------------------

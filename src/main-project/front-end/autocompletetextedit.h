@@ -73,7 +73,9 @@ protected:
 
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
-    virtual void paintEvent(QPaintEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+
+    virtual void moveEvent(QMoveEvent *);
 
 private:
     QString m_delimiter;
@@ -85,6 +87,7 @@ private:
     QString m_tail;
     QString m_defaultString;
 
+    void updateContainerGeometry();
     void updateTextParts();
 
 private slots:
