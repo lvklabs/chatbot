@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="initTab">
         <attribute name="title">
@@ -380,6 +380,9 @@
              <item>
               <widget class="Lvk::FE::RuleOutputWidget" name="ruleOutputWidget">
                <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
+               <property name="tabChangesFocus">
                 <bool>true</bool>
                </property>
                <property name="plainText">

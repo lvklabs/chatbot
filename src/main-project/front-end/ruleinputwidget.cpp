@@ -83,6 +83,7 @@ void Lvk::FE::RuleInputWidget::setupUi()
 
     m_input->installEventFilter(this);
     m_inputVariants->installEventFilter(this);
+    m_inputVariants->setTabChangesFocus(true);
 
     m_targetTextEdit->setDelimiter(TARGET_SPLIT_TOKEN);
     m_targetTextEdit->setVisible(false);
