@@ -26,6 +26,7 @@
 #include <QStringList>
 
 class QListWidget;
+class QFrame;
 
 namespace Lvk
 {
@@ -72,19 +73,21 @@ protected:
 
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
-    virtual void paintEvent(QPaintEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+
+    virtual void moveEvent(QMoveEvent *);
 
 private:
     QString m_delimiter;
-    QPoint m_globalPos;
     QStringList m_strList;
+    QFrame *m_container;
     QListWidget *m_listWidget;
     QString m_head;
     QString m_current;
     QString m_tail;
     QString m_defaultString;
 
-    void updateListWidgetGeometry();
+    void updateContainerGeometry();
     void updateTextParts();
 
 private slots:

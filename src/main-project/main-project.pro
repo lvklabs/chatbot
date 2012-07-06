@@ -156,7 +156,7 @@ RC_FILE = \
 LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
 
 TRANSLATIONS = \
-    lang/strings_es_AR.ts
+    lang/chatbot_es_AR.ts
 
 OTHER_FILES += \
     chatbot.rc

@@ -26,6 +26,8 @@
 #include <QKeyEvent>
 #include <QStringList>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QDebug>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -82,9 +84,20 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent), m_delimiter(" "), m_listWidget(new QListWidget(this))
+    QLineEdit(parent),
+    m_delimiter(" "),
+    m_container(new QFrame(this->window())),
+    m_listWidget(new QListWidget())
 {
-    m_listWidget->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    m_container->setWindowFlags(m_container->windowFlags() | Qt::WindowStaysOnTopHint);
+    m_container->setVisible(false);
+    //m_container->setFrameShape(QFrame::StyledPanel);
+    m_container->setLayout(new QVBoxLayout());
+    m_container->setGeometry(QRect());
+
+    m_container->layout()->addWidget(m_listWidget);
+    m_container->layout()->setMargin(0);
+    m_listWidget->setFocusPolicy(Qt::NoFocus);
 
     setText(m_defaultString);
 
@@ -96,19 +109,21 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 
 void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 {
-    int key = event->key();
+    if (m_container->isVisible()) {
+        int key = event->key();
 
-    if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
-        m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
-    }
-    if (key == Qt::Key_Up && m_listWidget->currentRow() > 0) {
-        m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
-    }
-    if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
-        onListItemSelected();
-    }
-    if (key == Qt::Key_Escape) {
-        m_listWidget->hide();
+        if (key == Qt::Key_Down && m_listWidget->currentRow() + 1 < m_listWidget->count()) {
+            m_listWidget->setCurrentRow(m_listWidget->currentRow() + 1);
+        }
+        if (key == Qt::Key_Up && m_listWidget->currentRow() > 0) {
+            m_listWidget->setCurrentRow(m_listWidget->currentRow() - 1);
+        }
+        if ((key == Qt::Key_Enter || key == Qt::Key_Return) && m_listWidget->currentRow() != -1) {
+            onListItemSelected();
+        }
+        if (key == Qt::Key_Escape) {
+            m_container->hide();
+        }
     }
 
     QLineEdit::keyPressEvent(event);
@@ -122,7 +137,7 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
         QLineEdit::setText(m_defaultString);
     }
 
-    m_listWidget->hide();
+    m_container->hide();
 
     QLineEdit::focusOutEvent(event);
 }
@@ -131,6 +146,8 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
+    updateContainerGeometry();
+
     if (text().trimmed() == m_defaultString) {
         QLineEdit::setText("");
     }
@@ -155,16 +172,20 @@ void Lvk::FE::AutocompleteTextEdit::mouseReleaseEvent(QMouseEvent *)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::paintEvent(QPaintEvent *event)
+void Lvk::FE::AutocompleteTextEdit::resizeEvent(QResizeEvent *event)
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    // FIXME How to detect that the window has been moved in order to update the position of
-    //       the list widget ? As workaround I'm using the pain't event to refresh the position
-    //       periodically.
-    updateListWidgetGeometry();
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    updateContainerGeometry();
 
-    QLineEdit::paintEvent(event);
+    QLineEdit::resizeEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::moveEvent(QMoveEvent *event)
+{
+    updateContainerGeometry();
+
+    QLineEdit::moveEvent(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -194,7 +215,6 @@ const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
 {
     return m_delimiter;
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -243,9 +263,9 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 
 
         if (m_listWidget->count() > 0) {
-            m_listWidget->show();
+            m_container->show();
         } else {
-            m_listWidget->hide();
+            m_container->hide();
         }
     }
 }
@@ -260,6 +280,7 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
 
     QString t1; // text before cursor position
     QString t2; // text after cursor position
+
     if (m_tail.isEmpty()) {
         t1 = m_head + m_listWidget->currentItem()->text() + m_delimiter;
         //t2 = "";
@@ -272,20 +293,15 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
 
     emit textEdited(text());
 
-    m_listWidget->hide();
+    m_container->hide();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::updateListWidgetGeometry()
+void Lvk::FE::AutocompleteTextEdit::updateContainerGeometry()
 {
-    QPoint globalPos = mapToGlobal(QPoint(0,0));
-
-    if (m_globalPos != globalPos) {
-        m_globalPos =  globalPos;
-
-        m_listWidget->setGeometry(globalPos.x(), globalPos.y() + height(), 300, 200);
-    }
+    QPoint p = mapTo(m_container->parentWidget(), pos());
+    m_container->setGeometry(p.x(), p.y() + 3, std::min(300, width()), 200);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -160,6 +160,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_connectionStatus(DisconnectedFromChat)
 {
     ui->setupUi(this);
+    ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
 
     Lvk::Cmn::Settings settings;
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
