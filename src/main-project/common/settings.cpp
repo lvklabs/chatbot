@@ -22,7 +22,11 @@
 #include "settings.h"
 #include "settingskeys.h"
 
-#define SETTINGS_FILENAME   "./chatbot.conf"
+#ifndef MAC_OS_X
+#  define SETTINGS_FILENAME   "./chatbot.conf"
+#else
+#  define SETTINGS_FILENAME   "./chatbot.app/Contents/MacOS/chatbot.conf"
+#endif
 
 //--------------------------------------------------------------------------------------------------
 // Settings
@@ -43,9 +47,10 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
         // Add here system-wide default values for known keys
         if (key == SETTING_LOGS_PATH) {
             defaultValue = QString("./logs");
-        }
-        if (key == SETTING_DATA_PATH) {
+        } else if (key == SETTING_DATA_PATH) {
             defaultValue = QString("./data");
+        } else if (key == SETTING_LANG_PATH) {
+            defaultValue = QString("./lang");
         }
     }
 

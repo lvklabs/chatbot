@@ -61,16 +61,22 @@ int main(int argc, char *argv[])
 void setLanguage(QApplication &app)
 {
     Lvk::Cmn::Settings settings;
+
     QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es_AR")).toString();
+    QString langPath = settings.value(SETTING_LANG_PATH).toString();
+
+    if (!langPath.endsWith(QDir::separator())) {
+        langPath.append(QDir::separator());
+    }
 
     /* Qt common strings */
     QTranslator *qtTranslator = new QTranslator();
-    qtTranslator->load("./lang/qt_" + lang + ".qm");
+    qtTranslator->load(langPath + "qt_" + lang + ".qm");
     app.installTranslator(qtTranslator);
 
     /* Chatbot specific strings */
     QTranslator *chatbotTranslator = new QTranslator();
-    chatbotTranslator->load("./lang/chatbot_" + lang + ".qm");
+    chatbotTranslator->load(langPath + "chatbot_" + lang + ".qm");
     app.installTranslator(chatbotTranslator);
 }
 
@@ -82,6 +88,7 @@ void makeDirStructure()
 
     makeDir(settings.value(SETTING_LOGS_PATH).toString());
     makeDir(settings.value(SETTING_DATA_PATH).toString());
+    makeDir(settings.value(SETTING_LANG_PATH).toString());
 }
 
 //--------------------------------------------------------------------------------------------------

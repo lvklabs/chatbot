@@ -12,6 +12,10 @@ PROJECT_PATH = $$PWD
 
 QMAKE_CXXFLAGS += -Wall -Wextra
 
+mac {
+  DEFINES += MAC_OS_X
+}
+
 ############################################
 # Update git revision in versionrev.h
 versionrev.target = common/versionrev.h
@@ -34,12 +38,16 @@ QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
 CONFIG(debug, debug|release) {
     win32 {
         QXMPP_LIBRARY_NAME = qxmpp_win32_d
+    } else:mac {
+        QXMPP_LIBRARY_NAME = qxmpp_mac_d
     } else {
         QXMPP_LIBRARY_NAME = qxmpp_d
     }
 } else {
     win32 {
         QXMPP_LIBRARY_NAME = qxmpp_win32
+    } else:mac {
+        QXMPP_LIBRARY_NAME = qxmpp_mac_d
     } else {
         QXMPP_LIBRARY_NAME = qxmpp
     }
