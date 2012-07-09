@@ -4,4 +4,4 @@ if [ -z "$1" ]; then
 fi
 
 if [ -f passwd ]; then cat.exe passwd | tail -n1; fi
-scp.exe $1 lavandaink@lavandaink.com.ar:lavandaink.com.ar/builds/sadosky
+scp.exe $1 lavandaink@lavandaink.com.ar:lavandaink.com.ar/builds/chatbot

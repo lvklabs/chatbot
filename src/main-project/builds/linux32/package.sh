@@ -22,6 +22,6 @@ else
   cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG
   cp -vR ../../lang/*.qm $pkg_dir/lang
 
-  tar -czvf sadosky-linux32-$1.tar.gz $pkg_dir
+  tar -czvf chatbot-linux32-$1.tar.gz $pkg_dir
 fi
 

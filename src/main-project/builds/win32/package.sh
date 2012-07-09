@@ -22,7 +22,7 @@ else
   cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG.txt
   cp -vR ../../lang/*.qm $pkg_dir/lang
 
-  rm -f sadosky-win32-$1.zip
-  bin/7z.exe a sadosky-win32-$1.zip $pkg_dir/
+  rm -f chatbot-win32-$1.zip
+  bin/7z.exe a chatbot-win32-$1.zip $pkg_dir/
 fi
 

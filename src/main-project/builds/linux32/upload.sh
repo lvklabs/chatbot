@@ -7,6 +7,6 @@ else
   set -e
 
   cp ../../CHANGELOG.txt CHANGELOG
-  scp CHANGELOG $1 lavandaink@lavandaink.com.ar:lavandaink.com.ar/builds/sadosky
+  scp CHANGELOG $1 lavandaink@lavandaink.com.ar:lavandaink.com.ar/builds/chatbot
   rm -f CHANGELOG
 fi
