@@ -273,9 +273,8 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation>Error en la conexión. Por favor verifique su nombre de usuario y contraseña, y que esté funcionando la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="622"/>
         <source>Connection error. You system does not support secure connections</source>
-        <translation>Error en la conexión. Su sistema no tiene soporte para conexiones seguras</translation>
+        <translation type="obsolete">Error en la conexión. Su sistema no tiene soporte para conexiones seguras</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="636"/>
@@ -497,8 +496,17 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="1666"/>
+        <source>The account could not be verified. Please check your username and password and internet connection.</source>
+        <translation>La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet.</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="1670"/>
+        <source>The account could not be verified. Your system does not support secure connections.</source>
+        <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras.</translation>
+    </message>
+    <message>
         <source>The account could not be verified. Please check your username and password and internet connection</source>
-        <translation>La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet</translation>
+        <translation type="obsolete">La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="1669"/>
@@ -506,9 +514,8 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Error SSL</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1670"/>
         <source>The account could not be verified. Your system does not support secure connections</source>
-        <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras</translation>
+        <translation type="obsolete">La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="1681"/>
@@ -570,6 +577,11 @@ Do you want to teach the changes made to the rule?</source>
         <location filename="../front-end/mainwindow.cpp" line="1103"/>
         <source>About %1...</source>
         <translation>Acerca de %1...</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="622"/>
+        <source>Connection error. You system does not support secure connections.</source>
+        <translation>Error en la conexión. Su sistema no tiene soporte para conexiones seguras.</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="1105"/>

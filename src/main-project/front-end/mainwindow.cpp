@@ -620,7 +620,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Connection error. "
-                                              "You system does not support secure connections"));
+                                              "You system does not support secure connections."));
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
 
@@ -1664,11 +1664,11 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err)
     if (err != BE::AppFacade::SSLNotSupportedError) {
         title = tr("Account error");
         msg   = tr("The account could not be verified. "
-                   "Please check your username and password and internet connection");
+                   "Please check your username and password and internet connection.");
     } else {
         title = tr("SSL error");
         msg   = tr("The account could not be verified. "
-                   "Your system does not support secure connections");
+                   "Your system does not support secure connections.");
     }
 
     QMessageBox::critical(this, title, msg);
