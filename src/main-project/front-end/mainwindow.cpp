@@ -614,6 +614,16 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
 
+    case ChatConnectionSSLFailedUiMode:
+        ui->connectToChatStackWidget->setCurrentIndex(0);
+        ui->passwordText->setEnabled(true);
+        ui->connectButton->setText(tr("Connect"));
+        ui->connectionProgressBar->setVisible(false);
+        ui->connectionStatusLabel->setText(tr("Connection error. "
+                                              "You system does not support secure connections"));
+        ui->connectionStatusLabel->setStyleSheet("color:red");
+        break;
+
     case ChatConnectionOkUiMode:
         ui->connectToChatStackWidget->setCurrentIndex(1);
         ui->disconnectButton->setText(tr("Disconnect ") + m_fileUsername);
@@ -1644,12 +1654,24 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountError(int /*err*/)
+void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 {
     setUiMode(VerifyAccountFailedUiMode);
 
-    QMessageBox::critical(this, tr("Account error"), tr("The account could not be verified. "
-                          "Please check your username and password and internet connection"));
+    QString title;
+    QString msg;
+
+    if (err != BE::AppFacade::SSLNotSupportedError) {
+        title = tr("Account error");
+        msg   = tr("The account could not be verified. "
+                   "Please check your username and password and internet connection");
+    } else {
+        title = tr("SSL error");
+        msg   = tr("The account could not be verified. "
+                   "Your system does not support secure connections");
+    }
+
+    QMessageBox::critical(this, title, msg);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1732,20 +1754,23 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onConnectionError(int /*err*/)
+void Lvk::FE::MainWindow::onConnectionError(int err)
 {
     m_connectionStatus = ConnectionError;
-    setUiMode(ChatConnectionFailedUiMode);
+
+    if (err != BE::AppFacade::SSLNotSupportedError) {
+        setUiMode(ChatConnectionFailedUiMode);
+    } else {
+        setUiMode(ChatConnectionSSLFailedUiMode);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onDisconnection()
 {
-    if (m_connectionStatus != ConnectionError) {
-        m_connectionStatus = DisconnectedFromChat;
-        setUiMode(ChatDisconnectedUiMode);
-    }
+    m_connectionStatus = DisconnectedFromChat;
+    setUiMode(ChatDisconnectedUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------

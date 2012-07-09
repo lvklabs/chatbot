@@ -75,10 +75,12 @@ public:
      * \brief An enumeration for type of error.
      */
     enum Error {
-        SocketError,        ///< Error due to TCP socket
-        KeepAliveError,     ///< Error due to no response to a keep alive
-        XmppStreamError,    ///< Error due to XML stream
-        InternalError       ///< Internal error
+        SocketError,         ///< Error due to TCP socket
+        KeepAliveError,      ///< Error due to no response to a keep alive
+        XmppStreamError,     ///< Error due to XML stream
+        SSLNotSupportedError,///< Error due to SSL not supported on the system
+        UnknownXmppError,    ///< Error due to unknown cause on the XMPP protocol
+        InternalError        ///< XmppChatbot internal error
     };
 
     /**
@@ -143,6 +145,8 @@ signals:
 protected slots:
     virtual void onConnected();
 
+    virtual void onDisconnected();
+
     virtual void onMessageReceived(const QXmppMessage &);
 
     virtual void onVCardReceived(const QXmppVCardIq &);
@@ -160,6 +164,8 @@ protected:
 
     bool isInBlackList(const QString &jid);
 
+    virtual bool tlsRequired() const;
+
 private slots:
     void emitLocalError(QXmppClient::Error);
 
@@ -171,6 +177,7 @@ private:
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;
 
+    bool m_isConnected;
     bool m_rosterHasChanged;
     mutable ContactInfoList m_roster;
     ContactInfoList m_blackListRoster;

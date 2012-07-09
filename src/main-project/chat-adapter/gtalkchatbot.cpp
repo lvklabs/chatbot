@@ -47,3 +47,13 @@ void Lvk::CA::GTalkChatbot::connectToServer(const QString &user, const QString &
     return XmppChatbot::connectToServer(user, passwd, host);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::CA::GTalkChatbot::tlsRequired() const
+{
+    // FIXME information not exposed by QXmppClient:
+    // m_xmppClient->serverFeatures().tlsMode() == QXmppStreamFeatures::Required
+    // But Gtalk does require TLS
+    return true;
+}
+

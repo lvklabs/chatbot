@@ -117,6 +117,7 @@ private:
         ChatDisconnectedUiMode,
         ChatConnectingUiMode,
         ChatConnectionFailedUiMode,
+        ChatConnectionSSLFailedUiMode,
         ChatConnectionOkUiMode,
         ChangeAccountUiMode,
         ChangeAccountConnectingUiMode,
