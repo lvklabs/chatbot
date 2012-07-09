@@ -3,7 +3,7 @@ Chatbot directory structure:
 
 |-- doc                  # UML documentation
 `-- src                  # Sources
-    |-- main-project     # Chatbot sources
+    |-- chatbot          # Chatbot sources
     |-- test-suite       # Chatbot test suite sources
     |-- third-party      # Third-party sources
     |-- pocs             # Proof of concepts sources

@@ -15,23 +15,23 @@ TEMPLATE = app
 PROJECT_PATH = $$PWD
 
 INCLUDEPATH += \
-    ../../main-project/nlp-engine \
-    ../../main-project/common \
+    ../../chatbot/nlp-engine \
+    ../../chatbot/common \
     ../../third-party
 
 HEADERS += \
-    ../../main-project/nlp-engine/aimlengine.h \
-    ../../main-project/nlp-engine/nullsanitizer.h \
-    ../../main-project/nlp-engine/defaultsanitizer.h \
-    ../../main-project/common/settings.h \
+    ../../chatbot/nlp-engine/aimlengine.h \
+    ../../chatbot/nlp-engine/nullsanitizer.h \
+    ../../chatbot/nlp-engine/defaultsanitizer.h \
+    ../../chatbot/common/settings.h \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
     testaimlengine.cpp\
-    ../../main-project/nlp-engine/aimlengine.cpp \
-    ../../main-project/nlp-engine/nullsanitizer.cpp \
-    ../../main-project/nlp-engine/defaultsanitizer.cpp \
-    ../../main-project/common/settings.cpp \
+    ../../chatbot/nlp-engine/aimlengine.cpp \
+    ../../chatbot/nlp-engine/nullsanitizer.cpp \
+    ../../chatbot/nlp-engine/defaultsanitizer.cpp \
+    ../../chatbot/common/settings.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
 
 

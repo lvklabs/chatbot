@@ -17,14 +17,14 @@ TEMPLATE = app
 PROJECT_PATH = $$PWD
 
 INCLUDEPATH += \
-    ../../main-project/nlp-engine \
+    ../../chatbot/nlp-engine \
     ../../third-party
 
 HEADERS += \
-    ../../main-project/nlp-engine/defaultsanitizer.h
+    ../../chatbot/nlp-engine/defaultsanitizer.h
 
 SOURCES += \
-    ../../main-project/nlp-engine/defaultsanitizer.cpp \
+    ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     testdefaultsanitizer.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

@@ -15,24 +15,24 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH += \
-    ../../main-project/back-end \
-    ../../main-project/common
+    ../../chatbot/back-end \
+    ../../chatbot/common
 
 HEADERS += \
-    ../../main-project/back-end/conversation.h \
-    ../../main-project/back-end/conversationreader.h \
-    ../../main-project/back-end/conversationwriter.h \
-    ../../main-project/common/csvrow.h \
-    ../../main-project/common/csvdocument.h
+    ../../chatbot/back-end/conversation.h \
+    ../../chatbot/back-end/conversationreader.h \
+    ../../chatbot/back-end/conversationwriter.h \
+    ../../chatbot/common/csvrow.h \
+    ../../chatbot/common/csvdocument.h
 
 
 SOURCES += \
     conversationrwtest.cpp\
-    ../../main-project/back-end/conversation.cpp \
-    ../../main-project/back-end/conversationreader.cpp \
-    ../../main-project/back-end/conversationwriter.cpp \
-    ../../main-project/common/csvrow.cpp \
-    ../../main-project/common/csvdocument.cpp
+    ../../chatbot/back-end/conversation.cpp \
+    ../../chatbot/back-end/conversationreader.cpp \
+    ../../chatbot/back-end/conversationwriter.cpp \
+    ../../chatbot/common/csvrow.cpp \
+    ../../chatbot/common/csvdocument.cpp
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

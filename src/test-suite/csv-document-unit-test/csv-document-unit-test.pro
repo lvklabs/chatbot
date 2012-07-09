@@ -16,19 +16,19 @@ TEMPLATE = app
 
 
 INCLUDEPATH += \
-    ../../main-project/nlp-engine \
-    ../../main-project/common \
+    ../../chatbot/nlp-engine \
+    ../../chatbot/common \
     ../../third-party
 
 HEADERS += \
-    ../../main-project/common/csvrow.h \
-    ../../main-project/common/csvdocument.h \
+    ../../chatbot/common/csvrow.h \
+    ../../chatbot/common/csvdocument.h \
 
 
 SOURCES += \
     csvdocumenttest.cpp\
-    ../../main-project/common/csvrow.cpp \
-    ../../main-project/common/csvdocument.cpp \
+    ../../chatbot/common/csvrow.cpp \
+    ../../chatbot/common/csvdocument.cpp \
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

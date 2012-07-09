@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd `dirname $0`/..  # change to main-project dir
+pushd `dirname $0`/..  # change to chatbot dir
 
 versionrev_h=./common/versionrev.h
 

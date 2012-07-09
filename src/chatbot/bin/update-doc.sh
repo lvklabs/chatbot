@@ -6,7 +6,7 @@ if [ -d doc ]; then
   cd ..
 else
   echo "Error: Directory doc/ not found!"
-  echo "       Run this script from src/main-project/ directory."
+  echo "       Run this script from src/chatbot/ directory."
   exit 1
 fi
 

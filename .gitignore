@@ -5,6 +5,6 @@
 *.autosave
 versionrev.h
 .test-suite-shadow-build
-src/main-project/doc/html
-src/main-project/builds
+src/chatbot/doc/html
+src/chatbot/builds
 

@@ -37,50 +37,50 @@ CONFIG(debug, debug|release) {
 }
 
 INCLUDEPATH += \
-    ../../main-project/front-end \
-    ../../main-project/back-end \
-    ../../main-project/nlp-engine \
-    ../../main-project/chat-adapter \
-    ../../main-project/common \
+    ../../chatbot/front-end \
+    ../../chatbot/back-end \
+    ../../chatbot/nlp-engine \
+    ../../chatbot/chat-adapter \
+    ../../chatbot/common \
     $$THIRD_PARTY_PATH \
     $$QXMPP_INCLUDE_PATH
 
 HEADERS += \
-    ../../main-project/front-end/mainwindow.h \
-    ../../main-project/front-end/ruletreemodel.h \
-    ../../main-project/front-end/ruleoutputwidget.h \
-    ../../main-project/front-end/ruleinputwidget.h \
-    ../../main-project/front-end/testconversationwidget.h \
-    ../../main-project/front-end/conversationhistorywidget.h \
-    ../../main-project/front-end/portdialog.h \
-    ../../main-project/front-end/exportdialog.h \
-    ../../main-project/front-end/importdialog.h \
-    ../../main-project/front-end/rosterwidget.h \
-    ../../main-project/front-end/autocompletetextedit.h \
-    ../../main-project/back-end/rule.h \
-    ../../main-project/back-end/appfacade.h \
-    ../../main-project/back-end/defaultvirtualuser.h \
-    ../../main-project/back-end/conversation.h \
-    ../../main-project/back-end/conversationwriter.h \
-    ../../main-project/back-end/conversationreader.h \
-    ../../main-project/back-end/contactinfo.h \
-    ../../main-project/nlp-engine/nlpengine.h \
-    ../../main-project/nlp-engine/nlprule.h \
-    ../../main-project/nlp-engine/exactmatchengine.h \
-    ../../main-project/nlp-engine/aimlengine.h \
-    ../../main-project/nlp-engine/simpleaimlengine.h \
-    ../../main-project/nlp-engine/defaultsanitizer.h \
-    ../../main-project/nlp-engine/nullsanitizer.h \
-    ../../main-project/chat-adapter/chatvirtualuser.h \
-    ../../main-project/chat-adapter/chatbot.h \
-    ../../main-project/chat-adapter/xmmpchatbot.h \
-    ../../main-project/chat-adapter/fbchatbot.h \
-    ../../main-project/chat-adapter/gtalkchatbot.h \
-    ../../main-project/chat-adapter/chatcorpus.h \
-    ../../main-project/common/random.h\
-    ../../main-project/common/settings.h \
-    ../../main-project/common/csvdocument.h \
-    ../../main-project/common/csvrow.h \
+    ../../chatbot/front-end/mainwindow.h \
+    ../../chatbot/front-end/ruletreemodel.h \
+    ../../chatbot/front-end/ruleoutputwidget.h \
+    ../../chatbot/front-end/ruleinputwidget.h \
+    ../../chatbot/front-end/testconversationwidget.h \
+    ../../chatbot/front-end/conversationhistorywidget.h \
+    ../../chatbot/front-end/portdialog.h \
+    ../../chatbot/front-end/exportdialog.h \
+    ../../chatbot/front-end/importdialog.h \
+    ../../chatbot/front-end/rosterwidget.h \
+    ../../chatbot/front-end/autocompletetextedit.h \
+    ../../chatbot/back-end/rule.h \
+    ../../chatbot/back-end/appfacade.h \
+    ../../chatbot/back-end/defaultvirtualuser.h \
+    ../../chatbot/back-end/conversation.h \
+    ../../chatbot/back-end/conversationwriter.h \
+    ../../chatbot/back-end/conversationreader.h \
+    ../../chatbot/back-end/contactinfo.h \
+    ../../chatbot/nlp-engine/nlpengine.h \
+    ../../chatbot/nlp-engine/nlprule.h \
+    ../../chatbot/nlp-engine/exactmatchengine.h \
+    ../../chatbot/nlp-engine/aimlengine.h \
+    ../../chatbot/nlp-engine/simpleaimlengine.h \
+    ../../chatbot/nlp-engine/defaultsanitizer.h \
+    ../../chatbot/nlp-engine/nullsanitizer.h \
+    ../../chatbot/chat-adapter/chatvirtualuser.h \
+    ../../chatbot/chat-adapter/chatbot.h \
+    ../../chatbot/chat-adapter/xmmpchatbot.h \
+    ../../chatbot/chat-adapter/fbchatbot.h \
+    ../../chatbot/chat-adapter/gtalkchatbot.h \
+    ../../chatbot/chat-adapter/chatcorpus.h \
+    ../../chatbot/common/random.h\
+    ../../chatbot/common/settings.h \
+    ../../chatbot/common/csvdocument.h \
+    ../../chatbot/common/csvrow.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -88,44 +88,44 @@ HEADERS += \
 
 SOURCES += \
     testmainwindow.cpp\
-    ../../main-project/front-end/mainwindow.cpp \
-    ../../main-project/front-end/ruletreemodel.cpp \
-    ../../main-project/front-end/ruleoutputwidget.cpp \
-    ../../main-project/front-end/ruleinputwidget.cpp \
-    ../../main-project/front-end/testconversationwidget.cpp \
-    ../../main-project/front-end/conversationhistorywidget.cpp \
-    ../../main-project/front-end/portdialog.cpp \
-    ../../main-project/front-end/exportdialog.cpp \
-    ../../main-project/front-end/importdialog.cpp \
-    ../../main-project/front-end/rosterwidget.cpp \
-    ../../main-project/front-end/autocompletetextedit.cpp \
-    ../../main-project/back-end/rule.cpp \
-    ../../main-project/back-end/appfacade.cpp \
-    ../../main-project/back-end/defaultvirtualuser.cpp \
-    ../../main-project/back-end/conversation.cpp \
-    ../../main-project/back-end/conversationwriter.cpp \
-    ../../main-project/back-end/conversationreader.cpp \
-    ../../main-project/nlp-engine/exactmatchengine.cpp \
-    ../../main-project/nlp-engine/aimlengine.cpp \
-    ../../main-project/nlp-engine/simpleaimlengine.cpp \
-    ../../main-project/nlp-engine/defaultsanitizer.cpp \
-    ../../main-project/nlp-engine/nullsanitizer.cpp \
-    ../../main-project/chat-adapter/xmmpchatbot.cpp \
-    ../../main-project/chat-adapter/fbchatbot.cpp \
-    ../../main-project/chat-adapter/gtalkchatbot.cpp \
-    ../../main-project/chat-adapter/chatbot.cpp \
-    ../../main-project/chat-adapter/chatcorpus.cpp \
-    ../../main-project/common/random.cpp \
-    ../../main-project/common/settings.cpp \
-    ../../main-project/common/csvdocument.cpp \
-    ../../main-project/common/csvrow.cpp \
+    ../../chatbot/front-end/mainwindow.cpp \
+    ../../chatbot/front-end/ruletreemodel.cpp \
+    ../../chatbot/front-end/ruleoutputwidget.cpp \
+    ../../chatbot/front-end/ruleinputwidget.cpp \
+    ../../chatbot/front-end/testconversationwidget.cpp \
+    ../../chatbot/front-end/conversationhistorywidget.cpp \
+    ../../chatbot/front-end/portdialog.cpp \
+    ../../chatbot/front-end/exportdialog.cpp \
+    ../../chatbot/front-end/importdialog.cpp \
+    ../../chatbot/front-end/rosterwidget.cpp \
+    ../../chatbot/front-end/autocompletetextedit.cpp \
+    ../../chatbot/back-end/rule.cpp \
+    ../../chatbot/back-end/appfacade.cpp \
+    ../../chatbot/back-end/defaultvirtualuser.cpp \
+    ../../chatbot/back-end/conversation.cpp \
+    ../../chatbot/back-end/conversationwriter.cpp \
+    ../../chatbot/back-end/conversationreader.cpp \
+    ../../chatbot/nlp-engine/exactmatchengine.cpp \
+    ../../chatbot/nlp-engine/aimlengine.cpp \
+    ../../chatbot/nlp-engine/simpleaimlengine.cpp \
+    ../../chatbot/nlp-engine/defaultsanitizer.cpp \
+    ../../chatbot/nlp-engine/nullsanitizer.cpp \
+    ../../chatbot/chat-adapter/xmmpchatbot.cpp \
+    ../../chatbot/chat-adapter/fbchatbot.cpp \
+    ../../chatbot/chat-adapter/gtalkchatbot.cpp \
+    ../../chatbot/chat-adapter/chatbot.cpp \
+    ../../chatbot/chat-adapter/chatcorpus.cpp \
+    ../../chatbot/common/random.cpp \
+    ../../chatbot/common/settings.cpp \
+    ../../chatbot/common/csvdocument.cpp \
+    ../../chatbot/common/csvrow.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp
 
 FORMS += \
-    ../../main-project/front-end/mainwindow.ui \
-    ../../main-project/front-end/portdialog.ui
+    ../../chatbot/front-end/mainwindow.ui \
+    ../../chatbot/front-end/portdialog.ui
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
