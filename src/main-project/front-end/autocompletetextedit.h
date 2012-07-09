@@ -65,6 +65,8 @@ public:
     void setDefaultText(const QString &text);
 
 protected:
+    virtual void showEvent(QShowEvent *event);
+
     virtual void keyPressEvent(QKeyEvent *event);
 
     virtual void focusOutEvent(QFocusEvent *event);
@@ -75,7 +77,7 @@ protected:
 
     virtual void resizeEvent(QResizeEvent *event);
 
-    virtual void moveEvent(QMoveEvent *);
+    virtual void moveEvent(QMoveEvent *event);
 
 private:
     QString m_delimiter;
@@ -87,6 +89,7 @@ private:
     QString m_tail;
     QString m_defaultString;
 
+    void initContainer();
     void updateContainerGeometry();
     void updateTextParts();
 

@@ -84,25 +84,42 @@ int rfind(const QString &token, const QString &text, int from)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
-    QLineEdit(parent),
-    m_delimiter(" "),
-    m_container(new QFrame(this->window())),
-    m_listWidget(new QListWidget())
+    QLineEdit(parent), m_delimiter(" "), m_container(0), m_listWidget(0)
 {
+    initContainer();
+
+    setText(m_defaultString);
+
+    connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
+    connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::initContainer()
+{
+    m_container = new QFrame(this->window());
+
     m_container->setWindowFlags(m_container->windowFlags() | Qt::WindowStaysOnTopHint);
     m_container->setVisible(false);
     //m_container->setFrameShape(QFrame::StyledPanel);
     m_container->setLayout(new QVBoxLayout());
     m_container->setGeometry(QRect());
 
-    m_container->layout()->addWidget(m_listWidget);
-    m_container->layout()->setMargin(0);
+    m_listWidget = new QListWidget();
     m_listWidget->setFocusPolicy(Qt::NoFocus);
 
-    setText(m_defaultString);
+    m_container->layout()->addWidget(m_listWidget);
+    m_container->layout()->setMargin(0);
+}
 
-    connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
-    connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AutocompleteTextEdit::showEvent(QShowEvent *event)
+{
+    updateContainerGeometry();
+
+    QLineEdit::showEvent(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -302,7 +319,14 @@ void Lvk::FE::AutocompleteTextEdit::onListItemSelected()
 void Lvk::FE::AutocompleteTextEdit::updateContainerGeometry()
 {
     QPoint p = mapTo(m_container->parentWidget(), pos());
-    m_container->setGeometry(p.x(), p.y() + 3, std::min(300, width()), 200);
+    int x = p.x();
+    int y = p.y() + 3;
+    int w = std::min(300, width());
+    int h = 200;
+
+    if (x != m_container->x() || y != m_container->y() || w != m_container->width()) {
+        m_container->setGeometry(x, y, w, h);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
