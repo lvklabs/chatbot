@@ -64,6 +64,9 @@ public:
      */
     virtual void connectToServer(const QString &user, const QString &passwd);
 
+protected:
+    virtual bool tlsRequired() const;
+
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 };

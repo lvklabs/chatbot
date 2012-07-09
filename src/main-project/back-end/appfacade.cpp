@@ -633,7 +633,7 @@ void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const 
         connect(m_tmpChatbot, SIGNAL(error(int)), SLOT(onAccountError(int)));
         m_tmpChatbot->connectToServer(user, passwd);
     } else {
-        emit accountError(UnknownServerError);
+        emit accountError(UnknownServerTypeError);
     }
 }
 
@@ -683,7 +683,7 @@ void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const 
     if (m_chatbot) {
         m_chatbot->connectToServer(user, passwd);
     } else {
-        emit connectionError(UnknownServerError);
+        emit connectionError(UnknownServerTypeError);
     }
 }
 
@@ -743,6 +743,7 @@ void Lvk::BE::AppFacade::connectChatClientSignals()
 {
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
+    // FIXME add method to remap Chatbot error codes to AppFacade error codes
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
 
     // Hmmm this doesn't look nice. TODO consider some refactoring to avoid cast

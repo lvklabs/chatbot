@@ -172,10 +172,13 @@ public:
      * Connection error
      */
     enum ConnectionError {
-        SocketError,        ///< Error due to TCP socket
-        KeepAliveError,     ///< Error due to no response to a keep alive
-        XmppStreamError,    ///< Error due to XML stream
-        UnknownServerError  ///< Error due to unknown server \a ChatType
+        SocketError,           ///< Error due to TCP socket
+        KeepAliveError,        ///< Error due to no response to a keep alive
+        XmppStreamError,       ///< Error due to XML stream
+        SSLNotSupportedError,  ///< Error due to SSL not supported on the system
+        UnknownXmppError,      ///< Error due to unknown cause on the XMPP protocol
+        ChatbotInternalError,  ///< Error due to Chatbot internal error
+        UnknownServerTypeError ///< Error due to unknown server \a ChatType
     };
 
     /**

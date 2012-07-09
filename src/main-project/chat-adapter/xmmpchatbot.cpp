@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QSslSocket>
 #include <iostream>
 
 //--------------------------------------------------------------------------------------------------
@@ -60,6 +61,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
       m_virtualUser(0),
       m_contactInfoMutex(new QMutex()),
       m_rosterMutex(new QMutex()),
+      m_isConnected(false),
       m_rosterHasChanged(false)
 {
     // Signals
@@ -76,7 +78,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     connect(&m_xmppClient->vCardManager(), SIGNAL(vCardReceived(const QXmppVCardIq&)),
             this, SLOT(onVCardReceived(const QXmppVCardIq&)));
 
-    connect(m_xmppClient, SIGNAL(disconnected()), SIGNAL(disconnected()));
+    connect(m_xmppClient, SIGNAL(disconnected()), SLOT(onDisconnected()));
 
     connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
@@ -294,7 +296,29 @@ void Lvk::CA::XmppChatbot::onVCardReceived(const QXmppVCardIq &vCard)
 
 void Lvk::CA::XmppChatbot::onConnected()
 {
+    m_isConnected = true;
+
     requestVCard(""); // own vcard
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::onDisconnected()
+{
+    if (m_isConnected) {
+        emit disconnected();
+    } else {
+        // QXmpp emits disconnected if TLS handshake can't be done, instead we emit
+        // error(SSLNotSupportedError).
+        // Otherwise, if not connected, we emit error(UnknownXmppError)
+        if (tlsRequired() && !QSslSocket::supportsSsl()) {
+            emit error(SSLNotSupportedError);
+        } else {
+            emit error(UnknownXmppError);
+        }
+    }
+
+    m_isConnected = false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -318,6 +342,15 @@ void Lvk::CA::XmppChatbot::onRosterChanged(const QString &/*bareJid*/)
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::CA::XmppChatbot::tlsRequired() const
+{
+    return m_xmppClient->configuration().streamSecurityMode() == QXmppConfiguration::TLSRequired
+           /* FIXME information not exposed by QXmppClient.
+            m_xmppClient->serverFeatures().tlsMode() == QXmppStreamFeatures::Required */;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
 {
     m_roster.clear();
@@ -325,3 +358,4 @@ void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
         m_roster.append(getContactInfo(jid));
     }
 }
+
