@@ -10,5 +10,9 @@ elif [ "$1" != "--fast" ]; then
   exit 1
 fi
 
+echo "--------"
+echo "Building"
+echo "--------"
+
 mkdir -p $shadow_build_dir
 ( cd $shadow_build_dir && qmake $project_file "CONFIG+=release" && make )

@@ -1,12 +1,18 @@
+#!/bin/bash
+
+. ../common/release-config
+
 if [ -z "$1" ]; then
   echo "Usage:" `basename $0` "<package_file>"
 else
 
-  if [ -f passwd ]; then cat passwd; fi
-
   set -e
 
+  echo "----------------------"
+  echo "Uploading $1"
+  echo "----------------------"
+
   cp ../../CHANGELOG.txt CHANGELOG
-  scp CHANGELOG $1 lavandaink@lavandaink.com.ar:lavandaink.com.ar/builds/chatbot
+  scp CHANGELOG $1 $lvk_user@$lvk_host:$pkg_host_path
   rm -f CHANGELOG
 fi

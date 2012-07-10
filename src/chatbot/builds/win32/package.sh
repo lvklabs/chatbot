@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# TODO use common/release-config
 
 if [ -z "$1" ]; then
   echo "Usage: " `basename $0` "<version>"
