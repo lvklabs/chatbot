@@ -124,6 +124,13 @@ private:
         ChangeAccountFailedUiMode
     };
 
+    enum ConnectionStatus {
+        DisconnectedFromChat,
+        ConnectingToChat,
+        ConnectedToChat,
+        ConnectionError
+    };
+
     Ui::MainWindow          *ui;
     BE::AppFacade           *m_appFacade;
     RuleTreeModel           *m_ruleTreeModel;
@@ -136,19 +143,17 @@ private:
     BE::AppFacade::ChatType  m_fileChatType;
     QString                  m_lastFilename;
     UiTabsLayout             m_tabsLayout;
+    ConnectionStatus         m_connectionStatus;
 
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
+    BE::Rule *addCategoryWithDialog();
+    BE::Rule *addRuleWithDialog();
+    bool removeSelectedRuleWithDialog();
+
     void setUiMode(UiMode mode);
     void updateTabsLayout(UiMode mode);
-
-    enum {
-        DisconnectedFromChat,
-        ConnectingToChat,
-        ConnectedToChat,
-        ConnectionError
-    } m_connectionStatus;
 
     bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
@@ -177,6 +182,8 @@ private:
     void handleRuleEdited(BE::Rule *rule);
     void highlightMatchedRules(const BE::AppFacade::MatchList &matches);
 
+    void undoRuleEdited(BE::Rule *rule);
+
     void showRuleOnWidget(const BE::Rule *rule);
     void refreshRuleOnWidget();
 
@@ -197,6 +204,9 @@ private slots:
     void onAddCategoryButtonClicked();
     void onAddRuleButtonClicked();
     void onRemoveButtonClicked();
+
+    BE::Rule *getCategoryFromDialog();
+    void onTeachFromHistoryWidget(const QString &msg);
 
     void onRuleInputEdited(const QString &ruleInput);
     void onRuleTargetEdited(const QString &ruleInput);

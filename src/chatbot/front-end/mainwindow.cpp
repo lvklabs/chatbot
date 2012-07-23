@@ -334,11 +334,14 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->cancelChangeAccountButton, SIGNAL(clicked()),
             SLOT(onCancelChangeAccountButtonPressed()));
 
-    // Conversations tab
+    // Conversation history tab
 
     connect(m_appFacade,
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
+
+    connect(ui->conversationHistory, SIGNAL(teachRule(QString)),
+            SLOT(onTeachFromHistoryWidget(QString)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -521,6 +524,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     // init tab //
 
     case WelcomeTabUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
         ui->initStackWidget->setCurrentIndex(0);
         ui->openLastChatbotButton->setVisible(m_lastFilename.size() > 0);
         break;
@@ -528,6 +532,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     // Edit rules tab //
 
     case RuleSelectionEmptyUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(false);
@@ -540,6 +545,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case EditCategoryUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
         ui->categoryNameLabel->setVisible(true);
         ui->categoryNameTextEdit->setVisible(true);
         ui->ruleInputWidget->setVisible(false);
@@ -553,6 +559,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case EditRuleUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(true);
@@ -567,6 +574,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case EditEvasivesUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(false);
@@ -583,6 +591,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     // Chat connection tab //
 
     case ChatDisconnectedUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->curUsernameLabel->setText(m_fileUsername);
         ui->chatTypeIcon->setPixmap(m_fileChatType == BE::AppFacade::FbChat ?
                                         QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
@@ -596,6 +605,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChatConnectingUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(false);
         ui->connectButton->setText(tr("Disconnect"));
@@ -605,6 +615,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChatConnectionFailedUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
@@ -615,6 +626,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChatConnectionSSLFailedUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
@@ -625,6 +637,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChatConnectionOkUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(1);
         ui->disconnectButton->setText(tr("Disconnect ") + m_fileUsername);
         ui->disconnectButton->setIcon(m_fileChatType == BE::AppFacade::FbChat ?
@@ -638,6 +651,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case ChangeAccountUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyExplanationLabel->setText(tr("Please insert your username and password and press "
                                                "\"Verify account\" button."));
@@ -652,6 +666,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     case VerifyAccountUiMode:
+        ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyExplanationLabel->setText(tr("To create a chatbot you need a Facebook or Gmail "
                                                "account.\nPlease insert your username and password "
@@ -668,6 +683,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case ChangeAccountConnectingUiMode:
     case VerifyAccountConnectingUiMode:
+        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountConnectingUiMode ?
+                                                ui->welcomeTab : ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyAccountButton->setEnabled(false);
         ui->usernameText_v->setEnabled(false);
@@ -680,6 +697,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case ChangeAccountFailedUiMode:
     case VerifyAccountFailedUiMode:
+        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountFailedUiMode ?
+                                                ui->welcomeTab : ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
@@ -723,15 +742,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionImport->setEnabled(false);
             ui->actionExport->setEnabled(false);
 
-            ui->initTab->setVisible(true);
-            ui->trainTab->setVisible(false);
-            ui->chatTab->setVisible(false);
+            ui->welcomeTab->setVisible(true);
+            ui->teachTab->setVisible(false);
+            ui->connectTab->setVisible(false);
             ui->conversationsTab->setVisible(false);
             ui->rightSideTabWidget->setVisible(false);
 
-            ui->mainTabWidget->addTab(ui->initTab, tr("Init"));
-            ui->mainTabWidget->removePage(ui->trainTab);
-            ui->mainTabWidget->removePage(ui->chatTab);
+            ui->mainTabWidget->addTab(ui->welcomeTab, tr("Init"));
+            ui->mainTabWidget->removePage(ui->teachTab);
+            ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             break;
 
@@ -743,15 +762,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionImport->setEnabled(false);
             ui->actionExport->setEnabled(false);
 
-            ui->initTab->setVisible(false);
-            ui->trainTab->setVisible(false);
-            ui->chatTab->setVisible(true);
+            ui->welcomeTab->setVisible(false);
+            ui->teachTab->setVisible(false);
+            ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(false);
             ui->rightSideTabWidget->setVisible(false);
 
-            ui->mainTabWidget->addTab(ui->chatTab, tr("Verify account"));
-            ui->mainTabWidget->removePage(ui->initTab);
-            ui->mainTabWidget->removePage(ui->trainTab);
+            ui->mainTabWidget->addTab(ui->connectTab, tr("Verify account"));
+            ui->mainTabWidget->removePage(ui->welcomeTab);
+            ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             break;
 
@@ -761,15 +780,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionImport->setEnabled(true);
             ui->actionExport->setEnabled(true);
 
-            ui->initTab->setVisible(false);
-            ui->trainTab->setVisible(true);
-            ui->chatTab->setVisible(true);
+            ui->welcomeTab->setVisible(false);
+            ui->teachTab->setVisible(true);
+            ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(true);
             ui->rightSideTabWidget->setVisible(true);
 
-            ui->mainTabWidget->removePage(ui->initTab);
-            ui->mainTabWidget->addTab(ui->trainTab, tr("Teach"));
-            ui->mainTabWidget->addTab(ui->chatTab, tr("Connect"));
+            ui->mainTabWidget->removePage(ui->welcomeTab);
+            ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
+            ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
             break;
         }
@@ -1129,39 +1148,35 @@ void Lvk::FE::MainWindow::onExitMenuTriggered()
 
 void Lvk::FE::MainWindow::onAddCategoryButtonClicked()
 {
-    bool ok;
-    QString name = QInputDialog::getText(this, tr("Add category"), tr("Category name:"),
-                                         QLineEdit::Normal, "", &ok);
-
-    if (ok) {
-        if (!name.isEmpty()) {
-            BE::Rule *category = addCategory(name);
-
-            if (category) {
-                selectRule(category);
-            } else {
-                QString title = tr("Internal error");
-                QString text = tr("The category could not be added because of an internal error");
-                QMessageBox::critical(this, title, text);
-            }
-        } else {
-            QString title = tr("Add category");
-            QString text = tr("The category name cannot be empty");
-            QMessageBox::critical(this, title, text);
-        }
-    }
+    addCategoryWithDialog();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onAddRuleButtonClicked()
 {
+    addRuleWithDialog();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRemoveButtonClicked()
+{
+    removeSelectedRuleWithDialog();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog()
+{
+    BE::Rule *rule = 0;
+
     if (m_ruleTreeSelectionModel->selectedRows().isEmpty()) {
         QString title = tr("Add rule");
         QString text = tr("Select the category where the rule will belong to");
         QMessageBox::information(this, title, text);
 
-        return;
+        return rule;
     }
 
     QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedRows().first();
@@ -1181,10 +1196,10 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
     }
 
     if (parentCategory) {
-        BE::Rule *emptyRule = addRule("", parentCategory);
+        rule = addRule("", parentCategory);
 
-        if (emptyRule) {
-            selectRule(emptyRule);
+        if (rule) {
+            selectRule(rule);
             ui->ruleInputWidget->setFocusOnInput();
         } else {
             QString title = tr("Internal error");
@@ -1192,18 +1207,53 @@ void Lvk::FE::MainWindow::onAddRuleButtonClicked()
             QMessageBox::critical(this, title, text);
         }
     }
+
+    return rule;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRemoveButtonClicked()
+Lvk::BE::Rule* Lvk::FE::MainWindow::addCategoryWithDialog()
 {
+    BE::Rule *category = 0;
+
+    bool ok;
+    QString name = QInputDialog::getText(this, tr("Add category"), tr("Category name:"),
+                                         QLineEdit::Normal, "", &ok);
+
+    if (ok) {
+        if (!name.isEmpty()) {
+            category = addCategory(name);
+
+            if (category) {
+                selectRule(category);
+            } else {
+                QString title = tr("Internal error");
+                QString text = tr("The category could not be added because of an internal error");
+                QMessageBox::critical(this, title, text);
+            }
+        } else {
+            QString title = tr("Add category");
+            QString text = tr("The category name cannot be empty");
+            QMessageBox::critical(this, title, text);
+        }
+    }
+
+    return category;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::removeSelectedRuleWithDialog()
+{
+    bool removed = false;
+
     if (m_ruleTreeSelectionModel->selectedRows().isEmpty()) {
         QString text = tr("Remove rule or category");
         QString title = tr("Select the rule or category you want to remove");
         QMessageBox::critical(this, text, title);
 
-        return;
+        return removed;
     }
 
     QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedRows().first();
@@ -1229,7 +1279,7 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
                         QMessageBox::Yes | QMessageBox::No, this);
 
        if (msg.exec() == QMessageBox::Yes) {
-            bool removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+            removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
 
             if (removed) {
                 m_appFacade->refreshNlpEngine();
@@ -1245,6 +1295,8 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
         dialogText = tr("The selected category cannot be removed because is mandatory");
         QMessageBox::information(this, dialogTitle, dialogText);
     }
+
+    return removed;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1288,6 +1340,66 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 
         return 0;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Teach rule from history
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
+{
+    setUiMode(EditRuleUiMode);
+
+    BE::Rule *category = getCategoryFromDialog();
+
+    if (category) {
+        BE::Rule *rule = new BE::Rule("", QStringList() << msg, QStringList(), category);
+
+        bool appended = m_ruleTreeModel->appendItem(rule);
+
+        if (appended) {
+            selectRule(rule);
+            ui->ruleOutputWidget->setFocus();
+        } else {
+            delete rule;
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule * Lvk::FE::MainWindow::getCategoryFromDialog()
+{
+    const QString SPLIT_TOKEN = ". ";
+
+    QStringList categories;
+
+    for (int i = 0; rootRule() && i < rootRule()->childCount(); ++i) {
+        const Lvk::BE::Rule * rule = rootRule()->child(i);
+        if (rule->type() == BE::Rule::ContainerRule) {
+            categories << (QString::number(i+1) + SPLIT_TOKEN + rule->name());
+        }
+    }
+
+    categories << tr("New category...");
+
+    bool ok;
+    QString title = tr("Select category");
+    QString msg = tr("Please select a category to add the new rule:");
+    QString item = QInputDialog::getItem(title, msg, categories, 0, false, &ok);
+
+    BE::Rule *category = 0;
+
+    if (ok) {
+        int i = item.split(SPLIT_TOKEN).at(0).toInt() - 1;
+        if (i >= 0 && i < rootRule()->childCount()) {
+            category = rootRule()->child(i);
+        } else {
+            category = addCategoryWithDialog();
+        }
+    }
+
+    return category;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -58,16 +58,42 @@ class ConversationHistoryWidget : public QSplitter
     friend class ::TestMainWindow;
 
     Q_OBJECT
+
 public:
+
+    /**
+     * Constructs an ConversationHistoryWidget widget which is a child of \a parent.
+     */
     explicit ConversationHistoryWidget(QWidget *parent = 0);
 
+    /**
+     * Constructs an ConversationHistoryWidget widget which is a child of \a parent and
+     * it is initialized with conversation \a conv
+     */
     explicit ConversationHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
 
+    /**
+     * Clears the widget
+     */
     void clear();
 
+    /**
+     * Sets conversation \a conv
+     */
     void setConversation(const Lvk::BE::Conversation &conv);
 
+    /**
+     * Adds a single conversation entry \a conv
+     */
     void addConversationEntry(const Lvk::BE::Conversation::Entry &entry);
+
+signals:
+
+    /**
+     * This signal is emitted if the user wants to teach a new rule from history with rule input
+     * \a input
+     */
+    void teachRule(const QString &input);
 
 private:
 
@@ -83,7 +109,9 @@ private:
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
 
 private slots:
-    void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
+    void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
+    void onCellDoubleClicked(int row, int col);
+
 };
 
 /// @}

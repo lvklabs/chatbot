@@ -25,9 +25,9 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
-       <widget class="QWidget" name="initTab">
+       <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
          <string>Inicio</string>
         </attribute>
@@ -207,7 +207,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="trainTab">
+       <widget class="QWidget" name="teachTab">
         <attribute name="title">
          <string>Teach</string>
         </attribute>
@@ -440,7 +440,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="chatTab">
+       <widget class="QWidget" name="connectTab">
         <attribute name="title">
          <string>Connect</string>
         </attribute>
@@ -1118,7 +1118,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">

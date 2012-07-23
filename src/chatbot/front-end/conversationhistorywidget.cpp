@@ -25,6 +25,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QIcon>
+#include <QMessageBox>
 
 #define DATE_FORMAT     "dd/MM/yy"
 #define TIME_FORMAT     "hh:mm:ss"
@@ -57,7 +58,8 @@ enum ConversationTableColumns
 
 enum
 {
-    ConversationKeyRole = Qt::UserRole
+    ConversationKeyRole = Qt::UserRole,
+    RuleMatchRole
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -170,7 +172,11 @@ void Lvk::FE::ConversationHistoryWidget::setupWidget()
 
     connect(m_dateContactTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            SLOT(currentRowChanged(QModelIndex,QModelIndex)));
+            SLOT(onCurrentRowChanged(QModelIndex,QModelIndex)));
+
+    connect(m_conversationTable,
+            SIGNAL(cellDoubleClicked(int,int)),
+            SLOT(onCellDoubleClicked(int,int)));
 }
 
 
@@ -218,7 +224,7 @@ void Lvk::FE::ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Con
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::currentRowChanged(const QModelIndex &current,
+void Lvk::FE::ConversationHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
                                                            const QModelIndex &/*previous*/)
 {
     m_conversationTable->clearContents();
@@ -252,6 +258,7 @@ void Lvk::FE::ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::
 
     m_conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
     m_conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
+    m_conversationTable->item(nextRow, StatusColumn)->setData(RuleMatchRole, entry.match);
 
     if (entry.match) {
         m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
@@ -280,7 +287,6 @@ void Lvk::FE::ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::C
 
     m_dateContactTable->item(nextRow, DateColumnn)->setData(ConversationKeyRole, hashKey(entry));
     m_dateContactTable->item(nextRow, UsernameColumn)->setData(ConversationKeyRole, hashKey(entry));
-    m_dateContactTable->item(nextRow, UsernameColumn)->setData(Qt::ToolTipRole, username);
 
     if (username.contains("@gmail.com")) {
         m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
@@ -302,4 +308,21 @@ void Lvk::FE::ConversationHistoryWidget::setConversation(const Lvk::BE::Conversa
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ConversationHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
+{
+    if (!m_conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool()) {
+        QString msg = m_conversationTable->item(row, MessageColumn)->text();
+        QString dialogTitle = tr("Teach rule");
+        QString dialogText = QString(tr("Teach new rule for message: \"%1\" ?")).arg(msg);
+
+        int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
+                                           QMessageBox::No);
+
+        if (button == QMessageBox::Yes) {
+            emit teachRule(msg);
+        }
+    }
+}
 
