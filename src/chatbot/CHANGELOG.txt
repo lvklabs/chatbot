@@ -1,3 +1,6 @@
+v0.14
+ - Removed unused feature "Reminder to save conversation"
+
 v0.13
  - Tab changes focus of multiline input texts
  - Updated some strings to Spanish Argentina

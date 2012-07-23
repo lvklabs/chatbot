@@ -38,7 +38,5 @@
 #define SETTING_MAIN_WINDOW_RULE_EDIT_W             "MainWindow/RuleEditWidget/Width"
 
 #define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
-#define SETTING_INACTIVITY_THRESHOLD                "Chat/InactivityThreshold"
-#define SETTING_SAVE_CONV_REMINDER                  "Chat/SaveConversationReminder"
 
 #endif // LVK_CMN_SETTINGSKEYS_H

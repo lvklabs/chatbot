@@ -22,15 +22,18 @@
 #include "chatcorpus.h"
 #include "csvdocument.h"
 #include "globalstrings.h"
+#include "settings.h"
+#include "settingskeys.h"
 
 #include <QFile>
+#include <QDir>
 #include <QStringList>
 #include <QRegExp>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QDateTime>
 
-#define CORPUS_FILE     "./data/puclic_corpus.dat"
+#define CORPUS_FILE     "corpus.dat"
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -53,7 +56,7 @@ QString sanitize(const QString &str)
 
 bool Lvk::CA::ChatCorpus::m_init = false;
 
-QFile Lvk::CA::ChatCorpus::m_corpusFile(CORPUS_FILE);
+QFile Lvk::CA::ChatCorpus::m_corpusFile;
 
 QList<Lvk::CA::ChatCorpus::CorpusEntry> Lvk::CA::ChatCorpus::m_corpus;
 
@@ -73,6 +76,11 @@ void Lvk::CA::ChatCorpus::init()
     if (!m_init) {
         QMutexLocker locker(m_mutex);
         if (!m_init) {
+            Cmn::Settings settings;
+            QString dataPath = settings.value(SETTING_DATA_PATH).toString();
+
+            m_corpusFile.setFileName(dataPath + QDir::separator() + CORPUS_FILE);
+
             load();
 
             if (!m_corpusFile.open(QFile::Append)) {

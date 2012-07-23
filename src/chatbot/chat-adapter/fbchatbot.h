@@ -41,8 +41,6 @@ namespace Lvk
 namespace CA
 {
 
-class ChatThreadContainer;
-
 /// \ingroup Lvk
 /// \addtogroup CA
 /// @{
@@ -77,27 +75,10 @@ public:
 protected slots:
     virtual void onMessageReceived(const QXmppMessage &);
 
-protected:
-    void timerEvent(QTimerEvent *event);
-
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 
-    void askSaveInactiveThreads();
-
-    ChatThreadContainer     *m_chatThreads;
     QXmppClientExtension    *m_ownMsgExtension;
-
-    struct ChatThreadInfo
-    {
-        uint lastMessageTime;
-        QString username;
-        bool asked;
-    };
-
-    QHash<QString, ChatThreadInfo>  m_threadsInfo;
-    uint m_inactivityThreshold;
-    QMutex m_threadsInfoMutex;
 };
 
 /// @}
