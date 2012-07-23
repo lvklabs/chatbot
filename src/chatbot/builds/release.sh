@@ -51,6 +51,10 @@ fi
 
 pushd $target_os
 
-./build.sh && ./package.sh $pkg_version && ./upload.sh $pkg_filename
+./build.sh && \
+./package.sh $pkg_version && \
+./upload.sh $pkg_filename && \
+git tag -f $pkg_version && \
+echo "*** Everything went OK! Package uploaded and repository tagged ***"
 
 popd
