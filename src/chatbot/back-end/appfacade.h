@@ -121,7 +121,7 @@ public:
     bool hasUnsavedChanges() const;
 
     /**
-     * Closes the current file
+     * Closes the current file.
      */
     void close();
 
@@ -136,16 +136,38 @@ public:
      */
     const QVariant &metadata(const QString &key) const;
 
+    /**
+     * Imports rules from the filename \a inputFile.
+     * Returns true on success. Otherwise; false.
+     */
     bool importRules(const QString &inputFile);
 
+    /**
+     * Imports rules from the filename \a inputFile into \a container.
+     * Returns true on success. Otherwise; false.
+     */
     bool importRules(BE::Rule *container, const QString &inputFile);
 
+    /**
+     * Exports rules in \a container to file \a outputFile.
+     * Returns true on success. Otherwise; false.
+     */
     bool exportRules(const Rule *container, const QString &outputFile);
 
+    /**
+     * Merges rules in \a container with the current rules.
+     * Returns true on success. Otherwise; false.
+     */
     bool mergeRules(Rule *container);
 
+    /**
+     * Returns the root rule.
+     */
     Rule *rootRule();
 
+    /**
+     * Returns the evasive rule.
+     */
     Rule *evasivesRule();
 
     typedef QList< QPair<const Rule *, int> > MatchList;
