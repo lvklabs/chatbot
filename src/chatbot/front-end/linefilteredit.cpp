@@ -73,9 +73,25 @@ bool Lvk::FE::LineFilterEdit::eventFilter(QObject *obj, QEvent *event)
 
 void Lvk::FE::LineFilterEdit::showEvent(QShowEvent *event)
 {
-    m_clearWidget->move(width() - ICON_SIZE - ICON_RIGHT_MARGIN, (height() - ICON_SIZE)/2);
+    updateClearWidgetPos();
 
     QLineEdit::showEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::LineFilterEdit::resizeEvent(QResizeEvent *event)
+{
+    updateClearWidgetPos();
+
+    QLineEdit::resizeEvent(event);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::LineFilterEdit::updateClearWidgetPos()
+{
+    m_clearWidget->move(width() - ICON_SIZE - ICON_RIGHT_MARGIN, (height() - ICON_SIZE)/2);
 }
 
 
