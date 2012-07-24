@@ -40,7 +40,6 @@ namespace FE
 /**
  * \brief The ExportDialog class provides a dialog that allow users to select rules to export to
  */
-
 class ExportDialog : public PortDialog
 {
     Q_OBJECT

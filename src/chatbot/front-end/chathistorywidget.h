@@ -78,20 +78,19 @@ public:
     explicit ChatHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
 
     /**
-     * Destroys the object
+     * Destroys the object.
      */
     ~ChatHistoryWidget();
 
-
     /**
-     * Clears the widget
+     * Clears the widget.
      */
     void clear();
 
     /**
-     * Clears only tables of the widget leaving the filter text unchanged.
+     * Clears only conversations leaving the filter text unchanged.
      */
-    void clearTables();
+    void clearConversations();
 
     /**
      * Sets conversation \a conv
@@ -99,7 +98,7 @@ public:
     void setConversation(const Lvk::BE::Conversation &conv);
 
     /**
-     * Adds a single conversation entry \a conv
+     * Adds a single conversation entry \a conv.
      */
     void addConversationEntry(const Lvk::BE::Conversation::Entry &entry);
 

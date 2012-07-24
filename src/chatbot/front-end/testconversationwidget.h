@@ -60,7 +60,6 @@ public:
      * match flag is used to display the chatbot output as a successful match or not.
      */
     void appendConversation(const QString &userInput, const QString &botOuput, bool match);
-
 };
 
 /// @}

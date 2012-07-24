@@ -41,8 +41,10 @@ namespace FE
 
 /**
  * \brief The LineFilterEdit class provides a widget with the same functionality as QLineEdit
- *        but contains a button to clear the text. This widget is very useful to implement text
- *        filters. For instance, it is used in RosterWidget and ChatHistoryWidget classes.
+ *        but contains a button to clear the text.
+ *
+ * This widget is very useful to implement text filters. For instance, it is used in RosterWidget
+ * and ChatHistoryWidget classes.
  */
 class LineFilterEdit : public QLineEdit
 {

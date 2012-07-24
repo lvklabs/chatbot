@@ -80,10 +80,7 @@ public:
 
     void installEventFilter(QObject *eventFilter);
 
-    bool eventFilter(QObject *object, QEvent *event);
-
 public slots:
-
     void clearHighlight();
 
     void highlightInput(int number);
@@ -94,6 +91,9 @@ signals:
     void targetTextEdited(const QString &);
 
     void inputVariantsEdited();
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
 
 private:
     RuleInputWidget(RuleInputWidget&);

@@ -44,6 +44,7 @@ namespace FE
 class RuleOutputWidget : public QPlainTextEdit
 {
     Q_OBJECT
+
 public:
     explicit RuleOutputWidget(QWidget *parent = 0);
 
@@ -52,7 +53,6 @@ public:
     void setOutput(const QStringList &output);
 
 public slots:
-
     void clearHighlight();
 
     void highlightOuput(int number);
@@ -62,7 +62,6 @@ public slots:
     void clear();
 
 signals:
-
     void outputTextEdited();
 
 private:

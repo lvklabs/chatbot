@@ -193,16 +193,16 @@ void Lvk::FE::AutocompleteTextEdit::moveEvent(QMoveEvent *event)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AutocompleteTextEdit::setStringList(const QStringList &strList)
+void Lvk::FE::AutocompleteTextEdit::setVocabulary(const QStringList &v)
 {
-    m_strList = strList;
+    m_vocab = v;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const QStringList & Lvk::FE::AutocompleteTextEdit::stringList()
+const QStringList & Lvk::FE::AutocompleteTextEdit::vocabulary()
 {
-    return m_strList;
+    return m_vocab;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 
     m_listWidget->clear();
 
-    if (m_strList.isEmpty()) {
+    if (m_vocab.isEmpty()) {
         // FIXME Add new class methods to set the tooltip
         QToolTip::showText(mapToGlobal(QPoint(0, height()/2)),
                            tr("Tip: Go to the 'Connect to chat' tab and connect using your\n"
@@ -236,7 +236,7 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
         QString current = m_current.trimmed();
 
         //if (current.size() > 0) {
-            foreach (const QString &str, m_strList) {
+            foreach (const QString &str, m_vocab) {
                 if (str.contains(current, false)) {
                     m_listWidget->addItem(str);
                 }

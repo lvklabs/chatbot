@@ -213,14 +213,14 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
 
 void Lvk::FE::ChatHistoryWidget::clear()
 {
-    clearTables();
+    clearConversations();
     ui->filter->clear();
     ui->teachRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::clearTables()
+void Lvk::FE::ChatHistoryWidget::clearConversations()
 {
     ui->dateContactTable->clearContents();
     ui->dateContactTable->setRowCount(0);

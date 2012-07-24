@@ -248,7 +248,7 @@ void Lvk::FE::RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
         strList.append(item.displayText());
     }
 
-    m_targetTextEdit->setStringList(strList);
+    m_targetTextEdit->setVocabulary(strList);
 }
 
 //--------------------------------------------------------------------------------------------------

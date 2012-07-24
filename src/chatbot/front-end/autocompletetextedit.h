@@ -43,21 +43,42 @@ namespace FE
 
 /**
  * \brief The AutoCompleteTextEdit class provides a widget that is used to edit text like a
- *        QPlainTextEdit but it also displays a list that suggests words to autocomplete
+ *        QPlainTextEdit but it also displays a list of suggestion to autocomplete words.
+ *
+ * By default, the widget does not contain any vocabulary to automplete. In order to set a
+ * vocabulary you must invoke setVocabulary(). The autocomplete mechanism is no limited to
+ * colloquial words, can be any kind of strings. In that case, consider changing the word delimiter
+ * with setDelimiter()
  */
 class AutocompleteTextEdit : public QLineEdit
 {
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs an AutocompleteTextEdit widget which is a child of \a parent.
+     */
     explicit AutocompleteTextEdit(QWidget *parent = 0);
 
-    void setStringList(const QStringList &strList);
+    /**
+     * Sets the list of words used to autocomplete text
+     */
+    void setVocabulary(const QStringList &v);
 
-    const QStringList &stringList();
+    /**
+     * Returns the list of words used to autocomplete text, by default is empty.
+     */
+    const QStringList &vocabulary();
 
+    /**
+     * Sets the token used to delimit words.
+     */
     void setDelimiter(const QString &delim);
 
+    /**
+     * Returns the token used to delimit words, by default is one whitespace, i.e. " ".
+     */
     const QString &delimiter();
 
 protected:
@@ -77,7 +98,7 @@ protected:
 
 private:
     QString m_delimiter;
-    QStringList m_strList;
+    QStringList m_vocab;
     QFrame *m_container;
     QListWidget *m_listWidget;
     QString m_head;

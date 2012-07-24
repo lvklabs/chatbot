@@ -40,7 +40,6 @@ namespace FE
 /**
  * \brief The ImportDialog class provides a dialog that allow users to select rules to import to.
  */
-
 class ImportDialog : public PortDialog
 {
     Q_OBJECT

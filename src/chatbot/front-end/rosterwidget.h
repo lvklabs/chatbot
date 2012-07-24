@@ -49,29 +49,67 @@ namespace FE
 
 /**
  * \brief The RosterWidget class provides a widget to display, filter and select chat users.
+ *
+ * In the chat jargon, "roster" means "list of contacts".
+ * The RosterWidget is used in the chat connection tab to select which contacts the chatbot can
+ * talk to.
+ *
+ * The widget consists of a list of contacts where each item is checkeable, an input textbox to
+ * filter contacts and a global checkbox to check/uncheck all items. The widget provides methods
+ * to get and set the check state of the items.
  */
 class RosterWidget : public QWidget
 {
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs an RosterWidget widget which is a child of \a parent.
+     */
     explicit RosterWidget(QWidget *parent = 0);
 
+    /**
+     * Sets the given \a roster and sets all items in the list with state \a initialState
+     */
     void setRoster(const Lvk::BE::Roster &roster, Qt::CheckState initialState = Qt::Checked);
 
+    /**
+     * Sets the given \a oster and sets all items in the list with state \a checked with
+     * exception of those in \a uncheckedSubset
+     */
     void setRoster(const Lvk::BE::Roster &roster, const Lvk::BE::Roster &uncheckedSubset);
 
+    /**
+     * Returns the full roster.
+     */
     const Lvk::BE::Roster &roster();
 
+    /**
+     * Returns the subset of the roster with state \a checked.
+     */
     Lvk::BE::Roster checkedRoster();
 
+    /**
+     * Returns the subset of the roster with state \a unchecked.
+     */
     Lvk::BE::Roster uncheckedRoster();
 
+    /**
+     * Returns the state of the "All users" checkbox.
+     */
     Qt::CheckState allUsersCheckState();
 
+    /**
+     * Clears the widget.
+     */
     void clear();
 
 signals:
+
+    /**
+     * This signal is emitted every time the selection of items in the list has changed.
+     */
     void selectionChanged();
 
 private slots:
