@@ -50,7 +50,14 @@ namespace FE
 /// \addtogroup FE
 /// @{
 
-
+/**
+ * \brief The ChatHistoryWidget class provides a widget to display the chat history
+ *        beetwen the chatbot and chat users
+ *
+ * The ChatHistoryWidget is used in the "History" tab.
+ *
+ * \see BE::Conversation
+ */
 class ChatHistoryWidget : public QWidget
 {
     friend class ::TestMainWindow;
@@ -122,7 +129,7 @@ private slots:
 
     void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void onCellDoubleClicked(int row, int col);
-    void onFilterTextEdited(const QString &text);
+    void onFilterTextChanged(const QString &text);
 };
 
 /// @}

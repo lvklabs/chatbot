@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>3</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -374,6 +374,9 @@
                <height>24</height>
               </size>
              </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -396,6 +399,9 @@
                <height>24</height>
               </size>
              </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -417,6 +423,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -1067,6 +1076,9 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

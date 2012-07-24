@@ -19,5 +19,6 @@
         <file>res/open_chatbot.png</file>
         <file>res/verify_chatbot.png</file>
         <file>res/open_last_chatbot.png</file>
+        <file alias="clear_16x16.png">res/clear_16x16.png</file>
     </qresource>
 </RCC>

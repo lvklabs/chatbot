@@ -105,6 +105,7 @@ HEADERS += \
     common/csvrow.h \
     common/globalstrings.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    front-end/linefilteredit.h
 
 
 SOURCES += \
@@ -141,6 +142,7 @@ SOURCES += \
     common/csvdocument.cpp \
     common/csvrow.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    front-end/linefilteredit.cpp
 
 
 FORMS += \
@@ -170,6 +172,12 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+
+
+
+
+
+
 
 
 

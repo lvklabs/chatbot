@@ -56,7 +56,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="filter">
+      <widget class="Lvk::FE::LineFilterEdit" name="filter">
        <property name="maximumSize">
         <size>
          <width>200</width>
@@ -113,6 +113,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Lvk::FE::LineFilterEdit</class>
+   <extends>QLineEdit</extends>
+   <header>linefilteredit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

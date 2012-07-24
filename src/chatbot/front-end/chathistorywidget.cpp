@@ -193,8 +193,8 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
             SLOT(onCellDoubleClicked(int,int)));
 
     connect(ui->filter,
-            SIGNAL(textEdited(QString)),
-            SLOT(onFilterTextEdited(QString)));
+            SIGNAL(textChanged(QString)),
+            SLOT(onFilterTextChanged(QString)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -354,7 +354,7 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::onFilterTextEdited(const QString &text)
+void Lvk::FE::ChatHistoryWidget::onFilterTextChanged(const QString &text)
 {
     filter(text);
 }
