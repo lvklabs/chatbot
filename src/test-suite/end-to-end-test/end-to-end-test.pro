@@ -51,7 +51,7 @@ HEADERS += \
     ../../chatbot/front-end/ruleoutputwidget.h \
     ../../chatbot/front-end/ruleinputwidget.h \
     ../../chatbot/front-end/testconversationwidget.h \
-    ../../chatbot/front-end/conversationhistorywidget.h \
+    ../../chatbot/front-end/chathistorywidget.h \
     ../../chatbot/front-end/portdialog.h \
     ../../chatbot/front-end/exportdialog.h \
     ../../chatbot/front-end/importdialog.h \
@@ -93,7 +93,7 @@ SOURCES += \
     ../../chatbot/front-end/ruleoutputwidget.cpp \
     ../../chatbot/front-end/ruleinputwidget.cpp \
     ../../chatbot/front-end/testconversationwidget.cpp \
-    ../../chatbot/front-end/conversationhistorywidget.cpp \
+    ../../chatbot/front-end/chathistorywidget.cpp \
     ../../chatbot/front-end/portdialog.cpp \
     ../../chatbot/front-end/exportdialog.cpp \
     ../../chatbot/front-end/importdialog.cpp \
@@ -125,7 +125,8 @@ SOURCES += \
 
 FORMS += \
     ../../chatbot/front-end/mainwindow.ui \
-    ../../chatbot/front-end/portdialog.ui
+    ../../chatbot/front-end/portdialog.ui \
+    ../../chatbot/front-end/chathistorywidget.ui
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

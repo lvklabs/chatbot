@@ -24,6 +24,7 @@
 #include "rule.h"
 #include "ruletreemodel.h"
 #include "ui_mainwindow.h"
+#include "ui_chathistorywidget.h"
 #include "testxmppclient.h"
 
 #include <QString>
@@ -696,13 +697,13 @@ void TestMainWindow::testChatbotResponseAndHistory()
     std::cout << " - Verifying conversation widget history..." << std::endl;
 
 
-    QTableWidget *conversationTable = m_window->ui->conversationHistory->m_conversationTable;
+    QTableWidget *conversationTable = m_window->ui->chatHistory->ui->conversationTable;
     QCOMPARE(conversationTable->item(0, 1)->text(), msg);
     QCOMPARE(conversationTable->item(0, 2)->text(), response);
     QCOMPARE(conversationTable->item(0, 3)->text(),
              QString(match ? HISTORY_MATCH_STATUS : HISTORY_NO_MATCH_STATUS));
 
-    QTableWidget *dateContactTable = m_window->ui->conversationHistory->m_dateContactTable;
+    QTableWidget *dateContactTable = m_window->ui->chatHistory->ui->dateContactTable;
     QCOMPARE(dateContactTable->item(0, 1)->text(), user2RealName);
 
     std::cout << " - Everything OK!" << std::endl;

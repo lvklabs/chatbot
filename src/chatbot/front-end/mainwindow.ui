@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -1022,7 +1022,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="Lvk::FE::ConversationHistoryWidget" name="conversationHistory" native="true">
+            <widget class="Lvk::FE::ChatHistoryWidget" name="chatHistory" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -1226,15 +1226,15 @@ Please insert your username and password and press &quot;Verify account&quot; bu
    <header>testconversationwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>Lvk::FE::ConversationHistoryWidget</class>
-   <extends>QWidget</extends>
-   <header>conversationhistorywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>Lvk::FE::RosterWidget</class>
    <extends>QWidget</extends>
    <header>rosterwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::ChatHistoryWidget</class>
+   <extends>QWidget</extends>
+   <header>chathistorywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

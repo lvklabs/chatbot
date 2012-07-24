@@ -244,10 +244,10 @@ public:
     void setBlackListRoster(const Roster &roster);
 
     /**
-     * Returns the conversation history of the current chatbot. Before calling this method you
+     * Returns the chat history of the current chatbot. Before calling this method you
      * must \a load() a chatbot file.
      */
-    const Conversation &conversationHistory();
+    const Conversation &chatHistory();
 
 signals:
 

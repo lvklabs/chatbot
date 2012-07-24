@@ -19,17 +19,22 @@
  *
  */
 
-#ifndef CONVERSATIONHISTORYWIDGET_H
-#define CONVERSATIONHISTORYWIDGET_H
+#ifndef CHATHISTORYWIDGET_H
+#define CHATHISTORYWIDGET_H
 
-#include <QSplitter>
+#include <QWidget>
 #include <QHash>
 #include <QList>
 
 #include "conversation.h"
 
+namespace Ui {
+    class ChatHistoryWidget;
+}
+
 class QTableWidget;
 class QModelIndex;
+class QSplitter;
 class TestMainWindow;
 
 namespace Lvk
@@ -45,15 +50,8 @@ namespace FE
 /// \addtogroup FE
 /// @{
 
-/**
- * \brief The ConversationHistoryWidget class provides a widget to display conversation history
- *        beetwen the chatbot and chat users
- *
- * The ConversationHistoryWidget is used in the "History" tab.
- *
- * \see BE::Conversation
- */
-class ConversationHistoryWidget : public QSplitter
+
+class ChatHistoryWidget : public QWidget
 {
     friend class ::TestMainWindow;
 
@@ -62,15 +60,21 @@ class ConversationHistoryWidget : public QSplitter
 public:
 
     /**
-     * Constructs an ConversationHistoryWidget widget which is a child of \a parent.
+     * Constructs an ChatHistoryWidget widget which is a child of \a parent.
      */
-    explicit ConversationHistoryWidget(QWidget *parent = 0);
+    explicit ChatHistoryWidget(QWidget *parent = 0);
 
     /**
-     * Constructs an ConversationHistoryWidget widget which is a child of \a parent and
+     * Constructs an ChatHistoryWidget widget which is a child of \a parent and
      * it is initialized with conversation \a conv
      */
-    explicit ConversationHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
+    explicit ChatHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
+
+    /**
+     * Destroys the object
+     */
+    ~ChatHistoryWidget();
+
 
     /**
      * Clears the widget
@@ -97,21 +101,20 @@ signals:
 
 private:
 
-    QTableWidget *m_dateContactTable;
-    QTableWidget *m_conversationTable;
+    Ui::ChatHistoryWidget *ui;
 
     typedef QList<Lvk::BE::Conversation::Entry> EntryList;
     QHash<QString, EntryList> m_entries;
 
-    void setupWidget();
+    void setupTables();
 
     void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
 
 private slots:
+
     void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void onCellDoubleClicked(int row, int col);
-
 };
 
 /// @}
@@ -122,4 +125,5 @@ private slots:
 
 } // namespace Lvk
 
-#endif // CONVERSATIONHISTORYWIDGET_H
+#endif // CHATHISTORYWIDGET_H
+

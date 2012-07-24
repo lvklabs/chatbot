@@ -19,11 +19,9 @@
  *
  */
 
-#include "conversationhistorywidget.h"
+#include "chathistorywidget.h"
+#include "ui_chathistorywidget.h"
 
-#include <QSplitter>
-#include <QTableWidget>
-#include <QHeaderView>
 #include <QIcon>
 #include <QMessageBox>
 
@@ -61,6 +59,7 @@ enum
     ConversationKeyRole = Qt::UserRole,
     RuleMatchRole
 };
+
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -109,72 +108,82 @@ QString getFullname(const QString &from)
 
 } // namespace
 
+
 //--------------------------------------------------------------------------------------------------
-// ConversationHistoryWidget
+// ChatHistoryWidget
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ConversationHistoryWidget::ConversationHistoryWidget(QWidget *parent)
-    : QSplitter(Qt::Horizontal, parent)
+Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(QWidget *parent)
+    : QWidget(parent), ui(new Ui::ChatHistoryWidget)
 {
-    setupWidget();
+    ui->setupUi(this);
+
+    setupTables();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ConversationHistoryWidget::ConversationHistoryWidget(const Lvk::BE::Conversation &conv,
-                                                              QWidget *parent)
-    : QSplitter(Qt::Horizontal, parent)
+Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent)
+    : QWidget(parent), ui(new Ui::ChatHistoryWidget)
 {
-    setupWidget();
+    ui->setupUi(this);
+
+    setupTables();
 
     setConversation(conv);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::setupWidget()
+Lvk::FE::ChatHistoryWidget::~ChatHistoryWidget()
 {
+    delete ui;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::setupTables()
+{
+    ui->splitter->setSizes(QList<int>() << (width()*1/3) << (width()*2/3));
+
     // Date-Contact table
-    m_dateContactTable = new QTableWidget(this);
-    m_dateContactTable->setRowCount(0);
-    m_dateContactTable->setColumnCount(DateContactTableTotalColumns);
-    m_dateContactTable->setSortingEnabled(true);
-    m_dateContactTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_dateContactTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_dateContactTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_dateContactTable->setAlternatingRowColors(true);
-    m_dateContactTable->horizontalHeader()->setStretchLastSection(true);
-    m_dateContactTable->verticalHeader()->hide();
-    m_dateContactTable->setHorizontalHeaderLabels(QStringList()
-                                                  << tr("Date")
-                                                  << tr("Username"));
-    m_dateContactTable->setColumnWidth(DateColumnn, 70);
+    ui->dateContactTable->setRowCount(0);
+    ui->dateContactTable->setColumnCount(DateContactTableTotalColumns);
+    ui->dateContactTable->setSortingEnabled(true);
+    ui->dateContactTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->dateContactTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->dateContactTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->dateContactTable->setAlternatingRowColors(true);
+    ui->dateContactTable->horizontalHeader()->setStretchLastSection(true);
+    ui->dateContactTable->verticalHeader()->hide();
+    ui->dateContactTable->setHorizontalHeaderLabels(QStringList()
+                                                    << tr("Date")
+                                                    << tr("Username"));
+    ui->dateContactTable->setColumnWidth(DateColumnn, 70);
 
     // Conversation table
-    m_conversationTable = new QTableWidget(this);
-    m_conversationTable->setRowCount(0);
-    m_conversationTable->setColumnCount(ConversationTableTotalColumns);
-    m_conversationTable->setSortingEnabled(true);
-    m_conversationTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_conversationTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_conversationTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_conversationTable->setAlternatingRowColors(true);
-    m_conversationTable->horizontalHeader()->setStretchLastSection(true);
-    m_conversationTable->verticalHeader()->hide();
-    m_conversationTable->setHorizontalHeaderLabels(QStringList()
-                                                   << tr("Time")
-                                                   << tr("Message")
-                                                   << tr("Response")
-                                                   << tr("Status"));
-    m_conversationTable->setColumnWidth(TimeColumnn, 70);
+    ui->conversationTable->setRowCount(0);
+    ui->conversationTable->setColumnCount(ConversationTableTotalColumns);
+    ui->conversationTable->setSortingEnabled(true);
+    ui->conversationTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->conversationTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->conversationTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->conversationTable->setAlternatingRowColors(true);
+    ui->conversationTable->horizontalHeader()->setStretchLastSection(true);
+    ui->conversationTable->verticalHeader()->hide();
+    ui->conversationTable->setHorizontalHeaderLabels(QStringList()
+                                                     << tr("Time")
+                                                     << tr("Message")
+                                                     << tr("Response")
+                                                     << tr("Status"));
+    ui->conversationTable->setColumnWidth(TimeColumnn, 70);
 
-    setSizes(QList<int>() << 50 << 150);
 
-    connect(m_dateContactTable->selectionModel(),
+    connect(ui->dateContactTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(onCurrentRowChanged(QModelIndex,QModelIndex)));
 
-    connect(m_conversationTable,
+    connect(ui->conversationTable,
             SIGNAL(cellDoubleClicked(int,int)),
             SLOT(onCellDoubleClicked(int,int)));
 }
@@ -182,19 +191,18 @@ void Lvk::FE::ConversationHistoryWidget::setupWidget()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::clear()
+void Lvk::FE::ChatHistoryWidget::clear()
 {
-    m_dateContactTable->clearContents();
-    m_dateContactTable->setRowCount(0);
-    m_conversationTable->clearContents();
-    m_conversationTable->setRowCount(0);
+    ui->dateContactTable->clearContents();
+    ui->dateContactTable->setRowCount(0);
+    ui->conversationTable->clearContents();
+    ui->conversationTable->setRowCount(0);
     m_entries.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Conversation::Entry
-                                                              &entry)
+void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::BE::Conversation::Entry &entry)
 {
     QString key = hashKey(entry);
 
@@ -203,17 +211,17 @@ void Lvk::FE::ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Con
 
         addDateContactTableRow(entry);
 
-        if (m_dateContactTable->rowCount() == 1) {
-            m_dateContactTable->selectRow(0);
+        if (ui->dateContactTable->rowCount() == 1) {
+            ui->dateContactTable->selectRow(0);
         }
     }
 
     m_entries[key].append(entry);
 
-    if (m_dateContactTable->rowCount() == 1) {
+    if (ui->dateContactTable->rowCount() == 1) {
         addConversationTableRow(entry);
-    } else if (m_dateContactTable->selectionModel()->selectedIndexes().size() > 0) {
-        QModelIndex selectedIndex = m_dateContactTable->selectionModel()->selectedIndexes().first();
+    } else if (ui->dateContactTable->selectionModel()->selectedIndexes().size() > 0) {
+        QModelIndex selectedIndex = ui->dateContactTable->selectionModel()->selectedIndexes().first();
         const QString &selectedKey = selectedIndex.data(ConversationKeyRole).toString();
 
         if (key == selectedKey) {
@@ -224,14 +232,14 @@ void Lvk::FE::ConversationHistoryWidget::addConversationEntry(const Lvk::BE::Con
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
-                                                           const QModelIndex &/*previous*/)
+void Lvk::FE::ChatHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
+                                                     const QModelIndex &/*previous*/)
 {
-    m_conversationTable->clearContents();
-    m_conversationTable->setRowCount(0);
+    ui->conversationTable->clearContents();
+    ui->conversationTable->setRowCount(0);
 
     if (current.isValid()) {
-        QTableWidgetItem *selectedItem = m_dateContactTable->item(current.row(), current.column());
+        QTableWidgetItem *selectedItem = ui->dateContactTable->item(current.row(), current.column());
         QString key = selectedItem->data(ConversationKeyRole).toString();
         const EntryList &entries = m_entries[key];
 
@@ -243,34 +251,32 @@ void Lvk::FE::ConversationHistoryWidget::onCurrentRowChanged(const QModelIndex &
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry
-                                                                 &entry)
+void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
     QString match = entry.match ? tr("Ok") : tr("No response found!");
 
-    int nextRow = m_conversationTable->rowCount();
-    m_conversationTable->insertRow(nextRow);
-    m_conversationTable->setItem(nextRow, TimeColumnn,    new QTableWidgetItem(time));
-    m_conversationTable->setItem(nextRow, MessageColumn,  new QTableWidgetItem(entry.msg));
-    m_conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.response));
-    m_conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
+    int nextRow = ui->conversationTable->rowCount();
+    ui->conversationTable->insertRow(nextRow);
+    ui->conversationTable->setItem(nextRow, TimeColumnn,    new QTableWidgetItem(time));
+    ui->conversationTable->setItem(nextRow, MessageColumn,  new QTableWidgetItem(entry.msg));
+    ui->conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.response));
+    ui->conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
 
-    m_conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
-    m_conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
-    m_conversationTable->item(nextRow, StatusColumn)->setData(RuleMatchRole, entry.match);
+    ui->conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
+    ui->conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
+    ui->conversationTable->item(nextRow, StatusColumn)->setData(RuleMatchRole, entry.match);
 
     if (entry.match) {
-        m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
+        ui->conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
     } else {
-        m_conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(NO_MATCH_ICON));
+        ui->conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(NO_MATCH_ICON));
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry
-                                                                &entry)
+void Lvk::FE::ChatHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString date = entry.dateTime.toString(DATE_FORMAT);
     QString username = getUsername(entry.from);
@@ -280,26 +286,26 @@ void Lvk::FE::ConversationHistoryWidget::addDateContactTableRow(const Lvk::BE::C
         fullname = username;
     }
 
-    int nextRow = m_dateContactTable->rowCount();
-    m_dateContactTable->insertRow(nextRow);
-    m_dateContactTable->setItem(nextRow, DateColumnn,    new QTableWidgetItem(date));
-    m_dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(fullname));
+    int nextRow = ui->dateContactTable->rowCount();
+    ui->dateContactTable->insertRow(nextRow);
+    ui->dateContactTable->setItem(nextRow, DateColumnn,    new QTableWidgetItem(date));
+    ui->dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(fullname));
 
-    m_dateContactTable->item(nextRow, DateColumnn)->setData(ConversationKeyRole, hashKey(entry));
-    m_dateContactTable->item(nextRow, UsernameColumn)->setData(ConversationKeyRole, hashKey(entry));
+    ui->dateContactTable->item(nextRow, DateColumnn)->setData(ConversationKeyRole, hashKey(entry));
+    ui->dateContactTable->item(nextRow, UsernameColumn)->setData(ConversationKeyRole, hashKey(entry));
 
     if (username.contains("@gmail.com")) {
-        m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
+        ui->dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
     } else if (username.contains("@chat.facebook.com")) {
-        m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(FB_ICON));
+        ui->dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(FB_ICON));
     } else if (username.contains(tr("(test)"))) {
-        m_dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(LOCAL_TEST_ICON));
+        ui->dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(LOCAL_TEST_ICON));
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
+void Lvk::FE::ChatHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
 {
     clear();
 
@@ -310,10 +316,10 @@ void Lvk::FE::ConversationHistoryWidget::setConversation(const Lvk::BE::Conversa
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ConversationHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
+void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 {
-    if (!m_conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool()) {
-        QString msg = m_conversationTable->item(row, MessageColumn)->text();
+    if (!ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool()) {
+        QString msg = ui->conversationTable->item(row, MessageColumn)->text();
         QString dialogTitle = tr("Teach rule");
         QString dialogText = QString(tr("Teach new rule for message: \"%1\" ?")).arg(msg);
 
@@ -325,4 +331,5 @@ void Lvk::FE::ConversationHistoryWidget::onCellDoubleClicked(int row, int /*col*
         }
     }
 }
+
 

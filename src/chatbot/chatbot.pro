@@ -68,12 +68,12 @@ HEADERS += \
     front-end/ruleoutputwidget.h \
     front-end/ruleinputwidget.h \
     front-end/testconversationwidget.h \
-    front-end/conversationhistorywidget.h \
     front-end/portdialog.h \
     front-end/exportdialog.h \
     front-end/importdialog.h \
     front-end/rosterwidget.h \
     front-end/autocompletetextedit.h \
+    front-end/chathistorywidget.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/defaultvirtualuser.h \
@@ -114,12 +114,12 @@ SOURCES += \
     front-end/ruleoutputwidget.cpp \
     front-end/ruleinputwidget.cpp \
     front-end/testconversationwidget.cpp \
-    front-end/conversationhistorywidget.cpp \
     front-end/portdialog.cpp \
     front-end/exportdialog.cpp \
     front-end/importdialog.cpp \
     front-end/rosterwidget.cpp \
     front-end/autocompletetextedit.cpp \
+    front-end/chathistorywidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -145,7 +145,8 @@ SOURCES += \
 
 FORMS += \
     front-end/mainwindow.ui \
-    front-end/portdialog.ui
+    front-end/portdialog.ui \
+    front-end/chathistorywidget.ui
 
 RESOURCES += \
     resources.qrc

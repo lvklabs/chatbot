@@ -219,7 +219,7 @@ void Lvk::FE::MainWindow::clear()
     ui->passwordText->clear();
 
     // conversation tab widgets
-    ui->conversationHistory->clear();
+    ui->chatHistory->clear();
 
     // test tab widgets
     ui->testConversationText->clear();
@@ -340,7 +340,7 @@ void Lvk::FE::MainWindow::connectSignals()
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
-    connect(ui->conversationHistory, SIGNAL(teachRule(QString)),
+    connect(ui->chatHistory, SIGNAL(teachRule(QString)),
             SLOT(onTeachFromHistoryWidget(QString)));
 }
 
@@ -1000,7 +1000,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
     if (success) {
         // load conversation history
-        ui->conversationHistory->setConversation(m_appFacade->conversationHistory());
+        ui->chatHistory->setConversation(m_appFacade->chatHistory());
 
         // load persisted roster
         BE::Roster roster;
@@ -1889,7 +1889,7 @@ void Lvk::FE::MainWindow::onDisconnection()
 
 void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &entry)
 {
-    ui->conversationHistory->addConversationEntry(entry);
+    ui->chatHistory->addConversationEntry(entry);
 }
 
 //--------------------------------------------------------------------------------------------------

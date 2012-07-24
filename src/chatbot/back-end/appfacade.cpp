@@ -776,7 +776,7 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Conversation & Lvk::BE::AppFacade::conversationHistory()
+const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
     if (!m_chatbot) {
         setupChatbot(FbChat);
