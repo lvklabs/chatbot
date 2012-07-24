@@ -21,7 +21,14 @@
 
 #include "linefilteredit.h"
 
-#include <QPushButton>
+#include <QLabel>
+#include <QEvent>
+
+#define ICON_SIZE                   16
+#define ICON_RIGHT_MARGIN           5
+#define CLEAR_DEFAULT_ICON          ":/icons/clear_16x16.png"
+#define CLEAR_MOUSE_HOVER_ICON      ":/icons/clear_hover_16x16.png"
+
 
 //--------------------------------------------------------------------------------------------------
 // LineFilterEdit
@@ -30,29 +37,45 @@
 Lvk::FE::LineFilterEdit::LineFilterEdit(QWidget *parent /*= 0*/)
     : QLineEdit(parent)
 {
-    m_clearButton = new QPushButton(this);
-    m_clearButton->setPixmap(QPixmap(":/icons/clear_16x16.png"));
-    m_clearButton->setFlat(true);
-    m_clearButton->setCursor(QCursor(Qt::ArrowCursor));
+    setTextMargins(0, 0, ICON_RIGHT_MARGIN + ICON_SIZE, 0);
 
-    connect(m_clearButton, SIGNAL(clicked()), SLOT(onClearButtonPressed()));
+    m_clearWidget = new QLabel(this);
+    m_clearWidget->setPixmap(QPixmap(CLEAR_DEFAULT_ICON));
+    m_clearWidget->setCursor(QCursor(Qt::ArrowCursor));
+    m_clearWidget->setFocusPolicy(Qt::NoFocus);
+    m_clearWidget->installEventFilter(this);
+    m_clearWidget->setToolTip(tr("Clear text"));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::LineFilterEdit::showEvent(QShowEvent *)
+bool Lvk::FE::LineFilterEdit::eventFilter(QObject *obj, QEvent *event)
 {
-    m_clearButton->setGeometry(width() - m_clearButton->width(),
-                       (height() - m_clearButton->height())/2,
-                       m_clearButton->width(),
-                       m_clearButton->height());
+    if (obj == m_clearWidget) {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            QLineEdit::clear();
+            return true;
+        } else if (event->type() == QEvent::Enter) {
+            m_clearWidget->setPixmap(QPixmap(CLEAR_MOUSE_HOVER_ICON));
+            return true;
+        } else if (event->type() == QEvent::Leave) {
+            m_clearWidget->setPixmap(QPixmap(CLEAR_DEFAULT_ICON));
+            return true;
+        } else {
+            return m_clearWidget->eventFilter(obj, event);
+        }
+    } else {
+        return QLineEdit::eventFilter(obj, event);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::LineFilterEdit::onClearButtonPressed()
+void Lvk::FE::LineFilterEdit::showEvent(QShowEvent *event)
 {
-    QLineEdit::clear();
-    setFocus();
+    m_clearWidget->move(width() - ICON_SIZE - ICON_RIGHT_MARGIN, (height() - ICON_SIZE)/2);
+
+    QLineEdit::showEvent(event);
 }
+
 

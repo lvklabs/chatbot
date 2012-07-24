@@ -24,7 +24,7 @@
 
 #include <QLineEdit>
 
-class QPushButton;
+class QLabel;
 
 namespace Lvk
 {
@@ -56,13 +56,11 @@ public:
     explicit LineFilterEdit(QWidget *parent = 0);
 
 protected:
+    bool eventFilter(QObject *obj, QEvent *event);
     void showEvent(QShowEvent *);
 
 private:
-    QPushButton *m_clearButton;
-
-private slots:
-    void onClearButtonPressed();
+    QLabel *m_clearWidget;
 };
 
 /// @}

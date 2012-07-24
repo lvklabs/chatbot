@@ -59,7 +59,7 @@
       <widget class="Lvk::FE::LineFilterEdit" name="filter">
        <property name="maximumSize">
         <size>
-         <width>200</width>
+         <width>150</width>
          <height>16777215</height>
         </size>
        </property>
