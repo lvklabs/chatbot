@@ -60,10 +60,6 @@ public:
 
     const QString &delimiter();
 
-    void setText(const QString &text);
-
-    void setDefaultText(const QString &text);
-
 protected:
     virtual void showEvent(QShowEvent *event);
 
@@ -87,7 +83,6 @@ private:
     QString m_head;
     QString m_current;
     QString m_tail;
-    QString m_defaultString;
 
     void initContainer();
     void updateContainerGeometry();

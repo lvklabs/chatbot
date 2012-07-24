@@ -87,7 +87,7 @@ void Lvk::FE::RuleInputWidget::setupUi()
 
     m_targetTextEdit->setDelimiter(TARGET_SPLIT_TOKEN);
     m_targetTextEdit->setVisible(false);
-    m_targetTextEdit->setDefaultText(m_strAnyUser);
+    m_targetTextEdit->setPlaceholderText(m_strAnyUser);
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
 

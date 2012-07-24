@@ -88,8 +88,6 @@ Lvk::FE::AutocompleteTextEdit::AutocompleteTextEdit(QWidget *parent) :
 {
     initContainer();
 
-    setText(m_defaultString);
-
     connect(this,         SIGNAL(textEdited(QString)),  SLOT(onTargetTextEdited(QString)));
     connect(m_listWidget, SIGNAL(clicked(QModelIndex)), SLOT(onListItemSelected()));
 }
@@ -151,10 +149,6 @@ void Lvk::FE::AutocompleteTextEdit::keyPressEvent(QKeyEvent *event)
 
 void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 {
-    if (text().trimmed().isEmpty()) {
-        QLineEdit::setText(m_defaultString);
-    }
-
     m_container->hide();
 
     QLineEdit::focusOutEvent(event);
@@ -165,15 +159,6 @@ void Lvk::FE::AutocompleteTextEdit::focusOutEvent(QFocusEvent *event)
 void Lvk::FE::AutocompleteTextEdit::focusInEvent(QFocusEvent *event)
 {
     updateContainerGeometry();
-
-    if (text().trimmed() == m_defaultString) {
-        QLineEdit::setText("");
-    }
-
-    // If empty, display full list
-    if (text().isEmpty()) {
-        onTargetTextEdited("");
-    }
 
     QLineEdit::focusInEvent(event);
 }
@@ -232,24 +217,6 @@ void Lvk::FE::AutocompleteTextEdit::setDelimiter(const QString &delim)
 const QString & Lvk::FE::AutocompleteTextEdit::delimiter()
 {
     return m_delimiter;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::AutocompleteTextEdit::setDefaultText(const QString &text)
-{
-    m_defaultString = text;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::AutocompleteTextEdit::setText(const QString &text)
-{
-    if (!text.isEmpty()) {
-        QLineEdit::setText(text);
-    } else {
-        QLineEdit::setText(m_defaultString);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
