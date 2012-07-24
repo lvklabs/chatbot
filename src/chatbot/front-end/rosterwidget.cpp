@@ -20,6 +20,7 @@
  */
 
 #include "rosterwidget.h"
+#include "linefilteredit.h"
 
 #include <QListWidget>
 #include <QCheckBox>
@@ -34,7 +35,7 @@
 
 Lvk::FE::RosterWidget::RosterWidget(QWidget *parent) :
     QWidget(parent), m_allUsersCheckBox(new QCheckBox()), m_rosterListWidget(new QListWidget()),
-    m_filterText(new QLineEdit())
+    m_filterText(new FE::LineFilterEdit())
 {
     setupWidget();
 
