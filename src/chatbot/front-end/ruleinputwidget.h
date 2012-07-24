@@ -34,7 +34,7 @@ class QLineEdit;
 class QPlainTextEdit;
 class QLayout;
 class QLabel;
-class QPushButton;
+class QToolButton;
 
 namespace Lvk
 {
@@ -101,7 +101,7 @@ private:
 
     QLayout                       *m_layout;
     QLabel                        *m_targetLabel;
-    QPushButton                   *m_selectUsersButton;
+    QToolButton                   *m_selectUsersButton;
     Lvk::FE::AutocompleteTextEdit *m_targetTextEdit;
     QLabel                        *m_inputLabel;
     QLineEdit                     *m_input;

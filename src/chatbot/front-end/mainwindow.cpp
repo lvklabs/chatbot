@@ -546,6 +546,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case EditCategoryUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
+        ui->ruleOutputWidget->setMaximumHeight(16777215);
         ui->categoryNameLabel->setVisible(true);
         ui->categoryNameTextEdit->setVisible(true);
         ui->ruleInputWidget->setVisible(false);
@@ -560,6 +561,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case EditRuleUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
+        ui->ruleOutputWidget->setMaximumHeight(16777215);
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(true);
@@ -575,6 +577,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case EditEvasivesUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
+        ui->ruleOutputWidget->setMaximumHeight(150);
         ui->categoryNameLabel->setVisible(false);
         ui->categoryNameTextEdit->setVisible(false);
         ui->ruleInputWidget->setVisible(false);

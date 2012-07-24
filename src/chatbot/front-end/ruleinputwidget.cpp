@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QEvent>
 #include <QPushButton>
+#include <QToolButton>
 #include <QSpacerItem>
 
 #define TARGET_SPLIT_TOKEN  ","
@@ -41,7 +42,7 @@ Lvk::FE::RuleInputWidget::RuleInputWidget(QWidget *parent) :
     QWidget(parent),
     m_layout(new QVBoxLayout(this)),
     m_targetLabel(new QLabel(tr("If: Any user"), this)),
-    m_selectUsersButton(new QPushButton(tr("Edit users"), this)),
+    m_selectUsersButton(new QToolButton(this)),
     m_targetTextEdit(new Lvk::FE::AutocompleteTextEdit(this)),
     m_inputLabel(new QLabel(tr("Writes:"), this)),
     m_input(new QLineEdit(this)),
@@ -90,11 +91,13 @@ void Lvk::FE::RuleInputWidget::setupUi()
     m_targetTextEdit->setPlaceholderText(m_strAnyUser);
 
     m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
+    m_selectUsersButton->setText(tr("Select users"));
+    m_selectUsersButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    ///////////////////////////////////////
-    // FIXME not using select users button
+#ifndef USE_SELECT_USERS_BUTTON
     onSelectUsersButtonClicked();
-    ///////////////////////////////////////
+#endif
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -222,6 +225,14 @@ void Lvk::FE::RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
     }
 
     m_targetTextEdit->setText(targetText);
+
+#ifdef USE_SELECT_USERS_BUTTON
+    if (targetText.isEmpty()) {
+        m_targetLabel->setText(tr("If: Any user"));
+    } else {
+        m_targetLabel->setText(QString(tr("If: %1")).arg(targetText));
+    }
+#endif //USE_SELECT_USERS_BUTTON
 }
 
 //--------------------------------------------------------------------------------------------------
