@@ -51,12 +51,19 @@
      <item>
       <widget class="QLabel" name="filterLabel">
        <property name="text">
-        <string>Search:</string>
+        <string>Filter:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="filter"/>
+      <widget class="QLineEdit" name="filter">
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="filterSpacer">

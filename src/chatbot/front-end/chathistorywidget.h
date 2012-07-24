@@ -82,6 +82,11 @@ public:
     void clear();
 
     /**
+     * Clears only tables of the widget leaving the filter text unchanged.
+     */
+    void clearTables();
+
+    /**
      * Sets conversation \a conv
      */
     void setConversation(const Lvk::BE::Conversation &conv);
@@ -107,14 +112,17 @@ private:
     QHash<QString, EntryList> m_entries;
 
     void setupTables();
+    void connectSignals();
 
     void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
+    void filter(const QString &text);
 
 private slots:
 
     void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void onCellDoubleClicked(int row, int col);
+    void onFilterTextEdited(const QString &text);
 };
 
 /// @}

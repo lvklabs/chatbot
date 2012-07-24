@@ -119,6 +119,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(QWidget *parent)
     ui->setupUi(this);
 
     setupTables();
+    connectSignals();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -129,7 +130,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::BE::Conversation &conv,
     ui->setupUi(this);
 
     setupTables();
-
+    connectSignals();
     setConversation(conv);
 }
 
@@ -156,10 +157,10 @@ void Lvk::FE::ChatHistoryWidget::setupTables()
     ui->dateContactTable->setAlternatingRowColors(true);
     ui->dateContactTable->horizontalHeader()->setStretchLastSection(true);
     ui->dateContactTable->verticalHeader()->hide();
+    ui->dateContactTable->setColumnWidth(DateColumnn, 70);
     ui->dateContactTable->setHorizontalHeaderLabels(QStringList()
                                                     << tr("Date")
                                                     << tr("Username"));
-    ui->dateContactTable->setColumnWidth(DateColumnn, 70);
 
     // Conversation table
     ui->conversationTable->setRowCount(0);
@@ -171,14 +172,18 @@ void Lvk::FE::ChatHistoryWidget::setupTables()
     ui->conversationTable->setAlternatingRowColors(true);
     ui->conversationTable->horizontalHeader()->setStretchLastSection(true);
     ui->conversationTable->verticalHeader()->hide();
+    ui->conversationTable->setColumnWidth(TimeColumnn, 70);
     ui->conversationTable->setHorizontalHeaderLabels(QStringList()
                                                      << tr("Time")
                                                      << tr("Message")
                                                      << tr("Response")
                                                      << tr("Status"));
-    ui->conversationTable->setColumnWidth(TimeColumnn, 70);
+}
 
+//--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ChatHistoryWidget::connectSignals()
+{
     connect(ui->dateContactTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(onCurrentRowChanged(QModelIndex,QModelIndex)));
@@ -186,12 +191,23 @@ void Lvk::FE::ChatHistoryWidget::setupTables()
     connect(ui->conversationTable,
             SIGNAL(cellDoubleClicked(int,int)),
             SLOT(onCellDoubleClicked(int,int)));
-}
 
+    connect(ui->filter,
+            SIGNAL(textEdited(QString)),
+            SLOT(onFilterTextEdited(QString)));
+}
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ChatHistoryWidget::clear()
+{
+    ui->filter->clear();
+    clearTables();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::clearTables()
 {
     ui->dateContactTable->clearContents();
     ui->dateContactTable->setRowCount(0);
@@ -245,6 +261,10 @@ void Lvk::FE::ChatHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
 
         for (int i = 0; i < entries.size(); ++i) {
            addConversationTableRow(entries[i]);
+        }
+
+        if (ui->filter->text().size() > 0) {
+            filter(ui->filter->text());
         }
     }
 }
@@ -329,6 +349,28 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
         if (button == QMessageBox::Yes) {
             emit teachRule(msg);
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::onFilterTextEdited(const QString &text)
+{
+    filter(text);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
+{
+    for (int i = 0; i < ui->conversationTable->rowCount(); ++i) {
+        bool match = false;
+        for (int j = 0; j < ui->conversationTable->columnCount() && !match; ++j) {
+            if (ui->conversationTable->item(i, j)->text().contains(text, false)) {
+                match = true;
+            }
+        }
+        ui->conversationTable->setRowHidden(i, !match);
     }
 }
 
