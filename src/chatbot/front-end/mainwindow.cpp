@@ -597,6 +597,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
                                         QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
+        ui->changeAccountButton->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Disconnected"));
@@ -608,6 +609,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(false);
+        ui->changeAccountButton->setEnabled(false);
         ui->connectButton->setText(tr("Disconnect"));
         ui->connectionProgressBar->setVisible(true);
         ui->connectionStatusLabel->setText(tr("Connecting..."));
@@ -618,6 +620,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
+        ui->changeAccountButton->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Connection error. "
@@ -629,6 +632,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
+        ui->changeAccountButton->setEnabled(true);
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Connection error. "
