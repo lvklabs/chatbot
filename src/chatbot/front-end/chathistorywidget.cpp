@@ -47,10 +47,10 @@ enum DateContactTableColumns
 
 enum ConversationTableColumns
 {
+    StatusColumn,
     TimeColumnn,
     MessageColumn,
     ResponseColumn,
-    StatusColumn,
     ConversationTableTotalColumns
 };
 
@@ -118,6 +118,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    clear();
     setupTables();
     connectSignals();
 }
@@ -129,6 +130,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::BE::Conversation &conv,
 {
     ui->setupUi(this);
 
+    clear();
     setupTables();
     connectSignals();
     setConversation(conv);
@@ -173,11 +175,13 @@ void Lvk::FE::ChatHistoryWidget::setupTables()
     ui->conversationTable->horizontalHeader()->setStretchLastSection(true);
     ui->conversationTable->verticalHeader()->hide();
     ui->conversationTable->setColumnWidth(TimeColumnn, 70);
+    ui->conversationTable->setColumnWidth(StatusColumn, 22);
+    ui->conversationTable->setColumnWidth(MessageColumn, 170);
     ui->conversationTable->setHorizontalHeaderLabels(QStringList()
+                                                     << tr("")
                                                      << tr("Time")
                                                      << tr("Message")
-                                                     << tr("Response")
-                                                     << tr("Status"));
+                                                     << tr("Response"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -186,7 +190,11 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
 {
     connect(ui->dateContactTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            SLOT(onCurrentRowChanged(QModelIndex,QModelIndex)));
+            SLOT(onDateContactRowChanged(QModelIndex,QModelIndex)));
+
+    connect(ui->conversationTable->selectionModel(),
+            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            SLOT(onConversationRowChanged(QModelIndex,QModelIndex)));
 
     connect(ui->conversationTable,
             SIGNAL(cellDoubleClicked(int,int)),
@@ -195,14 +203,19 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
     connect(ui->filter,
             SIGNAL(textChanged(QString)),
             SLOT(onFilterTextChanged(QString)));
+
+    connect(ui->teachRuleButton,
+            SIGNAL(clicked()),
+            SLOT(onTeachRuleClicked()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ChatHistoryWidget::clear()
 {
-    ui->filter->clear();
     clearTables();
+    ui->filter->clear();
+    ui->teachRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -213,6 +226,7 @@ void Lvk::FE::ChatHistoryWidget::clearTables()
     ui->dateContactTable->setRowCount(0);
     ui->conversationTable->clearContents();
     ui->conversationTable->setRowCount(0);
+    ui->removeHistoryButton->setEnabled(false);
     m_entries.clear();
 }
 
@@ -248,8 +262,8 @@ void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::BE::Conversatio
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
-                                                     const QModelIndex &/*previous*/)
+void Lvk::FE::ChatHistoryWidget::onDateContactRowChanged(const QModelIndex &current,
+                                                         const QModelIndex &/*previous*/)
 {
     ui->conversationTable->clearContents();
     ui->conversationTable->setRowCount(0);
@@ -271,20 +285,37 @@ void Lvk::FE::ChatHistoryWidget::onCurrentRowChanged(const QModelIndex &current,
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &current,
+                                                          const QModelIndex &/*previous*/)
+{
+    if (!current.isValid()) {
+        return;
+    }
+
+    if (!ui->conversationTable->item(current.row(), StatusColumn)->data(RuleMatchRole).toBool()) {
+        ui->teachRuleButton->setEnabled(true);
+    } else {
+        ui->teachRuleButton->setEnabled(false);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
-    QString match = entry.match ? tr("Ok") : tr("No response found!");
+    QString matchStr = entry.match ? tr("Response found") : tr("Response not found");
 
     int nextRow = ui->conversationTable->rowCount();
     ui->conversationTable->insertRow(nextRow);
     ui->conversationTable->setItem(nextRow, TimeColumnn,    new QTableWidgetItem(time));
     ui->conversationTable->setItem(nextRow, MessageColumn,  new QTableWidgetItem(entry.msg));
     ui->conversationTable->setItem(nextRow, ResponseColumn, new QTableWidgetItem(entry.response));
-    ui->conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(match));
+    ui->conversationTable->setItem(nextRow, StatusColumn,   new QTableWidgetItem(""));
 
     ui->conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
     ui->conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
+    ui->conversationTable->item(nextRow, StatusColumn)->setData(Qt::ToolTipRole, matchStr);
     ui->conversationTable->item(nextRow, StatusColumn)->setData(RuleMatchRole, entry.match);
 
     if (entry.match) {
@@ -338,17 +369,42 @@ void Lvk::FE::ChatHistoryWidget::setConversation(const Lvk::BE::Conversation &co
 
 void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 {
-    if (!ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool()) {
-        QString msg = ui->conversationTable->item(row, MessageColumn)->text();
-        QString dialogTitle = tr("Teach rule");
-        QString dialogText = QString(tr("Teach new rule for message: \"%1\" ?")).arg(msg);
+    if (!rowHasMatchStatus(row)) {
+        askTeachRule(row);
+    }
+}
 
-        int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
-                                           QMessageBox::No);
+//--------------------------------------------------------------------------------------------------
 
-        if (button == QMessageBox::Yes) {
-            emit teachRule(msg);
-        }
+void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
+{
+    QModelIndex currentIndex = ui->conversationTable->selectionModel()->currentIndex();
+
+    if (currentIndex.isValid()) {
+        askTeachRule(currentIndex.row());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::ChatHistoryWidget::rowHasMatchStatus(int row)
+{
+    return ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::askTeachRule(int row)
+{
+    QString msg = ui->conversationTable->item(row, MessageColumn)->text();
+    QString dialogTitle = tr("Teach rule");
+    QString dialogText = QString(tr("Teach new rule for message: \"%1\" ?")).arg(msg);
+
+    int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
+                                       QMessageBox::No);
+
+    if (button == QMessageBox::Yes) {
+        emit teachRule(msg);
     }
 }
 
@@ -373,5 +429,4 @@ void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
         ui->conversationTable->setRowHidden(i, !match);
     }
 }
-
 

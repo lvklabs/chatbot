@@ -124,12 +124,16 @@ private:
     void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
     void filter(const QString &text);
+    void askTeachRule(int row);
+    bool rowHasMatchStatus(int row);
 
 private slots:
 
-    void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
+    void onDateContactRowChanged(const QModelIndex &current, const QModelIndex &previous);
+    void onConversationRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void onCellDoubleClicked(int row, int col);
     void onFilterTextChanged(const QString &text);
+    void onTeachRuleClicked();
 };
 
 /// @}

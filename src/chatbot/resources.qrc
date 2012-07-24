@@ -21,5 +21,7 @@
         <file>res/open_last_chatbot.png</file>
         <file alias="clear_16x16.png">res/clear_16x16.png</file>
         <file alias="clear_hover_16x16.png">res/clear_hover_16x16.png</file>
+        <file alias="add_rule_history_32x32.png">res/add_rule_history_32x32.png</file>
+        <file alias="remove_history_32x32.png">res/remove_history_32x32.png</file>
     </qresource>
 </RCC>

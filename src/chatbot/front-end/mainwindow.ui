@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -479,13 +479,13 @@
                 <number>10</number>
                </property>
                <property name="leftMargin">
-                <number>20</number>
+                <number>0</number>
                </property>
                <property name="topMargin">
-                <number>20</number>
+                <number>0</number>
                </property>
                <property name="rightMargin">
-                <number>20</number>
+                <number>0</number>
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="usernameLabel">
@@ -1016,21 +1016,8 @@ Please insert your username and password and press &quot;Verify account&quot; bu
         </attribute>
         <layout class="QGridLayout" name="gridLayout_9">
          <item row="0" column="0">
-          <layout class="QGridLayout" name="conversationTabGridLayout" columnstretch="2,0">
-           <item row="0" column="0" colspan="2">
-            <widget class="QLabel" name="conversationHeaderLabel">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Conversations held with the chatbot:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
+          <layout class="QGridLayout" name="conversationTabGridLayout" columnstretch="2">
+           <item row="0" column="0">
             <widget class="Lvk::FE::ChatHistoryWidget" name="chatHistory" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
