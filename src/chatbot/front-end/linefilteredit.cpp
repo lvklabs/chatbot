@@ -27,7 +27,7 @@
 #define ICON_SIZE                   16
 #define ICON_RIGHT_MARGIN           5
 #define CLEAR_DEFAULT_ICON          ":/icons/clear_16x16.png"
-#define CLEAR_MOUSE_HOVER_ICON      ":/icons/clear_hover_16x16.png"
+#define CLEAR_HOVER_ICON            ":/icons/clear_hover_16x16.png"
 
 
 //--------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ bool Lvk::FE::LineFilterEdit::eventFilter(QObject *obj, QEvent *event)
             QLineEdit::clear();
             return true;
         } else if (event->type() == QEvent::Enter) {
-            m_clearWidget->setPixmap(QPixmap(CLEAR_MOUSE_HOVER_ICON));
+            m_clearWidget->setPixmap(QPixmap(isEnabled() ? CLEAR_HOVER_ICON : CLEAR_DEFAULT_ICON));
             return true;
         } else if (event->type() == QEvent::Leave) {
             m_clearWidget->setPixmap(QPixmap(CLEAR_DEFAULT_ICON));
