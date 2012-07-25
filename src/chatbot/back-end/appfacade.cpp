@@ -515,7 +515,7 @@ QStringList Lvk::BE::AppFacade::getEvasives() const
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::AppFacade::getTestUserResponse(const QString &input, MatchList &matches) const
+QString Lvk::BE::AppFacade::getResponse(const QString &input, MatchList &matches) const
 {
     QString response;
 

@@ -170,14 +170,36 @@ public:
      */
     Rule *evasivesRule();
 
+    /**
+     * Provides a list of pairs (Rule, Input index) used to store which rules has matched with
+     * which rule input.
+     *
+     * \see getResponse, getTestUserResponse
+     */
     typedef QList< QPair<const Rule *, int> > MatchList;
 
+    /**
+     * Gets a response for the given \a input and \a target.
+     *
+     * Returns the response if there is a match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
     QString getResponse(const QString &input, const QString &target, MatchList &matches) const;
 
-    QString getTestUserResponse(const QString &input, MatchList &matches) const;
+    /**
+     * Gets a response for the given \a input ignoring target rules.
+     *
+     * Returns the response if there is a match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
+    QString getResponse(const QString &input, MatchList &matches) const;
 
     /**
-     * Refreshes the NLP engine. Invoke this mehod if the root rule or any other child rule has
+     * Refreshes the NLP engine. Invoke this method if the root rule or any other child rule has
      * been changed.
      */
     void refreshNlpEngine();

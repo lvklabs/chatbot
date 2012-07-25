@@ -1676,7 +1676,7 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString input = ui->testInputText->text();
     BE::AppFacade::MatchList matches;
 
-    QString response = m_appFacade->getTestUserResponse(input, matches);
+    QString response = m_appFacade->getResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
 
