@@ -133,6 +133,16 @@
     </layout>
    </item>
   </layout>
+  <action name="removeAllAction">
+   <property name="text">
+    <string>Remove all conversations</string>
+   </property>
+  </action>
+  <action name="removeSelAction">
+   <property name="text">
+    <string>Remove selected conversation</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -24,6 +24,7 @@
 
 #include <QIcon>
 #include <QMessageBox>
+#include <QMenu>
 
 #define DATE_FORMAT     "dd/MM/yy"
 #define TIME_FORMAT     "hh:mm:ss"
@@ -56,8 +57,9 @@ enum ConversationTableColumns
 
 enum
 {
-    ConversationKeyRole = Qt::UserRole,
-    RuleMatchRole
+    HashKeyRole = Qt::UserRole,
+    RuleHasMatchedRole,
+    EntryFromRole
 };
 
 
@@ -120,6 +122,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(QWidget *parent)
 
     clear();
     setupTables();
+    setupMenus();
     connectSignals();
 }
 
@@ -132,6 +135,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::BE::Conversation &conv,
 
     clear();
     setupTables();
+    setupMenus();
     connectSignals();
     setConversation(conv);
 }
@@ -186,6 +190,16 @@ void Lvk::FE::ChatHistoryWidget::setupTables()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ChatHistoryWidget::setupMenus()
+{
+    QMenu *menu = new QMenu(this);
+    menu->addAction(ui->removeSelAction);
+    menu->addAction(ui->removeAllAction);
+    ui->removeHistoryButton->setMenu(menu);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::ChatHistoryWidget::connectSignals()
 {
     connect(ui->dateContactTable->selectionModel(),
@@ -204,13 +218,12 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
             SIGNAL(textChanged(QString)),
             SLOT(onFilterTextChanged(QString)));
 
-    connect(ui->teachRuleButton,
-            SIGNAL(clicked()),
-            SLOT(onTeachRuleClicked()));
+    // Toolbar signals
 
-    connect(ui->removeHistoryButton,
-            SIGNAL(clicked()),
-            SLOT(onRemoveHistoryClicked()));
+    connect(ui->teachRuleButton,     SIGNAL(clicked()),   SLOT(onTeachRuleClicked()));
+    connect(ui->removeHistoryButton, SIGNAL(clicked()),   SLOT(onRemoveHistoryClicked()));
+    connect(ui->removeAllAction,     SIGNAL(triggered()), SLOT(askRemoveAll()));
+    connect(ui->removeSelAction,     SIGNAL(triggered()), SLOT(askRemoveSelected()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -255,9 +268,9 @@ void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::BE::Conversatio
 
     if (ui->dateContactTable->rowCount() == 1) {
         addConversationTableRow(entry);
-    } else if (ui->dateContactTable->selectionModel()->selectedIndexes().size() > 0) {
-        QModelIndex selectedIndex = ui->dateContactTable->selectionModel()->selectedIndexes().first();
-        const QString &selectedKey = selectedIndex.data(ConversationKeyRole).toString();
+    } else if (ui->dateContactTable->selectionModel()->hasSelection()) {
+        QModelIndex selectedIndex = ui->dateContactTable->selectionModel()->currentIndex();
+        const QString &selectedKey = selectedIndex.data(HashKeyRole).toString();
 
         if (key == selectedKey) {
             addConversationTableRow(entry);
@@ -277,17 +290,30 @@ void Lvk::FE::ChatHistoryWidget::onDateContactRowChanged(const QModelIndex &curr
     ui->conversationTable->setRowCount(0);
 
     if (current.isValid()) {
-        QTableWidgetItem *selectedItem = ui->dateContactTable->item(current.row(), current.column());
-        QString key = selectedItem->data(ConversationKeyRole).toString();
+        int row = current.row();
+
+        // Fill table with new selected conversation
+
+        QTableWidgetItem *selectedItem = ui->dateContactTable->item(row, current.column());
+        QString key = selectedItem->data(HashKeyRole).toString();
         const EntryList &entries = m_entries[key];
 
         for (int i = 0; i < entries.size(); ++i) {
            addConversationTableRow(entries[i]);
         }
 
+        // Filter table
+
         if (ui->filter->text().size() > 0) {
             filter(ui->filter->text());
         }
+
+        // Update removeSelAction displayed text
+
+        QString date = ui->dateContactTable->item(row, DateColumnn)->text();
+        QString user = ui->dateContactTable->item(row, UsernameColumn)->text();
+        QString actionTextFormat = tr("Remove conversation with %1 on %2");
+        ui->removeSelAction->setText(actionTextFormat.arg(user, date));
     }
 }
 
@@ -300,7 +326,7 @@ void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &cur
         return;
     }
 
-    if (!ui->conversationTable->item(current.row(), StatusColumn)->data(RuleMatchRole).toBool()) {
+    if (!rowHasMatchStatus(current.row())) {
         ui->teachRuleButton->setEnabled(true);
     } else {
         ui->teachRuleButton->setEnabled(false);
@@ -324,7 +350,7 @@ void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversa
     ui->conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
     ui->conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
     ui->conversationTable->item(nextRow, StatusColumn)->setData(Qt::ToolTipRole, matchStr);
-    ui->conversationTable->item(nextRow, StatusColumn)->setData(RuleMatchRole, entry.match);
+    ui->conversationTable->item(nextRow, StatusColumn)->setData(RuleHasMatchedRole, entry.match);
 
     if (entry.match) {
         ui->conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
@@ -350,8 +376,9 @@ void Lvk::FE::ChatHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversat
     ui->dateContactTable->setItem(nextRow, DateColumnn,    new QTableWidgetItem(date));
     ui->dateContactTable->setItem(nextRow, UsernameColumn, new QTableWidgetItem(fullname));
 
-    ui->dateContactTable->item(nextRow, DateColumnn)->setData(ConversationKeyRole, hashKey(entry));
-    ui->dateContactTable->item(nextRow, UsernameColumn)->setData(ConversationKeyRole, hashKey(entry));
+    ui->dateContactTable->item(nextRow, DateColumnn)->setData(HashKeyRole, hashKey(entry));
+    ui->dateContactTable->item(nextRow, UsernameColumn)->setData(HashKeyRole, hashKey(entry));
+    ui->dateContactTable->item(nextRow, UsernameColumn)->setData(EntryFromRole, entry.from);
 
     if (username.contains("@gmail.com")) {
         ui->dateContactTable->item(nextRow, UsernameColumn)->setIcon(QIcon(GMAIL_ICON));
@@ -386,10 +413,10 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 
 void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
 {
-    QModelIndex currentIndex = ui->conversationTable->selectionModel()->currentIndex();
+    QModelIndex selectedIndex= ui->conversationTable->selectionModel()->currentIndex();
 
-    if (currentIndex.isValid()) {
-        askTeachRule(currentIndex.row());
+    if (selectedIndex.isValid()) {
+        askTeachRule(selectedIndex.row());
     }
 }
 
@@ -397,7 +424,7 @@ void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
 
 void Lvk::FE::ChatHistoryWidget::onRemoveHistoryClicked()
 {
-    askRemoveHistory();
+    askRemoveSelected();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -411,30 +438,49 @@ void Lvk::FE::ChatHistoryWidget::onFilterTextChanged(const QString &text)
 
 void Lvk::FE::ChatHistoryWidget::askTeachRule(int row)
 {
-    QString msg = ui->conversationTable->item(row, MessageColumn)->text();
-    QString dialogTitle = tr("Teach rule");
-    QString dialogText = QString(tr("Teach new rule for message: \"%1\" ?")).arg(msg);
+    QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
 
-    int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
-                                       QMessageBox::No);
+    QString title = tr("Teach rule");
+    QString text = QString(tr("Teach new rule for message: \"%1\" ?")).arg(chatMsg);
 
-    if (button == QMessageBox::Yes) {
-        emit teachRule(msg);
+    if (askConfirmation(title, text)) {
+        emit teachRule(chatMsg);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::askRemoveHistory()
+void Lvk::FE::ChatHistoryWidget::askRemoveAll()
 {
-    QString dialogTitle = tr("Remove history");
-    QString dialogText  = tr("Are you sure you want to remove the chat history?");
+    QString title = tr("Remove conversation");
+    QString text  = tr("Are you sure you want to remove all conversations?");
 
-    int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
-                                       QMessageBox::No);
+    if (askConfirmation(title, text)) {
+        emit removeAll();
+    }
+}
 
-    if (button == QMessageBox::Yes) {
-        emit removeHistory();
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::askRemoveSelected()
+{
+    QModelIndex selectedIndex = ui->dateContactTable->selectionModel()->currentIndex();
+
+    if (!selectedIndex.isValid()) {
+        return;
+    }
+
+    int row = selectedIndex.row();
+
+    QString date = ui->dateContactTable->item(row, DateColumnn)->text();
+    QString user = ui->dateContactTable->item(row, UsernameColumn)->text();
+    QString from = ui->dateContactTable->item(row, UsernameColumn)->data(EntryFromRole).toString();
+
+    QString title = tr("Remove conversation");
+    QString text  = tr("Are you sure you want to remove the conversation with %1 on %2?");
+
+    if (askConfirmation(title, text.arg(user, date))) {
+        emit remove(QDate::fromString(date, DATE_FORMAT), from);
     }
 }
 
@@ -457,5 +503,14 @@ void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
 
 bool Lvk::FE::ChatHistoryWidget::rowHasMatchStatus(int row)
 {
-    return ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool();
+    return ui->conversationTable->item(row, StatusColumn)->data(RuleHasMatchedRole).toBool();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::ChatHistoryWidget::askConfirmation(const QString &title, const QString &text)
+{
+    int btn = QMessageBox::question(this, title, text, QMessageBox::Yes, QMessageBox::No);
+
+    return btn == QMessageBox::Yes;
 }

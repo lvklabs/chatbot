@@ -276,6 +276,11 @@ public:
      */
     void clearChatHistory();
 
+    /**
+     * Clears chat history held with \a user on \a date.
+     */
+    void clearChatHistory(const QDate &date, const QString &user);
+
 
 signals:
 

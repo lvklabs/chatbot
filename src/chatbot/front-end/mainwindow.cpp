@@ -336,12 +336,13 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Conversation history tab
 
-    connect(m_appFacade,
-            SIGNAL(newConversationEntry(BE::Conversation::Entry)),
+    connect(m_appFacade, SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
     connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
-    connect(ui->chatHistory, SIGNAL(removeHistory()),    SLOT(onRemoveHistory()));
+    connect(ui->chatHistory, SIGNAL(removeAll()),        SLOT(onRemoveAllConversations()));
+    connect(ui->chatHistory, SIGNAL(remove(QDate,QString)),
+            SLOT(onRemoveConversation(QDate,QString)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1411,10 +1412,18 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::getCategoryFromDialog()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRemoveHistory()
+void Lvk::FE::MainWindow::onRemoveAllConversations()
 {
     m_appFacade->clearChatHistory();
-    ui->chatHistory->setConversation(BE::Conversation());
+    ui->chatHistory->setConversation(m_appFacade->chatHistory());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRemoveConversation(const QDate &date, const QString &username)
+{
+    m_appFacade->clearChatHistory(date, username);
+    ui->chatHistory->setConversation(m_appFacade->chatHistory());
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -806,6 +806,29 @@ void Lvk::BE::AppFacade::clearChatHistory()
 
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
+{
+    if (!m_chatbot) {
+        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
+    }
+
+    DefaultVirtualUser *virtualUser =
+            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
+
+    if (virtualUser) {
+        Conversation conv;
+        foreach (const BE::Conversation::Entry &entry, virtualUser->chatHistory().entries()) {
+            if (entry.from != user || entry.dateTime.date() != date) {
+                conv.append(entry);
+            }
+        }
+        virtualUser->setChatHistory(conv);
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------
 // Misc
 //--------------------------------------------------------------------------------------------------
 
