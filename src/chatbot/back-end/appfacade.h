@@ -271,6 +271,12 @@ public:
      */
     const Conversation &chatHistory();
 
+    /**
+     * Clears the chat history of the current chatbot. All persisted data is also deleted.
+     */
+    void clearChatHistory();
+
+
 signals:
 
     /**

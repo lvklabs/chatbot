@@ -110,6 +110,11 @@ signals:
      */
     void teachRule(const QString &input);
 
+    /**
+     * TODO document
+     */
+    void removeHistory();
+
 private:
 
     Ui::ChatHistoryWidget *ui;
@@ -124,6 +129,7 @@ private:
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
     void filter(const QString &text);
     void askTeachRule(int row);
+    void askRemoveHistory();
     bool rowHasMatchStatus(int row);
 
 private slots:
@@ -133,6 +139,7 @@ private slots:
     void onCellDoubleClicked(int row, int col);
     void onFilterTextChanged(const QString &text);
     void onTeachRuleClicked();
+    void onRemoveHistoryClicked();
 };
 
 /// @}

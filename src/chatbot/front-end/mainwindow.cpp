@@ -340,8 +340,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
-    connect(ui->chatHistory, SIGNAL(teachRule(QString)),
-            SLOT(onTeachFromHistoryWidget(QString)));
+    connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
+    connect(ui->chatHistory, SIGNAL(removeHistory()),    SLOT(onRemoveHistory()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1350,7 +1350,7 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 }
 
 //--------------------------------------------------------------------------------------------------
-// Teach rule from history
+// History actions
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
@@ -1407,6 +1407,14 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::getCategoryFromDialog()
     }
 
     return category;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRemoveHistory()
+{
+    m_appFacade->clearChatHistory();
+    ui->chatHistory->setConversation(BE::Conversation());
 }
 
 //--------------------------------------------------------------------------------------------------

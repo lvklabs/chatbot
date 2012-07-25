@@ -207,6 +207,10 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
     connect(ui->teachRuleButton,
             SIGNAL(clicked()),
             SLOT(onTeachRuleClicked()));
+
+    connect(ui->removeHistoryButton,
+            SIGNAL(clicked()),
+            SLOT(onRemoveHistoryClicked()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -227,6 +231,7 @@ void Lvk::FE::ChatHistoryWidget::clearConversations()
     ui->conversationTable->clearContents();
     ui->conversationTable->setRowCount(0);
     ui->removeHistoryButton->setEnabled(false);
+    ui->filter->setEnabled(false);
     m_entries.clear();
 }
 
@@ -258,6 +263,9 @@ void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::BE::Conversatio
             addConversationTableRow(entry);
         }
     }
+
+    ui->removeHistoryButton->setEnabled(true);
+    ui->filter->setEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -387,9 +395,16 @@ void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::ChatHistoryWidget::rowHasMatchStatus(int row)
+void Lvk::FE::ChatHistoryWidget::onRemoveHistoryClicked()
 {
-    return ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool();
+    askRemoveHistory();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::onFilterTextChanged(const QString &text)
+{
+    filter(text);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -410,9 +425,17 @@ void Lvk::FE::ChatHistoryWidget::askTeachRule(int row)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::onFilterTextChanged(const QString &text)
+void Lvk::FE::ChatHistoryWidget::askRemoveHistory()
 {
-    filter(text);
+    QString dialogTitle = tr("Remove history");
+    QString dialogText  = tr("Are you sure you want to remove the chat history?");
+
+    int button = QMessageBox::question(this, dialogTitle, dialogText, QMessageBox::Yes,
+                                       QMessageBox::No);
+
+    if (button == QMessageBox::Yes) {
+        emit removeHistory();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -430,3 +453,9 @@ void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::ChatHistoryWidget::rowHasMatchStatus(int row)
+{
+    return ui->conversationTable->item(row, StatusColumn)->data(RuleMatchRole).toBool();
+}

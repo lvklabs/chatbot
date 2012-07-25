@@ -82,9 +82,14 @@ public:
     virtual QPixmap getAvatar();
 
     /**
-     * Returns the chat conversation history of the current virtual user id.
+     * Returns the chat history of the current virtual user id.
      */
-    const Conversation &getConversationHistory() const;
+    const Conversation &chatHistory() const;
+
+    /**
+     * Sets the chat history of the current virtual user id.
+     */
+    void setChatHistory(const Conversation &conv);
 
     /**
      * Sets the NLP engine that is used to get responses.
@@ -112,6 +117,7 @@ private:
     DefaultVirtualUser& operator=(DefaultVirtualUser&);
 
     QString m_id;
+    QString m_logFilename;
     Nlp::Engine *m_engine;
     QStringList m_evasives;
     Conversation m_conversationHistory;
@@ -119,6 +125,7 @@ private:
 
     QReadWriteLock *m_rwLock;
 
+    void resetHistoryLog();
     void getResponse(QString &response, bool &match, const QString &input, const QString &username);
     void logConversationEntry(const Conversation::Entry &entry);
     void logError(const QString &msg);

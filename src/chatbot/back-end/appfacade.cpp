@@ -300,25 +300,15 @@ void Lvk::BE::AppFacade::close()
     }
 
     m_chatbotId = nullChatbotId();
-
     m_evasivesRule = 0;
-
     m_rootRule = std::auto_ptr<Rule>(new Rule());
-
     loadDefaultRules();
-
     m_filename = "";
-
     m_nextRuleId = 0;
-
     m_metadataUnsaved = false;
-
     m_metadata.clear();
-
     m_rulesHash.clear();
-
     m_targets.clear();
-
     markAsSaved();
 }
 
@@ -542,22 +532,23 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
                                       MatchList &matches) const
 {
     matches.clear();
+    QString response;
 
-    if (!m_nlpEngine) {
-        return "ERROR: NLP Engine Not implemented";
-    }
+    if (m_nlpEngine) {
+        Nlp::Engine::MatchList nlpRulesMatched;
+        response = m_nlpEngine->getResponse(input, target, nlpRulesMatched);
 
-    Nlp::Engine::MatchList nlpRulesMatched;
-    QString response = m_nlpEngine->getResponse(input, target, nlpRulesMatched);
-
-    if (!nlpRulesMatched.isEmpty()) {
-        Nlp::RuleId ruleId = nlpRulesMatched.first().first;
-        int inputNumber = nlpRulesMatched.first().second;
-        matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
+        if (!nlpRulesMatched.isEmpty()) {
+            Nlp::RuleId ruleId = nlpRulesMatched.first().first;
+            int inputNumber = nlpRulesMatched.first().second;
+            matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
+        } else {
+            QStringList evasives = getEvasives();
+            response = !evasives.isEmpty() ?
+                        evasives[Cmn::Random::getInt(0, evasives.size() - 1)] : "";
+        }
     } else {
-        QStringList evasives = getEvasives();
-        response = !evasives.isEmpty() ?
-                    evasives[Cmn::Random::getInt(0, evasives.size() - 1)] : "";
+        qCritical("ERROR: NLP engine not set");
     }
 
     return response;
@@ -577,6 +568,8 @@ void Lvk::BE::AppFacade::refreshNlpEngine()
         buildNlpRulesOf(m_rootRule.get(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
         refreshEvasivesToChatbot();
+    } else {
+        qCritical("ERROR: NLP engine not set");
     }
 }
 
@@ -775,23 +768,42 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 }
 
 //--------------------------------------------------------------------------------------------------
+// Chat history
+//--------------------------------------------------------------------------------------------------
 
 const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
     if (!m_chatbot) {
-        setupChatbot(FbChat);
+        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
     }
 
     DefaultVirtualUser *virtualUser =
             dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
 
     if (virtualUser) {
-        return virtualUser->getConversationHistory();
+        return virtualUser->chatHistory();
     } else {
         static Conversation nullConversation;
         return nullConversation;
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::clearChatHistory()
+{
+    if (!m_chatbot) {
+        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
+    }
+
+    DefaultVirtualUser *virtualUser =
+            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
+
+    if (virtualUser) {
+        virtualUser->setChatHistory(Conversation());
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // Misc
@@ -824,3 +836,4 @@ bool Lvk::BE::AppFacade::loadDefaultRules()
 
     return true;
 }
+
