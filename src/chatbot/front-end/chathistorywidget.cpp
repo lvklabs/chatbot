@@ -221,9 +221,9 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
     // Toolbar signals
 
     connect(ui->teachRuleButton,     SIGNAL(clicked()),   SLOT(onTeachRuleClicked()));
-    connect(ui->removeHistoryButton, SIGNAL(clicked()),   SLOT(onRemoveHistoryClicked()));
-    connect(ui->removeAllAction,     SIGNAL(triggered()), SLOT(askRemoveAll()));
-    connect(ui->removeSelAction,     SIGNAL(triggered()), SLOT(askRemoveSelected()));
+    connect(ui->removeHistoryButton, SIGNAL(clicked()),   SLOT(removeSelectedWithDialog()));
+    connect(ui->removeAllAction,     SIGNAL(triggered()), SLOT(removeAllWithDialog()));
+    connect(ui->removeSelAction,     SIGNAL(triggered()), SLOT(removeSelectedWithDialog()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -405,7 +405,7 @@ void Lvk::FE::ChatHistoryWidget::setConversation(const Lvk::BE::Conversation &co
 void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 {
     if (!rowHasMatchStatus(row)) {
-        askTeachRule(row);
+        teachRuleWithDialog(row);
     }
 }
 
@@ -416,15 +416,8 @@ void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
     QModelIndex selectedIndex= ui->conversationTable->selectionModel()->currentIndex();
 
     if (selectedIndex.isValid()) {
-        askTeachRule(selectedIndex.row());
+        teachRuleWithDialog(selectedIndex.row());
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::ChatHistoryWidget::onRemoveHistoryClicked()
-{
-    askRemoveSelected();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -436,7 +429,7 @@ void Lvk::FE::ChatHistoryWidget::onFilterTextChanged(const QString &text)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::askTeachRule(int row)
+void Lvk::FE::ChatHistoryWidget::teachRuleWithDialog(int row)
 {
     QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
 
@@ -450,19 +443,20 @@ void Lvk::FE::ChatHistoryWidget::askTeachRule(int row)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::askRemoveAll()
+void Lvk::FE::ChatHistoryWidget::removeAllWithDialog()
 {
     QString title = tr("Remove conversation");
     QString text  = tr("Are you sure you want to remove all conversations?");
 
     if (askConfirmation(title, text)) {
-        emit removeAll();
+        clear();
+        emit removedAll();
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::askRemoveSelected()
+void Lvk::FE::ChatHistoryWidget::removeSelectedWithDialog()
 {
     QModelIndex selectedIndex = ui->dateContactTable->selectionModel()->currentIndex();
 
@@ -480,8 +474,26 @@ void Lvk::FE::ChatHistoryWidget::askRemoveSelected()
     QString text  = tr("Are you sure you want to remove the conversation with %1 on %2?");
 
     if (askConfirmation(title, text.arg(user, date))) {
-        emit remove(QDate::fromString(date, DATE_FORMAT), from);
+        removeDateContactRow(row);
+        emit removed(QDate::fromString(date, DATE_FORMAT), from);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::removeDateContactRow(int row)
+{
+    QString date = ui->dateContactTable->item(row, DateColumnn)->text();
+    QString from = ui->dateContactTable->item(row, UsernameColumn)->data(EntryFromRole).toString();
+
+    m_entries.remove(hashKey(date, from));
+    ui->dateContactTable->removeRow(row);
+
+    if (ui->dateContactTable->rowCount() == 0) {
+        ui->removeHistoryButton->setEnabled(false);
+        ui->filter->setEnabled(false);
+    }
+    ui->teachRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -514,3 +526,4 @@ bool Lvk::FE::ChatHistoryWidget::askConfirmation(const QString &title, const QSt
 
     return btn == QMessageBox::Yes;
 }
+

@@ -58,12 +58,12 @@ namespace CA
 namespace BE
 {
 
+class Rule;
+class DefaultVirtualUser;
+
 /// \ingroup Lvk
 /// \addtogroup BE
 /// @{
-
-class Rule;
-
 
 /**
  * \brief The AppFacade class provides the core functionality of the application.
@@ -344,6 +344,8 @@ private:
     CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
+
+    inline DefaultVirtualUser *virtualUser();
 
     void markAsSaved();
 

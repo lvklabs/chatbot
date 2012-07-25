@@ -773,15 +773,8 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 
 const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
-    if (!m_chatbot) {
-        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
-    }
-
-    DefaultVirtualUser *virtualUser =
-            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-
-    if (virtualUser) {
-        return virtualUser->chatHistory();
+    if (virtualUser()) {
+        return virtualUser()->chatHistory();
     } else {
         static Conversation nullConversation;
         return nullConversation;
@@ -792,15 +785,8 @@ const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
 
 void Lvk::BE::AppFacade::clearChatHistory()
 {
-    if (!m_chatbot) {
-        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
-    }
-
-    DefaultVirtualUser *virtualUser =
-            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-
-    if (virtualUser) {
-        virtualUser->setChatHistory(Conversation());
+    if (virtualUser()) {
+        virtualUser()->setChatHistory(Conversation());
     }
 }
 
@@ -809,27 +795,31 @@ void Lvk::BE::AppFacade::clearChatHistory()
 
 void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
 {
-    if (!m_chatbot) {
-        setupChatbot(FbChat); // FIXME FbChat, harmless so far but error-prone
-    }
-
-    DefaultVirtualUser *virtualUser =
-            dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-
-    if (virtualUser) {
+    if (virtualUser()) {
         Conversation conv;
-        foreach (const BE::Conversation::Entry &entry, virtualUser->chatHistory().entries()) {
+        foreach (const Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
             if (entry.from != user || entry.dateTime.date() != date) {
                 conv.append(entry);
             }
         }
-        virtualUser->setChatHistory(conv);
+        virtualUser()->setChatHistory(conv);
     }
 }
 
 
 //--------------------------------------------------------------------------------------------------
 // Misc
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
+{
+    if (!m_chatbot) {
+        setupChatbot(FbChat); // FIXME FbChat, harmless so far but very error-prone
+    }
+
+    return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
+}
+
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::loadDefaultRules()

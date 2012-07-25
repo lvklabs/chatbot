@@ -207,8 +207,8 @@ private slots:
 
     BE::Rule *getCategoryFromDialog();
     void onTeachFromHistoryWidget(const QString &msg);
-    void onRemoveAllConversations();
-    void onRemoveConversation(const QDate &date, const QString &username);
+    void onRemovedAllHistory();
+    void onRemovedHistory(const QDate &date, const QString &username);
 
     void onRuleInputEdited(const QString &ruleInput);
     void onRuleTargetEdited(const QString &ruleInput);

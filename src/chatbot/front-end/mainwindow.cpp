@@ -340,9 +340,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
     connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
-    connect(ui->chatHistory, SIGNAL(removeAll()),        SLOT(onRemoveAllConversations()));
-    connect(ui->chatHistory, SIGNAL(remove(QDate,QString)),
-            SLOT(onRemoveConversation(QDate,QString)));
+    connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
+    connect(ui->chatHistory, SIGNAL(removedAll()), SLOT(onRemovedAllHistory()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1354,6 +1353,20 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 // History actions
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onRemovedAllHistory()
+{
+    m_appFacade->clearChatHistory();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRemovedHistory(const QDate &date, const QString &username)
+{
+    m_appFacade->clearChatHistory(date, username);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
 {
     setUiMode(EditRuleUiMode);
@@ -1408,22 +1421,6 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::getCategoryFromDialog()
     }
 
     return category;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onRemoveAllConversations()
-{
-    m_appFacade->clearChatHistory();
-    ui->chatHistory->setConversation(m_appFacade->chatHistory());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onRemoveConversation(const QDate &date, const QString &username)
-{
-    m_appFacade->clearChatHistory(date, username);
-    ui->chatHistory->setConversation(m_appFacade->chatHistory());
 }
 
 //--------------------------------------------------------------------------------------------------

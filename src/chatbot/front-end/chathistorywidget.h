@@ -111,15 +111,15 @@ signals:
     void teachRule(const QString &input);
 
     /**
-     * This signal is emitted if the user wants to remove all the conversations
+     * This signal is emitted if the user has removed all the conversations
      */
-    void removeAll();
+    void removedAll();
 
     /**
-     * This signal is emitted if the user wants to remove the conversation held with \a
+     * This signal is emitted if the user has removed the conversation held with \a
      * username on \a date
      */
-    void remove(const QDate &date, const QString &username);
+    void removed(const QDate &date, const QString &username);
 
 private:
 
@@ -134,8 +134,8 @@ private:
 
     void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
     void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
+    void removeDateContactRow(int row);
     void filter(const QString &text);
-    void askTeachRule(int row);
     bool rowHasMatchStatus(int row);
     bool askConfirmation(const QString &title, const QString &text);
 
@@ -145,10 +145,10 @@ private slots:
     void onCellDoubleClicked(int row, int col);
     void onFilterTextChanged(const QString &text);
     void onTeachRuleClicked();
-    void onRemoveHistoryClicked();
 
-    void askRemoveAll();
-    void askRemoveSelected();
+    void teachRuleWithDialog(int row);
+    void removeAllWithDialog();
+    void removeSelectedWithDialog();
 };
 
 /// @}
