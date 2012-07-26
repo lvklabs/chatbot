@@ -1,4 +1,9 @@
 v0.14
+ - Added filter in chat history
+ - Added tool button to remove chat history conversations 
+ - Added tool button to teach a new rule from a message without match on the chat 
+   history
+ - Added new log file chatbot.log to log Chatbot issues
  - Removed unused feature "Reminder to save conversation"
 
 v0.13

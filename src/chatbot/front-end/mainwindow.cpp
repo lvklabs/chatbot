@@ -43,6 +43,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtDebug>
 
 #define TEST_CONVERSATION_LOG_FILE  "tests_history.log"
 #define APP_ICON_FILE               ":/icons/app_icon"
@@ -159,6 +160,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_tabsLayout(NullLayout),
     m_connectionStatus(DisconnectedFromChat)
 {
+    qDebug() << "Setting up main window...";
+
     ui->setupUi(this);
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
 
@@ -180,6 +183,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_testConversationLog = new Lvk::BE::ConversationWriter(testConvLogFilename);
 
     loadAllSettings();
+
+    qDebug() << "Main window created!";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -411,6 +416,7 @@ void Lvk::FE::MainWindow::closeEvent(QCloseEvent *event)
 
 void Lvk::FE::MainWindow::loadAllSettings()
 {
+    qDebug() << "Loading main window settings...";
     loadMainWindowSettings();
     loadChatSettings();
     loadSplittersSettings();

@@ -57,6 +57,7 @@ HEADERS += \
     ../../chatbot/front-end/importdialog.h \
     ../../chatbot/front-end/rosterwidget.h \
     ../../chatbot/front-end/autocompletetextedit.h \
+    ../../chatbot/front-end/linefilteredit.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/defaultvirtualuser.h \
@@ -81,6 +82,7 @@ HEADERS += \
     ../../chatbot/common/settings.h \
     ../../chatbot/common/csvdocument.h \
     ../../chatbot/common/csvrow.h \
+    ../../chatbot/common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -99,6 +101,7 @@ SOURCES += \
     ../../chatbot/front-end/importdialog.cpp \
     ../../chatbot/front-end/rosterwidget.cpp \
     ../../chatbot/front-end/autocompletetextedit.cpp \
+    ../../chatbot/front-end/linefilteredit.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/defaultvirtualuser.cpp \
@@ -119,6 +122,7 @@ SOURCES += \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/csvdocument.cpp \
     ../../chatbot/common/csvrow.cpp \
+    ../../chatbot/common/logger.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp

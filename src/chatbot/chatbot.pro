@@ -74,6 +74,7 @@ HEADERS += \
     front-end/rosterwidget.h \
     front-end/autocompletetextedit.h \
     front-end/chathistorywidget.h \
+    front-end/linefilteredit.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/defaultvirtualuser.h \
@@ -104,8 +105,8 @@ HEADERS += \
     common/csvdocument.h \
     common/csvrow.h \
     common/globalstrings.h \
+    common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    front-end/linefilteredit.h
 
 
 SOURCES += \
@@ -121,6 +122,7 @@ SOURCES += \
     front-end/rosterwidget.cpp \
     front-end/autocompletetextedit.cpp \
     front-end/chathistorywidget.cpp \
+    front-end/linefilteredit.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -141,8 +143,8 @@ SOURCES += \
     common/settings.cpp \
     common/csvdocument.cpp \
     common/csvrow.cpp \
+    common/logger.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
-    front-end/linefilteredit.cpp
 
 
 FORMS += \
@@ -172,6 +174,8 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+
+
 
 
 

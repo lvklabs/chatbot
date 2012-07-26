@@ -28,6 +28,7 @@
 #include "version.h"
 #include "settings.h"
 #include "settingskeys.h"
+#include "logger.h"
 
 void makeDirStructure();
 void setLanguage(QApplication &app);
@@ -45,6 +46,8 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    Lvk::Cmn::Logger::init();
+
     makeDirStructure();
     setLanguage(app);
 
@@ -60,6 +63,8 @@ int main(int argc, char *argv[])
 
 void setLanguage(QApplication &app)
 {
+    qDebug() << "Setting app language...";
+
     Lvk::Cmn::Settings settings;
 
     QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es_AR")).toString();
@@ -68,6 +73,9 @@ void setLanguage(QApplication &app)
     if (!langPath.endsWith(QDir::separator())) {
         langPath.append(QDir::separator());
     }
+
+    qDebug() << "Language:" << lang ;
+    qDebug() << "Language path:" << langPath;
 
     /* Qt common strings */
     QTranslator *qtTranslator = new QTranslator();
@@ -84,6 +92,8 @@ void setLanguage(QApplication &app)
 
 void makeDirStructure()
 {
+    qDebug() << "Making dir structure...";
+
     Lvk::Cmn::Settings settings;
 
     makeDir(settings.value(SETTING_LOGS_PATH).toString());
