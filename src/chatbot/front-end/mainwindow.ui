@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -551,7 +551,11 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Change account...</string>
+                  <string>Change user...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/icons/avatar_default_32x32.png</normaloff>:/icons/avatar_default_32x32.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -599,6 +603,12 @@
                 <size>
                  <width>0</width>
                  <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="styleSheet">
@@ -739,13 +749,6 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                </property>
                <property name="wordWrap">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="cancelChangeAccountButton">
-               <property name="text">
-                <string>Cancel</string>
                </property>
               </widget>
              </item>
@@ -964,6 +967,13 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                 </spacer>
                </item>
               </layout>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="cancelChangeAccountButton">
+               <property name="text">
+                <string>Cancel</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
