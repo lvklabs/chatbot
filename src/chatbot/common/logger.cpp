@@ -27,6 +27,7 @@
 #include <iostream>
 #include <QtDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QDir>
 #include <QString>
 #include <QDateTime>
@@ -37,6 +38,7 @@
 #define FATAL_STR            "Fatal: "
 
 #define LOG_FILENAME         "chatbot.log"
+#define LOG_MAX_SIZE         (1024*1024)
 
 #define DATE_TIME_LOG_FORMAT "yyyy-MM-dd hh:mm:ss.zzz"
 
@@ -72,7 +74,22 @@ QString chatbotLogFilename()
     return logsPath + QDir::separator() + LOG_FILENAME;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void rotateLog(const QString &logFilename)
+{
+    QString rlogFilename = logFilename + ".1";
+
+    QFileInfo logFile(logFilename);
+
+    if (logFile.size() > LOG_MAX_SIZE) {
+        QFile::remove(rlogFilename);
+        QFile::rename(logFilename, rlogFilename);
+    }
 }
+
+} // namespace
+
 
 //--------------------------------------------------------------------------------------------------
 // Logger
@@ -91,6 +108,8 @@ void Lvk::Cmn::Logger::init()
     QString logFilename = chatbotLogFilename();
 
     if (makeLogsPath()) {
+        rotateLog(logFilename);
+
         m_logFile = new QFile(logFilename);
 
         if (m_logFile->open(QFile::Append)) {

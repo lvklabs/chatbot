@@ -32,6 +32,8 @@
 #include "QXmppMucManager.h"
 
 #include <QDir>
+#include <QFileInfo>
+#include <QFile>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QSslSocket>
@@ -49,7 +51,23 @@ inline QString getBareJid(const QString &from)
     return from.split("/").at(0);
 }
 
-} // names
+//--------------------------------------------------------------------------------------------------
+
+void rotateLog(const QString &logFilename)
+{
+    const long LOG_MAX_SIZE = 1024*1024;
+
+    QString rlogFilename = logFilename + ".1";
+
+    QFileInfo logFile(logFilename);
+
+    if (logFile.size() > LOG_MAX_SIZE) {
+        QFile::remove(rlogFilename);
+        QFile::rename(logFilename, rlogFilename);
+    }
+}
+
+} // namespace
 
 
 //--------------------------------------------------------------------------------------------------
@@ -64,8 +82,42 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
       m_isConnected(false),
       m_rosterHasChanged(false)
 {
-    // Signals
+    setupLogger();
+    connectSignals();
+}
 
+//--------------------------------------------------------------------------------------------------
+
+Lvk::CA::XmppChatbot::~XmppChatbot()
+{
+    delete m_rosterMutex;
+    delete m_contactInfoMutex;
+    delete m_virtualUser;
+    delete m_xmppClient;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::setupLogger()
+{
+    Lvk::Cmn::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+    QString logFilename = logsPath + QDir::separator() + "./xmpp.log";
+
+    rotateLog(logFilename);
+
+    QXmppLogger *xmppLogger = new QXmppLogger(this);
+    xmppLogger->setLoggingType(QXmppLogger::FileLogging);
+    xmppLogger->setLogFilePath(logFilename);
+    xmppLogger->setMessageTypes(QXmppLogger::AnyMessage);
+    m_xmppClient->setLogger(xmppLogger);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::connectSignals()
+{
     connect(m_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
             this, SLOT(onMessageReceived(const QXmppMessage&)));
 
@@ -82,27 +134,6 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
     connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
-
-    // Xmpp Logger
-
-    Lvk::Cmn::Settings settings;
-    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
-
-    QXmppLogger *xmppLogger = new QXmppLogger(this);
-    xmppLogger->setLoggingType(QXmppLogger::FileLogging);
-    xmppLogger->setLogFilePath(logsPath + QDir::separator() + "./xmpp.log");
-    xmppLogger->setMessageTypes(QXmppLogger::AnyMessage);
-    m_xmppClient->setLogger(xmppLogger);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::CA::XmppChatbot::~XmppChatbot()
-{
-    delete m_rosterMutex;
-    delete m_contactInfoMutex;
-    delete m_virtualUser;
-    delete m_xmppClient;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -358,4 +389,3 @@ void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
         m_roster.append(getContactInfo(jid));
     }
 }
-
