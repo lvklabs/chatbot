@@ -35,9 +35,9 @@
 #include <QWriteLocker>
 #include <QtDebug>
 
-#define LOG_BASE_FILENAME       "history_"
-#define LOG_EXT_FILENAME        "log"
-#define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
+#define HISTORY_BASE_FILENAME       "history_"
+#define HISTORY_EXT_FILENAME        "dat"
+#define DATE_TIME_LOG_FORMAT        "dd-MM-yy hh:mm:ss"
 
 // Note: ConversationHistoryWidget relies on these tokens.
 //       If you change them, update the widget accordingly.
@@ -76,9 +76,9 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
 {
     Lvk::Cmn::Settings settings;
 
-    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
-    QString logFilename = LOG_BASE_FILENAME + id + "." + LOG_EXT_FILENAME;
-    m_logFilename = logsPath + QDir::separator() + logFilename;
+    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
+    QString logFilename = HISTORY_BASE_FILENAME + id + "." + HISTORY_EXT_FILENAME;
+    m_logFilename = dataPath + QDir::separator() + logFilename;
 
     if (QFile::exists(m_logFilename)) {
         BE::ConversationReader convReader(m_logFilename);
