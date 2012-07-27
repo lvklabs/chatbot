@@ -150,8 +150,10 @@ private slots:
     void onCellDoubleClicked(int row, int col);
     void onFilterTextChanged(const QString &text);
     void onTeachRuleClicked();
+    void onShowRuleClicked();
 
     void teachRuleWithDialog(int row);
+    void showRuleWithDialog(int row);
     void removeAllWithDialog();
     void removeSelectedWithDialog();
 };

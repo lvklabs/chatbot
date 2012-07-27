@@ -222,6 +222,7 @@ void Lvk::FE::ChatHistoryWidget::connectSignals()
     // Toolbar signals
 
     connect(ui->teachRuleButton,     SIGNAL(clicked()),   SLOT(onTeachRuleClicked()));
+    connect(ui->showRuleButton,      SIGNAL(clicked()),   SLOT(onShowRuleClicked()));
     connect(ui->removeHistoryButton, SIGNAL(clicked()),   SLOT(removeSelectedWithDialog()));
     connect(ui->removeAllAction,     SIGNAL(triggered()), SLOT(removeAllWithDialog()));
     connect(ui->removeSelAction,     SIGNAL(triggered()), SLOT(removeSelectedWithDialog()));
@@ -233,7 +234,6 @@ void Lvk::FE::ChatHistoryWidget::clear()
 {
     clearConversations();
     ui->filter->clear();
-    ui->teachRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -244,8 +244,12 @@ void Lvk::FE::ChatHistoryWidget::clearConversations()
     ui->dateContactTable->setRowCount(0);
     ui->conversationTable->clearContents();
     ui->conversationTable->setRowCount(0);
+
+    ui->teachRuleButton->setEnabled(false);
+    ui->showRuleButton->setEnabled(false);
     ui->removeHistoryButton->setEnabled(false);
     ui->filter->setEnabled(false);
+
     m_entries.clear();
 }
 
@@ -327,10 +331,12 @@ void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &cur
         return;
     }
 
-    if (!rowHasMatchStatus(current.row())) {
-        ui->teachRuleButton->setEnabled(true);
-    } else {
+    if (rowHasMatchStatus(current.row())) {
         ui->teachRuleButton->setEnabled(false);
+        ui->showRuleButton->setEnabled(true);
+    } else {
+        ui->teachRuleButton->setEnabled(true);
+        ui->showRuleButton->setEnabled(false);
     }
 }
 
@@ -409,17 +415,7 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
     if (!rowHasMatchStatus(row)) {
         teachRuleWithDialog(row);
     } else {
-        QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
-
-        QString title = tr("Show rule definition");
-        QString text = QString(tr("Show rule definition for message: \"%1\" ?")).arg(chatMsg);
-
-        if (askConfirmation(title, text)) {
-            quint64 ruleId = ui->conversationTable->item(row, StatusColumn)->data(EntryRuleIdRole)
-                    .toULongLong();
-
-            emit showRule(ruleId);
-        }
+        showRuleWithDialog(row);
     }
 }
 
@@ -427,10 +423,21 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 
 void Lvk::FE::ChatHistoryWidget::onTeachRuleClicked()
 {
-    QModelIndex selectedIndex= ui->conversationTable->selectionModel()->currentIndex();
+    QModelIndex selectedIndex = ui->conversationTable->selectionModel()->currentIndex();
 
     if (selectedIndex.isValid()) {
         teachRuleWithDialog(selectedIndex.row());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::onShowRuleClicked()
+{
+    QModelIndex selectedIndex = ui->conversationTable->selectionModel()->currentIndex();
+
+    if (selectedIndex.isValid()) {
+        showRuleWithDialog(selectedIndex.row());
     }
 }
 
@@ -452,6 +459,23 @@ void Lvk::FE::ChatHistoryWidget::teachRuleWithDialog(int row)
 
     if (askConfirmation(title, text)) {
         emit teachRule(chatMsg);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ChatHistoryWidget::showRuleWithDialog(int row)
+{
+    QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
+
+    QString title = tr("Show rule definition");
+    QString text = QString(tr("Show rule definition for message: \"%1\" ?")).arg(chatMsg);
+
+    if (askConfirmation(title, text)) {
+        quint64 ruleId = ui->conversationTable->item(row, StatusColumn)->data(EntryRuleIdRole)
+                .toULongLong();
+
+        emit showRule(ruleId);
     }
 }
 
@@ -508,6 +532,7 @@ void Lvk::FE::ChatHistoryWidget::removeDateContactRow(int row)
         ui->filter->setEnabled(false);
     }
     ui->teachRuleButton->setEnabled(false);
+    ui->showRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -540,4 +565,5 @@ bool Lvk::FE::ChatHistoryWidget::askConfirmation(const QString &title, const QSt
 
     return btn == QMessageBox::Yes;
 }
+
 

@@ -49,19 +49,16 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="toolbarLayout">
      <item>
-      <widget class="QToolButton" name="removeHistoryButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QToolButton" name="showRuleButton">
        <property name="toolTip">
-        <string>Remove conversation</string>
+        <string>Find rule definition</string>
        </property>
        <property name="text">
-        <string>Remove conversation</string>
+        <string>Find rule definition</string>
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/icons/remove_history_32x32.png</normaloff>:/icons/remove_history_32x32.png</iconset>
+         <normaloff>:/icons/show_rule_32x32.png</normaloff>:/icons/show_rule_32x32.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -88,6 +85,32 @@
        <property name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/icons/add_rule_history_32x32.png</normaloff>:/icons/add_rule_history_32x32.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="removeHistoryButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Remove conversation</string>
+       </property>
+       <property name="text">
+        <string>Remove conversation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/remove_history_32x32.png</normaloff>:/icons/remove_history_32x32.png</iconset>
        </property>
        <property name="iconSize">
         <size>

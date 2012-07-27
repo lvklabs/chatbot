@@ -24,5 +24,6 @@
         <file alias="add_rule_history_32x32.png">res/add_rule_history_32x32.png</file>
         <file alias="remove_history_32x32.png">res/remove_history_32x32.png</file>
         <file alias="avatar_default_32x32.png">res/avatar_default_32x32.png</file>
+        <file alias="show_rule_32x32.png">res/show_rule_32x32.png</file>
     </qresource>
 </RCC>
