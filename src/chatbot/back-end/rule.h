@@ -152,12 +152,30 @@ public:
 
     const Rule *nextSibling() const;
 
+    /**
+     * Returns the rule type, by default is \a OrdinaryRule.
+     *
+     * \see Type
+     */
     Type type() const;
 
+    /**
+     * Sets the rule type.
+     *
+     * \see Type
+     */
     void setType(Type type);
 
+    /**
+     * Returns the rule name, by default is empty.
+     *
+     * \see Type
+     */
     const QString &name() const;
 
+    /**
+     * Sets the rule name.
+     */
     void setName(const QString &name);
 
     TargetList &target();
@@ -178,22 +196,53 @@ public:
 
     void setOutput(const QStringList &output);
 
+    /**
+     * Returns true if the rule is enabled. Otherwise; returns false. By default is disabled.
+     */
     bool enabled() const;
 
+    /**
+     * Sets if the rule is enabled or disabled.
+     */
     void setEnabled(bool enabled);
 
+    /**
+     * Returns the rule check state, by default is \a Unchecked.
+     */
     Qt::CheckState checkState() const;
 
+    /**
+     * Sets the rule check state.
+     */
     void setCheckState(Qt::CheckState state);
 
+    /**
+     * Returns the rule status, by default is \a Unsaved.
+     *
+     * \see Status
+     */
     Status status() const;
 
+    /**
+     * Sets the rule status.
+     *
+     * \see Status
+     */
     void setStatus(Status status);
 
+    /**
+     * Returns the rule ID, by default is 0.
+     */
+    quint64 id() const;
 
     /**
-      * \brief The iterator class provides a STL-like Rule iterator
-      */
+     * Sets the rule ID.
+     */
+    void setId(quint64 id);
+
+    /**
+     * \brief The iterator class provides a STL-like Rule iterator
+     */
     class iterator : public generic_iterator<Rule *>
     {
     public:
@@ -202,10 +251,9 @@ public:
         Rule* operator*() { return m_rule; }
     };
 
-
     /**
-      * \brief The const_iterator class provides a STL-like Rule const iterator
-      */
+     * \brief The const_iterator class provides a STL-like Rule const iterator
+     */
     class const_iterator : public generic_iterator<const Rule *>
     {
     public:
@@ -214,13 +262,24 @@ public:
         const Rule* operator*() const { return m_rule; }
     };
 
-
+    /**
+     * Returns an iterator referring to the first element in the rules tree.
+     */
     iterator begin() { return iterator(this); }
 
+    /**
+     * Returns an iterator referring to the past-the-end element in the rules tree.
+     */
     iterator end() { return iterator(0); }
 
+    /**
+     * Returns a const iterator referring to the first element in the rules tree.
+     */
     const_iterator begin() const { return const_iterator(this); }
 
+    /**
+     * Returns a const iterator referring to the past-the-end element in the rules tree.
+     */
     const_iterator end() const { return const_iterator(0); }
 
 private:
@@ -237,6 +296,7 @@ private:
     bool m_enabled;
     Status m_status;
     Qt::CheckState m_checkState;
+    quint64 m_id;
 };
 
 QDataStream &operator<<(QDataStream &stream, const Rule &rule);

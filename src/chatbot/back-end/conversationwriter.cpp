@@ -26,6 +26,7 @@
 
 #include <QIODevice>
 #include <QFile>
+#include <QtDebug>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -52,6 +53,7 @@ void makeCsvRow(Lvk::Cmn::CsvRow & row, const Lvk::BE::Conversation::Entry & ent
     row.append(sanitize(entry.msg));
     row.append(sanitize(entry.response));
     row.append(entry.match ? STR_CSV_CONV_ENTRY_MATCH : STR_CSV_CONV_ENTRY_NO_MATCH);
+    row.append(QString::number(entry.ruleId));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -87,7 +89,11 @@ Lvk::BE::ConversationWriter::ConversationWriter()
 Lvk::BE::ConversationWriter::ConversationWriter(const QString &filename)
     : m_device(new QFile(filename))
 {
-    m_device->open(QIODevice::Append);
+    qDebug() << "ConversationWriter: Opening" << filename;
+
+    if (!m_device->open(QIODevice::Append)) {
+        qCritical() << "ConversationWriter: Cannot open" << filename << "with append permissions";
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -96,7 +102,9 @@ Lvk::BE::ConversationWriter::ConversationWriter(QIODevice *device)
     : m_device(device)
 {
     if (!device->isOpen()) {
-        device->open(QIODevice::Append);
+        if (!m_device->open(QIODevice::Append)) {
+            qCritical() << "ConversationWriter: Cannot open IO device with append permissions";
+        }
     }
 }
 
@@ -146,7 +154,11 @@ bool Lvk::BE::ConversationWriter::atEnd()
 
 bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
 {
-    return m_device->write(data) != -1 && m_device->write("\n") != -1;
+    if (data.isEmpty()) {
+        return true;
+    } else {
+        return m_device->write(data) != -1 && m_device->write("\n") != -1;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -26,6 +26,7 @@
 
 #include <QIODevice>
 #include <QFile>
+#include <QtDebug>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -38,13 +39,16 @@ void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Cmn::CsvRow & ro
 {
     entry.clear();
 
-    if (row.size() == 6) {
+    if (row.size() == 7) {
         entry.dateTime = QDateTime::fromString(row[0], STR_CSV_CONV_DATE_TIME_FORMAT);
         entry.from     = row[1];
         entry.to       = row[2];
         entry.msg      = row[3];
         entry.response = row[4];
         entry.match    = row[5] == STR_CSV_CONV_ENTRY_MATCH ? true : false;
+        entry.ruleId   = row[6].toULong();
+    } else {
+        qWarning() << "ConversationReader: Invalid format in row" << row.toString();
     }
 }
 
@@ -80,7 +84,11 @@ Lvk::BE::ConversationReader::ConversationReader()
 Lvk::BE::ConversationReader::ConversationReader(const QString &filename)
     : m_device(new QFile(filename))
 {
-    m_device->open(QIODevice::ReadOnly);
+    qDebug() << "ConversationReader: Opening" << filename;
+
+    if (!m_device->open(QIODevice::ReadOnly)) {
+        qCritical() << "ConversationReader: Cannot open" << filename << "with write permissions";
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -89,7 +97,9 @@ Lvk::BE::ConversationReader::ConversationReader(QIODevice *device)
     : m_device(device)
 {
     if (!m_device->isOpen()) {
-        m_device->open(QIODevice::ReadOnly);
+        if (!m_device->open(QIODevice::ReadOnly)) {
+            qCritical() << "ConversationReader: Cannot open IO device with write permissions";
+        }
     }
 }
 

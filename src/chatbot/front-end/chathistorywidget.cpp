@@ -58,8 +58,9 @@ enum ConversationTableColumns
 enum
 {
     HashKeyRole = Qt::UserRole,
-    RuleHasMatchedRole,
-    EntryFromRole
+    EntryMatchRole,
+    EntryFromRole,
+    EntryRuleIdRole
 };
 
 
@@ -350,7 +351,8 @@ void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversa
     ui->conversationTable->item(nextRow, MessageColumn)->setData(Qt::ToolTipRole, entry.msg);
     ui->conversationTable->item(nextRow, ResponseColumn)->setData(Qt::ToolTipRole, entry.response);
     ui->conversationTable->item(nextRow, StatusColumn)->setData(Qt::ToolTipRole, matchStr);
-    ui->conversationTable->item(nextRow, StatusColumn)->setData(RuleHasMatchedRole, entry.match);
+    ui->conversationTable->item(nextRow, StatusColumn)->setData(EntryMatchRole, entry.match);
+    ui->conversationTable->item(nextRow, StatusColumn)->setData(EntryRuleIdRole, entry.ruleId);
 
     if (entry.match) {
         ui->conversationTable->item(nextRow, StatusColumn)->setIcon(QIcon(MATCH_ICON));
@@ -406,6 +408,18 @@ void Lvk::FE::ChatHistoryWidget::onCellDoubleClicked(int row, int /*col*/)
 {
     if (!rowHasMatchStatus(row)) {
         teachRuleWithDialog(row);
+    } else {
+        QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
+
+        QString title = tr("Show rule definition");
+        QString text = QString(tr("Show rule definition for message: \"%1\" ?")).arg(chatMsg);
+
+        if (askConfirmation(title, text)) {
+            quint64 ruleId = ui->conversationTable->item(row, StatusColumn)->data(EntryRuleIdRole)
+                    .toULongLong();
+
+            emit showRule(ruleId);
+        }
     }
 }
 
@@ -515,7 +529,7 @@ void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
 
 bool Lvk::FE::ChatHistoryWidget::rowHasMatchStatus(int row)
 {
-    return ui->conversationTable->item(row, StatusColumn)->data(RuleHasMatchedRole).toBool();
+    return ui->conversationTable->item(row, StatusColumn)->data(EntryMatchRole).toBool();
 }
 
 //--------------------------------------------------------------------------------------------------

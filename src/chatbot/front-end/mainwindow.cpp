@@ -102,6 +102,7 @@ inline bool saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
         out << roster;
         return out.status() == QDataStream::Ok;
     } else {
+        qCritical() << "Cannot not save roster in " << filename;
         return false;
     }
 }
@@ -117,6 +118,7 @@ inline bool loadRoster(Lvk::BE::Roster &roster, const QString &filename)
         in >> roster;
         return in.status() == QDataStream::Ok;
     } else {
+        qCritical() << "Cannot not load roster from " << filename;
         return false;
     }
 }
@@ -194,6 +196,8 @@ Lvk::FE::MainWindow::~MainWindow()
     delete m_testConversationLog;
     delete m_appFacade;
     delete ui;
+
+    qDebug() << "Main window destroyed cleanly!";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -345,8 +349,9 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
     connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
+    connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onShowRule(quint64)));
     connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
-    connect(ui->chatHistory, SIGNAL(removedAll()), SLOT(onRemovedAllHistory()));
+    connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1373,6 +1378,34 @@ void Lvk::FE::MainWindow::onRemovedHistory(const QDate &date, const QString &use
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onShowRule(quint64 ruleId)
+{
+    const BE::Rule* root = rootRule();
+
+    if (!root || !ruleId) {
+        return;
+    }
+
+    bool found = false;
+
+    for (BE::Rule::const_iterator it = root->begin(); it != root->end() && !found; ++it) {
+        const BE::Rule* rule = *it;
+        if (rule->id() == ruleId && rule->type() == BE::Rule::OrdinaryRule) {
+            m_ruleTreeSelectionModel->clearSelection();
+            selectRule(rule);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        QString title = tr("Rule not found");
+        QString msg = tr("Rule not found. The rule was removed.");
+        QMessageBox::information(this, title, msg, QMessageBox::Ok);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
 {
     setUiMode(EditRuleUiMode);
@@ -1950,5 +1983,6 @@ void Lvk::FE::MainWindow::onSplitterMoved(int, int)
 {
     saveSplittersSettings();
 }
+
 
 

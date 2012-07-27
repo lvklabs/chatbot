@@ -42,8 +42,8 @@ namespace CA
 /**
  * \brief The VirtualUser class provides information to the chatbot to behave like a human being.
  *
- * VirtualUser class provides two methods: one to get a response and another one
- * to show a custom avatar
+ * At least VirtualUser class shall provide two methods: one to get a response and another one
+ * to show a custom avatar.
  */
 class VirtualUser
 {

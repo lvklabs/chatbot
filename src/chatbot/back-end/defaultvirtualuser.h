@@ -72,7 +72,8 @@ public:
     ~DefaultVirtualUser();
 
     /**
-     * Returns a response for the given \a input and \a contact.
+     * Returns a response for the given \a input and \a contact. If no response is found, it
+     * returns an empty string.
      */
     virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
 
@@ -122,11 +123,10 @@ private:
     QStringList m_evasives;
     Conversation m_conversationHistory;
     ConversationWriter *m_convWriter;
-
     QReadWriteLock *m_rwLock;
 
+    Conversation::Entry getEntry(const QString &input, const CA::ContactInfo &contact);
     void resetHistoryLog();
-    void getResponse(QString &response, bool &match, const QString &input, const QString &username);
     void logConversationEntry(const Conversation::Entry &entry);
     void logError(const QString &msg);
 };

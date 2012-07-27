@@ -66,9 +66,9 @@ namespace
 
 // Make Nlp::Rule from BE::Rule
 
-inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule, int id)
+inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule)
 {
-    Lvk::Nlp::Rule nlpRule(id, rule->input(), rule->output());
+    Lvk::Nlp::Rule nlpRule(rule->id(), rule->input(), rule->output());
 
     QStringList targets;
     foreach (const Lvk::BE::Target &t, rule->target()) {
@@ -108,6 +108,7 @@ inline Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
     case Lvk::BE::AppFacade::GTalkChat:
         return new Lvk::CA::GTalkChatbot();
     default:
+        qCritical() << "newChatbot() Invalid chat type" << type;
         return 0;
     }
 }
@@ -153,7 +154,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(new Lvk::BE::DefaultEngine(new Lvk::BE::DefaultSanitizer())),
-      m_nextRuleId(0),
+      m_nextRuleId(1),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
       m_tmpChatbot(0)
@@ -168,7 +169,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
-      m_nextRuleId(0),
+      m_nextRuleId(1),
       m_chatbot(0),
       m_chatbotId(nullChatbotId()),
       m_tmpChatbot(0)
@@ -290,6 +291,8 @@ void Lvk::BE::AppFacade::markAsSaved()
 
 void Lvk::BE::AppFacade::close()
 {
+    qDebug() << "Closing file" << m_filename;
+
     if (m_nlpEngine) {
         m_nlpEngine->setRules(Nlp::RuleList());
     }
@@ -304,18 +307,22 @@ void Lvk::BE::AppFacade::close()
     m_rootRule = std::auto_ptr<Rule>(new Rule());
     loadDefaultRules();
     m_filename = "";
-    m_nextRuleId = 0;
+    m_nextRuleId = 1;
     m_metadataUnsaved = false;
     m_metadata.clear();
     m_rulesHash.clear();
     m_targets.clear();
     markAsSaved();
+
+    qDebug() << "File closed!";
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::read(QFile &file)
 {
+    qDebug() << "Reading rules file" << file.fileName();
+
     QDataStream istream(&file);
 
     quint32 magicNumber;
@@ -325,10 +332,12 @@ bool Lvk::BE::AppFacade::read(QFile &file)
     istream >> version;
 
     if (magicNumber != CRF_MAGIC_NUMBER) {
+        qCritical("Cannot read rules: Invalid magic number");
         return false;
     }
 
     if (version > CRF_FILE_FORMAT_VERSION) {
+        qCritical("Cannot read rules: Invalid format version");
         return false;
     }
 
@@ -336,12 +345,11 @@ bool Lvk::BE::AppFacade::read(QFile &file)
 
     istream >> m_chatbotId;
     istream >> *m_rootRule;
-
-    if (!istream.atEnd()) {
-        istream >> m_metadata;
-    }
+    istream >> m_metadata;
+    istream >> m_nextRuleId;
 
     if (istream.status() != QDataStream::Ok) {
+        qCritical("Cannot read rules: Invalid file format");
         return false;
     }
 
@@ -352,6 +360,8 @@ bool Lvk::BE::AppFacade::read(QFile &file)
 
 bool Lvk::BE::AppFacade::write(QFile &file)
 {
+    qDebug() << "Writing rules file" << file.fileName();
+
     QDataStream ostream(&file);
 
     ostream.setVersion(QDataStream::Qt_4_7);
@@ -361,6 +371,7 @@ bool Lvk::BE::AppFacade::write(QFile &file)
     ostream << m_chatbotId;
     ostream << *m_rootRule;
     ostream << m_metadata;
+    ostream << m_nextRuleId;
 
     return true;
 }
@@ -403,9 +414,12 @@ bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 
 bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFile)
 {
+    qDebug() << "Importing rules from file" << inputFile;
+
     QFile file(inputFile);
 
     if (!file.open(QFile::ReadOnly)) {
+        qCritical() << "Cannot import rules: Cannot open file" << inputFile;
         return false;
     }
 
@@ -418,10 +432,12 @@ bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFi
     istream >> version;
 
     if (magicNumber != CEF_MAGIC_NUMBER) {
+        qCritical("Cannot import rules: Invalid magic number");
         return false;
     }
 
     if (version > CEF_FILE_FORMAT_VERSION) {
+        qCritical("Cannot import rules: Invalid file version");
         return false;
     }
 
@@ -434,9 +450,12 @@ bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFi
 
 bool Lvk::BE::AppFacade::exportRules(const BE::Rule *container, const QString &outputFile)
 {
+    qDebug() << "Exporting rules to file" << outputFile;
+
     QFile file(outputFile);
 
     if (!file.open(QFile::WriteOnly)) {
+        qCritical() << "Cannot export rules: Cannot open file" << outputFile;
         return false;
     }
 
@@ -456,6 +475,8 @@ bool Lvk::BE::AppFacade::exportRules(const BE::Rule *container, const QString &o
 bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
 {
     foreach (Lvk::BE::Rule *rule, container->children()) {
+        rule->setId(0);
+
         switch (rule->type()) {
         case Rule::ContainerRule:
             m_rootRule->appendChild(new BE::Rule(*rule, true));
@@ -469,8 +490,7 @@ bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
             }
             break;
         case Rule::OrdinaryRule:
-            // not supported
-            // TODO log warning
+            qCritical("Merge of ordinary rules without container is not supported");
             break;
         }
     }
@@ -548,7 +568,7 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
                         evasives[Cmn::Random::getInt(0, evasives.size() - 1)] : "";
         }
     } else {
-        qCritical("ERROR: NLP engine not set");
+        qCritical("NLP engine not set");
     }
 
     return response;
@@ -559,7 +579,6 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
 void Lvk::BE::AppFacade::refreshNlpEngine()
 {
     m_evasivesRule = 0;
-    m_nextRuleId = 0;
     m_rulesHash.clear();
     m_targets.clear();
 
@@ -569,7 +588,7 @@ void Lvk::BE::AppFacade::refreshNlpEngine()
         m_nlpEngine->setRules(nlpRules);
         refreshEvasivesToChatbot();
     } else {
-        qCritical("ERROR: NLP engine not set");
+        qCritical("NLP engine not set");
     }
 }
 
@@ -583,10 +602,15 @@ void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleLi
 
     for (int i = 0; i < parentRule->childCount(); ++i) {
         const BE::Rule *child = parentRule->child(i);
+
+        if (!child->id()) {
+            const_cast<BE::Rule *>(child)->setId(m_nextRuleId++);
+        }
+
         if (child->type() == Rule::OrdinaryRule) {
             storeTargets(child->target());
-            m_rulesHash[m_nextRuleId] = child;
-            nlpRules.append(makeNlpRule(child, m_nextRuleId++));
+            m_rulesHash[child->id()] = child;
+            nlpRules.append(makeNlpRule(child));
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {

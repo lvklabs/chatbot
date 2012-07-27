@@ -207,6 +207,7 @@ private slots:
 
     BE::Rule *getCategoryFromDialog();
     void onTeachFromHistoryWidget(const QString &msg);
+    void onShowRule(quint64 ruleId);
     void onRemovedAllHistory();
     void onRemovedHistory(const QDate &date, const QString &username);
 

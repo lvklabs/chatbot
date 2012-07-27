@@ -111,6 +111,11 @@ signals:
     void teachRule(const QString &input);
 
     /**
+     * This signal is emitted if the user wants to see the definition of a rule that has matched.
+     */
+    void showRule(quint64 ruleId);
+
+    /**
      * This signal is emitted if the user has removed all the conversations
      */
     void removedAll();

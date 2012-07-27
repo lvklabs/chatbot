@@ -70,11 +70,11 @@ public:
         Entry();
 
         /**
-         * Constructs an Entry object with the given date-time, from, to, message, response and
-         * match
+         * Constructs an Entry object with the given date-time, from, to, message, response,
+         * match and rule ID.
          */
         Entry(const QDateTime &dateTime, const QString &from, const QString &to, const QString &msg,
-              const QString &response, bool match);
+              const QString &response, bool match, quint64 ruleId = 0);
 
         QDateTime dateTime; //! Entry date-time
         QString from;       //! From user
@@ -82,6 +82,7 @@ public:
         QString msg;        //! Message
         QString response;   //! Response
         bool match;         //! True if there were match; false otherwise.
+        quint64 ruleId;     //! If match, contains the rule ID of the matched rule
 
         /**
          * An entry is null if all class attributes are null.

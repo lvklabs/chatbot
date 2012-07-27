@@ -25,12 +25,12 @@
 #include <QIcon>
 #include <assert.h>
 
-#define LVK_BE_RULE_VERSION     2
+#define LVK_BE_RULE_VERSION     3
 
 
 Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
     : m_name(""), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
 }
 
@@ -38,7 +38,7 @@ Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
 
 Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
     : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
 }
 
@@ -46,7 +46,7 @@ Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
 
 Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
     : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(type),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
 }
 
@@ -55,7 +55,7 @@ Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
 Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QStringList &ouput,
                     Rule *parent /*= 0*/)
     : m_name(name), m_input(input), m_output(ouput), m_parentItem(parent), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
 }
 
@@ -64,7 +64,7 @@ Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QString
 Lvk::BE::Rule::Rule(const Rule &other, bool deepCopy /*= false*/)
     : m_name(other.m_name), m_input(other.m_input), m_output(other.m_output),
       m_target(other.m_target), m_parentItem(0), m_type(other.m_type), m_enabled(other.m_enabled),
-      m_status(Unsaved), m_checkState(Qt::Unchecked)
+      m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
     if (deepCopy) {
         foreach (const Rule *rule, other.m_childItems) {
@@ -92,7 +92,8 @@ Lvk::BE::Rule::~Rule()
 //    m_type = other.m_type;
 //    m_enabled = other.m_enabled;
 //    m_status = Unsaved;
-
+//    m_id = other.m_id;
+//
 //    return *this;
 //}
 
@@ -104,7 +105,8 @@ bool Lvk::BE::Rule::operator==(const Lvk::BE::Rule &other) const
            m_name == other.m_name &&
            m_target == other.m_target &&
            m_input == other.m_input &&
-           m_output == other.m_output;
+           m_output == other.m_output &&
+           m_id == other.m_id;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -405,6 +407,7 @@ QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
     stream << rule.output();
     stream << static_cast<int>(rule.type());
     stream << rule.childCount();
+    stream << rule.id();
 
     for (int i = 0; i < rule.children().size(); ++i) {
         stream << *(rule.children()[i]);
@@ -424,11 +427,9 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     QStringList output;
     int type;
     int childCount;
+    quint64 id = 0;
 
-    if (true /* FIXME Need trick to keep backward compatibility */) {
-        stream >> version;
-    }
-
+    stream >> version;
     stream >> name;
 
     if (version > 0) {
@@ -439,12 +440,14 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     stream >> output;
     stream >> type;
     stream >> childCount;
+    stream >> id;
 
     rule.setTarget(target);
     rule.setName(name);
     rule.setInput(input);
     rule.setOutput(output);
     rule.setType(static_cast<Rule::Type>(type));
+    rule.setId(id);
 
     for (int i = 0; i < childCount; ++i) {
         Rule *child = new Rule();
@@ -498,6 +501,20 @@ Qt::CheckState Lvk::BE::Rule::checkState() const
 void Lvk::BE::Rule::setCheckState(Qt::CheckState state)
 {
     m_checkState = state;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+quint64 Lvk::BE::Rule::id() const
+{
+    return m_id;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setId(quint64 id)
+{
+    m_id = id;
 }
 
 

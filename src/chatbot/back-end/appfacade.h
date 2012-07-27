@@ -337,7 +337,7 @@ private:
     std::auto_ptr<Rule> m_rootRule;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
-    Nlp::RuleId m_nextRuleId;
+    quint64 m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
     QString m_chatbotId;

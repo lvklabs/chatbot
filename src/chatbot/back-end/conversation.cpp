@@ -32,16 +32,17 @@
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
 Lvk::BE::Conversation::Entry::Entry()
-    : match(false)
+    : match(false), ruleId(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Conversation::Entry::Entry(const QDateTime &dateTime, const QString &from,
-                                    const QString &to, const QString &msg,
-                                    const QString &response, bool match)
-    : dateTime(dateTime), from(from), to(to), msg(msg), response(response), match(match)
+                                    const QString &to, const QString &msg, const QString &response,
+                                    bool match, quint64 ruleId /*= 0*/)
+    : dateTime(dateTime), from(from), to(to), msg(msg), response(response), match(match),
+      ruleId(ruleId)
 {
 }
 
@@ -54,7 +55,8 @@ bool Lvk::BE::Conversation::Entry::isNull() const
             && to.isNull()
             && msg.isNull()
             && response.isNull()
-            && !match;
+            && !match
+            && !ruleId;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -67,6 +69,7 @@ void Lvk::BE::Conversation::Entry::clear()
     msg.clear();
     response.clear();
     match = false;
+    ruleId = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -81,7 +84,8 @@ bool Lvk::BE::Conversation::Entry::operator==(const Lvk::BE::Conversation::Entry
             && to       == other.to
             && msg      == other.msg
             && response == other.response
-            && match    == other.match;
+            && match    == other.match
+            && ruleId   == other.ruleId;
 }
 
 bool Lvk::BE::Conversation::Entry::operator!=(const Lvk::BE::Conversation::Entry &other) const

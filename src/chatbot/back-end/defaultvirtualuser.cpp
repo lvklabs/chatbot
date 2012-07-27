@@ -83,7 +83,7 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
     if (QFile::exists(m_logFilename)) {
         BE::ConversationReader convReader(m_logFilename);
         if (!convReader.read(&m_conversationHistory)) {
-            qWarning() << "DefaultVirtualUser cannot read the conversation history for chatbot id"
+            qWarning() << "DefaultVirtualUser: Cannot read the conversation history for chatbot id"
                        << id;
         }
     }
@@ -104,16 +104,7 @@ Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
                                                  const CA::ContactInfo &contact)
 {
-    // get response thread-safe
-
-    QString response;
-    bool matched;
-    getResponse(response, matched, input, contact.username);
-
-    // Make entry and log it
-
-    QDateTime dateTime = QDateTime::currentDateTime();
-    Conversation::Entry entry(dateTime, getFromString(contact), m_id, input, response, matched);
+    Conversation::Entry entry = getEntry(input, contact);
 
     {
         QWriteLocker locker(m_rwLock);
@@ -121,38 +112,60 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
         m_conversationHistory.append(entry);
 
         if (!m_convWriter->write(entry)) {
-            qCritical() << "DefaultVirtualUser cannot write the conversation entry for chatbot id"
+            qCritical() << "DefaultVirtualUser: Cannot write the conversation entry for chatbot id"
                         << m_id;
         }
     }
 
     emit newConversationEntry(entry);
 
-    return response;
+    return entry.response;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 
-void Lvk::BE::DefaultVirtualUser::getResponse(QString &response, bool &matched,
-                                              const QString &input, const QString &username)
+Lvk::BE::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString &input,
+                                                                   const CA::ContactInfo &contact)
 {
     QWriteLocker locker(m_rwLock);
 
     if (m_engine) {
-        Nlp::Engine::MatchList matches;
-        response = m_engine->getResponse(input, username, matches);
-        matched = !response.isEmpty() && matches.size() > 0;
+        qDebug() << "DefaultVirtualUser: Getting response for input" << input
+                 << "and username" << contact.username;
 
-        if (!matched) {
+        quint64 ruleId = 0;
+        Nlp::Engine::MatchList matches;
+        QString response = m_engine->getResponse(input, contact.username, matches);
+        bool matched = !response.isEmpty() && matches.size() > 0;
+
+
+        if (matched) {
+            qDebug() << "DefaultVirtualUser: Got response" << response;
+
+            if (matches.size() > 0) {
+                ruleId = matches.first().first; // CHECK first() or last()
+            } else {
+                qWarning() << "DefaultVirtualUser: Got response but empty match list";
+            }
+        } else {
             if (m_evasives.size() > 0) {
                 response = m_evasives[Cmn::Random::getInt(0, m_evasives.size() - 1)];
+                qDebug() << "DefaultVirtualUser: No match. Using evasive" << response;
             } else {
                 response.clear();
+                qDebug() << "DefaultVirtualUser: No match and no evasives found";
             }
         }
+
+        QDateTime dateTime = QDateTime::currentDateTime();
+        QString from = getFromString(contact);
+
+        return Conversation::Entry(dateTime, from, m_id, input, response, matched, ruleId);
     } else {
-        qWarning("No engine set in DefaultVirtualUser!");
+        qCritical("DefaultVirtualUser: No engine set");
+
+        return Conversation::Entry();
     }
 }
 
@@ -182,7 +195,7 @@ void Lvk::BE::DefaultVirtualUser::setChatHistory(const Lvk::BE::Conversation &co
     resetHistoryLog();
 
     if (!m_convWriter->write(conv)) {
-        qCritical() << "DefaultVirtualUser cannot write the conversation entry for chatbot id"
+        qCritical() << "DefaultVirtualUser: Cannot write the conversation entry for chatbot id"
                     << m_id;
     }
 }
