@@ -67,7 +67,7 @@ void Lvk::Cmn::CsvDocument::parseString(const QString &csvStr)
         return;
     }
 
-    QStringList rows = csvStr.split(EOL);
+    QStringList rows = csvStr.split(EOL, QString::SkipEmptyParts);
 
     foreach (const QString &row, rows) {
         append(row);
