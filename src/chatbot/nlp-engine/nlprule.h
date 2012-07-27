@@ -40,16 +40,17 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Rule ID
+ * \brief RuleId provides a unique identifier for NLP rules
  */
-typedef unsigned long RuleId;
+typedef quint64 RuleId;
 
 
 /**
  * \brief This class provides a NLP rule
  *
  * A NLP rule is simply a structure that contains a list of input strings and a list of output
- * strings. How these input and output strings are interpreted depends on the engine implemenation.
+ * strings. How these input and output strings are interpreted depends on the engine
+ * implementation.
  * Optionally, it can contain a list of targets to which the rule is intended to apply.
  *
  * @see ExactMatchEngine, AimlEngine, SimpleAimlEngine
@@ -58,37 +59,76 @@ class Rule
 {
 public:
 
+    /**
+     * Constructs a NLP rule with \a id
+     */
     Rule(RuleId id = 0) : m_id(id) {}
 
+    /**
+     * Constructs a NLP rule with \a id, \a input and \a output
+     */
     Rule(RuleId id, const QStringList &input, const QStringList &output)
         : m_id(id), m_input(input), m_output(output) {}
 
+    /**
+     * Constructs a NLP rule with \a id, \a input,\a output and \a target
+     */
     Rule(RuleId id, const QStringList &input, const QStringList &output, const QStringList &target)
         : m_id(id), m_input(input), m_output(output), m_target(target) {}
 
+    /**
+     * Returns the rule ID, by default 0.
+     */
     RuleId id() const { return m_id; }
 
+    /**
+     * Sets the rule ID.
+     */
     void setId(RuleId id) { m_id = id; }
 
-
+    /**
+     * Returns a const reference to the list of input strings in the rule.
+     */
     const QStringList &input() const { return m_input; }
 
+    /**
+     * Returns a reference to the list of input strings in the rule.
+     */
     QStringList &input() { return m_input; }
 
+    /**
+     * Sets the list of input strings.
+     */
     void setInput(const QStringList &input) { m_input = input; }
 
-
+    /**
+     * Returns a const reference to the list of output strings in the rule.
+     */
     const QStringList &output() const { return m_output; }
 
+    /**
+     * Returns a reference to the list of output strings in the rule.
+     */
     QStringList &output() { return m_output; }
 
+    /**
+     * Sets the list of output strings.
+     */
     void setOuput(const QStringList &output) { m_output = output; }
 
-
+    /**
+     * Returns a const reference to the list of targets in the rule.
+     */
     const QStringList &target() const { return m_target; }
 
+    /**
+     * Returns a reference to the list of targets in the rule.
+     */
     QStringList &target() { return m_target; }
 
+    /**
+     * Sets the list of targets.
+     */
     void setTarget(const QStringList &target) { m_target = target; }
 
 private:
