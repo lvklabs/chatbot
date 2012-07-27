@@ -65,6 +65,7 @@ HEADERS += \
     ../../chatbot/back-end/conversationwriter.h \
     ../../chatbot/back-end/conversationreader.h \
     ../../chatbot/back-end/contactinfo.h \
+    ../../chatbot/back-end/chatbotrulesfile.h \
     ../../chatbot/nlp-engine/nlpengine.h \
     ../../chatbot/nlp-engine/nlprule.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
@@ -108,6 +109,7 @@ SOURCES += \
     ../../chatbot/back-end/conversation.cpp \
     ../../chatbot/back-end/conversationwriter.cpp \
     ../../chatbot/back-end/conversationreader.cpp \
+    ../../chatbot/back-end/chatbotrulesfile.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \

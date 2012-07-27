@@ -202,9 +202,19 @@ Lvk::FE::MainWindow::~MainWindow()
 
 //--------------------------------------------------------------------------------------------------
 
+
 void Lvk::FE::MainWindow::clear()
 {
-    initCoreAndModelsWithFile("");
+    clear(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::clear(bool resetModel)
+{
+    if (resetModel) {
+        initCoreAndModelsWithFile("");
+    }
 
     m_ruleEdited = false;
 
@@ -1012,7 +1022,7 @@ bool Lvk::FE::MainWindow::saveAsChanges()
 
 bool Lvk::FE::MainWindow::load(const QString &filename)
 {
-    clear();
+    clear(false);
 
     bool success = initCoreAndModelsWithFile(filename);
 

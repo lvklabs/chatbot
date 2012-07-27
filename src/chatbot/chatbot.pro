@@ -83,6 +83,7 @@ HEADERS += \
     back-end/target.h \
     back-end/conversationwriter.h \
     back-end/conversationreader.h \
+    back-end/chatbotrulesfile.h \
     nlp-engine/nlpengine.h \
     nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
@@ -129,6 +130,7 @@ SOURCES += \
     back-end/conversation.cpp \
     back-end/conversationwriter.cpp \
     back-end/conversationreader.cpp \
+    back-end/chatbotrulesfile.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
@@ -174,6 +176,8 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+
+
 
 
 

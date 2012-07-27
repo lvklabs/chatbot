@@ -30,12 +30,12 @@
 #include <QVariant>
 #include <QSet>
 
-#include <memory>
-
+#include "chatbotrulesfile.h"
 #include "nlprule.h"
 #include "conversation.h"
 #include "roster.h"
 #include "target.h"
+
 
 class QFile;
 
@@ -71,7 +71,7 @@ class DefaultVirtualUser;
  * The AppFacade class provides a unified and simplified interface to several subsystems
  * of the application that makes the subsystems easier to use.
  *
- * The most important subsystems are the NLP engine and the chat adapters.
+ * The most important subsystems are the Chatbot Rules files, the NLP engine and the chat adapters.
  */
 
 class AppFacade : public QObject
@@ -96,12 +96,11 @@ public:
     ~AppFacade();
 
     /**
-     * Loads \a filename. Filename must be a valid chabot file.
-     * If the file does not exist and the flag \a create is true, it creates
-     * creates new chatbot file with the default initial rules.
+     * Loads \a filename. Filename must be a valid chabot file or the empty string.
+     * If \a filename is empty it creates a new chatbot file with the default initial rules.
      * Returns true on success. Otherwise; false.
      */
-    bool load(const QString &filename, bool create = true);
+    bool load(const QString &filename);
 
     /**
      * Saves the current file with a new \a filename.
@@ -329,40 +328,25 @@ private:
     AppFacade(AppFacade&);
     AppFacade& operator=(AppFacade&);
 
-    typedef QHash<QString, QVariant> FileMetadata;
-
-    QString m_filename;
-    FileMetadata m_metadata;
-    bool m_metadataUnsaved;
-    std::auto_ptr<Rule> m_rootRule;
+    ChatbotRulesFile m_rulesFile;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
-    quint64 m_nextRuleId;
     QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
-    QString m_chatbotId;
     CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
 
+    bool setDefaultRules();
+
     inline DefaultVirtualUser *virtualUser();
-
-    void markAsSaved();
-
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
-
     void storeTargets(const TargetList &targets);
-
     QStringList getEvasives() const;
-
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
     void refreshEvasivesToChatbot();
     void connectChatClientSignals();
-
-    bool read(QFile &file);
-    bool write(QFile &file);
-    bool loadDefaultRules();
 };
 
 /// @}

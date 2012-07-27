@@ -31,18 +31,6 @@
 #include "gtalkchatbot.h"
 #include "defaultvirtualuser.h"
 
-#include <QFile>
-#include <QUuid>
-#include <QDataStream>
-
-#include <iostream>
-
-#define CRF_MAGIC_NUMBER            (('c'<<0) | ('r'<<8) | ('f'<<16) | ('\0'<<24))
-#define CRF_FILE_FORMAT_VERSION     2
-
-#define CEF_MAGIC_NUMBER            (('c'<<0) | ('e'<<8) | ('f'<<16) | ('\0'<<24))
-#define CEF_FILE_FORMAT_VERSION     2
-
 namespace Lvk
 {
 
@@ -78,24 +66,6 @@ inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule)
     nlpRule.setTarget(targets);
 
     return nlpRule;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString nullChatbotId()
-{
-    static QString nullId = "00000000-0000-0000-0000-000000000000";
-
-    return nullId;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString newChatbotId()
-{
-    QString id = QUuid::createUuid().toString().mid(1, 36);
-
-    return id;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -150,13 +120,9 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
 
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
-      m_metadataUnsaved(false),
-      m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(new Lvk::BE::DefaultEngine(new Lvk::BE::DefaultSanitizer())),
-      m_nextRuleId(1),
       m_chatbot(0),
-      m_chatbotId(nullChatbotId()),
       m_tmpChatbot(0)
 {
 }
@@ -165,13 +131,9 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
 
 Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
-      m_metadataUnsaved(false),
-      m_rootRule(new Rule()),
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
-      m_nextRuleId(1),
       m_chatbot(0),
-      m_chatbotId(nullChatbotId()),
       m_tmpChatbot(0)
 {
 }
@@ -186,113 +148,85 @@ Lvk::BE::AppFacade::~AppFacade()
 }
 
 //--------------------------------------------------------------------------------------------------
-// Load, save, save as, close file
+// Rules files
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::AppFacade::load(const QString &filename, bool create /*= true*/)
+bool Lvk::BE::AppFacade::load(const QString &filename)
 {
-    if (!m_filename.isEmpty()) {
-        close();
-    }
+    close();
 
-    m_filename = filename;
+    bool loaded = filename.isEmpty() ? setDefaultRules() : m_rulesFile.load(filename);
 
-    bool success = false;
-
-    QFile file(m_filename);
-
-    if (file.exists()) {
-        if (file.open(QFile::ReadOnly)) {
-            success = read(file);
-        }
-    } else if (create) {
-        success = loadDefaultRules();
-    }
-
-    if (success) {
-        markAsSaved();
+    if (loaded) {
+        refreshNlpEngine();
     } else {
         close();
     }
 
-    refreshNlpEngine();
+    return loaded;
+}
 
-    return success;
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::setDefaultRules()
+{
+    BE::Rule *rootRule = m_rulesFile.rootRule();
+
+    if (!rootRule) {
+        return false;
+    }
+
+    BE::Rule *catGreetings = new BE::Rule(tr("Greetings"));
+
+    catGreetings->setType(BE::Rule::ContainerRule);
+
+    QStringList rule1InputList;
+    QStringList rule1OutputList;
+    rule1InputList  << QString(tr("Hello"));
+    rule1OutputList << QString(tr("Hello!"));
+
+    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
+
+    catGreetings->appendChild(rule1);
+
+    BE::Rule *evasives  = new BE::Rule(tr("Evasives"));
+    evasives->setType(BE::Rule::EvasiveRule);
+
+    m_evasivesRule = evasives;
+
+    rootRule->appendChild(catGreetings);
+    rootRule->appendChild(evasives);
+
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::save()
 {
-    bool success = false;
-
-    QFile file(m_filename);
-
-    if (file.open(QFile::WriteOnly)) {
-        success = write(file);
-    }
-
-    if (success) {
-        markAsSaved();
-    }
-
-    return success;
+    return m_rulesFile.save();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::saveAs(const QString &filename)
 {
-    QString filenameBak = m_filename;
-    QString chatbotIdBak = m_chatbotId;
-
     deleteCurrentChatbot();
 
-    m_filename = filename;
-    m_chatbotId = newChatbotId();
-
-    bool success = save();
-
-    if (!success) {
-        m_filename = filenameBak;
-        m_chatbotId = chatbotIdBak;
-    }
-
-    return success;
+    return m_rulesFile.saveAs(filename);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 {
-    if (m_metadataUnsaved) {
-        return true;
-    }
-
-    for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
-        if ((*it)->status() == Rule::Unsaved) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::AppFacade::markAsSaved()
-{
-    for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
-        (*it)->setStatus(Rule::Saved);
-    }
+    return m_rulesFile.hasUnsavedChanges();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::close()
 {
-    qDebug() << "Closing file" << m_filename;
-
     if (m_nlpEngine) {
         m_nlpEngine->setRules(Nlp::RuleList());
     }
@@ -302,211 +236,61 @@ void Lvk::BE::AppFacade::close()
         deleteCurrentChatbot();
     }
 
-    m_chatbotId = nullChatbotId();
-    m_evasivesRule = 0;
-    m_rootRule = std::auto_ptr<Rule>(new Rule());
-    loadDefaultRules();
-    m_filename = "";
-    m_nextRuleId = 1;
-    m_metadataUnsaved = false;
-    m_metadata.clear();
     m_rulesHash.clear();
     m_targets.clear();
-    markAsSaved();
-
-    qDebug() << "File closed!";
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::read(QFile &file)
-{
-    qDebug() << "Reading rules file" << file.fileName();
-
-    QDataStream istream(&file);
-
-    quint32 magicNumber;
-    istream >> magicNumber;
-
-    quint32 version;
-    istream >> version;
-
-    if (magicNumber != CRF_MAGIC_NUMBER) {
-        qCritical("Cannot read rules: Invalid magic number");
-        return false;
-    }
-
-    if (version > CRF_FILE_FORMAT_VERSION) {
-        qCritical("Cannot read rules: Invalid format version");
-        return false;
-    }
-
-    m_rootRule = std::auto_ptr<Rule>(new Rule());
-
-    istream >> m_chatbotId;
-    istream >> *m_rootRule;
-    istream >> m_metadata;
-    istream >> m_nextRuleId;
-
-    if (istream.status() != QDataStream::Ok) {
-        qCritical("Cannot read rules: Invalid file format");
-        return false;
-    }
-
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::write(QFile &file)
-{
-    qDebug() << "Writing rules file" << file.fileName();
-
-    QDataStream ostream(&file);
-
-    ostream.setVersion(QDataStream::Qt_4_7);
-
-    ostream << (quint32)CRF_MAGIC_NUMBER;
-    ostream << (quint32)CRF_FILE_FORMAT_VERSION;
-    ostream << m_chatbotId;
-    ostream << *m_rootRule;
-    ostream << m_metadata;
-    ostream << m_nextRuleId;
-
-    return true;
+    m_rulesFile.close();
+    m_evasivesRule = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::setMetadata(const QString &key, const QVariant &value)
 {
-    m_metadata[key] = value;
-
-    m_metadataUnsaved = true;
+    m_rulesFile.setMetadata(key, value);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 const QVariant & Lvk::BE::AppFacade::metadata(const QString &key) const
 {
-    FileMetadata::const_iterator it = m_metadata.find(key);
-
-    if (it != m_metadata.end()) {
-        return *it;
-    } else {
-        static const QVariant null;
-        return null;
-    }
+    return m_rulesFile.metadata(key);
 }
-
-//--------------------------------------------------------------------------------------------------
-// Import/Export
-//--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 {
-    BE::Rule container;
-
-    return importRules(&container, inputFile) && mergeRules(&container);
+    return m_rulesFile.importRules(inputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFile)
 {
-    qDebug() << "Importing rules from file" << inputFile;
-
-    QFile file(inputFile);
-
-    if (!file.open(QFile::ReadOnly)) {
-        qCritical() << "Cannot import rules: Cannot open file" << inputFile;
-        return false;
-    }
-
-    QDataStream istream(&file);
-
-    quint32 magicNumber;
-    istream >> magicNumber;
-
-    quint32 version;
-    istream >> version;
-
-    if (magicNumber != CEF_MAGIC_NUMBER) {
-        qCritical("Cannot import rules: Invalid magic number");
-        return false;
-    }
-
-    if (version > CEF_FILE_FORMAT_VERSION) {
-        qCritical("Cannot import rules: Invalid file version");
-        return false;
-    }
-
-    istream >> *container;
-
-    return true;
+    return m_rulesFile.importRules(container, inputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::exportRules(const BE::Rule *container, const QString &outputFile)
 {
-    qDebug() << "Exporting rules to file" << outputFile;
-
-    QFile file(outputFile);
-
-    if (!file.open(QFile::WriteOnly)) {
-        qCritical() << "Cannot export rules: Cannot open file" << outputFile;
-        return false;
-    }
-
-    QDataStream ostream(&file);
-
-    ostream.setVersion(QDataStream::Qt_4_7);
-
-    ostream << (quint32)CEF_MAGIC_NUMBER;
-    ostream << (quint32)CEF_FILE_FORMAT_VERSION;
-    ostream << *container;
-
-    return true;
+    return m_rulesFile.exportRules(container, outputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
 {
-    foreach (Lvk::BE::Rule *rule, container->children()) {
-        rule->setId(0);
-
-        switch (rule->type()) {
-        case Rule::ContainerRule:
-            m_rootRule->appendChild(new BE::Rule(*rule, true));
-            break;
-        case Rule::EvasiveRule:
-            if (m_evasivesRule) {
-                m_evasivesRule->output().append(rule->output());
-            } else {
-                m_evasivesRule = new BE::Rule(*rule, true);
-                m_rootRule->appendChild(m_evasivesRule);
-            }
-            break;
-        case Rule::OrdinaryRule:
-            qCritical("Merge of ordinary rules without container is not supported");
-            break;
-        }
-    }
+    bool merged = m_rulesFile.mergeRules(container);
 
     refreshNlpEngine();
 
-    return true;
+    return merged;
 }
 
-//--------------------------------------------------------------------------------------------------
-// Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule * Lvk::BE::AppFacade::rootRule()
 {
-    return m_rootRule.get();
+    return m_rulesFile.rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -514,6 +298,19 @@ Lvk::BE::Rule * Lvk::BE::AppFacade::rootRule()
 Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 {
     return m_evasivesRule;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Nlp Engine methods
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
+{
+    if (!m_chatbot) {
+        setupChatbot(FbChat); // FIXME FbChat, harmless so far but very error-prone
+    }
+
+    return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -584,7 +381,7 @@ void Lvk::BE::AppFacade::refreshNlpEngine()
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
-        buildNlpRulesOf(m_rootRule.get(), nlpRules);
+        buildNlpRulesOf(m_rulesFile.rootRule(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
         refreshEvasivesToChatbot();
     } else {
@@ -604,7 +401,7 @@ void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleLi
         const BE::Rule *child = parentRule->child(i);
 
         if (!child->id()) {
-            const_cast<BE::Rule *>(child)->setId(m_nextRuleId++);
+            const_cast<BE::Rule *>(child)->setId(m_rulesFile.nextRuleId());
         }
 
         if (child->type() == Rule::OrdinaryRule) {
@@ -724,7 +521,7 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
     m_chatbot = newChatbot(type);
     m_currentChatbotType = type;
 
-    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_chatbotId, m_nlpEngine);
+    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rulesFile.chatbotId(), m_nlpEngine);
     virtualUser->setEvasives(getEvasives());
 
     m_chatbot->setVirtualUser(virtualUser);
@@ -814,7 +611,6 @@ void Lvk::BE::AppFacade::clearChatHistory()
     }
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
@@ -830,47 +626,4 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
     }
 }
 
-
-//--------------------------------------------------------------------------------------------------
-// Misc
-//--------------------------------------------------------------------------------------------------
-
-inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
-{
-    if (!m_chatbot) {
-        setupChatbot(FbChat); // FIXME FbChat, harmless so far but very error-prone
-    }
-
-    return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::loadDefaultRules()
-{
-    m_rootRule = std::auto_ptr<Rule>(new BE::Rule(tr("Rules")));
-
-    BE::Rule *catGreetings    = new BE::Rule(tr("Greetings"));
-
-    catGreetings->setType(BE::Rule::ContainerRule);
-
-    QStringList rule1InputList;
-    QStringList rule1OutputList;
-    rule1InputList  << QString(tr("Hello"));
-    rule1OutputList << QString(tr("Hello!"));
-
-    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
-
-    catGreetings->appendChild(rule1);
-
-    BE::Rule *evasives  = new BE::Rule(tr("Evasives"));
-    evasives->setType(BE::Rule::EvasiveRule);
-
-    m_rootRule->appendChild(catGreetings);
-    m_rootRule->appendChild(evasives);
-    m_evasivesRule = evasives;
-    m_chatbotId = newChatbotId();
-
-    return true;
-}
 
