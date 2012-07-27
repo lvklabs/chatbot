@@ -49,7 +49,7 @@ namespace FE
  * used to provide data in any view that supports that interface (such as QListView, QTableView
  * and QTreeView).
  *
- * This class is most commonly used with QTreeView to display a hierarchy of rules.
+ * This class is most commonly used with QTreeView to display a tree of rules.
  *
  * \see BE::Rule
  */
@@ -59,71 +59,165 @@ class RuleTreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+
+    /**
+     * Constructs an RuleTreeModel widget which is a child of \a parent and sets as root rule
+     * \a rootRule.
+     */
     RuleTreeModel(BE::Rule *rootRule, QObject *parent = 0);
 
+    /**
+     * Destroys the object.
+     */
     ~RuleTreeModel();
 
-    // QAbstractItemModel - read only models
+    // QAbstractItemModel interface
 
+    /**
+     * Returns the data stored under the given \a role for the item referred to by the \a index.
+     */
     virtual QVariant data(const QModelIndex &index, int role) const;
 
+    /**
+     * Returns the data for the given \a role and \a section in the header with the specified
+     * \a orientation.
+     */
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+    /**
+     * Returns the index of the item in the model specified by the given \a row, \a column and
+     * \a parent index.
+     */
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
+    /**
+     * Returns the parent of the model item with the given \a index. If the item has no parent, an
+     * invalid QModelIndex is returned.
+     */
     virtual QModelIndex parent(const QModelIndex &index) const;
 
+    /**
+     * Returns the number of rows under the given \a parent. When the parent is valid it means that
+     * rowCount is returning the number of children of parent.
+     */
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
+    /**
+     * Returns the number of columns for the children of the given \a parent.
+     */
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-    // QAbstractItemModel - editable models
-
+    /**
+     * Returns the item flags for the given \a index.
+     */
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    /**
+     * Returns the drop actions supported by this model.
+     */
     virtual Qt::DropActions supportedDropActions() const;
 
+    /**
+     * Sets the \a role data for the item at \a index to \a value.
+     * Returns true if successful; otherwise returns false.
+     */
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
+    /**
+     * Sets the data for the given \a role and \a section in the header with the specified
+     * \a orientation to the \a value supplied.
+     * Returns true if the header's data was updated; otherwise returns false.
+     */
     virtual bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
                                int role = Qt::EditRole);
 
-    virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+    /**
+     * Inserts \a count rows into the model before the given \a row. Items in the new row will be
+     * children of the item represented by the parent model index.
+     * If row is 0, the rows are prepended to any existing rows in the parent.
+     * If row is rowCount(), the rows are appended to any existing rows in the parent.
+     * If parent has no children, a single column with count rows is inserted.
+     * Returns true if the rows were successfully inserted; otherwise returns false.
+     */
+    virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
-    virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+    /**
+     * Removes \a count rows starting with the given \a row under \a parent parent from the
+     * model.
+     * Returns true if the rows were successfully removed; otherwise returns false.
+     */
+    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
     // RuleTreeModel
 
+    /**
+     * Returns the root rule of the model.
+     */
     BE::Rule *rootItem();
 
+    /**
+     * Sets the root rule of the model.
+     */
     void setRootItem(BE::Rule *root);
 
+    /**
+     * Returns the BE::Rule object corresponding to the given \a index.
+     * Returns an object if the index is valid. Otherwise; returns 0.
+     */
     BE::Rule *itemFromIndex(const QModelIndex &index);
 
+    /**
+     * Returns the const BE::Rule object corresponding to the given \a index.
+     * Returns an object if the index is valid. Otherwise; returns 0.
+     */
     const BE::Rule *itemFromIndex(const QModelIndex &index) const;
 
-    QModelIndex index(int row, int column, BE::Rule *parentItem) const;
+    /**
+     * Returns the model index of the item in the model specified by the given \a row, \a column
+     * and \a parent rule.
+     */
+    QModelIndex index(int row, int column, BE::Rule *parent) const;
 
+    /**
+     * Returns the model index of the \a item.
+     */
     QModelIndex indexFromItem(const BE::Rule *item);
 
+    /**
+     * Appends the given \a item in the model. The parent of the item will be \a item->parent().
+     * If the item has no parent, the item is not inserted.
+     * Returns true if the item is appended. Otherwise; false.
+     */
     bool appendItem(BE::Rule *item);
 
+    /**
+     * Removes all rows in the given \a parent.
+     */
     void removeAllRows(const QModelIndex &parent = QModelIndex());
 
+    /**
+     * Removes all rows in the given \a parent.
+     */
     void removeAllRows(BE::Rule *parent);
 
-
+    /**
+     * Clears the model.
+     */
     void clear();
 
+    /**
+     * Sets if the items in the model are \a checkable or not.
+     */
+    void setIsUserCheckable(bool checkable);
+
+    /**
+     * Returns if the items in the model are \a checkable or not.
+     */
+    bool isUserCheckable();
 
     void notifyDataAboutToChange(); // FIXME refactor to remove this!
 
     void notifyDataChanged();  // FIXME refactor to remove this!
-
-
-    void setIsUserCheckable(bool checkable);
-
-    bool isUserCheckable();
 
 private:
     RuleTreeModel(RuleTreeModel&);
