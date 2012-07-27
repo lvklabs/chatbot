@@ -21,6 +21,7 @@
 
 #include "logger.h"
 #include "settings.h"
+#include "version.h"
 #include "settingskeys.h"
 
 #include <cstdlib>
@@ -114,7 +115,8 @@ void Lvk::Cmn::Logger::init()
 
         if (m_logFile->open(QFile::Append)) {
             qInstallMsgHandler(msgHandler);
-            qDebug() << "Logger initialized";
+            qDebug() << "Logger initialized on"
+                     << APP_NAME " v" APP_VERSION_STR " rev:" APP_VERSION_REV;
         } else {
             delete m_logFile;
             m_logFile = 0;
