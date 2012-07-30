@@ -44,11 +44,11 @@ namespace Nlp
 class NullSanitizer : public Sanitizer
 {
 public:
+
     /**
      *  \brief Returns the same string that is given
      */
     virtual QString sanitize(const QString &str) const;
-
 };
 
 /// @}

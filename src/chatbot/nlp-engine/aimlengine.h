@@ -80,25 +80,57 @@ class Sanitizer;
 class AimlEngine : public Engine
 {
 public:
+
+    /**
+     * Construtcs a AimlEngine object with the default sanitizer.
+     *
+     * \see DefaultSanitizer
+     */
     AimlEngine();
 
+    /**
+     * Construtcs a AimlEngine object with the given sanitizer.
+     */
     AimlEngine(Sanitizer *sanitizer);
 
+    /**
+     * Destroys the object.
+     */
     ~AimlEngine();
 
+    /**
+     * \copydoc Engine::rules() const
+     */
     virtual const RuleList &rules() const;
 
+    /**
+     * \copydoc Engine::rules()
+     */
     virtual RuleList &rules();
 
+    /**
+     * \copydoc Engine::setRules()
+     */
     virtual void setRules(const RuleList &rules);
 
+    /**
+     * \copydoc Engine::getResponse(const QString &, MatchList &)
+     */
     virtual QString getResponse(const QString &input, MatchList &matches);
 
-    virtual QString getResponse(const QString &input, const QString &target,
-                                MatchList &matches);
+    /**
+     * \copydoc Engine::getResponse(const QString &input, const QString&, MatchList &)
+     */
+    virtual QString getResponse(const QString &input, const QString &target, MatchList &matches);
 
+    /**
+     * \copydoc Engine::getAllResponses(const QString &, MatchList &)
+     */
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
 
+    /**
+     * \copydoc Engine::getAllResponses(const QString &, const QString &, MatchList &)
+     */
     virtual QList<QString> getAllResponses(const QString &input, const QString &target,
                                            MatchList &matches);
 

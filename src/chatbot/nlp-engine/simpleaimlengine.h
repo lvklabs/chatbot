@@ -86,24 +86,22 @@ public:
     SimpleAimlEngine(Sanitizer *sanitizer);
 
     /**
-     * Returns a const reference to the current rules being used by the engine.
+     * \copydoc AimlEngine::rules() const
      */
     virtual const RuleList &rules() const;
 
     /**
-     * Returns a reference to the current rules being used by the engine.
+     * \copydoc AimlEngine::rules()
      */
     virtual RuleList &rules();
 
     /**
-     * Sets the given rules to the engine.
+     * \copydoc AimlEngine::setRules()
      */
     virtual void setRules(const RuleList &rules);
 
     /**
-     * Gets all responses that matches the given input and target.
-     * Returns a list with all the responses. The IDs of those
-     * rules that have matched is returned in the matches parameter.
+     * \copydoc AimlEngine::getAllResponses(const QString &, const QString &, MatchList &)
      */
     virtual QList<QString> getAllResponses(const QString &input, const QString &target,
                                            MatchList &matches);

@@ -67,7 +67,7 @@ public:
     virtual void setRules(const RuleList &rules) = 0;
 
     /**
-     * Gets a response for the given \a input ignoring target rules.
+     * Gets a response for the given \a input ignoring targets.
      *
      * Returns the response if there is a match and \a matches contains
      * the list of rules and inputs that has matched. If the list contains two or more
@@ -88,7 +88,7 @@ public:
                                 MatchList &matches) = 0;
 
     /**
-     * Gets all responses for the given \a input ignoring target rules.
+     * Gets all responses for the given \a input ignoring targets.
      *
      * Returns a list of responses if there is match and \a matches contains
      * the list of rules and inputs that has matched. If the list contains two or more

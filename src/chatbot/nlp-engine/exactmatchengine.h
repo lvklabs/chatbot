@@ -38,30 +38,56 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Exact match case insentive NLP engine
- *
+ * \brief The ExactMatchEngine class provides an exact-match case insentive NLP engine.
  */
 
 class ExactMatchEngine : public Engine
 {
 public:
+
+    /**
+     * Construtcs an ExactMatchEngine object.
+     */
     ExactMatchEngine();
 
+    /**
+     * Destroys the object.
+     */
     ~ExactMatchEngine();
 
+    /**
+     * \copydoc Engine::rules() const
+     */
     virtual const RuleList &rules() const;
 
+    /**
+     * \copydoc Engine::rules()
+     */
     virtual RuleList &rules();
 
+    /**
+     * \copydoc Engine::setRules()
+     */
     virtual void setRules(const RuleList &rules);
 
+    /**
+     * \copydoc Engine::getResponse(const QString &, MatchList &)
+     */
     virtual QString getResponse(const QString &input, MatchList &matches);
 
-    virtual QString getResponse(const QString &input, const QString &target,
-                                MatchList &matches);
+    /**
+     * \copydoc Engine::getResponse(const QString &input, const QString&, MatchList &)
+     */
+    virtual QString getResponse(const QString &input, const QString &target, MatchList &matches);
 
+    /**
+     * \copydoc Engine::getAllResponses(const QString &, MatchList &)
+     */
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
 
+    /**
+     * \copydoc Engine::getAllResponses(const QString &, const QString &, MatchList &)
+     */
     virtual QList<QString> getAllResponses(const QString &input, const QString &target,
                                            MatchList &matches);
 
