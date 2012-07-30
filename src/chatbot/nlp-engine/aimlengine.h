@@ -47,31 +47,34 @@ class Sanitizer;
  * The AimlEngine class supports most of the AIML features. The class maps input strings into the
  * pattern tag and output strings into the template tags. For instance, given a rule:
  *
- *   Input List: "Hi there", "Hello *"
- *   Output List: "Hi!", "Hello!"
+   \verbatim
+   Input List: "Hi there", "Hello *"
+   Output List: "Hi!", "Hello!"
+   \endverbatim
  *
  * It produces an AIML string:
  *
- * <category>
- *   <pattern>Hi there</pattern>
- *   <template>
- *     <random>
- *       <li>Hi!</li>
- *       <li>Hello!</li>
- *     </random>
- *   </template>
- * </category>
- *
- * <category>
- *   <pattern>Hello *</pattern>
- *   <template>
- *     <random>
- *       <li>Hi!</li>
- *       <li>Hello!</li>
- *     </random>
- *   </template>
- * </category>
- *
+   \verbatim
+   <category>
+     <pattern>Hi there</pattern>
+     <template>
+       <random>
+         <li>Hi!</li>
+         <li>Hello!</li>
+       </random>
+     </template>
+   </category>
+
+   <category>
+     <pattern>Hello *</pattern>
+     <template>
+       <random>
+         <li>Hi!</li>
+         <li>Hello!</li>
+       </random>
+     </template>
+   </category>
+  \endverbatim
  */
 
 class AimlEngine : public Engine
