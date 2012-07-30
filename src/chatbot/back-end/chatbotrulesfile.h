@@ -51,11 +51,18 @@ namespace BE
 class ChatbotRulesFile
 {
 public:
+
     /**
      * Constructs an empty ChatbotRulesFile object. After constructing the object, rootRule()
      * returns a valid pointer to star working with.
      */
     ChatbotRulesFile();
+
+    /**
+     * Constructs a ChatbotRulesFile object from \a filename. If \a filename cannot be loaded
+     * throws std::exception.
+     */
+    ChatbotRulesFile(const QString &filename);
 
     /**
      * Loads \a filename. Filename must be a valid chabot file.

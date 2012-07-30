@@ -25,7 +25,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QtDebug>
-
+#include <exception>
 
 #define CRF_MAGIC_NUMBER            (('c'<<0) | ('r'<<8) | ('f'<<16) | ('\0'<<24))
 #define CRF_FILE_FORMAT_VERSION     2
@@ -70,6 +70,19 @@ Lvk::BE::ChatbotRulesFile::ChatbotRulesFile()
       m_nextRuleId(1),
       m_chatbotId(nullChatbotId())
 {
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::ChatbotRulesFile::ChatbotRulesFile(const QString &filename)
+    : m_metadataUnsaved(false),
+      m_rootRule(new Rule()),
+      m_nextRuleId(1),
+      m_chatbotId(nullChatbotId())
+{
+    if (!load(filename)) {
+        throw std::exception();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
