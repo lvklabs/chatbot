@@ -43,7 +43,17 @@ namespace BE
 /// @{
 
 /**
- * \brief The Rule class provides a NLP rule with metadata to display it in the front-end.
+ * \brief The Rule class provides a NLP rule with metadata.
+ *
+ * The Rule class is main data structure. It provides standard NLP
+ * attributes such as input, output and target plus metadata like name, rule type, rule status,
+ * enabled flag, check state, etc. There are three types of rules. See Rule::Type.
+ *
+ * Rules can be nested in a tree fashion. Rules can be nested by setting a parent with setParent()
+ * or by adding children with appendChild() or insertChildren().
+ *
+ * Given a root rule it can be iterated using STL-like iterator classes Rule::iterator and
+ * Rule::const_iterator
  */
 
 class Rule
@@ -51,7 +61,7 @@ class Rule
 private:
 
     /**
-     * \brief Generic class used to implement iterator and const_iterator classes
+     * \brief Generic class used to implement Rule::iterator and Rule::const_iterator classes
      */
     template <typename T>
     class generic_iterator
@@ -97,60 +107,144 @@ private:
 
 
 public:
-    enum Type { OrdinaryRule, EvasiveRule, ContainerRule };
 
-    enum Status { Saved, Unsaved };
+    /**
+     * Rule type
+     */
+    enum Type {
+        OrdinaryRule,   //! The rule is a ordinary input/output rule
+        EvasiveRule,    //! The rule is a evasives rule which does not contain any input
+        ContainerRule   /** The rule is a container rule which does not contain any input/output
+                            but contains ordinary rules */
+    };
 
+    /**
+     * Constructs a new rule with the given \a parent
+     */
     Rule(Rule *parent = 0);
 
+    /**
+     * Constructs a new rule with the given \a name and \a parent
+     */
     Rule(const QString &name, Rule *parent = 0);
 
+    /**
+     * Constructs a new rule with the given \a name, \a type and \a parent
+     */
     Rule(const QString &name, Type type, Rule *parent = 0);
 
+    /**
+     * Constructs a new rule with the given \a name, \a input \a output and \a parent
+     */
     Rule(const QString &name, const QStringList &input, const QStringList &output,
          Rule *parent = 0);
 
+    /**
+     * Constructs a new rule from \a other. If \a deepCopy is false, children are not copied.
+     * Otherwise; all children are copied recursively.
+     */
     Rule(const Rule &other, bool deepCopy = false);
 
+    /**
+     * Destroys the object.
+     */
     ~Rule();
+
+
 
     //Rule& operator=(const Rule &other);
 
+    /**
+     * Returns true if other is equal to this rule; otherwise returns false.
+     */
     bool operator==(const Rule &other) const;
 
+    /**
+     * Returns true if other is different to this rule; otherwise returns false.
+     */
     bool operator!=(const Rule &other) const;
 
+
+
+    /**
+     * Returns the rule's parent as non-const pointer. If has no parent, it returns 0.
+     */
     Rule *parent();
 
+    /**
+     * Returns the rule's parent as const pointer. If has no parent, it returns 0.
+     */
     const Rule *parent() const;
 
+    /**
+     * Returns a reference to the list of children.
+     */
     QList<Rule*> &children();
 
+    /**
+     * Returns a const reference to the list of children.
+     */
     const QList<Rule*> &children() const;
 
+    /**
+     * Appends \a child.
+     */
     bool appendChild(Rule *child);
 
+    /**
+     * Inserts \a count children at \a position
+     */
     bool insertChildren(int position, int count);
 
+    /**
+     * Removes \a count children starting from \a position
+     */
     bool removeChildren(int position, int count);
 
+    /**
+     * Removes all child.
+     */
     void removeAllChild();
 
+    /**
+     * Moves \a count children starting from \a position to a new parent \a newParent
+     */
     bool moveChildren(int position, int count, Rule *newParent);
 
+    /**
+     * Moves all children to a new parent \a newParent
+     */
     bool moveAllChildren(Rule *newParent);
 
+    /**
+     * Returns the number of children.
+     */
     int childCount() const;
 
-    void clear();
+    /**
+     * Returns the child rule at index position \a n as a non-const pointer. \a n must be a
+     * valid index position in the list (i.e., 0 <= i < childCount()).
+     */
+    Rule *child(int n);
 
-    Rule *child(int number);
-
+    /**
+     * Returns the child rule at index position \a n as a const pointer. \a n must be a
+     * valid index position in the list (i.e., 0 <= i < childCount()).
+     */
     const Rule *child(int number) const;
 
+    /**
+     * Returns the rule's next sibling as a non-const pointer. If there is no next
+     * sibling, it return 0.
+     */
     Rule *nextSibling();
 
+    /**
+     * Returns the rule's next sibling as const pointer. If there is no next sibling, it returns 0.
+     */
     const Rule *nextSibling() const;
+
+
 
     /**
      * Returns the rule type, by default is \a OrdinaryRule.
@@ -178,22 +272,49 @@ public:
      */
     void setName(const QString &name);
 
+    /**
+     * Returns a reference to the list of targets in the rule.
+     */
     TargetList &target();
 
+    /**
+     * Returns a const reference to the list of targets in the rule.
+     */
     const TargetList &target() const;
 
+    /**
+     * Sets the list of targets.
+     */
     void setTarget(const TargetList &target);
 
+    /**
+     * Returns a reference to the list of input strings in the rule.
+     */
     QStringList &input();
 
+    /**
+     * Returns a const reference to the list of input strings in the rule.
+     */
     const QStringList &input() const;
 
+    /**
+     * Sets the list of input strings.
+     */
     void setInput(const QStringList &input);
 
+    /**
+     * Returns a reference to the list of output strings in the rule.
+     */
     QStringList &output();
 
+    /**
+     * Returns a const reference to the list of output strings in the rule.
+     */
     const QStringList &output() const;
 
+    /**
+     * Sets the list of output strings.
+     */
     void setOutput(const QStringList &output);
 
     /**
@@ -215,6 +336,14 @@ public:
      * Sets the rule check state.
      */
     void setCheckState(Qt::CheckState state);
+
+    /**
+     * Rule status
+     */
+    enum Status {
+        Saved,      //! The rule is saved
+        Unsaved     //! The rule is unsaved
+    };
 
     /**
      * Returns the rule status, by default is \a Unsaved.
@@ -239,6 +368,13 @@ public:
      * Sets the rule ID.
      */
     void setId(quint64 id);
+
+    /**
+     * Clears the rule by setting all attribures to the default value.
+     */
+    void clear();
+
+
 
     /**
      * \brief The iterator class provides a STL-like Rule iterator

@@ -227,14 +227,14 @@ bool Lvk::BE::Rule::moveAllChildren(Lvk::BE::Rule *newParent)
 
 Lvk::BE::Rule * Lvk::BE::Rule::child(int row)
 {
-    return m_childItems.value(row);
+    return m_childItems[row];
 }
 
 //--------------------------------------------------------------------------------------------------
 
 const Lvk::BE::Rule * Lvk::BE::Rule::child(int row) const
 {
-    return m_childItems.value(row);
+    return m_childItems[row];
 }
 
 //--------------------------------------------------------------------------------------------------
