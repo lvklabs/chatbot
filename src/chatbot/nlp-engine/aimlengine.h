@@ -46,7 +46,7 @@ class Sanitizer;
  *        Markup Language)
  *
  * The AimlEngine class supports most of the AIML features. The class maps input strings into the
- * \tt pattern tag and output strings into the \tt template tag. For instance, given a rule:
+ * \c pattern tag and output strings into the \c template tag. For instance, given a rule:
  *
    \verbatim
    Input List: "Hi there", "Hello *"
