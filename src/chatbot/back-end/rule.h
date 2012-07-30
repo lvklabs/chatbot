@@ -55,7 +55,6 @@ namespace BE
  * Given a root rule it can be iterated using STL-like iterator classes Rule::iterator and
  * Rule::const_iterator
  */
-
 class Rule
 {
 private:
@@ -435,7 +434,14 @@ private:
     quint64 m_id;
 };
 
+/**
+ * Writes a \a rule to the stream and returns a reference to the stream.
+ */
 QDataStream &operator<<(QDataStream &stream, const Rule &rule);
+
+/**
+ * Reads a rule from the \a stream into \a rule, and returns a reference to the stream.
+ */
 QDataStream &operator>>(QDataStream &stream, Rule &rule);
 
 /// @}
