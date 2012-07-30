@@ -110,6 +110,10 @@ Leaf::Leaf()
 Node::Node()
     : word("")
 {
+    // start lvk - patch memory leak
+    childs.setAutoDelete(true);
+    leafs.setAutoDelete(true);
+    // end lvk - patch memory leak
 }
 
 bool Node::match(QStringList::const_iterator input, const QStringList &inputWords,
