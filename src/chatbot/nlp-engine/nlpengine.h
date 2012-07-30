@@ -43,25 +43,68 @@ namespace Nlp
 /**
  * \brief The Engine class provides an abstract interface for all NLP Engines
  */
-
 class Engine
 {
 public:
-    typedef QList< QPair<RuleId, int> > MatchList; //! list of pairs (rule_id, matched_input_number)
+    /**
+     * MatchList provides a list of pairs (RuleId, InputNumber)
+     */
+    typedef QList< QPair<RuleId, int> > MatchList;
 
+    /**
+     * Returns a const reference to the list of rules.
+     */
     virtual const RuleList &rules() const = 0;
 
+    /**
+     * Returns a reference to the list of rules.
+     */
     virtual RuleList &rules() = 0;
 
+    /**
+     * Sets the list of rules.
+     */
     virtual void setRules(const RuleList &rules) = 0;
 
+    /**
+     * Gets a response for the given \a input ignoring target rules.
+     *
+     * Returns the response if there is a match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
     virtual QString getResponse(const QString &input, MatchList &matches) = 0;
 
+    /**
+     * Gets a response for the given \a input and \a target.
+     *
+     * Returns the response if there is a match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
     virtual QString getResponse(const QString &input, const QString &target,
                                 MatchList &matches) = 0;
 
+    /**
+     * Gets all responses for the given \a input ignoring target rules.
+     *
+     * Returns a list of responses if there is match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
     virtual QList<QString> getAllResponses(const QString &input, MatchList &matches) = 0;
 
+    /**
+     * Gets all responses for the given \a input and \a target.
+     *
+     * Returns a list of responses if there is match and \a matches contains
+     * the list of rules and inputs that has matched. If the list contains two or more
+     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
+     * is empty.
+     */
     virtual QList<QString> getAllResponses(const QString &input, const QString &target,
                                            MatchList &matches) = 0;
 
