@@ -24,12 +24,14 @@
 #include "nlp-engine/nullsanitizer.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/logger.h"
 
 #include "ProgramQ/aimlparser.h"
 
 #include <QStringList>
 #include <QFile>
 #include <QDir>
+#include <QtDebug>
 #include <cassert>
 
 #define ANY_USER        "LvkNlpAimlEngineAnyUser"
@@ -102,8 +104,20 @@ Lvk::Nlp::AimlEngine::AimlEngine()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
-    : m_aimlParser(0), m_sanitizer(sanitizer)
+    : m_aimlParser(0), m_sanitizer(sanitizer), m_logFile(new QFile())
 {
+    Cmn::Settings settings;
+    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
+    QString filename = logsPath + QDir::separator() + "aiml_parser.log";
+
+    Cmn::Logger::rotateLog(filename);
+
+    m_logFile->setFileName(filename);
+
+    if (!m_logFile->open(QFile::Append)) {
+        qCritical() << "AimlEngine: Cannot open log file" << filename;
+    }
+
     resetParser();
 }
 
@@ -113,20 +127,15 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 {
     delete m_sanitizer;
     delete m_aimlParser;
+    delete m_logFile;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::AimlEngine::resetParser()
 {
-    Lvk::Cmn::Settings settings;
-    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
-
-    QFile *logfile = new QFile(logsPath + QDir::separator() + "aiml_parser.log");
-    logfile->open(QFile::WriteOnly);
-
     delete m_aimlParser;
-    m_aimlParser = new AIMLParser(logfile);
+    m_aimlParser = new AIMLParser(m_logFile);
 }
 
 //--------------------------------------------------------------------------------------------------

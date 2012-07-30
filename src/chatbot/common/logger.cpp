@@ -39,7 +39,6 @@
 #define FATAL_STR            "Fatal: "
 
 #define LOG_FILENAME         "chatbot.log"
-#define LOG_MAX_SIZE         (1024*1024)
 
 #define DATE_TIME_LOG_FORMAT "yyyy-MM-dd hh:mm:ss.zzz"
 
@@ -73,20 +72,6 @@ QString chatbotLogFilename()
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
     return logsPath + QDir::separator() + LOG_FILENAME;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void rotateLog(const QString &logFilename)
-{
-    QString rlogFilename = logFilename + ".1";
-
-    QFileInfo logFile(logFilename);
-
-    if (logFile.size() > LOG_MAX_SIZE) {
-        QFile::remove(rlogFilename);
-        QFile::rename(logFilename, rlogFilename);
-    }
 }
 
 } // namespace
@@ -138,6 +123,21 @@ void Lvk::Cmn::Logger::shutdown()
 
     delete m_logFile;
     m_logFile = 0;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Cmn::Logger::rotateLog(const QString &logFilename, qint64 maxSize)
+{
+    QString rlogFilename = logFilename + ".1";
+
+    QFileInfo logFile(logFilename);
+
+    if (logFile.size() > maxSize) {
+        QFile::remove(rlogFilename);
+        QFile::rename(logFilename, rlogFilename);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

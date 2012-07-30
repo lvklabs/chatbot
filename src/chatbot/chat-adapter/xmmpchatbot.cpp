@@ -23,6 +23,7 @@
 #include "chat-adapter/chatvirtualuser.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/logger.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -49,22 +50,6 @@ namespace
 inline QString getBareJid(const QString &from)
 {
     return from.split("/").at(0);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void rotateLog(const QString &logFilename)
-{
-    const long LOG_MAX_SIZE = 1024*1024;
-
-    QString rlogFilename = logFilename + ".1";
-
-    QFileInfo logFile(logFilename);
-
-    if (logFile.size() > LOG_MAX_SIZE) {
-        QFile::remove(rlogFilename);
-        QFile::rename(logFilename, rlogFilename);
-    }
 }
 
 } // namespace
@@ -101,11 +86,11 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
 
 void Lvk::CA::XmppChatbot::setupLogger()
 {
-    Lvk::Cmn::Settings settings;
+    Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
     QString logFilename = logsPath + QDir::separator() + "./xmpp.log";
 
-    rotateLog(logFilename);
+    Cmn::Logger::rotateLog(logFilename);
 
     QXmppLogger *xmppLogger = new QXmppLogger(this);
     xmppLogger->setLoggingType(QXmppLogger::FileLogging);

@@ -64,6 +64,12 @@ public:
      */
     static void shutdown();
 
+    /**
+     * Rotates \a logFilename if it is greater than \a maxSize. The rotated filename will be called
+     * \a logFilename + ".1"
+     */
+    static void rotateLog(const QString &logFilename, qint64 maxSize = 1024*1024);
+
 private:
     Logger();
     Logger(Logger&);

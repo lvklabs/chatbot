@@ -25,6 +25,7 @@
 #include "nlp-engine/nlpengine.h"
 
 class AIMLParser;
+class QFile;
 
 namespace Lvk
 {
@@ -142,6 +143,7 @@ private:
     RuleList m_rules;
     AIMLParser *m_aimlParser;
     Sanitizer *m_sanitizer;
+    QFile *m_logFile;
 
     void resetParser();
     void buildAiml(QString &aiml);
