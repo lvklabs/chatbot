@@ -101,10 +101,10 @@ HEADERS += \
     common/csvrow.h \
     common/globalstrings.h \
     common/logger.h \
-    doc/modules.h \
-    doc/mainpage.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     nlp-engine/rule.h \
+    doc/mainpage.dox \
+    doc/modules.dox
 
 
 SOURCES += \
@@ -173,6 +173,12 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+
+
+
+
+
+
 
 
 
