@@ -170,32 +170,36 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
 bool Lvk::BE::AppFacade::setDefaultRules()
 {
-    BE::Rule *rootRule = m_rulesFile.rootRule();
+    Rule *rootRule = m_rulesFile.rootRule();
 
     if (!rootRule) {
         return false;
     }
 
-    BE::Rule *catGreetings = new BE::Rule(tr("Greetings"));
+    Rule *catGreetings = new Rule(tr("Greetings"));
 
-    catGreetings->setType(BE::Rule::ContainerRule);
+    catGreetings->setType(Rule::ContainerRule);
 
     QStringList rule1InputList;
     QStringList rule1OutputList;
     rule1InputList  << QString(tr("Hello"));
     rule1OutputList << QString(tr("Hello!"));
 
-    BE::Rule * rule1 = new BE::Rule("", rule1InputList, rule1OutputList);
+    Rule * rule1 = new Rule("", rule1InputList, rule1OutputList);
 
     catGreetings->appendChild(rule1);
 
-    BE::Rule *evasives  = new BE::Rule(tr("Evasives"));
-    evasives->setType(BE::Rule::EvasiveRule);
+    Rule *evasives  = new Rule(tr("Evasives"));
+    evasives->setType(Rule::EvasiveRule);
 
     m_evasivesRule = evasives;
 
     rootRule->appendChild(catGreetings);
     rootRule->appendChild(evasives);
+
+    for (Rule::iterator it = rootRule->begin(); it != rootRule->end(); ++it) {
+        (*it)->setStatus(Rule::Saved);
+    }
 
     return true;
 }
