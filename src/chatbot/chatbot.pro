@@ -103,8 +103,6 @@ HEADERS += \
     common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     nlp-engine/rule.h \
-    doc/mainpage.dox \
-    doc/modules.dox
 
 
 SOURCES += \
@@ -163,6 +161,8 @@ TRANSLATIONS = \
     lang/chatbot_es_AR.ts
 
 OTHER_FILES += \
+    doc/mainpage.dox \
+    doc/modules.dox \
     chatbot.rc
 
 win32 {
