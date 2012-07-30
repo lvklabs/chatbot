@@ -45,12 +45,12 @@ namespace BE
 /**
  * \brief The Rule class provides a NLP rule with metadata.
  *
- * The Rule class is main data structure. It provides standard NLP
+ * The Rule class is the main data structure. It provides standard NLP
  * attributes such as input, output and target plus metadata like name, rule type, rule status,
  * enabled flag, check state, etc. There are three types of rules. See Rule::Type.
  *
- * Rules can be nested in a tree fashion. Rules can be nested by setting a parent with setParent()
- * or by adding children with appendChild() or insertChildren().
+ * Rules can be nested in a tree-way fashion. Rules can be nested by passing a parent in the
+ * constructor or by adding children with appendChild() or insertChildren().
  *
  * Given a root rule it can be iterated using STL-like iterator classes Rule::iterator and
  * Rule::const_iterator
@@ -111,8 +111,8 @@ public:
      * Rule type
      */
     enum Type {
-        OrdinaryRule,   //! The rule is a ordinary input/output rule
-        EvasiveRule,    //! The rule is a evasives rule which does not contain any input
+        OrdinaryRule,   ///< The rule is a ordinary input/output rule
+        EvasiveRule,    ///< The rule is a evasives rule which does not contain any input
         ContainerRule   /** The rule is a container rule which does not contain any input/output
                             but contains ordinary rules */
     };
@@ -230,7 +230,7 @@ public:
      * Returns the child rule at index position \a n as a const pointer. \a n must be a
      * valid index position in the list (i.e., 0 <= i < childCount()).
      */
-    const Rule *child(int number) const;
+    const Rule *child(int n) const;
 
     /**
      * Returns the rule's next sibling as a non-const pointer. If there is no next
@@ -340,8 +340,8 @@ public:
      * Rule status
      */
     enum Status {
-        Saved,      //! The rule is saved
-        Unsaved     //! The rule is unsaved
+        Saved,      ///< The rule is saved
+        Unsaved     ///< The rule is unsaved
     };
 
     /**
