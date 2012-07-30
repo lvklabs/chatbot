@@ -22,7 +22,7 @@
 #ifndef LVK_NLP_DEFAULTSANITIZER_H
 #define LVK_NLP_DEFAULTSANITIZER_H
 
-#include "sanitizer.h"
+#include "nlp-engine/sanitizer.h"
 
 namespace Lvk
 {

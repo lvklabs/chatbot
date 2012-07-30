@@ -28,7 +28,7 @@
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
 #include "QXmppRosterIq.h"
-#include "chatbot.h"
+#include "chat-adapter/chatbot.h"
 
 class QXmppVCardIq;
 class QMutex;

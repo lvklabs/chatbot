@@ -22,7 +22,7 @@
 #ifndef LVK_BE_CHATBOTRULESFILE_H
 #define LVK_BE_CHATBOTRULESFILE_H
 
-#include "rule.h"
+#include "back-end/rule.h"
 
 #include <QString>
 #include <QHash>

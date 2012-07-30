@@ -19,7 +19,7 @@
  *
  */
 
-#include "random.h"
+#include "common/random.h"
 
 #include <QDateTime>
 #include <cstdlib>

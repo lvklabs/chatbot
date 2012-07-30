@@ -19,7 +19,7 @@
  *
  */
 
-#include "rule.h"
+#include "back-end/rule.h"
 
 #include <QtAlgorithms>
 #include <QIcon>

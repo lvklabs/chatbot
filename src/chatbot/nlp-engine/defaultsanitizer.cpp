@@ -19,7 +19,7 @@
  *
  */
 
-#include "defaultsanitizer.h"
+#include "nlp-engine/defaultsanitizer.h"
 
 #define utf8_a_acute                    "\xc3\xa1"
 #define utf8_e_acute                    "\xc3\xa9"

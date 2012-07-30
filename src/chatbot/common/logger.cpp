@@ -19,10 +19,10 @@
  *
  */
 
-#include "logger.h"
-#include "settings.h"
-#include "version.h"
-#include "settingskeys.h"
+#include "common/logger.h"
+#include "common/settings.h"
+#include "common/version.h"
+#include "common/settingskeys.h"
 
 #include <cstdlib>
 #include <iostream>

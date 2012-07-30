@@ -19,7 +19,7 @@
  *
  */
 
-#include "testconversationwidget.h"
+#include "front-end/testconversationwidget.h"
 
 #include <QScrollBar>
 

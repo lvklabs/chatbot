@@ -19,9 +19,9 @@
  *
  */
 
-#include "exactmatchengine.h"
-#include "nlprule.h"
-#include "random.h"
+#include "nlp-engine/exactmatchengine.h"
+#include "nlp-engine/rule.h"
+#include "common/random.h"
 
 #include <QStringList>
 #include <cassert>

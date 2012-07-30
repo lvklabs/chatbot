@@ -22,7 +22,7 @@
 #ifndef LVK_NLP_AIMLENGINE_H
 #define LVK_NLP_AIMLENGINE_H
 
-#include "nlpengine.h"
+#include "nlp-engine/nlpengine.h"
 
 class AIMLParser;
 

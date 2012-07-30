@@ -19,7 +19,7 @@
  *
  */
 
-#include "csvrow.h"
+#include "common/csvrow.h"
 
 #include <QStringList>
 

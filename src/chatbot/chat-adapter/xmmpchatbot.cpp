@@ -19,10 +19,10 @@
  *
  */
 
-#include "xmmpchatbot.h"
-#include "chatvirtualuser.h"
-#include "settings.h"
-#include "settingskeys.h"
+#include "chat-adapter/xmmpchatbot.h"
+#include "chat-adapter/chatvirtualuser.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"

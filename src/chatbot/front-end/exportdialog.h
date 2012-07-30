@@ -22,7 +22,7 @@
 #ifndef LVK_FE_EXPORTDIALOG_H
 #define LVK_FE_EXPORTDIALOG_H
 
-#include "portdialog.h"
+#include "front-end/portdialog.h"
 
 namespace Lvk
 {

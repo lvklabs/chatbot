@@ -26,7 +26,7 @@
 #include <QHash>
 #include <QList>
 
-#include "conversation.h"
+#include "back-end/conversation.h"
 
 namespace Ui {
     class ChatHistoryWidget;

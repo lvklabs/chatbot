@@ -1,7 +1,7 @@
 #ifndef LVK_BE_TARGET_H
 #define LVK_BE_TARGET_H
 
-#include "roster.h"
+#include "back-end/roster.h"
 
 #include <QList>
 

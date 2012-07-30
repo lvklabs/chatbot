@@ -24,9 +24,9 @@
 
 #include <QMainWindow>
 
-#include "appfacade.h"
-#include "conversation.h"
-#include "rule.h"
+#include "back-end/appfacade.h"
+#include "back-end/conversation.h"
+#include "back-end/rule.h"
 
 class TestMainWindow;
 class QModelIndex;

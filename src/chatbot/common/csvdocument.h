@@ -22,7 +22,7 @@
 #ifndef LVK_CMN_CSVDOCUMENT_H
 #define LVK_CMN_CSVDOCUMENT_H
 
-#include "csvrow.h"
+#include "common/csvrow.h"
 
 #include <QList>
 #include <QString>

@@ -19,8 +19,8 @@
  *
  */
 
-#include "rosterwidget.h"
-#include "linefilteredit.h"
+#include "front-end/rosterwidget.h"
+#include "front-end/linefilteredit.h"
 
 #include <QListWidget>
 #include <QCheckBox>

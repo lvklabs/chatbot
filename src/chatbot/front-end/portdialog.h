@@ -22,8 +22,8 @@
 #ifndef LVK_FE_PORTDIALOG_H
 #define LVK_FE_PORTDIALOG_H
 
-#include "rule.h"
-#include "ruletreemodel.h"
+#include "back-end/rule.h"
+#include "front-end/ruletreemodel.h"
 
 #include <QDialog>
 #include <QString>

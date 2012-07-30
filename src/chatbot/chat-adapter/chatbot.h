@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include "contactinfo.h"
+#include "chat-adapter/contactinfo.h"
 
 class QString;
 

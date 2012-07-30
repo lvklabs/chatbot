@@ -19,7 +19,7 @@
  *
  */
 
-#include "nullsanitizer.h"
+#include "nlp-engine/nullsanitizer.h"
 
 QString Lvk::Nlp::NullSanitizer::sanitize(const QString &str) const
 {

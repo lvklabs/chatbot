@@ -22,7 +22,7 @@
 #ifndef LVK_CMN_VERSION_H
 #define LVK_CMN_VERSION_H
 
-#include "versionrev.h"
+#include "common/versionrev.h"
 
 #define ORGANIZATION_NAME   "LVK"
 #define ORGANIZATION_DOMAIN "lvklabs.com"

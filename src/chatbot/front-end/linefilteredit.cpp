@@ -19,7 +19,7 @@
  *
  */
 
-#include "linefilteredit.h"
+#include "front-end/linefilteredit.h"
 
 #include <QLabel>
 #include <QEvent>

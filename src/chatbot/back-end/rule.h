@@ -27,7 +27,7 @@
 #include <QStringList>
 #include <QVariant>
 
-#include "target.h"
+#include "back-end/target.h"
 
 namespace Lvk
 {

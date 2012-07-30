@@ -19,8 +19,8 @@
  *
  */
 
-#include "settings.h"
-#include "settingskeys.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 
 #ifndef MAC_OS_X
 #  define SETTINGS_FILENAME   "./chatbot.conf"

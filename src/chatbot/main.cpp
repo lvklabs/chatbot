@@ -24,11 +24,11 @@
 #include <QDir>
 #include <QDebug>
 
-#include "mainwindow.h"
-#include "version.h"
-#include "settings.h"
-#include "settingskeys.h"
-#include "logger.h"
+#include "front-end/mainwindow.h"
+#include "common/version.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+#include "common/logger.h"
 
 void makeDirStructure();
 void setLanguage(QApplication &app);

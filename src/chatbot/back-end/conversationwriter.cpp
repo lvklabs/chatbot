@@ -19,10 +19,10 @@
  *
  */
 
-#include "conversationwriter.h"
-#include "csvrow.h"
-#include "csvdocument.h"
-#include "globalstrings.h"
+#include "back-end/conversationwriter.h"
+#include "common/csvrow.h"
+#include "common/csvdocument.h"
+#include "common/globalstrings.h"
 
 #include <QIODevice>
 #include <QFile>

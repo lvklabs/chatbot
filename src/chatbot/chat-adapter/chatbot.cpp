@@ -19,7 +19,7 @@
  *
  */
 
-#include "chatbot.h"
+#include "chat-adapter/chatbot.h"
 
 Lvk::CA::Chatbot::~Chatbot()
 {

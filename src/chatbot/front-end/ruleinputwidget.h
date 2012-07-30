@@ -27,8 +27,8 @@
 #include <QStringList>
 #include <QHash>
 
-#include "roster.h"
-#include "target.h"
+#include "back-end/roster.h"
+#include "back-end/target.h"
 
 class QLineEdit;
 class QPlainTextEdit;

@@ -22,7 +22,7 @@
 #ifndef LVK_CA_GTALKCHATBOT_H
 #define LVK_CA_GTALKCHATBOT_H
 
-#include "xmmpchatbot.h"
+#include "chat-adapter/xmmpchatbot.h"
 
 namespace Lvk
 {

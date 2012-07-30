@@ -19,13 +19,13 @@
  *
  */
 
-#include "defaultvirtualuser.h"
-#include "nlpengine.h"
-#include "random.h"
-#include "settings.h"
-#include "settingskeys.h"
-#include "conversationreader.h"
-#include "conversationwriter.h"
+#include "back-end/defaultvirtualuser.h"
+#include "nlp-engine/nlpengine.h"
+#include "common/random.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+#include "back-end/conversationreader.h"
+#include "back-end/conversationwriter.h"
 
 #include <QFile>
 #include <QDir>

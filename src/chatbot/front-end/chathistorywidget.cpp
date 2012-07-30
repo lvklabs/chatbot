@@ -19,7 +19,7 @@
  *
  */
 
-#include "chathistorywidget.h"
+#include "front-end/chathistorywidget.h"
 #include "ui_chathistorywidget.h"
 
 #include <QIcon>

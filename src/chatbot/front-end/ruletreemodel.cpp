@@ -19,8 +19,8 @@
  *
  */
 
-#include "ruletreemodel.h"
-#include "rule.h"
+#include "front-end/ruletreemodel.h"
+#include "back-end/rule.h"
 
 #include <QIcon>
 

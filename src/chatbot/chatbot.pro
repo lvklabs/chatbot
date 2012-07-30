@@ -47,18 +47,13 @@ CONFIG(debug, debug|release) {
     win32 {
         QXMPP_LIBRARY_NAME = qxmpp_win32
     } else:mac {
-        QXMPP_LIBRARY_NAME = qxmpp_mac_d
+        QXMPP_LIBRARY_NAME = qxmpp_mac
     } else {
         QXMPP_LIBRARY_NAME = qxmpp
     }
 }
 
 INCLUDEPATH += \
-    front-end \
-    back-end \
-    nlp-engine \
-    chat-adapter \
-    common \
     $$THIRD_PARTY_PATH \
     $$QXMPP_INCLUDE_PATH
 
@@ -85,7 +80,6 @@ HEADERS += \
     back-end/conversationreader.h \
     back-end/chatbotrulesfile.h \
     nlp-engine/nlpengine.h \
-    nlp-engine/nlprule.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -108,6 +102,7 @@ HEADERS += \
     common/globalstrings.h \
     common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    nlp-engine/rule.h
 
 
 SOURCES += \
@@ -176,6 +171,8 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+
+
 
 
 

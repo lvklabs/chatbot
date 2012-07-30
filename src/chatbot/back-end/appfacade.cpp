@@ -19,17 +19,17 @@
  *
  */
 
-#include "appfacade.h"
-#include "rule.h"
-#include "nlpengine.h"
-#include "nlprule.h"
-#include "exactmatchengine.h"
-#include "simpleaimlengine.h"
-#include "defaultsanitizer.h"
-#include "random.h"
-#include "fbchatbot.h"
-#include "gtalkchatbot.h"
-#include "defaultvirtualuser.h"
+#include "back-end/appfacade.h"
+#include "back-end/rule.h"
+#include "nlp-engine/nlpengine.h"
+#include "nlp-engine/rule.h"
+#include "nlp-engine/exactmatchengine.h"
+#include "nlp-engine/simpleaimlengine.h"
+#include "nlp-engine/defaultsanitizer.h"
+#include "common/random.h"
+#include "chat-adapter/fbchatbot.h"
+#include "chat-adapter/gtalkchatbot.h"
+#include "back-end/defaultvirtualuser.h"
 
 namespace Lvk
 {

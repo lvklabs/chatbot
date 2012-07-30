@@ -22,7 +22,7 @@
 #ifndef LVK_NLP_EXACTMATCHENGINE_H
 #define LVK_NLP_EXACTMATCHENGINE_H
 
-#include "nlpengine.h"
+#include "nlp-engine/nlpengine.h"
 
 namespace Lvk
 {

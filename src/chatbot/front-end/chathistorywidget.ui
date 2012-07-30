@@ -171,7 +171,7 @@
   <customwidget>
    <class>Lvk::FE::LineFilterEdit</class>
    <extends>QLineEdit</extends>
-   <header>linefilteredit.h</header>
+   <header>front-end/linefilteredit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

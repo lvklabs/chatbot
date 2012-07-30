@@ -19,8 +19,8 @@
  *
  */
 
-#include "conversation.h"
-#include "globalstrings.h"
+#include "back-end/conversation.h"
+#include "common/globalstrings.h"
 
 #include <QStringList>
 #include <QRegExp>

@@ -19,7 +19,7 @@
  *
  */
 
-#include "ruleoutputwidget.h"
+#include "front-end/ruleoutputwidget.h"
 
 
 //--------------------------------------------------------------------------------------------------

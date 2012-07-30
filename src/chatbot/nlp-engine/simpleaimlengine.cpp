@@ -19,8 +19,8 @@
  *
  */
 
-#include "simpleaimlengine.h"
-#include "nlprule.h"
+#include "nlp-engine/simpleaimlengine.h"
+#include "nlp-engine/rule.h"
 
 #include <cmath>
 #include <exception>

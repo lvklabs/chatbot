@@ -1178,29 +1178,29 @@ Please insert your username and password and press &quot;Verify account&quot; bu
   <customwidget>
    <class>Lvk::FE::RuleOutputWidget</class>
    <extends>QPlainTextEdit</extends>
-   <header>ruleoutputwidget.h</header>
+   <header>front-end/ruleoutputwidget.h</header>
   </customwidget>
   <customwidget>
    <class>Lvk::FE::RuleInputWidget</class>
    <extends>QWidget</extends>
-   <header>ruleinputwidget.h</header>
+   <header>front-end/ruleinputwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Lvk::FE::TestConversationWidget</class>
    <extends>QTextEdit</extends>
-   <header>testconversationwidget.h</header>
+   <header>front-end/testconversationwidget.h</header>
   </customwidget>
   <customwidget>
    <class>Lvk::FE::RosterWidget</class>
    <extends>QWidget</extends>
-   <header>rosterwidget.h</header>
+   <header>front-end/rosterwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Lvk::FE::ChatHistoryWidget</class>
    <extends>QWidget</extends>
-   <header>chathistorywidget.h</header>
+   <header>front-end/chathistorywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

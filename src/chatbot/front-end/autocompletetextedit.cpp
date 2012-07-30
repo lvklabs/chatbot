@@ -19,7 +19,7 @@
  *
  */
 
-#include "autocompletetextedit.h"
+#include "front-end/autocompletetextedit.h"
 
 #include <QListWidget>
 #include <QListWidgetItem>

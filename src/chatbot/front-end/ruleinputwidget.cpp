@@ -19,8 +19,8 @@
  *
  */
 
-#include "ruleinputwidget.h"
-#include "autocompletetextedit.h"
+#include "front-end/ruleinputwidget.h"
+#include "front-end/autocompletetextedit.h"
 
 #include <QPlainTextEdit>
 #include <QLineEdit>

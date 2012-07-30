@@ -19,7 +19,7 @@
  *
  */
 
-#include "gtalkchatbot.h"
+#include "chat-adapter/gtalkchatbot.h"
 
 #define GTALK_HOST    "gmail.com"
 

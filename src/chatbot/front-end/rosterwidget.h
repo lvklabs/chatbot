@@ -27,7 +27,7 @@
 #include <QWidget>
 #include <QHash>
 
-#include "roster.h"
+#include "back-end/roster.h"
 
 class QListWidget;
 class QCheckBox;

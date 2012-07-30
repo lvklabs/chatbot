@@ -22,8 +22,8 @@
 #ifndef LVK_CA_FBCHATBOT_H
 #define LVK_CA_FBCHATBOT_H
 
-#include "xmmpchatbot.h"
-#include "chatcorpus.h"
+#include "chat-adapter/xmmpchatbot.h"
+#include "chat-adapter/chatcorpus.h"
 
 #include <QMutex>
 #include <QHash>

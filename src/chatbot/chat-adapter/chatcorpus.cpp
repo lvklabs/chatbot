@@ -19,11 +19,11 @@
  *
  */
 
-#include "chatcorpus.h"
-#include "csvdocument.h"
-#include "globalstrings.h"
-#include "settings.h"
-#include "settingskeys.h"
+#include "chat-adapter/chatcorpus.h"
+#include "common/csvdocument.h"
+#include "common/globalstrings.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 
 #include <QFile>
 #include <QDir>

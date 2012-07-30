@@ -22,7 +22,7 @@
 #ifndef LVK_BE_CONVERSATIONREADER_H
 #define LVK_BE_CONVERSATIONREADER_H
 
-#include "conversation.h"
+#include "back-end/conversation.h"
 
 class QIODevice;
 class QString;

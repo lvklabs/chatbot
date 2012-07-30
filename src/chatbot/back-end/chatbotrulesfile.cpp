@@ -19,7 +19,7 @@
  *
  */
 
-#include "chatbotrulesfile.h"
+#include "back-end/chatbotrulesfile.h"
 
 #include <QUuid>
 #include <QFile>

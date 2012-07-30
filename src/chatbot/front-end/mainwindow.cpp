@@ -19,18 +19,18 @@
  *
  */
 
-#include "mainwindow.h"
-#include "appfacade.h"
-#include "ruletreemodel.h"
-#include "rule.h"
+#include "front-end/mainwindow.h"
+#include "back-end/appfacade.h"
+#include "front-end/ruletreemodel.h"
+#include "back-end/rule.h"
 #include "ui_mainwindow.h"
-#include "exportdialog.h"
-#include "importdialog.h"
-#include "roster.h"
-#include "version.h"
-#include "settings.h"
-#include "settingskeys.h"
-#include "conversationwriter.h"
+#include "front-end/exportdialog.h"
+#include "front-end/importdialog.h"
+#include "back-end/roster.h"
+#include "common/version.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+#include "back-end/conversationwriter.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>

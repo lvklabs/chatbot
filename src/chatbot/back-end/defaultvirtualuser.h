@@ -24,8 +24,8 @@
 
 #include <QObject>
 #include <QStringList>
-#include "chatvirtualuser.h"
-#include "conversation.h"
+#include "chat-adapter/chatvirtualuser.h"
+#include "back-end/conversation.h"
 
 class QFile;
 class QReadWriteLock;

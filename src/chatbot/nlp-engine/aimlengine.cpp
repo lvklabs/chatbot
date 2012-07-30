@@ -19,11 +19,11 @@
  *
  */
 
-#include "aimlengine.h"
-#include "nlprule.h"
-#include "nullsanitizer.h"
-#include "settings.h"
-#include "settingskeys.h"
+#include "nlp-engine/aimlengine.h"
+#include "nlp-engine/rule.h"
+#include "nlp-engine/nullsanitizer.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 
 #include "ProgramQ/aimlparser.h"
 

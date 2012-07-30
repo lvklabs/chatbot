@@ -29,11 +29,11 @@
 #include <QVariant>
 #include <QSet>
 
-#include "chatbotrulesfile.h"
-#include "nlprule.h"
-#include "conversation.h"
-#include "roster.h"
-#include "target.h"
+#include "back-end/chatbotrulesfile.h"
+#include "nlp-engine/rule.h"
+#include "back-end/conversation.h"
+#include "back-end/roster.h"
+#include "back-end/target.h"
 
 
 class QFile;

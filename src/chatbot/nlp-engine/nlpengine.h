@@ -25,7 +25,7 @@
 #include <QString>
 #include <QPair>
 
-#include "nlprule.h"
+#include "nlp-engine/rule.h"
 
 namespace Lvk
 {

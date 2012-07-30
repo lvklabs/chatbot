@@ -19,7 +19,7 @@
  *
  */
 
-#include "importdialog.h"
+#include "front-end/importdialog.h"
 
 //--------------------------------------------------------------------------------------------------
 // ImportDialog

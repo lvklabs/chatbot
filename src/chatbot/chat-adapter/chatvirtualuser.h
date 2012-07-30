@@ -24,7 +24,7 @@
 
 #include <QString>
 #include <QPixmap>
-#include "contactinfo.h"
+#include "chat-adapter/contactinfo.h"
 
 namespace Lvk
 {

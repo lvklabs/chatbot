@@ -22,7 +22,7 @@
 #ifndef LVK_NLP_SIMPLEAIMLENGINE_H
 #define LVK_NLP_SIMPLEAIMLENGINE_H
 
-#include "aimlengine.h"
+#include "nlp-engine/aimlengine.h"
 
 #include <QHash>
 

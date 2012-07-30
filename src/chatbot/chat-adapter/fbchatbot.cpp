@@ -19,11 +19,11 @@
  *
  */
 
-#include "fbchatbot.h"
-#include "chatcorpus.h"
-#include "settings.h"
-#include "settingskeys.h"
-#include "globalstrings.h"
+#include "chat-adapter/fbchatbot.h"
+#include "chat-adapter/chatcorpus.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+#include "common/globalstrings.h"
 
 #include <QMutex>
 #include <QMutexLocker>
