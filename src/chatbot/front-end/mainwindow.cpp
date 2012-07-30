@@ -45,7 +45,7 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 
-#define TEST_CONVERSATION_LOG_FILE  "tests_history.log"
+#define TEST_CONVERSATION_LOG_FILE  "local_tests.log"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
