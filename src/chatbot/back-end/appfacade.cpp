@@ -236,7 +236,6 @@ void Lvk::BE::AppFacade::close()
         deleteCurrentChatbot();
     }
 
-    m_rulesHash.clear();
     m_targets.clear();
     m_rulesFile.close();
     m_evasivesRule = 0;
@@ -358,7 +357,7 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
         if (!nlpRulesMatched.isEmpty()) {
             Nlp::RuleId ruleId = nlpRulesMatched.first().first;
             int inputNumber = nlpRulesMatched.first().second;
-            matches.append(qMakePair(m_rulesHash[ruleId], inputNumber));
+            matches.append(qMakePair(ruleId, inputNumber));
         } else {
             QStringList evasives = getEvasives();
             response = !evasives.isEmpty() ?
@@ -376,7 +375,6 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
 void Lvk::BE::AppFacade::refreshNlpEngine()
 {
     m_evasivesRule = 0;
-    m_rulesHash.clear();
     m_targets.clear();
 
     if (m_nlpEngine) {
@@ -406,7 +404,6 @@ void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleLi
 
         if (child->type() == Rule::OrdinaryRule) {
             storeTargets(child->target());
-            m_rulesHash[child->id()] = child;
             nlpRules.append(makeNlpRule(child));
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);

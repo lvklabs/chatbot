@@ -1,4 +1,5 @@
 v0.14
+ - Implemented drag & drop of rules
  - Added filter in chat history
  - Added tool button to remove chat history conversations 
  - Added tool button to find the definition of a rule with match on the the chat

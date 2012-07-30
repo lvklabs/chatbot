@@ -834,6 +834,13 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
 
 //--------------------------------------------------------------------------------------------------
 
+const Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule() const
+{
+    return m_appFacade->rootRule();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Rule * Lvk::FE::MainWindow::evasivesRule()
 {
     return m_appFacade->evasivesRule();
@@ -1371,6 +1378,26 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 }
 
 //--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Rule *Lvk::FE::MainWindow::findRule(quint64 ruleId) const
+{
+    const BE::Rule *root = rootRule();
+
+    if (!root || !ruleId) {
+        return 0;
+    }
+
+    for (BE::Rule::const_iterator it = root->begin(); it != root->end(); ++it) {
+        const BE::Rule* rule = *it;
+        if (rule->id() == ruleId /*&& rule->type() == BE::Rule::OrdinaryRule*/) {
+            return rule;
+        }
+    }
+
+    return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
 // History actions
 //--------------------------------------------------------------------------------------------------
 
@@ -1390,24 +1417,12 @@ void Lvk::FE::MainWindow::onRemovedHistory(const QDate &date, const QString &use
 
 void Lvk::FE::MainWindow::onShowRule(quint64 ruleId)
 {
-    const BE::Rule* root = rootRule();
+    const BE::Rule *rule = findRule(ruleId);
 
-    if (!root || !ruleId) {
-        return;
-    }
-
-    bool found = false;
-
-    for (BE::Rule::const_iterator it = root->begin(); it != root->end() && !found; ++it) {
-        const BE::Rule* rule = *it;
-        if (rule->id() == ruleId && rule->type() == BE::Rule::OrdinaryRule) {
-            m_ruleTreeSelectionModel->clearSelection();
-            selectRule(rule);
-            found = true;
-        }
-    }
-
-    if (!found) {
+    if (rule && rule->type() == BE::Rule::OrdinaryRule) {
+        m_ruleTreeSelectionModel->clearSelection();
+        selectRule(rule);
+    } else {
         QString title = tr("Rule not found");
         QString msg = tr("Rule not found. The rule was removed.");
         QMessageBox::information(this, title, msg, QMessageBox::Ok);
@@ -1778,16 +1793,18 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
     if (!matches.empty()) {
         // Assuming only one match
 
-        const BE::Rule *rule = matches.first().first;
-        int ruleNumber = matches.first().second;
+        quint64 ruleId = matches.first().first;
+        int inputNumber = matches.first().second;
 
-        selectRule(rule);
+        const BE::Rule *rule = findRule(ruleId);
 
-        ui->ruleInputWidget->highlightInput(ruleNumber);
+        if (rule) {
+            selectRule(rule);
+            ui->ruleInputWidget->highlightInput(inputNumber);
+        }
     } else {
         selectRule(evasivesRule());
-
-        ui->ruleOutputWidget->highlightOuput(0); // FIXME hardcoded 0
+        ui->ruleOutputWidget->highlightOuput(0);
     }
 }
 

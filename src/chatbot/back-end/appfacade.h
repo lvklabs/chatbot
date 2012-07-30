@@ -25,7 +25,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QHash>
 #include <QPair>
 #include <QVariant>
 #include <QSet>
@@ -170,12 +169,12 @@ public:
     Rule *evasivesRule();
 
     /**
-     * Provides a list of pairs (Rule, Input index) used to store which rules has matched with
+     * Provides a list of pairs (Rule Id, Input index) used to store which rules has matched with
      * which rule input.
      *
      * \see getResponse, getTestUserResponse
      */
-    typedef QList< QPair<const Rule *, int> > MatchList;
+    typedef QList< QPair<quint64, int> > MatchList;
 
     /**
      * Gets a response for the given \a input and \a target.
@@ -331,7 +330,6 @@ private:
     ChatbotRulesFile m_rulesFile;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
-    QHash<Nlp::RuleId, const Rule *> m_rulesHash;
     CA::Chatbot *m_chatbot;
     CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;

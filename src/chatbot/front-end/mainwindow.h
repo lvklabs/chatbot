@@ -150,6 +150,8 @@ private:
     BE::Rule *addCategory(const QString &name);
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
+    const Lvk::BE::Rule * findRule(quint64 ruleId) const;
+
     BE::Rule *addCategoryWithDialog();
     BE::Rule *addRuleWithDialog();
     bool removeSelectedRuleWithDialog();
@@ -178,6 +180,7 @@ private:
     BE::Rule *selectedRule();
     BE::Rule *evasivesRule();
     BE::Rule *rootRule();
+    const BE::Rule *rootRule() const;
 
     void teachRule(BE::Rule *rule);
     void undoRule(BE::Rule *rule);

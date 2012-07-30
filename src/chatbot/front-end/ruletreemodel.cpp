@@ -193,14 +193,14 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
         return 0;
     }
 
-#ifdef DRAG_AND_DROP_ENABLED
+#ifndef DRAG_AND_DROP_DISABLED
     const BE::Rule *item = itemFromIndex(index);
 #endif
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/
-#ifdef DRAG_AND_DROP_ENABLED
+#ifndef DRAG_AND_DROP_DISABLED
             | (item->type() == BE::Rule::OrdinaryRule ? Qt::ItemIsDragEnabled : Qt::NoItemFlags)
-            | (item->type() == BE::Rule::ContainerRule ?  Qt::ItemIsDropEnabled : Qt::NoItemFlags)
+            | (item->type() == BE::Rule::ContainerRule ? Qt::ItemIsDropEnabled : Qt::NoItemFlags)
 #endif
             | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags);
 }
@@ -209,8 +209,8 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 
 Qt::DropActions Lvk::FE::RuleTreeModel::supportedDropActions() const
 {
-#ifdef DRAG_AND_DROP_ENABLED
-    return Qt::CopyAction | Qt::MoveAction;
+#ifndef DRAG_AND_DROP_DISABLED
+    return /*Qt::CopyAction |*/ Qt::MoveAction;
 #else
     return Qt::IgnoreAction;
 #endif
