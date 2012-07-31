@@ -53,21 +53,21 @@ const long INPUT_NUMBER_MASK = 0xfffl;
 
 //--------------------------------------------------------------------------------------------------
 
-long getCategoryId(Lvk::Nlp::RuleId ruleId, int inputNumber)
+inline long getCategoryId(Lvk::Nlp::RuleId ruleId, int inputNumber)
 {
     return ((long)ruleId << INPUT_NUMBER_BITS) | (long)inputNumber;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::RuleId getRuleId(long categoryId)
+inline Lvk::Nlp::RuleId getRuleId(long categoryId)
 {
     return categoryId >> INPUT_NUMBER_BITS;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-int getInputNumber(long categoryId)
+inline int getInputNumber(long categoryId)
 {
     return categoryId & INPUT_NUMBER_MASK;
 }
