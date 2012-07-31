@@ -11,7 +11,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -Wall -Wextra
 
 win32 {
-  CONFIG  -= freeling
+  CONFIG  += freeling
   DEFINES +=
 } else:mac {
   CONFIG  -= freeling
@@ -42,30 +42,24 @@ FREELING_LIB_PATH     = $$FREELING_BASE_PATH/lib
 CONFIG(debug, debug|release) {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32_d
-        FREELING_LIBS      = #FIXME
-        FREELING_DEPS_LIBS = #FIXME
+        FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac_d
-        FREELING_LIBS      = #FIXME
-        FREELING_DEPS_LIBS = #FIXME
+        FREELING_LIBS      = # TODO compile freeling for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
-        FREELING_DEPS_LIBS = -lpcre #-ldb_cxx -lboost_filesystem
+        FREELING_LIBS      = -lmorfo -lfries -lomlet -lpcre
     }
 } else {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32
-        FREELING_LIBS      = #FIXME
-        FREELING_DEPS_LIBS = #FIXME
+        FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac
-        FREELING_LIBS      = #FIXME
-        FREELING_DEPS_LIBS = #FIXME
+        FREELING_LIBS      = # TODO compile freeling for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
-        FREELING_DEPS_LIBS = -lpcre #-ldb_cxx -lboost_filesystem
+        FREELING_LIBS      = -lmorfo -lfries -lomlet -lpcre
     }
 }
 
@@ -183,7 +177,10 @@ LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 
 
 freeling {
+    DEFINES += PCRE_STATIC
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
+    HEADERS += nlp-engine/lemmatizer.h
+    SOURCES += nlp-engine/lemmatizer.cpp
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 

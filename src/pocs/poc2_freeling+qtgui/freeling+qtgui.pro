@@ -23,8 +23,15 @@ FORMS    += mainwindow.ui
 ####################################################
 # Freeling
 
+DEFINES += PCRE_STATIC
 INCLUDEPATH += ../../third-party/Freeling/include
-LIBS += -L../../third-party/Freeling/lib -ldb_cxx -lmorfo -lfries -lomlet -lpcre -lboost_filesystem
+LIBS += -L../../third-party/Freeling/lib
+
+win32 {
+    LIBS += -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
+} else {
+    LIBS += -lmorfo -lfries -lomlet -lpcre
+}
 
 ####################################################
 

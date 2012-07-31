@@ -20,7 +20,7 @@
  */
 
 #include "front-end/portdialog.h"
-#include "builds/linux32/.build/ui_portdialog.h"
+#include "ui_portdialog.h"
 
 #include <QMessageBox>
 
