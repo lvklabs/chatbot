@@ -225,7 +225,7 @@ public:
     || Reconstruction Step
     */
     bool final = true;    //Exit condition
-    int lastScore = score;
+    //int lastScore = score;
     int steps = 0; //Number of steps uset to align 'a' with 'b'
     int lastChar = 0;
 
@@ -282,7 +282,7 @@ public:
 
       if( j>0 && i>0 && m[W*j+i] ==  m[W*(j-1)+i-1] + sc->dSub(a[j-1],b[i-1]) ){
 	//Aliniar b[i] amb a[j]
-	lastScore = sc->dSub(a[j-1],b[i-1]);
+        //lastScore = sc->dSub(a[j-1],b[i-1]);
 	i--; j--;
 	//cerr << "Sub a[" << j << "]=" << a[j] << " b[" << i << "]=" << b[i] << " @ " << pA << endl;
 	answerA[pA++] = a[j];
@@ -294,7 +294,7 @@ public:
 	lastChar = steps;
 
       } else if ( i>0 && j>0 && m[W*j+i] == m[W*j+i-1] + sc->dSkip(b[i-1]) ) {
-	lastScore = sc->dSkip(b[i-1]);
+        //lastScore = sc->dSkip(b[i-1]);
 	i--;
 	answerA[pA++] = '-';
 	answerB[pB++] = b[i];
@@ -306,7 +306,7 @@ public:
 	}
 
       } else if( j>1 && i>0 && m[W*j+i] ==  m[W*(j-2)+i-1] + sc->dExp(b[i-1],a[j-2],a[j-1]) ){
-	lastScore =  sc->dExp(b[i-1],a[j-2],a[j-1]);
+        //lastScore =  sc->dExp(b[i-1],a[j-2],a[j-1]);
 	i--; j-=2;
 	answerA[pA++] = a[j];
 	answerA[pA++] = a[j+1];
@@ -320,7 +320,7 @@ public:
 	lastChar = steps;
 
       } else if( j>0 && i>0 && m[W*j+i] ==  m[W*(j-1)+i] + sc->dSkip(a[j-1]) ){
-	lastScore = sc->dSkip(a[j-1]);
+        //lastScore = sc->dSkip(a[j-1]);
 	j--;
 	answerA[pA++] = a[j];
 	answerB[pB++] = '-';
@@ -331,7 +331,7 @@ public:
 	lastChar = steps;
 
       } else if ( i>1 && j>0 && m[W*j+i] == m[ W*(j-1) +i-2 ] + sc->dExp(a[j-1],b[i-2],b[i-1]) ) {
-	lastScore = sc->dExp(a[j-1],b[i-2],b[i-1]);
+        //lastScore = sc->dExp(a[j-1],b[i-2],b[i-1]);
 	j--; i--;
 	answerA[pA++] = a[j];
 	answerA[pA++] = '+';

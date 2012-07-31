@@ -40,7 +40,7 @@ public:
     string s;
     char c;
     T t;
-    int i,fcount;
+    int i/*,fcount*/;
     map<const string, int> flist;   // set of the features' names with its index
     map<const string, T> fweight; // set of the features' saliences
     map<const string, T> values;  // set of the numerical values of the multivaluated features
@@ -67,7 +67,7 @@ public:
       exit(-1);
     }
 
-    fcount = 0; 
+    //fcount = 0;
 
     while(!is.eof()){
 
