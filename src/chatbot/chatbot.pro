@@ -12,13 +12,11 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 
 win32 {
   CONFIG  += freeling
-  DEFINES +=
 } else:mac {
-  CONFIG  -= freeling
+  CONFIG  +=
   DEFINES += MAC_OS_X
 } else {
   CONFIG  += freeling
-  DEFINES +=
 }
 
 
@@ -48,7 +46,7 @@ CONFIG(debug, debug|release) {
         FREELING_LIBS      = # TODO compile freeling for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
-        FREELING_LIBS      = -lmorfo -lfries -lomlet -lpcre
+        FREELING_LIBS      = -lmorfo -lfries -lomlet
     }
 } else {
     win32 {
@@ -59,7 +57,7 @@ CONFIG(debug, debug|release) {
         FREELING_LIBS      = # TODO compile freeling for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp
-        FREELING_LIBS      = -lmorfo -lfries -lomlet -lpcre
+        FREELING_LIBS      = -lmorfo -lfries -lomlet
     }
 }
 
@@ -177,7 +175,7 @@ LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 
 
 freeling {
-    DEFINES += PCRE_STATIC
+    DEFINES += PCRE_STATIC FREELING_ENABLED
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
     HEADERS += nlp-engine/lemmatizer.h
     SOURCES += nlp-engine/lemmatizer.cpp

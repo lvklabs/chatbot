@@ -30,7 +30,7 @@ LIBS += -L../../third-party/Freeling/lib
 win32 {
     LIBS += -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
 } else {
-    LIBS += -lmorfo -lfries -lomlet -lpcre
+    LIBS += -lmorfo -lfries -lomlet
 }
 
 ####################################################
