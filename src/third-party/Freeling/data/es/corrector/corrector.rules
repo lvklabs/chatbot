@@ -1,0 +1,84 @@
+*    # Rules: change from a sound (one or more letters) or a category
+*    # to another sound or category, in a certain environment.
+*    # Categories may only be one letter long and are usually uppercase.
+*    # Environments must contain a _ symbol to show where the replacement
+*    # takes place; it may also contain letters, categories, and the special
+*    # symbols ( ) (to enclose optional parts) and # (beginning or end of
+*    # word).
+*    # Rules can only change sounds to sounds, and categories to categories.
+*    # If a category is to be changed to another category, they should be
+*    # the same length. Otherwise the second category will have its laster
+*    # letter repeated until it has the same length as the first (if it is
+*    # shorter), or characters in the second category that don't match
+*    # characters in the first will not be produced by such a range. Note
+*    # that this is an artefact of the use of tr/// and is not guaranteed
+*    # behaviour.
+*    # Don't use regex metacharacters (except for the parentheses which
+*    # show optional elements) in the environment or in names of categories
+*    # or sounds.
+*    # These include: . * + ? ^ $ [ ]
+
+
+
+
+*
+* Variables
+*
+* vowels, long, short
+U=áéíóú
+V=aeëou
+Z=aeëou
+L=aou
+S=eë
+
+* consonants
+C=bcdfghjklmnpqrstvwxyzç+$ñ
+
+*
+* Rules
+*
+
+
+* remove the pesky accents
+U/V/_
+i/ë/_
+
+* the f****** r
+r/4/_
+44/r/_
+4/r/#_
+
+* get rid of some digraphs
+ch/ç/_
+qu/k/_S
+qu/ku/_L
+qü/ku/_
+ph/f/_
+ll/ll/_
+y/ll/_
+
+* Long/short vowels problmes
+c/+/_S
+c/k/_L
+c/k/_
+g/x/_S
+
+* get rid of some digraphs
+gu/g/_S
+gu/gu/_
+gü/gu/_
+
+
+
+* all the other
+z/+/_
+h//_
+v/b/_
+j/x/_
+y/ë/_
+q/k/_
+ñ/J/_
+
+V/Z/_
+C/C/_
+

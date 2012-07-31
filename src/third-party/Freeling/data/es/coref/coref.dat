@@ -1,0 +1,12 @@
+<ABModel>
+coref.abm
+</ABModel>
+
+<SEMDB>
+SenseFile       ../senses30.db
+WNFile          ../../common/wn30.db                  
+</SEMDB>
+
+<MaxDistance>
+20
+</MaxDistance>

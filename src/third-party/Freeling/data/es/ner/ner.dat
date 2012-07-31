@@ -1,0 +1,37 @@
+<Lexicon>
+./ner.lex
+</Lexicon>
+<RGF>
+./ner.rgf
+</RGF>
+<AdaBoostModel>
+./ner.abm
+</AdaBoostModel>
+<Classes>
+0 B 1 I 2 O
+</Classes>
+<NE_Tag>
+NP00000
+</NE_Tag>
+<TitleLimit>
+10
+</TitleLimit>
+<SplitMultiwords>
+no
+</SplitMultiwords>
+<InitialProb>
+B 0.200072
+I 0.0
+O 0.799928
+</InitialProb>
+<TransitionProb>
+B B 0.00829346
+B I 0.395481
+B O 0.596225
+I B 0.0053865
+I I 0.479818
+I O 0.514795
+O B 0.0758838
+O I 0.0
+O O 0.924116
+</TransitionProb>

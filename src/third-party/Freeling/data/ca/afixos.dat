@@ -1,0 +1,180 @@
+# ===============================================
+#            Affixation rules file
+# ===============================================
+
+# === Each line is a affixation rule, with the following fields:
+# 1 Affix to erase form word form (e.g: gatito - ito = gat)
+# 2 Affix (* for emtpy string) to add to the resulting root
+#   to rebuild the lemma that must be searched in dictionary 
+#   (e.g:  gat+o = gato)
+# 3 Regexp condition on the parole tag of found dictionary entry
+# 4 Parole tag for suffixed word (* = keep tag in dictionary entry)
+# 5 Check lemma adding accents
+# 6 Enclitic suffix (special accent behaviour in Spanish)
+# 7 Prevent later modules from assigning more tags to the word
+# 8 Lemma to assign: F=original form, R=root found in dict, L=lemma in matching dict entry, 
+#                    AF/AR/AL=affix followed by F/R/L, FA/RA/LA=F/R/L followed by affix
+# 9 Consider the suffix always, not only for unknown words.
+# 10 How to retokenize the word if necessary (see uer manual).
+#==============================================================
+
+<Prefixes>
+</Prefixes>
+
+<Suffixes>
+-la	*	^V	*	1	1	0	L	1	$$+-la:$$+PP
+-les	*	^V	*	1	1	0	L	1	$$+-les:$$+PP
+'l	*	^V	*	1	1	0	L	1	$$+'l:$$+PP
+'ls	*	^V	*	1	1	0	L	1	$$+'ls:$$+PP
+-ho	*	^V	*	1	1	0	L	1	$$+-ho:$$+PP
+-hi	*	^V	*	1	1	0	L	1	$$+-hi:$$+PP
+'n	*	^V	*	1	1	0	L	1	$$+'n:$$+PP
+'m	*	^V	*	1	1	0	L	1	$$+'m:$$+PP
+'t	*	^V	*	1	1	0	L	1	$$+'t:$$+PP
+'ns	*	^V	*	1	1	0	L	1	$$+'ns:$$+PP
+-vos	*	^V	*	1	1	0	L	1	$$+-vos:$$+PP
+-se	*	^V	*	1	1	0	L	1	$$+-se:$$+PP
+-me-la	*	^V	*	0	1	0	L	1	$$+-me+-la:$$+PP+PP
+-me-les	*	^V	*	0	1	0	L	1	$$+-me+-les:$$+PP+PP
+-me'n	*	^V	*	0	1	0	L	1	$$+-me+'n:$$+PP+PP
+-m'hi	*	^V	*	0	1	0	L	1	$$+-m+'hi:$$+PP+PP
+-m'ho	*	^V	*	0	1	0	L	1	$$+-m+'ho:$$+PP+PP
+-me'l	*	^V	*	0	1	0	L	1	$$+-me+'l:$$+PP+PP
+-me'ls	*	^V	*	0	1	0	L	1	$$+-me+'ls:$$+PP+PP
+-te-la	*	^V	*	0	1	0	L	1	$$+-te+-la:$$+PP+PP
+-te-les	*	^V	*	0	1	0	L	1	$$+-te+-les:$$+PP+PP
+-te'n	*	^V	*	0	1	0	L	1	$$+-te+'n:$$+PP+PP
+-t'hi	*	^V	*	0	1	0	L	1	$$+-t+'hi:$$+PP+PP
+-t'ho	*	^V	*	0	1	0	L	1	$$+-t+'ho:$$+PP+PP
+-te'l	*	^V	*	0	1	0	L	1	$$+-te+'l:$$+PP+PP
+-te'ls	*	^V	*	0	1	0	L	1	$$+-te+'ls:$$+PP+PP
+-nos-la	*	^V	*	0	1	0	L	1	$$+-nos+-la:$$+PP+PP
+-nos-les	*	^V	*	0	1	0	L	1	$$+-nos+-les:$$+PP+PP
+-nos-el	*	^V	*	0	1	0	L	1	$$+-nos+-el:$$+PP+PP
+-nos-els	*	^V	*	0	1	0	L	1	$$+-nos+-els:$$+PP+PP
+-vos-la	*	^V	*	0	1	0	L	1	$$+-vos+-la:$$+PP+PP
+-vos-les	*	^V	*	0	1	0	L	1	$$+-vos+-les:$$+PP+PP
+-vos-ho	*	^V	*	0	1	0	L	1	$$+-vos+-ho:$$+PP+PP
+-vos-hi	*	^V	*	0	1	0	L	1	$$+-vos+-hi:$$+PP+PP
+-vos-en	*	^V	*	0	1	0	L	1	$$+-vos+-en:$$+PP+PP
+-vos-el	*	^V	*	0	1	0	L	1	$$+-vos+-el:$$+PP+PP
+-vos-els	*	^V	*	0	1	0	L	1	$$+-vos+-els:$$+PP+PP
+-se'm	*	^V	*	0	1	0	L	1	$$+-se+'m:$$+PP+PP
+-se't	*	^V	*	0	1	0	L	1	$$+-se+'t:$$+PP+PP
+-se'ns	*	^V	*	0	1	0	L	1	$$+-se+'ns:$$+PP+PP
+-se-us	*	^V	*	0	1	0	L	1	$$+-se+-us:$$+PP+PP
+-se-la	*	^V	*	0	1	0	L	1	$$+-se+-la:$$+PP+PP
+-se-les	*	^V	*	0	1	0	L	1	$$+-se+-les:$$+PP+PP
+-se'l	*	^V	*	0	1	0	L	1	$$+-se+'l:$$+PP+PP
+-se'n	*	^V	*	0	1	0	L	1	$$+-se+'n:$$+PP+PP
+-s'hi	*	^V	*	0	1	0	L	1	$$+-s+'hi:$$+PP+PP
+-s'ho	*	^V	*	0	1	0	L	1	$$+-s+'ho:$$+PP+PP
+-se'ls	*	^V	*	0	1	0	L	1	$$+-se+'ls:$$+PP+PP
+-se-li	*	^V	*	0	1	0	L	1	$$+-se+-li:$$+PP+PP
+-se-me-la	*	^V	*	0	1	0	L	1	$$+-se+-me+-la:$$+PP+PP+PP
+-se-me-les	*	^V	*	0	1	0	L	1	$$+-se+-me+-les:$$+PP+PP+PP
+-se-me'l	*	^V	*	0	1	0	L	1	$$+-se+-me+'l:$$+PP+PP+PP
+-se-me'n	*	^V	*	0	1	0	L	1	$$+-se+-me+'n:$$+PP+PP+PP
+-se-m'hi	*	^V	*	0	1	0	L	1	$$+-se+-m+'hi:$$+PP+PP+PP
+-se-m'ho	*	^V	*	0	1	0	L	1	$$+-se+-m+'ho:$$+PP+PP+PP
+-se-me'ls	*	^V	*	0	1	0	L	1	$$+-se+-me+'ls:$$+PP+PP+PP
+-se-te-la	*	^V	*	0	1	0	L	1	$$+-se+-te+-la:$$+PP+PP+PP
+-se-te-les	*	^V	*	0	1	0	L	1	$$+-se+-te+-les:$$+PP+PP+PP
+-se-te'l	*	^V	*	0	1	0	L	1	$$+-se+-te+'l:$$+PP+PP+PP
+-se-te'n	*	^V	*	0	1	0	L	1	$$+-se+-te+'n:$$+PP+PP+PP
+-se-t'hi	*	^V	*	0	1	0	L	1	$$+-se+-t+'hi:$$+PP+PP+PP
+-se-t'ho	*	^V	*	0	1	0	L	1	$$+-se+-t+'ho:$$+PP+PP+PP
+-se-te'ls	*	^V	*	0	1	0	L	1	$$+-se+-te+'ls:$$+PP+PP+PP
+-se-nos-la	*	^V	*	0	1	0	L	1	$$+-se+-nos+-la:$$+PP+PP+PP
+-se-nos-les	*	^V	*	0	1	0	L	1	$$+-se+-nos+-les:$$+PP+PP+PP
+-se-nos-ho	*	^V	*	0	1	0	L	1	$$+-se+-nos+-ho:$$+PP+PP+PP
+-se-nos-hi	*	^V	*	0	1	0	L	1	$$+-se+-nos+-hi:$$+PP+PP+PP
+-se-nos-en	*	^V	*	0	1	0	L	1	$$+-se+-nos+-en:$$+PP+PP+PP
+-se-nos-el	*	^V	*	0	1	0	L	1	$$+-se+-nos+-el:$$+PP+PP+PP
+-se-nos-els	*	^V	*	0	1	0	L	1	$$+-se+-nos+-els:$$+PP+PP+PP
+-se-us-la	*	^V	*	0	1	0	L	1	$$+-se+-us+-la:$$+PP+PP+PP
+-se-us-les	*	^V	*	0	1	0	L	1	$$+-se+-us+-les:$$+PP+PP+PP
+-se-us-el	*	^V	*	0	1	0	L	1	$$+-se+-us+-el:$$+PP+PP+PP
+-se-us-ho	*	^V	*	0	1	0	L	1	$$+-se+-us+-ho:$$+PP+PP+PP
+-se-us-hi	*	^V	*	0	1	0	L	1	$$+-se+-us+-hi:$$+PP+PP+PP
+-se-us-en	*	^V	*	0	1	0	L	1	$$+-se+-us+-en:$$+PP+PP+PP
+-se-us-els	*	^V	*	0	1	0	L	1	$$+-se+-us+-els:$$+PP+PP+PP
+-la-hi	*	^V	*	0	1	0	L	1	$$+-la+-hi:$$+PP+PP
+-la'n	*	^V	*	0	1	0	L	1	$$+-la+'n:$$+PP+PP
+-l'en	*	^V	*	0	1	0	L	1	$$+-l+'en:$$+PP+PP
+-les-en	*	^V	*	0	1	0	L	1	$$+-les+-en:$$+PP+PP
+-les-hi	*	^V	*	0	1	0	L	1	$$+-les+-hi:$$+PP+PP
+-l'hi	*	^V	*	0	1	0	L	1	$$+-l+'hi:$$+PP+PP
+-li-ho	*	^V	*	0	1	0	L	1	$$+-li+-ho:$$+PP+PP
+-li'n	*	^V	*	0	1	0	L	1	$$+-li+'n:$$+PP+PP
+-los-el	*	^V	*	0	1	0	L	1	$$+-los+-el:$$+PP+PP
+-los-els	*	^V	*	0	1	0	L	1	$$+-los+-els:$$+PP+PP
+-los-en	*	^V	*	0	1	0	L	1	$$+-los+-en:$$+PP+PP
+-los-hi	*	^V	*	0	1	0	L	1	$$+-los+-hi:$$+PP+PP
+-los-ho	*	^V	*	0	1	0	L	1	$$+-los+-ho:$$+PP+PP
+-los-la	*	^V	*	0	1	0	L	1	$$+-los+-la:$$+PP+PP
+-los-les	*	^V	*	0	1	0	L	1	$$+-los+-les:$$+PP+PP
+'ls-hi	*	^V	*	0	1	0	L	1	$$+'ls+-hi:$$+PP+PP
+'ls-la	*	^V	*	0	1	0	L	1	$$+'ls+-la:$$+PP+PP
+'ls-les	*	^V	*	0	1	0	L	1	$$+'ls+-les:$$+PP+PP
+-me-li	*	^V	*	0	1	0	L	1	$$+-me+-li:$$+PP+PP
+-n'hi	*	^V	*	0	1	0	L	1	$$+-n+'hi:$$+PP+PP
+-nos-en	*	^V	*	0	1	0	L	1	$$+-nos+-en:$$+PP+PP
+-nos-hi	*	^V	*	0	1	0	L	1	$$+-nos+-hi:$$+PP+PP
+-nos-ho	*	^V	*	0	1	0	L	1	$$+-nos+-ho:$$+PP+PP
+-nos-li	*	^V	*	0	1	0	L	1	$$+-nos+-li:$$+PP+PP
+'ns-el	*	^V	*	0	1	0	L	1	$$+'ns+-el:$$+PP+PP
+'ns-els	*	^V	*	0	1	0	L	1	$$+'ns+-els:$$+PP+PP
+'ns-en	*	^V	*	0	1	0	L	1	$$+'ns+-en:$$+PP+PP
+'ns-hi	*	^V	*	0	1	0	L	1	$$+'ns+-hi:$$+PP+PP
+'ns-ho	*	^V	*	0	1	0	L	1	$$+'ns+-ho:$$+PP+PP
+'ns-la	*	^V	*	0	1	0	L	1	$$+'ns+-la:$$+PP+PP
+'ns-les	*	^V	*	0	1	0	L	1	$$+'ns+-les:$$+PP+PP
+'ns-li	*	^V	*	0	1	0	L	1	$$+'ns+-li:$$+PP+PP
+-te-li	*	^V	*	0	1	0	L	1	$$+-te+-li:$$+PP+PP
+-te'm	*	^V	*	0	1	0	L	1	$$+-te+'m:$$+PP+PP
+-te'ns	*	^V	*	0	1	0	L	1	$$+-te+'ns:$$+PP+PP
+-us-el	*	^V	*	0	1	0	L	1	$$+-us+-el:$$+PP+PP
+-us-els	*	^V	*	0	1	0	L	1	$$+-us+-els:$$+PP+PP
+-us-em	*	^V	*	0	1	0	L	1	$$+-us+-em:$$+PP+PP
+-us-en	*	^V	*	0	1	0	L	1	$$+-us+-en:$$+PP+PP
+-us-ens	*	^V	*	0	1	0	L	1	$$+-us+-ens:$$+PP+PP
+-us-hi	*	^V	*	0	1	0	L	1	$$+-us+-hi:$$+PP+PP
+-us-ho	*	^V	*	0	1	0	L	1	$$+-us+-ho:$$+PP+PP
+-us-la	*	^V	*	0	1	0	L	1	$$+-us+-la:$$+PP+PP
+-us-les	*	^V	*	0	1	0	L	1	$$+-us+-les:$$+PP+PP
+-us-li	*	^V	*	0	1	0	L	1	$$+-us+-li:$$+PP+PP
+-vos-em	*	^V	*	0	1	0	L	1	$$+-vos+-em:$$+PP+PP
+-vos-ens	*	^V	*	0	1	0	L	1	$$+-vos+-ens:$$+PP+PP
+-vos-li	*	^V	*	0	1	0	L	1	$$+-vos+-li:$$+PP+PP
+-li	*	^V	*	1	1	0	L	1	$$+-li:$$+PP
+-lo	*	^V	*	1	1	0	L	1	$$+-lo:$$+PP
+-los	*	^V	*	1	1	0	L	1	$$+-los:$$+PP
+-nos	*	^V	*	1	1	0	L	1	$$+-nos:$$+PP
+-us	*	^V	*	1	1	0	L	1	$$+-us:$$+PP
+-te	*	^V	*	1	1	0	L	1	$$+-te:$$+PP
+-me	*	^V	*	1	1	0	L	1	$$+-me:$$+PP
+'s	*	^V	*	1	1	0	L	1	$$'s:$$+PP
+
+
+# adverbis
+ment	*	^AQ0[CF]S	RG	0	0	0	F	1	-
+
+# moltissim
+íssim	*	^RG	*	0	0	0	L	0	-
+íssima	*	^RG	*	0	0	0	L	0	-
+íssims	*	^RG	*	0	0	0	L	0	-
+íssimes	*	^RG	*	0	0	0	L	0	-
+
+# tantissim
+íssim	*	^[DP]I	*	0	0	0	L	0	-
+íssima	*	^[DP]I	*	0	0	0	L	0	-
+íssims	*	^[DP]I	*	0	0	0	L	0	-
+íssimes	*	^[DP]I	*	0	0	0	L	0	-
+
+# poquíssim
+quíssim	c	^[DP]I	*	0	0	0	L	0	-
+quíssims	cs	^[DP]I	*	0	0	0	L	0	-
+quíssima	ca	^[DP]I	*	0	0	0	L	0	-
+quíssimes	ques	^[DP]I	*	0	0	0	L	0	-
+</Suffixes>

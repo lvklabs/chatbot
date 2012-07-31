@@ -8,7 +8,7 @@
 namespace
 {
 
-const std::string DATA_PATH                 = "/home/andres/Downloads/FreeLing/FreeLing-2.2.2/data/es/";
+const std::string DATA_PATH                 = "../../third-party/Freeling/data/es/";
 const std::string TOKENIZER_CONFIG_FILE     = DATA_PATH + "tokenizer.dat";
 const std::string SPLITTER_CONFIG_FILE      = DATA_PATH + "splitter.dat";
 const std::string PROB_CONFIG_FILE          = DATA_PATH + "probabilitats.dat";
@@ -17,8 +17,10 @@ const std::string DICTIONARY_FILE           = DATA_PATH + "dicc.src";
 
 }
 
-Lemmatizer::Lemmatizer()
-    : m_tk(new tokenizer(TOKENIZER_CONFIG_FILE)), m_sp( new splitter(SPLITTER_CONFIG_FILE)), m_morfo(0)
+Lemmatizer::Lemmatizer() :
+    m_tk(new tokenizer(TOKENIZER_CONFIG_FILE)),
+    m_sp(new splitter(SPLITTER_CONFIG_FILE)),
+    m_morfo(0)
 {
     maco_options opt("es");
 
@@ -33,7 +35,6 @@ Lemmatizer::Lemmatizer()
     opt.ProbabilityFile = PROB_CONFIG_FILE;
     opt.DictionaryFile = DICTIONARY_FILE;
     opt.QuantitiesFile = QUANTITIES_CONFIG_FILE;
-
 
     // create tha analyzer with the above options.
     m_morfo = new maco(opt);
