@@ -8,22 +8,21 @@ QT += \
 
 TEMPLATE = app
 
-PROJECT_PATH = $$PWD
-
 QMAKE_CXXFLAGS += -Wall -Wextra
 
-mac {
+win32 {
+  CONFIG  -= freeling
+  DEFINES +=
+} else:mac {
+  CONFIG  -= freeling
   DEFINES += MAC_OS_X
+} else {
+  CONFIG  += freeling
+  DEFINES +=
 }
 
-############################################
-# Update git revision in versionrev.h
-versionrev.target = common/versionrev.h
-win32:versionrev.commands = $$PWD/bin/update-revision.bat $$PWD
-else:versionrev.commands = $$PWD/bin/update-revision.sh
-QMAKE_EXTRA_TARGETS += versionrev
-PRE_TARGETDEPS += common/versionrev.h
-############################################
+
+PROJECT_PATH          = $$PWD
 
 THIRD_PARTY_PATH      = $$PWD/../third-party
 
@@ -35,21 +34,38 @@ QXMPP_BASE_PATH       = $$THIRD_PARTY_PATH/QXmpp
 QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include
 QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
 
+FREELING_BASE_PATH    = $$THIRD_PARTY_PATH/Freeling
+FREELING_INCLUDE_PATH = $$FREELING_BASE_PATH/include
+FREELING_LIB_PATH     = $$FREELING_BASE_PATH/lib
+
+
 CONFIG(debug, debug|release) {
     win32 {
-        QXMPP_LIBRARY_NAME = qxmpp_win32_d
+        QXMPP_LIBS         = -lqxmpp_win32_d
+        FREELING_LIBS      = #FIXME
+        FREELING_DEPS_LIBS = #FIXME
     } else:mac {
-        QXMPP_LIBRARY_NAME = qxmpp_mac_d
+        QXMPP_LIBS         = -lqxmpp_mac_d
+        FREELING_LIBS      = #FIXME
+        FREELING_DEPS_LIBS = #FIXME
     } else {
-        QXMPP_LIBRARY_NAME = qxmpp_d
+        QXMPP_LIBS         = -lqxmpp_d
+        FREELING_LIBS      = -lmorfo -lfries -lomlet
+        FREELING_DEPS_LIBS = -lpcre #-ldb_cxx -lboost_filesystem
     }
 } else {
     win32 {
-        QXMPP_LIBRARY_NAME = qxmpp_win32
+        QXMPP_LIBS         = -lqxmpp_win32
+        FREELING_LIBS      = #FIXME
+        FREELING_DEPS_LIBS = #FIXME
     } else:mac {
-        QXMPP_LIBRARY_NAME = qxmpp_mac
+        QXMPP_LIBS         = -lqxmpp_mac
+        FREELING_LIBS      = #FIXME
+        FREELING_DEPS_LIBS = #FIXME
     } else {
-        QXMPP_LIBRARY_NAME = qxmpp
+        QXMPP_LIBS         = -lqxmpp
+        FREELING_LIBS      = -lmorfo -lfries -lomlet
+        FREELING_DEPS_LIBS = -lpcre #-ldb_cxx -lboost_filesystem
     }
 }
 
@@ -155,8 +171,6 @@ RESOURCES += \
 RC_FILE = \
     chatbot.rc
 
-LIBS += -L$$QXMPP_LIB_PATH -l$$QXMPP_LIBRARY_NAME
-
 TRANSLATIONS = \
     lang/chatbot_es_AR.ts
 
@@ -165,17 +179,34 @@ OTHER_FILES += \
     doc/modules.dox \
     chatbot.rc
 
-win32 {
-    #TODO
-} else {
-    copylang.commands = cp -R $$PROJECT_PATH/lang .
+LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
+
+
+freeling {
+    INCLUDEPATH += $$FREELING_INCLUDE_PATH
+    LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
+
+
+############################################
+# Copy language files
+win32:copylang.commands = # FIXME
+else:copylang.commands = cp -R $$PROJECT_PATH/lang .
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
+############################################
 
 
+############################################
+# Update git revision in versionrev.h
+versionrev.target = common/versionrev.h
+win32:versionrev.commands = $$PWD/bin/update-revision.bat $$PWD
+else:versionrev.commands = $$PWD/bin/update-revision.sh
 
+QMAKE_EXTRA_TARGETS += versionrev
+PRE_TARGETDEPS += common/versionrev.h
+############################################
 
 
 
