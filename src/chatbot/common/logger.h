@@ -22,7 +22,7 @@
 #ifndef LVK_CMN_LOGGER_H
 #define LVK_CMN_LOGGER_H
 
-#include <qapplication.h>
+#include <QtGlobal>
 
 class QFile;
 

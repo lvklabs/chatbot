@@ -15,8 +15,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH += \
-    ../../chatbot/back-end \
-    ../../chatbot/common
+    ../../chatbot \
 
 HEADERS += \
     ../../chatbot/back-end/conversation.h \

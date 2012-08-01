@@ -20,9 +20,9 @@
  */
 
 #include "testmainwindow.h"
-#include "mainwindow.h"
-#include "rule.h"
-#include "ruletreemodel.h"
+#include "front-end/mainwindow.h"
+#include "back-end/rule.h"
+#include "front-end/ruletreemodel.h"
 #include "ui_mainwindow.h"
 #include "ui_chathistorywidget.h"
 #include "testxmppclient.h"

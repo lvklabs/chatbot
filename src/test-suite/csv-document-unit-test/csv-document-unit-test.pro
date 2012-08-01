@@ -16,8 +16,7 @@ TEMPLATE = app
 
 
 INCLUDEPATH += \
-    ../../chatbot/nlp-engine \
-    ../../chatbot/common \
+    ../../chatbot \
     ../../third-party
 
 HEADERS += \

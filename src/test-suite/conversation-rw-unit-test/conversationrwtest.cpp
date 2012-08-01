@@ -5,9 +5,9 @@
 #include <QString>
 #include <QList>
 
-#include "conversation.h"
-#include "conversationreader.h"
-#include "conversationwriter.h"
+#include "back-end/conversation.h"
+#include "back-end/conversationreader.h"
+#include "back-end/conversationwriter.h"
 
 typedef QList<Lvk::BE::Conversation::Entry> EntryList;
 

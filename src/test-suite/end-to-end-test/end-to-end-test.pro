@@ -37,11 +37,7 @@ CONFIG(debug, debug|release) {
 }
 
 INCLUDEPATH += \
-    ../../chatbot/front-end \
-    ../../chatbot/back-end \
-    ../../chatbot/nlp-engine \
-    ../../chatbot/chat-adapter \
-    ../../chatbot/common \
+    ../../chatbot \
     $$THIRD_PARTY_PATH \
     $$QXMPP_INCLUDE_PATH
 

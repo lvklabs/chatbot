@@ -1,8 +1,8 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
-#include "csvrow.h"
-#include "csvdocument.h"
+#include "common/csvrow.h"
+#include "common/csvdocument.h"
 
 Q_DECLARE_METATYPE(Lvk::Cmn::CsvRow)
 Q_DECLARE_METATYPE(Lvk::Cmn::CsvDocument)

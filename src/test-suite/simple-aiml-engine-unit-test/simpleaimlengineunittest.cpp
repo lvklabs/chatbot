@@ -22,7 +22,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
-#include "simpleaimlengine.h"
+#include "nlp-engine/simpleaimlengine.h"
 
 //--------------------------------------------------------------------------------------------------
 // TestSimpleAimlEngine declaration

@@ -27,11 +27,11 @@
 
 #include <iostream>
 
-#include "aimlengine.h"
+#include "nlp-engine/aimlengine.h"
 #include "ProgramQ/aimlparser.h"
-#include "nlprule.h"
-#include "defaultsanitizer.h"
-#include "nullsanitizer.h"
+#include "nlp-engine/rule.h"
+#include "nlp-engine/defaultsanitizer.h"
+#include "nlp-engine/nullsanitizer.h"
 
 //--------------------------------------------------------------------------------------------------
 // TestAimlEngine declaration

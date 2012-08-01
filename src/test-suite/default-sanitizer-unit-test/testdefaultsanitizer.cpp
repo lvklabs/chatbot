@@ -24,7 +24,7 @@
 #include <QFile>
 #include <QString>
 
-#include "defaultsanitizer.h"
+#include "nlp-engine/defaultsanitizer.h"
 
 #define TEST_DATA_FILE       "test_data.txt"
 #define IO_SPLIT_TOKEN       "==="

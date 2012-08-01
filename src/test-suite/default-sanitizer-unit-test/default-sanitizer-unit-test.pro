@@ -17,7 +17,7 @@ TEMPLATE = app
 PROJECT_PATH = $$PWD
 
 INCLUDEPATH += \
-    ../../chatbot/nlp-engine \
+    ../../chatbot \
     ../../third-party
 
 HEADERS += \
