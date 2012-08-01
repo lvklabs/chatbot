@@ -31,7 +31,6 @@ SOURCES += \
     simpleaimlengineunittest.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
-    ../../chatbot/nlp-engine/nullsanitizer.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/logger.cpp \

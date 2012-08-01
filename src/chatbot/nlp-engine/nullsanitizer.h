@@ -38,7 +38,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The NullSanitizer class provides a sanitizer that does nothing
+ * \brief The NullSanitizer class provides a sanitizer that does nothing.
  */
 
 class NullSanitizer : public Sanitizer
@@ -46,9 +46,12 @@ class NullSanitizer : public Sanitizer
 public:
 
     /**
-     *  \brief Returns the same string that is given
+     *  \brief Returns \a str without any change.
      */
-    virtual QString sanitize(const QString &str) const;
+    virtual QString sanitize(const QString &str) const
+    {
+        return str;
+    }
 };
 
 /// @}
@@ -58,6 +61,5 @@ public:
 /// @}
 
 } // namespace Lvk
-
 
 #endif // LVK_NLP_NULLSANITIZER_H

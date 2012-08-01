@@ -38,6 +38,11 @@
 #define utf8_inverted_exclamation_mark  "\xc2\xa1"
 #define utf8_inverted_question_mark     "\xc2\xbf"
 
+
+//--------------------------------------------------------------------------------------------------
+// DefaultSanitizer
+//--------------------------------------------------------------------------------------------------
+
 QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 {
     QString szStr= str;

@@ -140,7 +140,6 @@ SOURCES += \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
-    nlp-engine/nullsanitizer.cpp \
     chat-adapter/xmmpchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
@@ -204,6 +203,7 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
 
 
 

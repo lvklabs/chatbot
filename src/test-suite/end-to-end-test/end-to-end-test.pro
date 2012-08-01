@@ -110,7 +110,6 @@ SOURCES += \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
-    ../../chatbot/nlp-engine/nullsanitizer.cpp \
     ../../chatbot/chat-adapter/xmmpchatbot.cpp \
     ../../chatbot/chat-adapter/fbchatbot.cpp \
     ../../chatbot/chat-adapter/gtalkchatbot.cpp \
