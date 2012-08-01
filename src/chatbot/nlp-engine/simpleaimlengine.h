@@ -82,8 +82,15 @@ public:
 
     /**
      * Construtcs a SimpleAimlEngine object with the given sanitizer.
+     * After construction, the object owns the given pointer.
      */
     SimpleAimlEngine(Sanitizer *sanitizer);
+
+    /**
+     * Construtcs a SimpleAimlEngine object with the given \a sanitizer and \a lemmatizer.
+     * After construction, the object owns the given pointers.
+     */
+    SimpleAimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer);
 
     /**
      * \copydoc AimlEngine::rules() const

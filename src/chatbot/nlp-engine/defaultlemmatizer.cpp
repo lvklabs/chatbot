@@ -1,9 +1,12 @@
-#include "nlp-engine/lemmatizer.h"
+#include "nlp-engine/defaultlemmatizer.h"
 
 #include <sstream>
 #include <iostream>
-#include <map>
+#include <list>
 #include <vector>
+#include <string>
+
+#include "freeling.h"
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -19,6 +22,19 @@ const std::string PROB_CONFIG_FILE          = DATA_PATH + "probabilitats.dat";
 const std::string QUANTITIES_CONFIG_FILE    = DATA_PATH + "quantities.dat";
 const std::string DICTIONARY_FILE           = DATA_PATH + "dicc.src";
 
+
+void convert(const std::list<sentence> &ls, QString &str)
+{
+    for (list<sentence>::const_iterator lit = ls.begin(); lit != ls.end(); ++lit) {
+        for (sentence::const_iterator wit = lit->begin(); wit != lit->end(); ++wit) {
+            if (str.size() > 0 && wit->get_form() != ".") {
+                str += " ";
+            }
+            str += QString::fromStdString(wit->get_form());
+        }
+    }
+}
+
 } // namespace
 
 
@@ -26,7 +42,7 @@ const std::string DICTIONARY_FILE           = DATA_PATH + "dicc.src";
 // Lemmatizer
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Lemmatizer::Lemmatizer() :
+Lvk::Nlp::DefaultLemmatizer::DefaultLemmatizer() :
     m_tk(new tokenizer(TOKENIZER_CONFIG_FILE)),
     m_sp(new splitter(SPLITTER_CONFIG_FILE)),
     m_morfo(0)
@@ -52,7 +68,7 @@ Lvk::Nlp::Lemmatizer::Lemmatizer() :
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Lemmatizer::~Lemmatizer()
+Lvk::Nlp::DefaultLemmatizer::~DefaultLemmatizer()
 {
     delete m_morfo;
     delete m_sp;
@@ -61,12 +77,15 @@ Lvk::Nlp::Lemmatizer::~Lemmatizer()
 
 //--------------------------------------------------------------------------------------------------
 
-std::list<sentence> Lvk::Nlp::Lemmatizer::lemmatize(const std::string &input)
+QString Lvk::Nlp::DefaultLemmatizer::lemmatize(const QString &input)
 {
     unsigned long offs = 0;
-    std::list<word> av = m_tk->tokenize(input, offs);
+    std::list<word> av = m_tk->tokenize(input.toStdString(), offs);
     std::list<sentence> ls = m_sp->split(av, false);
     m_morfo->analyze(ls);
 
-    return ls;
+    QString output;
+    convert(ls, output);
+
+    return output;
 }

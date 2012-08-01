@@ -1,8 +1,8 @@
 #ifndef LVK_NLP_LEMMATIZER_H
 #define LVK_NLP_LEMMATIZER_H
 
-#include <string>
-#include "freeling.h"
+#include <QString>
+#include <QStringList>
 
 namespace Lvk
 {
@@ -18,32 +18,34 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The Engine class provides a lemmatizer
+ * \brief The Lemmatizer class provides the interface for all lemmatizers
  */
 class Lemmatizer
 {
 public:
-    /**
-     * Constructs a Lemmatizer with the default parameters.
-     */
-    Lemmatizer();
 
     /**
      * Destroys the object.
      */
-    ~Lemmatizer();
+    virtual ~Lemmatizer() {}
 
     /**
      * Lemmatizes \a input.
      */
-    std::list<sentence> lemmatize(const std::string& input);
+    virtual QString lemmatize(const QString &input) = 0;
 
-private:
-    tokenizer *m_tk;
-    splitter *m_sp;
-    maco *m_morfo;
+    /**
+     * Lemmatizes each string of the list \a list and returns a new one.
+     */
+    virtual QStringList lemmatize(const QStringList &list)
+    {
+        QStringList lemList;
+        for (int i = 0; i < list.size(); ++i) {
+            lemList.append(lemmatize(list[i]));
+        }
+        return lemList;
+    }
 };
-
 
 /// @}
 

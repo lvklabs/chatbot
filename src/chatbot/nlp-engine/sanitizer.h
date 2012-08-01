@@ -49,12 +49,17 @@ class Sanitizer
 public:
 
     /**
+     * Destroys the object.
+     */
+    virtual ~Sanitizer() {}
+
+    /**
      * Sanitizes the string \a str
      */
     virtual QString sanitize(const QString &str) const = 0;
 
     /**
-     * Sanitizes each string of the list \a list
+     * Sanitizes each string of the list \a list and returns a new one.
      */
     virtual QStringList sanitize(const QStringList &list) const
     {
@@ -64,11 +69,6 @@ public:
         }
         return sanitizedList;
     }
-
-    /**
-     * Destroys the object.
-     */
-    virtual ~Sanitizer() {}
 };
 
 /// @}

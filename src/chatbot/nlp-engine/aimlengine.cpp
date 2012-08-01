@@ -22,6 +22,7 @@
 #include "nlp-engine/aimlengine.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/nullsanitizer.h"
+#include "nlp-engine/nulllemmatizer.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
@@ -96,15 +97,52 @@ QString inputWithTarget(const QString &input, const QString &target)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine()
-    : m_aimlParser(0), m_sanitizer(new Lvk::Nlp::NullSanitizer())
+    : m_aimlParser(0),
+      m_sanitizer(new Nlp::NullSanitizer()),
+      m_lemmatizer(new Nlp::NullLemmatizer()),
+      m_logFile(new QFile())
 {
+    initLog();
     resetParser();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
-    : m_aimlParser(0), m_sanitizer(sanitizer), m_logFile(new QFile())
+    : m_aimlParser(0),
+      m_sanitizer(sanitizer),
+      m_lemmatizer(new Nlp::NullLemmatizer()),
+      m_logFile(new QFile())
+{
+    initLog();
+    resetParser();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer)
+    : m_aimlParser(0),
+      m_sanitizer(sanitizer),
+      m_lemmatizer(lemmatizer),
+      m_logFile(new QFile())
+{
+    initLog();
+    resetParser();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::AimlEngine::~AimlEngine()
+{
+    delete m_aimlParser;
+    delete m_lemmatizer;
+    delete m_sanitizer;
+    delete m_logFile;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::initLog()
 {
     Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
@@ -117,17 +155,6 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
     if (!m_logFile->open(QFile::Append)) {
         qCritical() << "AimlEngine: Cannot open log file" << filename;
     }
-
-    resetParser();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Nlp::AimlEngine::~AimlEngine()
-{
-    delete m_sanitizer;
-    delete m_aimlParser;
-    delete m_logFile;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -243,7 +270,7 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 {
-    QStringList input = m_sanitizer->sanitize(rule.input());
+    QStringList input = m_lemmatizer->lemmatize(m_sanitizer->sanitize(rule.input()));
     const QStringList &output = rule.output();
 
     for (int j = 0; j < input.size(); ++j) {

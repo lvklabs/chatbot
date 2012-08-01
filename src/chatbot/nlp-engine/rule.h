@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_NLP_NLPRULE_H
-#define LVK_NLP_NLPRULE_H
+#ifndef LVK_NLP_RULE_H
+#define LVK_NLP_RULE_H
 
 #include <QList>
 #include <QString>
@@ -154,4 +154,4 @@ typedef QList<Rule> RuleList;
 
 } // namespace Lvk
 
-#endif // LVK_NLP_NLPRULE_H
+#endif // LVK_NLP_RULE_H

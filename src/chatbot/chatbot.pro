@@ -94,6 +94,8 @@ HEADERS += \
     nlp-engine/sanitizer.h \
     nlp-engine/defaultsanitizer.h \
     nlp-engine/nullsanitizer.h \
+    nlp-engine/lemmatizer.h \
+    nlp-engine/nulllemmatizer.h \
     chat-adapter/chatvirtualuser.h \
     chat-adapter/chatbot.h \
     chat-adapter/xmmpchatbot.h \
@@ -175,10 +177,10 @@ LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 
 
 freeling {
-    DEFINES += PCRE_STATIC FREELING_ENABLED
+    DEFINES += PCRE_STATIC FREELING_SUPPORT
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
-    HEADERS += nlp-engine/lemmatizer.h
-    SOURCES += nlp-engine/lemmatizer.cpp
+    HEADERS += nlp-engine/defaultlemmatizer.h
+    SOURCES += nlp-engine/defaultlemmatizer.cpp
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 
@@ -202,6 +204,14 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
+
+
+
 
 
 

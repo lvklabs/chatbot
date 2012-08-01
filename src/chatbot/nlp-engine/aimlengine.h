@@ -41,6 +41,7 @@ namespace Nlp
 /// @{
 
 class Sanitizer;
+class Lemmatizer;
 
 /**
  * \brief The AimlEngine class provides a NLP engine based on AIML (Artificial Intelligence
@@ -91,9 +92,16 @@ public:
     AimlEngine();
 
     /**
-     * Construtcs a AimlEngine object with the given sanitizer.
+     * Construtcs a AimlEngine object with the given \a sanitizer.
+     * After construction, the object owns the given pointer.
      */
     AimlEngine(Sanitizer *sanitizer);
+
+    /**
+     * Construtcs a AimlEngine object with the given \a sanitizer and \a lemmatizer.
+     * After construction, the object owns the given pointers.
+     */
+    AimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer);
 
     /**
      * Destroys the object.
@@ -143,8 +151,10 @@ private:
     RuleList m_rules;
     AIMLParser *m_aimlParser;
     Sanitizer *m_sanitizer;
+    Lemmatizer *m_lemmatizer;
     QFile *m_logFile;
 
+    void initLog();
     void resetParser();
     void buildAiml(QString &aiml);
     void buildAiml(QString &aiml, const Rule &rule);

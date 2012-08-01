@@ -86,6 +86,14 @@ Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *sanitizer)
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer)
+    : AimlEngine(sanitizer, lemmatizer)
+{
+    initRegexs();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::SimpleAimlEngine::initRegexs()
 {
     QString localizedIfRegex = QString(IF_REGEX)

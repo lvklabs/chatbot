@@ -26,6 +26,7 @@
 #include "nlp-engine/exactmatchengine.h"
 #include "nlp-engine/simpleaimlengine.h"
 #include "nlp-engine/defaultsanitizer.h"
+#include "nlp-engine/nulllemmatizer.h"
 #include "common/random.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
@@ -39,6 +40,7 @@ namespace BE
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+typedef Lvk::Nlp::NullLemmatizer DefaultLemmatizer;
 
 } // namespace BE
 
@@ -121,7 +123,7 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
-      m_nlpEngine(new Lvk::BE::DefaultEngine(new Lvk::BE::DefaultSanitizer())),
+      m_nlpEngine(new DefaultEngine(new DefaultSanitizer(), new DefaultLemmatizer)),
       m_chatbot(0),
       m_tmpChatbot(0)
 {
