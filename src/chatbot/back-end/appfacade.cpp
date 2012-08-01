@@ -32,6 +32,10 @@
 #include "chat-adapter/gtalkchatbot.h"
 #include "back-end/defaultvirtualuser.h"
 
+#ifdef FREELING_SUPPORT
+# include "nlp-engine/defaultlemmatizer.h"
+#endif
+
 namespace Lvk
 {
 
@@ -40,7 +44,12 @@ namespace BE
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
+
+#ifdef FREELING_SUPPORT
+typedef Lvk::Nlp::DefaultLemmatizer DefaultLemmatizer;
+#else
 typedef Lvk::Nlp::NullLemmatizer DefaultLemmatizer;
+#endif
 
 } // namespace BE
 

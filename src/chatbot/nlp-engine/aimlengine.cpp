@@ -232,7 +232,7 @@ QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, Match
 QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
                                                      MatchList &matches)
 {
-    QString szInput = m_sanitizer->sanitize(input);
+    QString szInput = m_lemmatizer->lemmatize(m_sanitizer->sanitize(input));
 
     QList<long> categoriesId;
     QString response = m_aimlParser->getResponse(inputWithTarget(szInput, target), categoriesId);

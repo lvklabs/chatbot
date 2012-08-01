@@ -51,6 +51,8 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
             defaultValue = QString("./data");
         } else if (key == SETTING_LANG_PATH) {
             defaultValue = QString("./lang");
+        } else if (key == SETTING_APP_LANGUAGE) {
+            defaultValue = QString("es_AR");
         }
     }
 

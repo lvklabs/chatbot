@@ -21,6 +21,8 @@
 
 #include "nlp-engine/defaultsanitizer.h"
 
+#include <QtDebug>
+
 #define utf8_a_acute                    "\xc3\xa1"
 #define utf8_e_acute                    "\xc3\xa9"
 #define utf8_i_acute                    "\xc3\xad"
@@ -38,28 +40,30 @@
 
 QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 {
-    QString sanitized = str;
+    QString szStr= str;
 
-    sanitized.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
-    sanitized.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
-    sanitized.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
-    sanitized.replace(QString::fromUtf8(utf8_o_acute),     QString("o"));
-    sanitized.replace(QString::fromUtf8(utf8_u_acute),     QString("u"));
-    sanitized.replace(QString::fromUtf8(utf8_A_acute),     QString("A"));
-    sanitized.replace(QString::fromUtf8(utf8_E_acute),     QString("E"));
-    sanitized.replace(QString::fromUtf8(utf8_I_acute),     QString("I"));
-    sanitized.replace(QString::fromUtf8(utf8_O_acute),     QString("O"));
-    sanitized.replace(QString::fromUtf8(utf8_U_acute),     QString("U"));
-    sanitized.replace(QString::fromUtf8(utf8_u_diaeresis), QString("u"));
-    sanitized.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
+    szStr.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
+    szStr.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
+    szStr.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
+    szStr.replace(QString::fromUtf8(utf8_o_acute),     QString("o"));
+    szStr.replace(QString::fromUtf8(utf8_u_acute),     QString("u"));
+    szStr.replace(QString::fromUtf8(utf8_A_acute),     QString("A"));
+    szStr.replace(QString::fromUtf8(utf8_E_acute),     QString("E"));
+    szStr.replace(QString::fromUtf8(utf8_I_acute),     QString("I"));
+    szStr.replace(QString::fromUtf8(utf8_O_acute),     QString("O"));
+    szStr.replace(QString::fromUtf8(utf8_U_acute),     QString("U"));
+    szStr.replace(QString::fromUtf8(utf8_u_diaeresis), QString("u"));
+    szStr.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
 
-    sanitized.remove(",");
-    sanitized.remove(";");
-    sanitized.remove(".");
-    sanitized.remove("!");
-    sanitized.remove("?");
-    sanitized.remove(QString::fromUtf8(utf8_inverted_exclamation_mark));
-    sanitized.remove(QString::fromUtf8(utf8_inverted_question_mark));
+    szStr.remove(",");
+    szStr.remove(";");
+    szStr.remove(".");
+    szStr.remove("!");
+    szStr.remove("?");
+    szStr.remove(QString::fromUtf8(utf8_inverted_exclamation_mark));
+    szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
 
-    return sanitized;
+    qDebug() << "Sanitized:" << str << "->" << szStr;
+
+    return szStr;
 }

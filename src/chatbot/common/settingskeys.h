@@ -39,4 +39,6 @@
 
 #define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
 
+#define SETTING_NLP_LANGUAGE                        "NlpEngine/Language"
+
 #endif // LVK_CMN_SETTINGSKEYS_H

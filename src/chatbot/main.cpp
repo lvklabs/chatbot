@@ -67,7 +67,7 @@ void setLanguage(QApplication &app)
 
     Lvk::Cmn::Settings settings;
 
-    QString lang = settings.value(SETTING_APP_LANGUAGE, QString("es_AR")).toString();
+    QString lang = settings.value(SETTING_APP_LANGUAGE).toString();
     QString langPath = settings.value(SETTING_LANG_PATH).toString();
 
     if (!langPath.endsWith(QDir::separator())) {

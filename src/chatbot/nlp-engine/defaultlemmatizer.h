@@ -45,9 +45,10 @@ public:
     QString lemmatize(const QString &input);
 
 private:
+    bool m_flInit;
     tokenizer *m_tk;
     splitter *m_sp;
-    maco *m_morfo;
+    maco *m_morpho;
 };
 
 
