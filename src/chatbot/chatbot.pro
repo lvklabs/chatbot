@@ -10,13 +10,17 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -Wall -Wextra
 
+DEFINES +=  \
+    QT_USE_FAST_CONCATENATION \
+    QT_USE_FAST_OPERATOR_PLUS
+
 win32 {
-  CONFIG  += freeling
+    CONFIG  += freeling
 } else:mac {
-  CONFIG  +=
-  DEFINES += MAC_OS_X
+    CONFIG  +=
+    DEFINES += MAC_OS_X
 } else {
-  CONFIG  += freeling
+    CONFIG  += freeling
 }
 
 
