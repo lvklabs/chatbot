@@ -59,6 +59,10 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(Options options)
 
 QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 {
+    if (str.isEmpty()) {
+        return str;
+    }
+
     // TODO optimize!
 
     QString szStr= str;
@@ -88,8 +92,7 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
     }
 
-    if (m_options.testFlag(RemoveDupChars) && szStr.size() > 0) {
-
+    if (m_options.testFlag(RemoveDupChars)) {
         int rcount = 0;             // repeat count
         QChar prev;                 // previous char
         QChar cur;                  // current char
