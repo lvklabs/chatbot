@@ -83,13 +83,13 @@ public:
     /**
      * \copydoc Engine::getAllResponses(const QString &, MatchList &)
      */
-    virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
+    virtual QStringList getAllResponses(const QString &input, MatchList &matches);
 
     /**
      * \copydoc Engine::getAllResponses(const QString &, const QString &, MatchList &)
      */
-    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
-                                           MatchList &matches);
+    virtual QStringList getAllResponses(const QString &input, const QString &target,
+                                        MatchList &matches);
 
 private:
 

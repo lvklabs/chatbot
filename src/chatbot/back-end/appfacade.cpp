@@ -132,7 +132,9 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
-      m_nlpEngine(new DefaultEngine(new DefaultSanitizer(), new DefaultLemmatizer)),
+      m_nlpEngine(new DefaultEngine(new DefaultSanitizer(DefaultSanitizer::PreSanitizer),
+                                    new DefaultLemmatizer(),
+                                    new DefaultSanitizer(DefaultSanitizer::PostSanitizer))),
       m_chatbot(0),
       m_tmpChatbot(0)
 {

@@ -38,7 +38,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Default implementation of the Sanitizer interface
+ * \brief Default implementation of the Sanitizer interface.
  *
  * The DefaultSanitizer class returns a string with all vowels without acute or diaeresis
  * and remove punctuation symbols such as ,;.?!
@@ -49,10 +49,63 @@ class DefaultSanitizer : public Sanitizer
 public:
 
     /**
+     * Sanitization options
+     */
+    enum Option {
+
+        /**
+         * Remove diacritics. Currently, only removes vowels with acute accent or diaeresis.
+         */
+        RemoveDiacritic = 0x1,
+
+        /**
+         * Remove punctuation such as \b .,;, . It also removes exclamation and interrogation marks.
+         */
+        RemovePunctuation = 0x2,
+
+        /**
+         * Removes duplicated characters. Currently, this option is only well defined for Spanish.
+         */
+        RemoveDupChars = 0x4,
+
+        /**
+         * FIXME
+         */
+        PreSanitizer = RemoveDupChars,
+
+        /**
+         * FIXME
+         */
+        PostSanitizer = RemoveDiacritic | RemovePunctuation
+
+    };
+
+    /**
+     * Sanitization option flags
+     */
+    Q_DECLARE_FLAGS(Options, Option)
+
+    /**
+     * Constructs a DefaultSanitizer with all option flags enabled.
+     *
+     * \see Options
+     */
+    DefaultSanitizer();
+
+    /**
+     * Constructs a DefaultSanitizer with the options flags given.
+     *
+     * \see Options
+     */
+    DefaultSanitizer(Options options);
+
+    /**
      * Sanitizes the string \a str
      */
     virtual QString sanitize(const QString &str) const;
 
+private:
+    Options m_options;
 };
 
 /// @}

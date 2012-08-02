@@ -98,7 +98,8 @@ QString inputWithTarget(const QString &input, const QString &target)
 
 Lvk::Nlp::AimlEngine::AimlEngine()
     : m_aimlParser(0),
-      m_sanitizer(new Nlp::NullSanitizer()),
+      m_preSanitizer(new Nlp::NullSanitizer()),
+      m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile())
 {
@@ -110,7 +111,8 @@ Lvk::Nlp::AimlEngine::AimlEngine()
 
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
     : m_aimlParser(0),
-      m_sanitizer(sanitizer),
+      m_preSanitizer(sanitizer),
+      m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile())
 {
@@ -120,9 +122,11 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer)
+Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
+                                 Sanitizer *postSanitizer)
     : m_aimlParser(0),
-      m_sanitizer(sanitizer),
+      m_preSanitizer(preSanitizer),
+      m_postSanitizer(postSanitizer),
       m_lemmatizer(lemmatizer),
       m_logFile(new QFile())
 {
@@ -136,7 +140,8 @@ Lvk::Nlp::AimlEngine::~AimlEngine()
 {
     delete m_aimlParser;
     delete m_lemmatizer;
-    delete m_sanitizer;
+    delete m_postSanitizer;
+    delete m_preSanitizer;
     delete m_logFile;
 }
 
@@ -183,6 +188,8 @@ Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules()
 
 void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 {
+    qDebug() << "AimlEngine: Setting new AIML rules...";
+
     m_rules = rules;
 
     QString aiml;
@@ -191,6 +198,8 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
     resetParser();
 
     m_aimlParser->loadAimlFromString(aiml);
+
+    qDebug() << "AimlEngine: Rules set!";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -208,7 +217,7 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, const QString &t
     matches.clear();
 
     MatchList allMatches;
-    QList<QString> responses = getAllResponses(input, target, allMatches);
+    QStringList responses = getAllResponses(input, target, allMatches);
 
     if (!allMatches.empty()) {
         matches.append(allMatches.first());
@@ -222,22 +231,42 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, const QString &t
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
+QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
-    return getAllResponses(input, ANY_USER, matches);
+    return getAllResponses(input, ANY_USER, matches, true);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
-                                                     MatchList &matches)
+QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
+                                                  MatchList &matches)
 {
-    QString szInput = m_lemmatizer->lemmatize(m_sanitizer->sanitize(input));
+    if (target.isEmpty()) {
+        return getAllResponses(input, ANY_USER, matches, true);
+    } else {
+        return getAllResponses(input, target, matches, true);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
+                                                         const QString &target,
+                                                         MatchList &matches, bool norm)
+{
+    qDebug() << "AimlEngine: Getting response for input" << input
+             << "and target" << target << "...";
+
+    QString normInput = input;
+
+    if (norm) {
+        normalize(normInput);
+    }
 
     QList<long> categoriesId;
-    QString response = m_aimlParser->getResponse(inputWithTarget(szInput, target), categoriesId);
+    QString response = m_aimlParser->getResponse(inputWithTarget(normInput, target), categoriesId);
 
-    QList<QString> responses;
+    QStringList responses;
 
     if (response != "Internal Error!" && categoriesId.size() > 0) { // FIXME harcoded string
         responses.append(response);
@@ -246,8 +275,10 @@ QList<QString> Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const
         matches.append(QPair<RuleId, int>(getRuleId(catId), getInputNumber(catId)));
     } else if (target != ANY_USER) {
         // No response found with the given target, fallback to rules with any user:
-        return getAllResponses(input, ANY_USER, matches);
+        return getAllResponses(normInput, ANY_USER, matches, false);
     }
+
+    qDebug() << "AimlEngine: Responses found: " << responses;
 
     return responses;
 }
@@ -270,8 +301,10 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
 
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 {
-    QStringList input = m_lemmatizer->lemmatize(m_sanitizer->sanitize(rule.input()));
+    QStringList input = rule.input();
     const QStringList &output = rule.output();
+
+    normalize(input);
 
     for (int j = 0; j < input.size(); ++j) {
         QStringList target = rule.target();
@@ -302,4 +335,24 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
             aiml += "</category>";
         }
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::normalize(QStringList &inputList)
+{
+    for (int i = 0; i < inputList.size(); ++i) {
+        normalize(inputList[i]);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::normalize(QString &input)
+{
+    qDebug() << " - Normalizing input" << input;
+
+    input = m_preSanitizer->sanitize(input);
+    input = m_lemmatizer->lemmatize(input);
+    input = m_postSanitizer->sanitize(input);
 }

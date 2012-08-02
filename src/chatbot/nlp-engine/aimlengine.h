@@ -78,30 +78,35 @@ class Lemmatizer;
      </template>
    </category>
   \endverbatim
+ *
+ * Optionally, sanitizers and lemmatizers can be provided at construction time to improve
+ * rule matching. Every time an input is provided, AimlEngine applies the following pipeline
+ * to the input: \b preSanitizer \b -> \b lemmatizer \b -> \b postSanitizer
  */
-
 class AimlEngine : public Engine
 {
 public:
 
     /**
-     * Construtcs a AimlEngine object with the default sanitizer.
+     * Construtcs a AimlEngine object with NullSanitizer and NullLemmatizer.
      *
-     * \see DefaultSanitizer
+     * \see NullSanitizer, NullLemmatizer
      */
     AimlEngine();
 
     /**
-     * Construtcs a AimlEngine object with the given \a sanitizer.
+     * Construtcs a AimlEngine object with the given \a sanitizer and NullLemmatizer.
      * After construction, the object owns the given pointer.
+     *
+     * \see NullLemmatizer
      */
     AimlEngine(Sanitizer *sanitizer);
 
     /**
-     * Construtcs a AimlEngine object with the given \a sanitizer and \a lemmatizer.
+     * Construtcs a AimlEngine object with the given sanitizers and lemmatizer.
      * After construction, the object owns the given pointers.
      */
-    AimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer);
+    AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer, Sanitizer *postSanitizer);
 
     /**
      * Destroys the object.
@@ -136,13 +141,13 @@ public:
     /**
      * \copydoc Engine::getAllResponses(const QString &, MatchList &)
      */
-    virtual QList<QString> getAllResponses(const QString &input, MatchList &matches);
+    virtual QStringList getAllResponses(const QString &input, MatchList &matches);
 
     /**
      * \copydoc Engine::getAllResponses(const QString &, const QString &, MatchList &)
      */
-    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
-                                           MatchList &matches);
+    virtual QStringList getAllResponses(const QString &input, const QString &target,
+                                        MatchList &matches);
 
 private:
     AimlEngine(AimlEngine&);
@@ -150,14 +155,21 @@ private:
 
     RuleList m_rules;
     AIMLParser *m_aimlParser;
-    Sanitizer *m_sanitizer;
+    Sanitizer *m_preSanitizer;
+    Sanitizer *m_postSanitizer;
     Lemmatizer *m_lemmatizer;
     QFile *m_logFile;
 
     void initLog();
     void resetParser();
+
+    inline QStringList getAllResponses(const QString &input, const QString &target,
+                                       MatchList &matches, bool norm);
+
     void buildAiml(QString &aiml);
     void buildAiml(QString &aiml, const Rule &rule);
+    void normalize(QString &input);
+    void normalize(QStringList &inputList);
 };
 
 /// @}

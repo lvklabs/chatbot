@@ -86,8 +86,9 @@ Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *sanitizer)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer)
-    : AimlEngine(sanitizer, lemmatizer)
+Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
+                                             Sanitizer *postSanitizer)
+    : AimlEngine(preSanitizer, lemmatizer, postSanitizer)
 {
     initRegexs();
 }
@@ -417,11 +418,10 @@ void Lvk::Nlp::SimpleAimlEngine::convertOutputList(QStringList &outputList, Conv
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> Lvk::Nlp::SimpleAimlEngine::getAllResponses(const QString &input,
-                                                           const QString &target,
-                                                           Engine::MatchList &matches)
+QStringList Lvk::Nlp::SimpleAimlEngine::getAllResponses(const QString &input, const QString &target,
+                                                        Engine::MatchList &matches)
 {
-    QList<QString> responses = AimlEngine::getAllResponses(input, target, matches);
+    QStringList responses = AimlEngine::getAllResponses(input, target, matches);
 
     remap(matches);
 

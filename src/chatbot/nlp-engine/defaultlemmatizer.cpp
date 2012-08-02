@@ -167,7 +167,7 @@ QString Lvk::Nlp::DefaultLemmatizer::lemmatize(const QString &input)
         convert(ls, output);
     }
 
-    qDebug() << "Lemmatized:" << input << "->" << output;
+    qDebug() << "   - Lemmatized:" << input << "->" << output;
 
     return output;
 }

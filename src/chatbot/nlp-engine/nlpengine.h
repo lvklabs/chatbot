@@ -95,7 +95,7 @@ public:
      * objects it means there was recursion. Otherwise; returns an empty string and \a matches
      * is empty.
      */
-    virtual QList<QString> getAllResponses(const QString &input, MatchList &matches) = 0;
+    virtual QStringList getAllResponses(const QString &input, MatchList &matches) = 0;
 
     /**
      * Gets all responses for the given \a input and \a target.
@@ -105,8 +105,8 @@ public:
      * objects it means there was recursion. Otherwise; returns an empty string and \a matches
      * is empty.
      */
-    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
-                                           MatchList &matches) = 0;
+    virtual QStringList getAllResponses(const QString &input, const QString &target,
+                                        MatchList &matches) = 0;
 
     virtual ~Engine() {}
 };

@@ -66,7 +66,9 @@ namespace Nlp
    \endverbatim
  *
  * SimpleAimlEngine also supports regex-like quantifiers + and * where + means one or more words
- * and * means zero or more words
+ * and * means zero or more words.
+ *
+ * \see AimlEngine
  */
 
 class SimpleAimlEngine : public AimlEngine
@@ -74,23 +76,25 @@ class SimpleAimlEngine : public AimlEngine
 public:
 
     /**
-     * Construtcs a SimpleAimlEngine object with the default sanitizer.
+     * Construtcs a SimpleAimlEngine object with NullSanitizer and NullLemmatizer.
      *
-     * \see DefaultSanitizer
+     * \see NullSanitizer, NullLemmatizer
      */
     SimpleAimlEngine();
 
     /**
-     * Construtcs a SimpleAimlEngine object with the given sanitizer.
+     * Construtcs a SimpleAimlEngine object with the given \a sanitizer and NullLemmatizer.
      * After construction, the object owns the given pointer.
+     *
+     * \see NullLemmatizer
      */
     SimpleAimlEngine(Sanitizer *sanitizer);
 
     /**
-     * Construtcs a SimpleAimlEngine object with the given \a sanitizer and \a lemmatizer.
+     * Construtcs a SimpleAimlEngine object with the given sanitizers and lemmatizer.
      * After construction, the object owns the given pointers.
      */
-    SimpleAimlEngine(Sanitizer *sanitizer, Lemmatizer *lemmatizer);
+    SimpleAimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer, Sanitizer *postSanitizer);
 
     /**
      * \copydoc AimlEngine::rules() const
@@ -110,8 +114,8 @@ public:
     /**
      * \copydoc AimlEngine::getAllResponses(const QString &, const QString &, MatchList &)
      */
-    virtual QList<QString> getAllResponses(const QString &input, const QString &target,
-                                           MatchList &matches);
+    virtual QStringList getAllResponses(const QString &input, const QString &target,
+                                        MatchList &matches);
 
     /**
      * \brief Class thrown when an invalid syntax was found while parsing rules.

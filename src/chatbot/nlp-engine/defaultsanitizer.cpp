@@ -43,32 +43,55 @@
 // DefaultSanitizer
 //--------------------------------------------------------------------------------------------------
 
+Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
+    : m_options(0xffff)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(Options options)
+    : m_options(options)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
 QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 {
     QString szStr= str;
 
-    szStr.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
-    szStr.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
-    szStr.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
-    szStr.replace(QString::fromUtf8(utf8_o_acute),     QString("o"));
-    szStr.replace(QString::fromUtf8(utf8_u_acute),     QString("u"));
-    szStr.replace(QString::fromUtf8(utf8_A_acute),     QString("A"));
-    szStr.replace(QString::fromUtf8(utf8_E_acute),     QString("E"));
-    szStr.replace(QString::fromUtf8(utf8_I_acute),     QString("I"));
-    szStr.replace(QString::fromUtf8(utf8_O_acute),     QString("O"));
-    szStr.replace(QString::fromUtf8(utf8_U_acute),     QString("U"));
-    szStr.replace(QString::fromUtf8(utf8_u_diaeresis), QString("u"));
-    szStr.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
+    if (m_options.testFlag(RemoveDiacritic)) {
+        szStr.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
+        szStr.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
+        szStr.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
+        szStr.replace(QString::fromUtf8(utf8_o_acute),     QString("o"));
+        szStr.replace(QString::fromUtf8(utf8_u_acute),     QString("u"));
+        szStr.replace(QString::fromUtf8(utf8_A_acute),     QString("A"));
+        szStr.replace(QString::fromUtf8(utf8_E_acute),     QString("E"));
+        szStr.replace(QString::fromUtf8(utf8_I_acute),     QString("I"));
+        szStr.replace(QString::fromUtf8(utf8_O_acute),     QString("O"));
+        szStr.replace(QString::fromUtf8(utf8_U_acute),     QString("U"));
+        szStr.replace(QString::fromUtf8(utf8_u_diaeresis), QString("u"));
+        szStr.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
+    }
 
-    szStr.remove(",");
-    szStr.remove(";");
-    szStr.remove(".");
-    szStr.remove("!");
-    szStr.remove("?");
-    szStr.remove(QString::fromUtf8(utf8_inverted_exclamation_mark));
-    szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
+    if (m_options.testFlag(RemovePunctuation)) {
+        szStr.remove(",");
+        szStr.remove(";");
+        szStr.remove(".");
+        szStr.remove("!");
+        szStr.remove("?");
+        szStr.remove(QString::fromUtf8(utf8_inverted_exclamation_mark));
+        szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
+    }
 
-    qDebug() << "Sanitized:" << str << "->" << szStr;
+    if (m_options.testFlag(RemoveDupChars)) {
+        // TODO
+    }
+
+    qDebug() << "   - Sanitized:" << str << "->" << szStr;
 
     return szStr;
 }
+

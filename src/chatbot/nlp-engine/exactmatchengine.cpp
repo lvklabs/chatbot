@@ -98,7 +98,7 @@ QString Lvk::Nlp::ExactMatchEngine::getResponse(const QString &input, const QStr
     matches.clear();
 
     MatchList allMatches;
-    QList<QString> responses = getAllResponses(input, target, allMatches);
+    QStringList responses = getAllResponses(input, target, allMatches);
 
     if (!allMatches.empty()) {
         matches.append(allMatches.first());
@@ -112,18 +112,17 @@ QString Lvk::Nlp::ExactMatchEngine::getResponse(const QString &input, const QStr
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, MatchList &matches)
+QStringList Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, MatchList &matches)
 {
     return getAllResponses(input, "", matches);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<QString> Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input,
-                                                           const QString &target,
-                                                           MatchList &matches)
+QStringList Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, const QString &target,
+                                                        MatchList &matches)
 {
-    QList<QString> responses;
+    QStringList responses;
 
     for (int i = 0; i < m_rules.size(); ++i) {
         const QStringList &ruleInput = m_rules[i].input();
