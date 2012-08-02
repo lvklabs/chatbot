@@ -59,6 +59,8 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(Options options)
 
 QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 {
+    // TODO optimize!
+
     QString szStr= str;
 
     if (m_options.testFlag(RemoveDiacritic)) {
@@ -86,8 +88,38 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
     }
 
-    if (m_options.testFlag(RemoveDupChars)) {
-        // TODO
+    if (m_options.testFlag(RemoveDupChars) && szStr.size() > 0) {
+
+        int rcount = 0;             // repeat count
+        QChar prev;                 // previous char
+        QChar cur;                  // current char
+        QString tmp;
+
+        QSet<QChar> rSet;           // Chars allowed to repeat once
+        rSet.insert('r');
+        rSet.insert('l');
+        //repSet.insert('o');
+
+        tmp.append(szStr[0]);
+
+        for (int i = 1; i < szStr.size(); ++i) {
+            prev = szStr[i-1];
+            cur = szStr[i];
+
+             if (cur.isLetter() && cur.toLower() == prev.toLower()) {
+                ++rcount;
+             } else {
+                 rcount = 0;
+             }
+
+             bool append = rcount == 0 || (rcount == 1 && rSet.contains(cur));
+
+             if (append) {
+                 tmp.append(cur);
+             }
+        }
+
+        szStr = tmp;
     }
 
     qDebug() << "   - Sanitized:" << str << "->" << szStr;
