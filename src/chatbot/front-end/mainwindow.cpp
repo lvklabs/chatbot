@@ -242,6 +242,10 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->testInputText->clear();
     ui->clearTestConversationButton->setEnabled(false);
 
+    // advanced options tab widgets
+    ui->rmDupCheckBox->setChecked(true);
+    ui->lemmatizerCheckBox->setChecked(true);
+
     setUiMode(WelcomeTabUiMode);
 }
 
