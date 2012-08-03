@@ -82,7 +82,11 @@ void testDefaultSanitizer::testCase1()
     QFETCH(QString, input);
     QFETCH(QString, expectedOutput);
 
-    QString output = Lvk::Nlp::DefaultSanitizer().sanitize(input);
+    unsigned options =
+            Lvk::Nlp::DefaultSanitizer::RemoveDiacritic |
+            Lvk::Nlp::DefaultSanitizer::RemovePunctuation;
+
+    QString output = Lvk::Nlp::DefaultSanitizer(options).sanitize(input);
 
     QCOMPARE(output, expectedOutput);
 }

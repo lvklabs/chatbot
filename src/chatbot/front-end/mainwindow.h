@@ -139,8 +139,6 @@ private:
     BE::Rule                 m_ruleBackup;
     BE::ConversationWriter  *m_testConversationLog;
     QString                  m_filename;
-    QString                  m_fileUsername;
-    BE::AppFacade::ChatType  m_fileChatType;
     QString                  m_lastFilename;
     UiTabsLayout             m_tabsLayout;
     ConnectionStatus         m_connectionStatus;
@@ -175,12 +173,12 @@ private:
     void startEditMode();
 
     void selectFirstRule();
-
     void selectRule(const BE::Rule *rule);
-    BE::Rule *selectedRule();
-    BE::Rule *evasivesRule();
-    BE::Rule *rootRule();
-    const BE::Rule *rootRule() const;
+
+    inline BE::Rule *rootRule();
+    inline const BE::Rule *rootRule() const;
+    inline BE::Rule *evasivesRule();
+    inline BE::Rule *selectedRule();
 
     void teachRule(BE::Rule *rule);
     void undoRule(BE::Rule *rule);
@@ -196,7 +194,11 @@ private:
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
     void updateBlackList();
-    BE::AppFacade::ChatType uiChatSelected();
+
+    inline BE::AppFacade::ChatType uiChatSelected();
+    inline QString rosterFilename();
+    inline QString blackRosterFilename();
+    inline QString canonicAccount();
 
     bool hasUnsavedChanges();
     int showSaveChangesDialog();
@@ -204,6 +206,8 @@ private:
     bool saveAsChanges();
     bool load(const QString &filename);
     void setFilename(const QString &filename);
+
+    void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
 
 private slots:
     void onAddCategoryButtonClicked();
@@ -254,6 +258,9 @@ private slots:
     void onExitMenuTriggered();
 
     void onSplitterMoved(int, int);
+
+    void onRmDupCheckBoxChanged(int);
+    void onLemmatizerCheckBoxChanged(int);
 };
 
 /// @}

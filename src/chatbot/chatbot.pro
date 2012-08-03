@@ -91,7 +91,6 @@ HEADERS += \
     back-end/conversationwriter.h \
     back-end/conversationreader.h \
     back-end/chatbotrulesfile.h \
-    nlp-engine/nlpengine.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -117,6 +116,7 @@ HEADERS += \
     common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     nlp-engine/rule.h \
+    nlp-engine/engine.h
 
 
 SOURCES += \
@@ -207,6 +207,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

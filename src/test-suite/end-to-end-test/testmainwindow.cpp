@@ -296,8 +296,8 @@ void TestMainWindow::UiSetRuleHierarchy2()
 
 void TestMainWindow::UiConnect(const QString &username, const QString &password, int chatType)
 {
-    m_window->m_fileChatType = static_cast<Lvk::BE::AppFacade::ChatType>(chatType);
-    m_window->m_fileUsername = username;
+    m_window->m_appFacade->setChatType(static_cast<Lvk::BE::AppFacade::ChatType>(chatType));
+    m_window->m_appFacade->setUsername(username);
 
     QTest::keyClicks(m_window->ui->passwordText, password);
 
@@ -399,7 +399,7 @@ void TestMainWindow::testImportExport()
     // Verify if rules have been imported
 
     const Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
-    const Lvk::BE::Rule *evasiveRule = m_window->evasivesRule();
+    const Lvk::BE::Rule *evasiveRule = m_window->m_appFacade->evasivesRule();
 
     QVERIFY(rootRule);
     QVERIFY(evasiveRule);

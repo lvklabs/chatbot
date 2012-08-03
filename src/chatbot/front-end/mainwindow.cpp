@@ -51,9 +51,6 @@
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
 #define FILE_EXPORT_EXTENSION       QString(QObject::tr("cef"))
 
-#define FILE_METADATA_CHAT_TYPE     "chat_type"
-#define FILE_METADATA_USERNAME      "username"
-
 #define FB_ICON_FILE                ":/icons/facebook_24x24.png"
 #define GMAIL_ICON_FILE             ":/icons/gmail_24x24.png"
 
@@ -68,7 +65,7 @@ namespace
 //--------------------------------------------------------------------------------------------------
 // Cannonic representation for chat accounts used to persist some settings
 
-QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
+inline QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
 }
@@ -76,7 +73,7 @@ QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType typ
 //--------------------------------------------------------------------------------------------------
 // Localized file filters for open/save dialogs
 
-QString getFileFilters()
+inline QString getFileFilters()
 {
     return QObject::tr("Chatbot Rule Files") + QString(" (*.") + FILE_EXTENSION + QString(");;")
             + QObject::tr("All files") + QString(" (*.*)");
@@ -85,7 +82,7 @@ QString getFileFilters()
 //--------------------------------------------------------------------------------------------------
 // Localized export file filters for import/export dialogs
 
-QString getFileExportFilters()
+inline QString getFileExportFilters()
 {
     return QObject::tr("Chatbot Export Files") + QString(" (*.") + FILE_EXPORT_EXTENSION
             + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
@@ -260,11 +257,6 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 
     delete m_ruleTreeModel;
 
-    m_fileChatType = static_cast<BE::AppFacade::ChatType>
-            (m_appFacade->metadata(FILE_METADATA_CHAT_TYPE).toInt());
-
-    m_fileUsername = m_appFacade->metadata(FILE_METADATA_USERNAME).toString();
-
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
 
     ui->categoriesTree->setModel(m_ruleTreeModel);
@@ -362,6 +354,12 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onShowRule(quint64)));
     connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
     connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
+
+    // Options tab
+
+    connect(ui->rmDupCheckBox, SIGNAL(stateChanged(int)), SLOT(onRmDupCheckBoxChanged(int)));
+    connect(ui->lemmatizerCheckBox, SIGNAL(stateChanged(int)),
+            SLOT(onLemmatizerCheckBoxChanged(int)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -616,8 +614,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case ChatDisconnectedUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->curUsernameLabel->setText(m_fileUsername);
-        ui->chatTypeIcon->setPixmap(m_fileChatType == BE::AppFacade::FbChat ?
+        ui->curUsernameLabel->setText(m_appFacade->username());
+        ui->chatTypeIcon->setPixmap(m_appFacade->chatType() == BE::AppFacade::FbChat ?
                                         QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
@@ -667,8 +665,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
     case ChatConnectionOkUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(1);
-        ui->disconnectButton->setText(tr("Disconnect ") + m_fileUsername);
-        ui->disconnectButton->setIcon(m_fileChatType == BE::AppFacade::FbChat ?
+        ui->disconnectButton->setText(tr("Disconnect ") + m_appFacade->username());
+        ui->disconnectButton->setIcon(m_appFacade->chatType() == BE::AppFacade::FbChat ?
                                           QIcon(FB_ICON_FILE) : QIcon(GMAIL_ICON_FILE));
         // Not visible anymore:
         ui->passwordText->setEnabled(false);
@@ -780,6 +778,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
+            ui->mainTabWidget->removePage(ui->optionsTab);
             break;
 
         case VerifyAccountUiMode:
@@ -800,6 +799,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
+            ui->mainTabWidget->removePage(ui->optionsTab);
             break;
 
         default:
@@ -818,6 +818,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
             ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
+            ui->mainTabWidget->addTab(ui->optionsTab, tr("Advanced options"));
             break;
         }
     }
@@ -827,28 +828,28 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
 // Shortcuts to special rules
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
+inline Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule()
 {
     return m_appFacade->rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule() const
+inline const Lvk::BE::Rule * Lvk::FE::MainWindow::rootRule() const
 {
     return m_appFacade->rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::MainWindow::evasivesRule()
+inline Lvk::BE::Rule * Lvk::FE::MainWindow::evasivesRule()
 {
     return m_appFacade->evasivesRule();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::MainWindow::selectedRule()
+inline Lvk::BE::Rule * Lvk::FE::MainWindow::selectedRule()
 {
     if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
         QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
@@ -1039,8 +1040,15 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // load persisted roster
         BE::Roster roster;
-        loadRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
+        loadRoster(roster, rosterFilename());
         ui->ruleInputWidget->setRoster(roster);
+
+        // Advanced options
+        unsigned options = m_appFacade->nlpEngineOptions();
+        ui->rmDupCheckBox->setCheckState(options & BE::AppFacade::RemoveDupChars ?
+                                             Qt::Checked : Qt::Unchecked);
+        ui->lemmatizerCheckBox->setCheckState(options & BE::AppFacade::LemmatizeSentence ?
+                                                  Qt::Checked : Qt::Unchecked);
     } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
@@ -1757,9 +1765,7 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString response = m_appFacade->getResponse(input, matches);
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
-
     ui->testInputText->setText("");
-
     ui->clearTestConversationButton->setEnabled(true);
 
     highlightMatchedRules(matches);
@@ -1833,14 +1839,14 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 {
     ui->ruleInputWidget->setRoster(roster);
 
-    m_fileChatType = uiChatSelected();
-    m_fileUsername = ui->usernameText_v->text();
+    BE::AppFacade::ChatType chatType = uiChatSelected();
+    QString username = ui->usernameText_v->text();
 
-    m_appFacade->setMetadata(FILE_METADATA_CHAT_TYPE, m_fileChatType);
-    m_appFacade->setMetadata(FILE_METADATA_USERNAME, m_fileUsername);
+    m_appFacade->setChatType(chatType);
+    m_appFacade->setUsername(username);
 
     // persist roster
-    saveRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
+    saveRoster(roster, ::rosterFilename(::canonicAccount(username, chatType)));
 
     if (m_tabsLayout == VerifyAccountTabsLayout) {
         startEditMode();
@@ -1911,7 +1917,7 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
         m_connectionStatus =  ConnectingToChat;
         setUiMode(ChatConnectingUiMode);
 
-        m_appFacade->connectToChat(m_fileChatType, m_fileUsername, ui->passwordText->text());
+        m_appFacade->connectToChat(ui->passwordText->text());
     }
 }
 
@@ -1936,14 +1942,13 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
     BE::Roster roster = m_appFacade->roster();
 
-    saveRoster(roster, rosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
+    saveRoster(roster, rosterFilename());
 
     ui->ruleInputWidget->setRoster(roster);
 
     BE::Roster blackListRoster;
-    QString account = canonicAccount(m_fileUsername,m_fileChatType);
 
-    if (!loadRoster(blackListRoster, blackRosterFilename(account))) {
+    if (!loadRoster(blackListRoster, blackRosterFilename())) {
         blackListRoster = roster; // By default all contacts are in the black list
     }
 
@@ -1988,22 +1993,45 @@ void Lvk::FE::MainWindow::onRosterSelectionChanged()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
-{
-    return ui->gtalkChatRadio_v->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::FE::MainWindow::updateBlackList()
 {
     BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
 
     m_appFacade->setBlackListRoster(blackList);
 
-    saveRoster(blackList, blackRosterFilename(canonicAccount(m_fileUsername, m_fileChatType)));
+    saveRoster(blackList, blackRosterFilename());
 }
 
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
+{
+    return ui->gtalkChatRadio_v->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString Lvk::FE::MainWindow::rosterFilename()
+{
+    return ::rosterFilename(canonicAccount());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString Lvk::FE::MainWindow::blackRosterFilename()
+{
+    return ::blackRosterFilename(canonicAccount());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString Lvk::FE::MainWindow::canonicAccount()
+{
+    return ::canonicAccount(m_appFacade->username(), m_appFacade->chatType());
+}
+
+//--------------------------------------------------------------------------------------------------
+// Misc events
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onSplitterMoved(int, int)
@@ -2011,5 +2039,31 @@ void Lvk::FE::MainWindow::onSplitterMoved(int, int)
     saveSplittersSettings();
 }
 
+//--------------------------------------------------------------------------------------------------
+// Advanced Options
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRmDupCheckBoxChanged(int state)
+{
+    setNlpEngineOption(BE::AppFacade::RemoveDupChars, state == Qt::Checked);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onLemmatizerCheckBoxChanged(int state)
+{
+    setNlpEngineOption(BE::AppFacade::LemmatizeSentence, state == Qt::Checked);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt, bool enabled)
+{
+    unsigned options = m_appFacade->nlpEngineOptions();
+
+    options = enabled ? options | opt : options & ~opt;
+
+    m_appFacade->setNlpEngineOptions(options);
+}
 
 

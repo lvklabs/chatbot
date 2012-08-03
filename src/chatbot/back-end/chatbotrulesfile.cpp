@@ -65,7 +65,7 @@ inline QString newChatbotId()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::ChatbotRulesFile::ChatbotRulesFile()
-    : m_metadataUnsaved(false),
+    : m_dirty(false),
       m_rootRule(new Rule()),
       m_nextRuleId(1),
       m_chatbotId(nullChatbotId())
@@ -75,7 +75,7 @@ Lvk::BE::ChatbotRulesFile::ChatbotRulesFile()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::ChatbotRulesFile::ChatbotRulesFile(const QString &filename)
-    : m_metadataUnsaved(false),
+    : m_dirty(false),
       m_rootRule(new Rule()),
       m_nextRuleId(1),
       m_chatbotId(nullChatbotId())
@@ -106,7 +106,7 @@ bool Lvk::BE::ChatbotRulesFile::load(const QString &filename)
     }
 
     if (success) {
-        markAsSaved();
+        setAsSaved();
     } else {
         close();
     }
@@ -127,7 +127,7 @@ bool Lvk::BE::ChatbotRulesFile::save()
     }
 
     if (success) {
-        markAsSaved();
+        setAsSaved();
     }
 
     return success;
@@ -157,7 +157,7 @@ bool Lvk::BE::ChatbotRulesFile::saveAs(const QString &filename)
 
 bool Lvk::BE::ChatbotRulesFile::hasUnsavedChanges() const
 {
-    if (m_metadataUnsaved) {
+    if (m_dirty) {
         return true;
     }
 
@@ -172,8 +172,10 @@ bool Lvk::BE::ChatbotRulesFile::hasUnsavedChanges() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::ChatbotRulesFile::markAsSaved()
+void Lvk::BE::ChatbotRulesFile::setAsSaved()
 {
+    m_dirty = false;
+
     for (Rule::iterator it = m_rootRule->begin(); it != m_rootRule->end(); ++it) {
         (*it)->setStatus(Rule::Saved);
     }
@@ -189,9 +191,8 @@ void Lvk::BE::ChatbotRulesFile::close()
     m_rootRule = std::auto_ptr<Rule>(new Rule());
     m_filename = "";
     m_nextRuleId = 1;
-    m_metadataUnsaved = false;
     m_metadata.clear();
-    markAsSaved();
+    setAsSaved();
 
     qDebug() << "File closed!";
 }
@@ -261,7 +262,7 @@ void Lvk::BE::ChatbotRulesFile::setMetadata(const QString &key, const QVariant &
 {
     m_metadata[key] = value;
 
-    m_metadataUnsaved = true;
+    m_dirty = true;
 }
 
 //--------------------------------------------------------------------------------------------------

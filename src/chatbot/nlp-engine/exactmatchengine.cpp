@@ -142,3 +142,21 @@ QStringList Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, co
 
     return responses;
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ExactMatchEngine::setPreSanitizer(Lvk::Nlp::Sanitizer */*sanitizer*/)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ExactMatchEngine::setLemmatizer(Lvk::Nlp::Lemmatizer */*lemmatizer*/)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ExactMatchEngine::setPostSanitizer(Lvk::Nlp::Sanitizer */*sanitizer*/)
+{
+}

@@ -20,7 +20,7 @@
  */
 
 #include "back-end/defaultvirtualuser.h"
-#include "nlp-engine/nlpengine.h"
+#include "nlp-engine/engine.h"
 #include "common/random.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"

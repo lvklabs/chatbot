@@ -44,13 +44,13 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
-    : m_options(0xffff)
+    : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(Options options)
+Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(unsigned options)
     : m_options(options)
 {
 }
@@ -63,11 +63,11 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         return str;
     }
 
-    // TODO optimize!
+    // TODO optimize!!! Implement algorithm O(n)
 
-    QString szStr= str;
+    QString szStr = str;
 
-    if (m_options.testFlag(RemoveDiacritic)) {
+    if (m_options & RemoveDiacritic) {
         szStr.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
         szStr.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
         szStr.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
@@ -82,7 +82,7 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         szStr.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
     }
 
-    if (m_options.testFlag(RemovePunctuation)) {
+    if (m_options & RemovePunctuation) {
         szStr.remove(",");
         szStr.remove(";");
         szStr.remove(".");
@@ -92,7 +92,9 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
     }
 
-    if (m_options.testFlag(RemoveDupChars)) {
+    if (m_options & RemoveDupChars) {
+        // NOTE: this implementation only makes sense for Spanish language.
+
         int rcount = 0;             // repeat count
         QChar prev;                 // previous char
         QChar cur;                  // current char

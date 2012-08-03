@@ -21,7 +21,7 @@
 
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
-#include "nlp-engine/nlpengine.h"
+#include "nlp-engine/engine.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/exactmatchengine.h"
 #include "nlp-engine/simpleaimlengine.h"
@@ -35,6 +35,10 @@
 #ifdef FREELING_SUPPORT
 # include "nlp-engine/defaultlemmatizer.h"
 #endif
+
+#define FILE_METADATA_CHAT_TYPE     "chat_type"
+#define FILE_METADATA_USERNAME      "username"
+#define FILE_METADATA_NLP_OPTIONS   "nlp_options"
 
 namespace Lvk
 {
@@ -132,11 +136,10 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
-      m_nlpEngine(new DefaultEngine(new DefaultSanitizer(DefaultSanitizer::PreSanitizer),
-                                    new DefaultLemmatizer(),
-                                    new DefaultSanitizer(DefaultSanitizer::PostSanitizer))),
+      m_nlpEngine(new DefaultEngine()),
       m_chatbot(0),
-      m_tmpChatbot(0)
+      m_tmpChatbot(0),
+      m_nlpOptions(0)
 {
 }
 
@@ -147,7 +150,8 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
       m_chatbot(0),
-      m_tmpChatbot(0)
+      m_tmpChatbot(0),
+      m_nlpOptions(0) // FIXME value?
 {
 }
 
@@ -168,9 +172,20 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 {
     close();
 
-    bool loaded = filename.isEmpty() ? setDefaultRules() : m_rulesFile.load(filename);
+    bool loaded = false;
+
+    if (filename.isEmpty()) {
+        loaded = setDefaultRules();
+
+        unsigned defaultNlpOptions = RemoveDupChars | LemmatizeSentence | SanitizePostLemma;
+        m_rulesFile.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
+        m_rulesFile.setAsSaved();
+    } else {
+        loaded = m_rulesFile.load(filename);
+    }
 
     if (loaded) {
+        setNlpEngineOptions(m_rulesFile.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
         refreshNlpEngine();
     } else {
         close();
@@ -245,6 +260,7 @@ bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 void Lvk::BE::AppFacade::close()
 {
     if (m_nlpEngine) {
+        // CHECK Do not reset NLP options?
         m_nlpEngine->setRules(Nlp::RuleList());
     }
 
@@ -259,18 +275,6 @@ void Lvk::BE::AppFacade::close()
 }
 
 //--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::AppFacade::setMetadata(const QString &key, const QVariant &value)
-{
-    m_rulesFile.setMetadata(key, value);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-const QVariant & Lvk::BE::AppFacade::metadata(const QString &key) const
-{
-    return m_rulesFile.metadata(key);
-}
 
 bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 {
@@ -440,7 +444,80 @@ void Lvk::BE::AppFacade::storeTargets(const TargetList &targets)
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
+{
+    if (m_nlpOptions == options) {
+        return;
+    }
+
+    if ((options & RemoveDupChars) && !(m_nlpOptions & RemoveDupChars)) {
+        m_nlpEngine->setPreSanitizer(new DefaultSanitizer(DefaultSanitizer::RemoveDupChars));
+    }
+    if (!(options & RemoveDupChars) && (m_nlpOptions & RemoveDupChars)) {
+        m_nlpEngine->setPreSanitizer(0);
+    }
+
+    if ((options & LemmatizeSentence) && !(m_nlpOptions & LemmatizeSentence)) {
+        m_nlpEngine->setLemmatizer(new DefaultLemmatizer());
+    }
+    if (!(options & LemmatizeSentence) && (m_nlpOptions & LemmatizeSentence)) {
+        m_nlpEngine->setLemmatizer(0);
+    }
+
+    if ((options & SanitizePostLemma) && !(m_nlpOptions & SanitizePostLemma)) {
+        m_nlpEngine->setPostSanitizer(new DefaultSanitizer(
+                DefaultSanitizer::RemoveDiacritic | DefaultSanitizer::RemovePunctuation));
+    }
+    if (!(options & SanitizePostLemma) && (m_nlpOptions & SanitizePostLemma)) {
+        m_nlpEngine->setPostSanitizer(0);
+    }
+
+    m_nlpOptions = options;
+
+    if (m_rulesFile.metadata(FILE_METADATA_NLP_OPTIONS).toUInt() != options) {
+        m_rulesFile.setMetadata(FILE_METADATA_NLP_OPTIONS, options);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+unsigned Lvk::BE::AppFacade::nlpEngineOptions()
+{
+    return m_nlpOptions;
+}
+
+//--------------------------------------------------------------------------------------------------
 // Chat methods
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::AppFacade::ChatType Lvk::BE::AppFacade::chatType()
+{
+    return static_cast<BE::AppFacade::ChatType>
+            (m_rulesFile.metadata(FILE_METADATA_CHAT_TYPE).toInt());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setChatType(Lvk::BE::AppFacade::ChatType type)
+{
+    m_rulesFile.setMetadata(FILE_METADATA_CHAT_TYPE, type);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::AppFacade::username()
+{
+    return m_rulesFile.metadata(FILE_METADATA_USERNAME).toString();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setUsername(const QString &username)
+{
+    m_rulesFile.setMetadata(FILE_METADATA_USERNAME, username);
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const QString &user,
@@ -493,6 +570,13 @@ void Lvk::BE::AppFacade::onAccountError(int err)
     m_tmpChatbot = 0;
 
     emit accountError(err);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::connectToChat(const QString &passwd)
+{
+    connectToChat(chatType(), username(), passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -639,5 +723,7 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
         virtualUser()->setChatHistory(conv);
     }
 }
+
+
 
 

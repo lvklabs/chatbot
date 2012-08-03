@@ -22,7 +22,7 @@
 #ifndef LVK_NLP_EXACTMATCHENGINE_H
 #define LVK_NLP_EXACTMATCHENGINE_H
 
-#include "nlp-engine/nlpengine.h"
+#include "nlp-engine/engine.h"
 
 namespace Lvk
 {
@@ -90,6 +90,21 @@ public:
      */
     virtual QStringList getAllResponses(const QString &input, const QString &target,
                                         MatchList &matches);
+
+    /**
+     * ExactMatchEngine ignores this method.
+     */
+    virtual void setPreSanitizer(Sanitizer *sanitizer);
+
+    /**
+     * ExactMatchEngine ignores this method.
+     */
+    virtual void setLemmatizer(Lemmatizer *lemmatizer);
+
+    /**
+     * ExactMatchEngine ignores this method.
+     */
+    virtual void setPostSanitizer(Sanitizer *sanitizer);
 
 private:
 

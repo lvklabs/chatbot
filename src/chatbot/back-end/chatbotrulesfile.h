@@ -89,6 +89,11 @@ public:
     bool hasUnsavedChanges() const;
 
     /**
+     * Resets the unsaved changes flag.
+     */
+    void setAsSaved();
+
+    /**
      * Closes the file.
      */
     void close();
@@ -151,12 +156,11 @@ private:
 
     QString m_filename;
     FileMetadata m_metadata;
-    bool m_metadataUnsaved;
+    bool m_dirty;
     std::auto_ptr<Rule> m_rootRule;
     quint64 m_nextRuleId;
     QString m_chatbotId;
 
-    void markAsSaved();
     bool read(QFile &file);
     bool write(QFile &file);
     Rule *findEvasivesRule();

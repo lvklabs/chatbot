@@ -56,48 +56,32 @@ public:
         /**
          * Remove diacritics. Currently, only removes vowels with acute accent or diaeresis.
          */
-        RemoveDiacritic = 0x1,
+        RemoveDiacritic = 0x01,
 
         /**
          * Remove punctuation such as \b .,;, . It also removes exclamation and interrogation marks.
          */
-        RemovePunctuation = 0x2,
+        RemovePunctuation = 0x02,
 
         /**
          * Removes duplicated characters. Currently, this option is only well defined for Spanish.
          */
-        RemoveDupChars = 0x4,
-
-        /**
-         * FIXME
-         */
-        PreSanitizer = RemoveDupChars,
-
-        /**
-         * FIXME
-         */
-        PostSanitizer = RemoveDiacritic | RemovePunctuation
-
+        RemoveDupChars = 0x04
     };
-
-    /**
-     * Sanitization option flags
-     */
-    Q_DECLARE_FLAGS(Options, Option)
 
     /**
      * Constructs a DefaultSanitizer with all option flags enabled.
      *
-     * \see Options
+     * \see Option
      */
     DefaultSanitizer();
 
     /**
      * Constructs a DefaultSanitizer with the options flags given.
      *
-     * \see Options
+     * \see Option
      */
-    DefaultSanitizer(Options options);
+    DefaultSanitizer(unsigned options);
 
     /**
      * Sanitizes the string \a str
@@ -105,7 +89,7 @@ public:
     virtual QString sanitize(const QString &str) const;
 
 private:
-    Options m_options;
+    unsigned m_options;
 };
 
 /// @}

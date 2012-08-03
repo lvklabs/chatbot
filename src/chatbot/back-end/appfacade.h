@@ -86,6 +86,7 @@ public:
 
     /**
      * Constructs an AppFacade object with NLP engine \a nlpEngine and parent object \a parent.
+     * After construction the object owns \a nlpEngine.
      */
     AppFacade(Nlp::Engine *nlpEngine, QObject *parent = 0);
 
@@ -122,17 +123,6 @@ public:
      * Closes the current file.
      */
     void close();
-
-    /**
-     * Saves \a value with \a key in the metadata section of the current file.
-     */
-    void setMetadata(const QString &key, const QVariant &value);
-
-    /**
-     * Returns the \a value of \a key in the metadata section of the current file.
-     * If the key is not found, returns QVariant().
-     */
-    const QVariant &metadata(const QString &key) const;
 
     /**
      * Imports rules from the filename \a inputFile.
@@ -203,12 +193,59 @@ public:
     void refreshNlpEngine();
 
     /**
+     * NLP Engine Options
+     */
+    enum NlpEngineOption {
+        RemoveDupChars    = 0x01,    ///< Remove duplicated characters
+        LemmatizeSentence = 0x02,    ///< Lemmatize sentences
+        SanitizePostLemma = 0x04     ///< Sanitize post lemmatization
+    };
+
+    /**
+     * Sets the NLP engine \a options
+     *
+     * \see NlpEngineOption
+     */
+    void setNlpEngineOptions(unsigned options);
+
+    /**
+     * Returns the NLP engine \a options
+     *
+     * \see NlpEngineOption
+     */
+    unsigned nlpEngineOptions();
+
+    /**
      * Chat server type
      */
     enum ChatType {
         FbChat,     ///< Facebook chat
         GTalkChat   ///< Gtalk or Gmail chat
     };
+
+    /**
+     * Returns the chat type. By default returns FbChat.
+     */
+    ChatType chatType();
+
+    /**
+     * Sets the chat type.
+     *
+     * This information is persisted in the Chatbot Rules file when save() is invoked.
+     */
+    void setChatType(ChatType type);
+
+    /**
+     * Returns the username used to connect to chat.
+     */
+    QString username();
+
+    /**
+     * Sets the username to connect to chat.
+     *
+     * This information is persisted in the Chatbot Rules file when save() is invoked.
+     */
+    void setUsername(const QString &username);
 
     /**
      * Connection error
@@ -224,12 +261,12 @@ public:
     };
 
     /**
-     * Verifies a chat account of type \a accountType with user \a user, and password \a
+     * Verifies a chat account of type \a chatType with user \a user, and password \a
      * passwd. This method should not be called again if there is a connection already in progress,
      * in that case call cancelVerifyAccount().
      * Emits \a accountOk if the account could be verified. Otherwise, emits \a accountError.
      */
-    void verifyAccount(ChatType accountType, const QString &user, const QString &passwd);
+    void verifyAccount(ChatType chatType, const QString &user, const QString &passwd);
 
     /**
      * Cancels a verification in progress. If there is no verification in progress this method
@@ -238,13 +275,20 @@ public:
     void cancelVerifyAccount();
 
     /**
-     * Connects to a chat server of type \a accountType with user \a user, and password \a
-     * passwd. This method should not be called if there is a connection already in progress,
+     * Connects to a chat server of type \a chatType with user \a user, and password \a
+     * passwd. This method does not modify the chat type and username set with setChatType()
+     * and setUsername().
+     * This method should not be called if there is a connection already in progress,
      * in that case call disconnectFromChat().
      * Emits \a connected on success. Otherwise; emits \a connectionError.
      * If the connection ends prematurely, emits \a disconnected.
      */
-    void connectToChat(ChatType accountType, const QString &user, const QString &passwd);
+    void connectToChat(ChatType chatType, const QString &user, const QString &passwd);
+
+    /**
+     * This is an overloaded method equivalent to connectToChat(chatType(), username(), passwd)
+     */
+    void connectToChat(const QString &passwd);
 
     /**
      * Disconnects from the current chat server. If there is no connection this method does nothing.
@@ -334,6 +378,7 @@ private:
     CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
+    unsigned m_nlpOptions;
 
     bool setDefaultRules();
 

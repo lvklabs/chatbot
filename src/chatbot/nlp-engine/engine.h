@@ -40,12 +40,21 @@ namespace Nlp
 /// \addtogroup Nlp
 /// @{
 
+class Sanitizer;
+class Lemmatizer;
+
 /**
  * \brief The Engine class provides an abstract interface for all NLP Engines
  */
 class Engine
 {
 public:
+
+    /**
+     * Destroys the object.
+     */
+    virtual ~Engine() {}
+
     /**
      * MatchList provides a list of pairs (RuleId, InputNumber)
      */
@@ -108,7 +117,22 @@ public:
     virtual QStringList getAllResponses(const QString &input, const QString &target,
                                         MatchList &matches) = 0;
 
-    virtual ~Engine() {}
+    /**
+     * Sets the pre-lemmatization \a sanitizer, i.e. the sanitizer to be executed before
+     * lemmatization. The instance owns the given pointer.
+     */
+    virtual void setPreSanitizer(Sanitizer *sanitizer) = 0;
+
+    /**
+     * Sets the \a lemmatizer. The instance owns the given pointer.
+     */
+    virtual void setLemmatizer(Lemmatizer *lemmatizer) = 0;
+
+    /**
+     * Sets the post-lemmatization \a sanitizer, i.e. the sanitizer to be executed after
+     * lemmatization. The instance owns the given pointer.
+     */
+    virtual void setPostSanitizer(Sanitizer *sanitizer) = 0;
 };
 
 /// @}

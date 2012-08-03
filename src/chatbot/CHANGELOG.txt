@@ -1,4 +1,8 @@
 v0.14
+ - Integrated Freeling
+ - Removing duplicated characters to improve matching.
+ - Added "advanced options" tab where user can enable/disable sentence lemmatization
+   and other options.
  - Implemented drag & drop of rules
  - Added filter in chat history
  - Added tool button to remove chat history conversations 
@@ -8,7 +12,7 @@ v0.14
    history
  - Added new log file chatbot.log to log Chatbot issues
  - Removed unused feature "Reminder to save conversation"
-
+ 
 v0.13
  - Tab changes focus of multiline input texts
  - Updated some strings to Spanish Argentina

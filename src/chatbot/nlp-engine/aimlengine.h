@@ -22,7 +22,9 @@
 #ifndef LVK_NLP_AIMLENGINE_H
 #define LVK_NLP_AIMLENGINE_H
 
-#include "nlp-engine/nlpengine.h"
+#include "nlp-engine/engine.h"
+
+#include <memory>
 
 class AIMLParser;
 class QFile;
@@ -148,24 +150,45 @@ public:
      */
     virtual QStringList getAllResponses(const QString &input, const QString &target,
                                         MatchList &matches);
+    /**
+     * \copydoc Engine::setPreSanitizer()
+     *
+     * Passing a null pointer resets to the default pre-sanitizer.
+     */
+    virtual void setPreSanitizer(Sanitizer *sanitizer);
+
+    /**
+     * \copydoc Engine::setLemmatizer()
+     *
+     * Passing a null pointer resets to the default lemmatizer.
+     */
+    virtual void setLemmatizer(Lemmatizer *lemmatizer);
+
+    /**
+     * \copydoc Engine::setPostSanitizer()
+     *
+     * Passing a null pointer resets to the default post-sanitizer.
+     */
+    virtual void setPostSanitizer(Sanitizer *sanitizer);
 
 private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);
 
     RuleList m_rules;
-    AIMLParser *m_aimlParser;
-    Sanitizer *m_preSanitizer;
-    Sanitizer *m_postSanitizer;
-    Lemmatizer *m_lemmatizer;
-    QFile *m_logFile;
+    std::auto_ptr<Sanitizer>  m_preSanitizer;
+    std::auto_ptr<Sanitizer>  m_postSanitizer;
+    std::auto_ptr<Lemmatizer> m_lemmatizer;
+    std::auto_ptr<QFile>      m_logFile;
+    std::auto_ptr<AIMLParser> m_aimlParser;
+    bool m_dirty;
 
     void initLog();
-    void resetParser();
 
     inline QStringList getAllResponses(const QString &input, const QString &target,
                                        MatchList &matches, bool norm);
 
+    void refreshAiml();
     void buildAiml(QString &aiml);
     void buildAiml(QString &aiml, const Rule &rule);
     void normalize(QString &input);

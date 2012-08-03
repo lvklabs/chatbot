@@ -5,12 +5,21 @@ LVK CHATBOT README
 
   $ qmake && make 
 
-  NOTE: Requires Qt SDK >= 4.7.0 
-                 QXmpp  >= 0.3.0 (*)
+
+  NOTE: Requires: Qt SDK   >= 4.7.0 
+                  QXmpp    >= 0.3.0 (*)
+ 
+        Optional: 
+                  Freeling >= 2.2.2 (**)
 
   (*) Precompiled static library of QXmpp is already provided for 
   linux32, win32 and mac64. Other OSes will require to compile QXmpp 
-  manually. QXmpp full sources are available at src/third-party/QXmpp
+  manually. Full sources are available at src/third-party/QXmpp
+  
+  (**) Precompiled static library is already provided for linux32 and
+  win32. Other OSes will require to compile Freeling manually. Full
+  sources are available at src/third-party/Freeling. 
+  To diable Freeling remove 'CONFIG += freeling' in chatbot.pro
 
   WARNING: Mac version is not fully supported. 
 

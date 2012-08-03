@@ -97,52 +97,53 @@ QString inputWithTarget(const QString &input, const QString &target)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine()
-    : m_aimlParser(0),
-      m_preSanitizer(new Nlp::NullSanitizer()),
+    : m_preSanitizer(new Nlp::NullSanitizer()),
       m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
-      m_logFile(new QFile())
+      m_logFile(new QFile()),
+      m_aimlParser(0),
+      m_dirty(false)
 {
     initLog();
-    resetParser();
+
+    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
-    : m_aimlParser(0),
-      m_preSanitizer(sanitizer),
+    : m_preSanitizer(sanitizer),
       m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
-      m_logFile(new QFile())
+      m_logFile(new QFile()),
+      m_aimlParser(0),
+      m_dirty(false)
 {
     initLog();
-    resetParser();
+
+    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
                                  Sanitizer *postSanitizer)
-    : m_aimlParser(0),
-      m_preSanitizer(preSanitizer),
+    : m_preSanitizer(preSanitizer),
       m_postSanitizer(postSanitizer),
       m_lemmatizer(lemmatizer),
-      m_logFile(new QFile())
+      m_logFile(new QFile()),
+      m_aimlParser(0),
+      m_dirty(false)
 {
     initLog();
-    resetParser();
+
+    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::AimlEngine::~AimlEngine()
 {
-    delete m_aimlParser;
-    delete m_lemmatizer;
-    delete m_postSanitizer;
-    delete m_preSanitizer;
-    delete m_logFile;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -164,14 +165,6 @@ void Lvk::Nlp::AimlEngine::initLog()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::AimlEngine::resetParser()
-{
-    delete m_aimlParser;
-    m_aimlParser = new AIMLParser(m_logFile);
-}
-
-//--------------------------------------------------------------------------------------------------
-
 const Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules() const
 {
     return m_rules;
@@ -181,6 +174,8 @@ const Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules() const
 
 Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules()
 {
+    m_dirty = true;
+
     return m_rules;
 }
 
@@ -192,14 +187,7 @@ void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 
     m_rules = rules;
 
-    QString aiml;
-    buildAiml(aiml);
-
-    resetParser();
-
-    m_aimlParser->loadAimlFromString(aiml);
-
-    qDebug() << "AimlEngine: Rules set!";
+    m_dirty = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -254,6 +242,12 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
                                                          const QString &target,
                                                          MatchList &matches, bool norm)
 {
+    if (m_dirty) {
+        qDebug("AimlEngine: Dirty flag set. Refreshing AIML rules...");
+        refreshAiml();
+        m_dirty = false;
+    }
+
     qDebug() << "AimlEngine: Getting response for input" << input
              << "and target" << target << "...";
 
@@ -281,6 +275,17 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
     qDebug() << "AimlEngine: Responses found: " << responses;
 
     return responses;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::refreshAiml()
+{
+    QString aiml;
+    buildAiml(aiml);
+
+    m_aimlParser.reset(new AIMLParser(m_logFile.get())); // Bug in AIMLParser, needs new object
+    m_aimlParser->loadAimlFromString(aiml);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -356,3 +361,34 @@ void Lvk::Nlp::AimlEngine::normalize(QString &input)
     input = m_lemmatizer->lemmatize(input);
     input = m_postSanitizer->sanitize(input);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::setPreSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
+{
+    if (m_preSanitizer.get() != sanitizer) {
+        m_preSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer());
+        m_dirty = true;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::setLemmatizer(Lvk::Nlp::Lemmatizer *lemmatizer)
+{
+    if (m_lemmatizer.get() != lemmatizer) {
+        m_lemmatizer.reset(lemmatizer ? lemmatizer : new NullLemmatizer());
+        m_dirty = true;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::setPostSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
+{
+    if (m_postSanitizer.get() != sanitizer) {
+        m_postSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer);
+        m_dirty = true;
+    }
+}
+
