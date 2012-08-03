@@ -151,7 +151,7 @@ inline void checkAppExpiration()
 {
     Lvk::Cmn::Settings settings;
     if (settings.value("Application/ApplicationExpires", true).toBool()) {
-        if (QDate::currentDate() > QDate(2012, 7, 30)) {
+        if (QDate::currentDate() > QDate(2012, 9, 30)) {
 
             QString title = QObject::tr("Application demo has expired");
             QString msg = QObject::tr("This application demo has expired. "
