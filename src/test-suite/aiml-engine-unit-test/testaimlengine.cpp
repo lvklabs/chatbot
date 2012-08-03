@@ -165,7 +165,11 @@ TestAimlEngine::TestAimlEngine()
 void TestAimlEngine::initTestCase()
 {
     m_engine = new Lvk::Nlp::AimlEngine(new Lvk::Nlp::NullSanitizer());
-    m_engineWithDefSanitizer = new Lvk::Nlp::AimlEngine(new Lvk::Nlp::DefaultSanitizer());
+
+    unsigned options = Lvk::Nlp::DefaultSanitizer::RemoveDiacritic |
+                       Lvk::Nlp::DefaultSanitizer::RemovePunctuation;
+
+    m_engineWithDefSanitizer = new Lvk::Nlp::AimlEngine(new Lvk::Nlp::DefaultSanitizer(options));
 }
 
 //--------------------------------------------------------------------------------------------------
