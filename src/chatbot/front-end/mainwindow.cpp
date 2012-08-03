@@ -244,8 +244,12 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // advanced options tab widgets
     ui->rmDupCheckBox->setChecked(true);
+#ifdef FREELING_SUPPORT
     ui->lemmatizerCheckBox->setChecked(true);
-
+#else
+    ui->lemmatizerCheckBox->setChecked(false);
+    ui->lemmatizerCheckBox->setEnabled(false);
+#endif
     setUiMode(WelcomeTabUiMode);
 }
 
@@ -1049,6 +1053,11 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // Advanced options
         unsigned options = m_appFacade->nlpEngineOptions();
+
+        #ifndef FREELING_SUPPORT
+        options &= ~BE::AppFacade::LemmatizeSentence;
+        #endif
+
         ui->rmDupCheckBox->setCheckState(options & BE::AppFacade::RemoveDupChars ?
                                              Qt::Checked : Qt::Unchecked);
         ui->lemmatizerCheckBox->setCheckState(options & BE::AppFacade::LemmatizeSentence ?

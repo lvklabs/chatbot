@@ -177,7 +177,12 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
     if (filename.isEmpty()) {
         loaded = setDefaultRules();
 
-        unsigned defaultNlpOptions = RemoveDupChars | LemmatizeSentence | SanitizePostLemma;
+        unsigned defaultNlpOptions = RemoveDupChars | SanitizePostLemma;
+
+        #ifdef FREELING_SUPPORT
+        defaultNlpOptions |= BE::AppFacade::LemmatizeSentence;
+        #endif
+
         m_rulesFile.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
         m_rulesFile.setAsSaved();
     } else {
