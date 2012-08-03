@@ -24,6 +24,8 @@
 
 #include "nlp-engine/sanitizer.h"
 
+#include <QSet>
+
 namespace Lvk
 {
 
@@ -90,6 +92,9 @@ public:
 
 private:
     unsigned m_options;
+    QSet<QChar> m_rSet;
+
+    void initRSet();
 };
 
 /// @}

@@ -46,6 +46,7 @@
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
     : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars)
 {
+    initRSet();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -53,6 +54,20 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(unsigned options)
     : m_options(options)
 {
+    initRSet();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::DefaultSanitizer::initRSet()
+{
+    // Chars allowed to repeat once
+    // NOTE: this set only makes sense for Spanish language.
+    m_rSet.insert('r');
+    m_rSet.insert('l');
+    m_rSet.insert('n');
+    m_rSet.insert('c');
+    m_rSet.insert('o');
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -100,11 +115,6 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         QChar cur;                  // current char
         QString tmp;
 
-        QSet<QChar> rSet;           // Chars allowed to repeat once
-        rSet.insert('r');
-        rSet.insert('l');
-        //repSet.insert('o');
-
         tmp.append(szStr[0]);
 
         for (int i = 1; i < szStr.size(); ++i) {
@@ -117,7 +127,7 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
                  rcount = 0;
              }
 
-             bool append = rcount == 0 || (rcount == 1 && rSet.contains(cur));
+             bool append = rcount == 0 || (rcount == 1 && m_rSet.contains(cur));
 
              if (append) {
                  tmp.append(cur);
@@ -131,4 +141,3 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 
     return szStr;
 }
-
