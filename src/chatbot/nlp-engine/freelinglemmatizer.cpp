@@ -1,4 +1,4 @@
-#include "nlp-engine/defaultlemmatizer.h"
+#include "nlp-engine/freelinglemmatizer.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
@@ -115,7 +115,7 @@ inline void convert(const std::list<sentence> &ls, QString &str)
 // Lemmatizer
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::DefaultLemmatizer::DefaultLemmatizer()
+Lvk::Nlp::FreelingLemmatizer::FreelingLemmatizer()
     : m_flInit(false), m_tk(0), m_sp(0), m_morpho(0)
 {
     QHash<QString, QString> configFiles;
@@ -138,7 +138,7 @@ Lvk::Nlp::DefaultLemmatizer::DefaultLemmatizer()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::DefaultLemmatizer::~DefaultLemmatizer()
+Lvk::Nlp::FreelingLemmatizer::~FreelingLemmatizer()
 {
     delete m_morpho;
     delete m_sp;
@@ -147,7 +147,7 @@ Lvk::Nlp::DefaultLemmatizer::~DefaultLemmatizer()
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::DefaultLemmatizer::lemmatize(const QString &input)
+QString Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input)
 {
     QString output = input.trimmed();
 

@@ -99,6 +99,9 @@ HEADERS += \
     nlp-engine/nullsanitizer.h \
     nlp-engine/lemmatizer.h \
     nlp-engine/nulllemmatizer.h \
+    nlp-engine/rule.h \
+    nlp-engine/engine.h \
+    nlp-engine/freelinglemmatizer.h \
     chat-adapter/chatvirtualuser.h \
     chat-adapter/chatbot.h \
     chat-adapter/xmmpchatbot.h \
@@ -115,8 +118,6 @@ HEADERS += \
     common/globalstrings.h \
     common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    nlp-engine/rule.h \
-    nlp-engine/engine.h
 
 
 SOURCES += \
@@ -144,6 +145,7 @@ SOURCES += \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
+    nlp-engine/freelinglemmatizer.cpp \
     chat-adapter/xmmpchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
@@ -182,8 +184,8 @@ LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 freeling {
     DEFINES += PCRE_STATIC FREELING_SUPPORT
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
-    HEADERS += nlp-engine/defaultlemmatizer.h
-    SOURCES += nlp-engine/defaultlemmatizer.cpp
+    HEADERS +=
+    SOURCES +=
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 
@@ -207,6 +209,10 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

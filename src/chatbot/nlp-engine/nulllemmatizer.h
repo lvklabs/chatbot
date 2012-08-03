@@ -23,7 +23,7 @@ class NullLemmatizer : public Lemmatizer
 {
 public:
     /**
-     * Constructs a DefaultLemmatizer with the default parameters.
+     * Constructs a NullLemamatizer with the default parameters.
      */
     NullLemmatizer() { }
 

@@ -21,23 +21,23 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The DefaultLemmatizer class provides the default implementation of the Lemmatizer
+ * \brief The FreelingLemmatizer class provides the default implementation of the Lemmatizer
  *        interface.
  *
- * The DefaultLemmatizer class uses Freeling to tokenize and lemmatize sentences.
+ * The FreelingLemmatizer class uses Freeling to tokenize and lemmatize sentences.
  */
-class DefaultLemmatizer : public Lemmatizer
+class FreelingLemmatizer : public Lemmatizer
 {
 public:
     /**
-     * Constructs a DefaultLemmatizer with the default parameters.
+     * Constructs a FreelingLemmatizer with the default parameters.
      */
-    DefaultLemmatizer();
+    FreelingLemmatizer();
 
     /**
      * \copydoc Lemmatizer::~Lemmatizer()
      */
-    ~DefaultLemmatizer();
+    ~FreelingLemmatizer();
 
     /**
      * \copydoc Lemmatizer::lemmatize(const QString &)
@@ -50,7 +50,6 @@ private:
     splitter *m_sp;
     maco *m_morpho;
 };
-
 
 /// @}
 

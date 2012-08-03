@@ -33,7 +33,7 @@
 #include "back-end/defaultvirtualuser.h"
 
 #ifdef FREELING_SUPPORT
-# include "nlp-engine/defaultlemmatizer.h"
+# include "nlp-engine/freelinglemmatizer.h"
 #endif
 
 #define FILE_METADATA_CHAT_TYPE     "chat_type"
@@ -50,7 +50,7 @@ typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 
 #ifdef FREELING_SUPPORT
-typedef Lvk::Nlp::DefaultLemmatizer DefaultLemmatizer;
+typedef Lvk::Nlp::FreelingLemmatizer DefaultLemmatizer;
 #else
 typedef Lvk::Nlp::NullLemmatizer DefaultLemmatizer;
 #endif
