@@ -64,6 +64,7 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
       m_virtualUser(0),
       m_contactInfoMutex(new QMutex()),
       m_rosterMutex(new QMutex()),
+      m_virtualUserMutex(new QMutex()),
       m_isConnected(false),
       m_rosterHasChanged(false)
 {
@@ -75,9 +76,9 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
 Lvk::CA::XmppChatbot::~XmppChatbot()
 {
+    delete m_virtualUserMutex;
     delete m_rosterMutex;
     delete m_contactInfoMutex;
-    delete m_virtualUser;
     delete m_xmppClient;
 }
 
@@ -151,17 +152,18 @@ void Lvk::CA::XmppChatbot::disconnectFromServer()
 
 void Lvk::CA::XmppChatbot::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
 {
-    if (m_virtualUser != virtualUser) {
-        delete m_virtualUser;
-        m_virtualUser = virtualUser;
-    }
+    QMutexLocker locker(m_virtualUserMutex);
+
+    m_virtualUser.reset(virtualUser);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::CA::VirtualUser * Lvk::CA::XmppChatbot::virtualUser()
 {
-    return m_virtualUser;
+    QMutexLocker locker(m_virtualUserMutex);
+
+    return m_virtualUser.get();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -239,13 +241,10 @@ Lvk::CA::XmppChatbot::Error Lvk::CA::XmppChatbot::convertToLocalError(QXmppClien
 
 void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
 {
-    if (msg.type() != QXmppMessage::Chat) {
-        return;
-    }
-    if (!m_virtualUser) {
-        return;
-    }
-    if (msg.body().isEmpty()) {
+    qDebug() << "XmppChatbot: Got message" << msg.body() << "from user" << msg.from()
+             << "and type" << msg.type();
+
+    if (msg.type() != QXmppMessage::Chat || msg.body().isEmpty()) {
         return;
     }
 
@@ -258,11 +257,20 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
     if (!isInBlackList(bareJid)) {
         ContactInfo info = getContactInfo(bareJid);
 
-        QString response = m_virtualUser->getResponse(msg.body(), info);
+        QMutexLocker locker(m_virtualUserMutex);
 
-        if (!response.isEmpty()) {
-            m_xmppClient->sendPacket(QXmppMessage("", msg.from(), response));
+        if (m_virtualUser.get()) {
+            QString response = m_virtualUser->getResponse(msg.body(), info);
+
+            if (!response.isEmpty()) {
+                m_xmppClient->sendPacket(QXmppMessage("", msg.from(), response));
+            }
+        } else {
+            qCritical() << "XmppChatbot: No virtual user set";
         }
+    } else {
+        qDebug() << "XmppChatbot: Ignoring message" << msg.body() << "because user"
+                 << bareJid << "is in black list";
     }
 }
 

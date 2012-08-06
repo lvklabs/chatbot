@@ -58,12 +58,7 @@ public:
     /**
      * \copydoc Engine::rules() const
      */
-    virtual const RuleList &rules() const;
-
-    /**
-     * \copydoc Engine::rules()
-     */
-    virtual RuleList &rules();
+    virtual RuleList rules() const;
 
     /**
      * \copydoc Engine::setRules()

@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <memory>
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -157,10 +158,9 @@ protected slots:
 
 protected:
     QXmppClient *m_xmppClient;
-    VirtualUser *m_virtualUser;
-    QString      m_user;
-    QString      m_domain;
-    QString      m_name;
+    QString m_user;
+    QString m_domain;
+    QString m_name;
 
     bool isInBlackList(const QString &jid);
 
@@ -173,9 +173,11 @@ private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
 
+    std::auto_ptr<VirtualUser> m_virtualUser;
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;
+    QMutex *m_virtualUserMutex;
 
     bool m_isConnected;
     bool m_rosterHasChanged;
@@ -207,3 +209,4 @@ private:
 } //namespace Lvk
 
 #endif // LVK_CA_XMPPCHATBOT_H
+

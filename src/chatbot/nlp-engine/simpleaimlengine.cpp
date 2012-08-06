@@ -117,14 +117,7 @@ void Lvk::Nlp::SimpleAimlEngine::initRegexs()
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::Nlp::RuleList & Lvk::Nlp::SimpleAimlEngine::rules() const
-{
-    return m_rules;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Nlp::RuleList & Lvk::Nlp::SimpleAimlEngine::rules()
+Lvk::Nlp::RuleList Lvk::Nlp::SimpleAimlEngine::rules() const
 {
     return m_rules;
 }

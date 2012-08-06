@@ -64,14 +64,7 @@ Lvk::Nlp::ExactMatchEngine::~ExactMatchEngine()
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::Nlp::RuleList & Lvk::Nlp::ExactMatchEngine::rules() const
-{
-    return m_rules;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Nlp::RuleList & Lvk::Nlp::ExactMatchEngine::rules()
+Lvk::Nlp::RuleList Lvk::Nlp::ExactMatchEngine::rules() const
 {
     return m_rules;
 }

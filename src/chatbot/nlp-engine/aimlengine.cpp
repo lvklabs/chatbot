@@ -32,6 +32,8 @@
 #include <QStringList>
 #include <QFile>
 #include <QDir>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QtDebug>
 #include <cassert>
 
@@ -102,6 +104,7 @@ Lvk::Nlp::AimlEngine::AimlEngine()
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
       m_aimlParser(0),
+      m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
@@ -117,6 +120,7 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
       m_aimlParser(0),
+      m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
@@ -133,6 +137,7 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer
       m_lemmatizer(lemmatizer),
       m_logFile(new QFile()),
       m_aimlParser(0),
+      m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
@@ -144,6 +149,7 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer
 
 Lvk::Nlp::AimlEngine::~AimlEngine()
 {
+    delete m_mutex;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -165,16 +171,9 @@ void Lvk::Nlp::AimlEngine::initLog()
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules() const
+Lvk::Nlp::RuleList Lvk::Nlp::AimlEngine::rules() const
 {
-    return m_rules;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules()
-{
-    m_dirty = true;
+    QMutexLocker locker(m_mutex);
 
     return m_rules;
 }
@@ -184,6 +183,8 @@ Lvk::Nlp::RuleList & Lvk::Nlp::AimlEngine::rules()
 void Lvk::Nlp::AimlEngine::setRules(const Lvk::Nlp::RuleList &rules)
 {
     qDebug() << "AimlEngine: Setting new AIML rules...";
+
+    QMutexLocker locker(m_mutex);
 
     m_rules = rules;
 
@@ -242,6 +243,8 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
                                                          const QString &target,
                                                          MatchList &matches, bool norm)
 {
+    QMutexLocker locker(m_mutex);
+
     if (m_dirty) {
         qDebug("AimlEngine: Dirty flag set. Refreshing AIML rules...");
         refreshAiml();
@@ -366,29 +369,29 @@ void Lvk::Nlp::AimlEngine::normalize(QString &input)
 
 void Lvk::Nlp::AimlEngine::setPreSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
 {
-    if (m_preSanitizer.get() != sanitizer) {
-        m_preSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer());
-        m_dirty = true;
-    }
+    QMutexLocker locker(m_mutex);
+
+    m_preSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer());
+    m_dirty = true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::AimlEngine::setLemmatizer(Lvk::Nlp::Lemmatizer *lemmatizer)
 {
-    if (m_lemmatizer.get() != lemmatizer) {
-        m_lemmatizer.reset(lemmatizer ? lemmatizer : new NullLemmatizer());
-        m_dirty = true;
-    }
+    QMutexLocker locker(m_mutex);
+
+    m_lemmatizer.reset(lemmatizer ? lemmatizer : new NullLemmatizer());
+    m_dirty = true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::AimlEngine::setPostSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
 {
-    if (m_postSanitizer.get() != sanitizer) {
-        m_postSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer);
-        m_dirty = true;
-    }
+    QMutexLocker locker(m_mutex);
+
+    m_postSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer);
+    m_dirty = true;
 }
 

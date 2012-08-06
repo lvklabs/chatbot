@@ -28,6 +28,7 @@
 
 class AIMLParser;
 class QFile;
+class QMutex;
 
 namespace Lvk
 {
@@ -118,12 +119,7 @@ public:
     /**
      * \copydoc Engine::rules() const
      */
-    virtual const RuleList &rules() const;
-
-    /**
-     * \copydoc Engine::rules()
-     */
-    virtual RuleList &rules();
+    virtual RuleList rules() const;
 
     /**
      * \copydoc Engine::setRules()
@@ -181,6 +177,7 @@ private:
     std::auto_ptr<Lemmatizer> m_lemmatizer;
     std::auto_ptr<QFile>      m_logFile;
     std::auto_ptr<AIMLParser> m_aimlParser;
+    QMutex *m_mutex;
     bool m_dirty;
 
     void initLog();

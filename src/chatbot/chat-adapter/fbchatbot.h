@@ -25,7 +25,6 @@
 #include "chat-adapter/xmmpchatbot.h"
 #include "chat-adapter/chatcorpus.h"
 
-#include <QMutex>
 #include <QHash>
 #include <QList>
 

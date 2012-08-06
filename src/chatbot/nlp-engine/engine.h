@@ -61,14 +61,9 @@ public:
     typedef QList< QPair<RuleId, int> > MatchList;
 
     /**
-     * Returns a const reference to the list of rules.
+     * Returns a copy of the rules.
      */
-    virtual const RuleList &rules() const = 0;
-
-    /**
-     * Returns a reference to the list of rules.
-     */
-    virtual RuleList &rules() = 0;
+    virtual RuleList rules() const = 0;
 
     /**
      * Sets the list of rules.

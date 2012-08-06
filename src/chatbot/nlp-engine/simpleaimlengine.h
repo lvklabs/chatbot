@@ -99,12 +99,7 @@ public:
     /**
      * \copydoc AimlEngine::rules() const
      */
-    virtual const RuleList &rules() const;
-
-    /**
-     * \copydoc AimlEngine::rules()
-     */
-    virtual RuleList &rules();
+    virtual RuleList rules() const;
 
     /**
      * \copydoc AimlEngine::setRules()

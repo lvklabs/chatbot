@@ -25,8 +25,6 @@
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
 
-#include <QMutex>
-#include <QMutexLocker>
 #include <QDomElement>
 
 #include "QXmppClient.h"
