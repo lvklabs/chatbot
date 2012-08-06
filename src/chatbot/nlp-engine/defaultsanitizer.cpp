@@ -46,7 +46,7 @@
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
     : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars)
 {
-    initRSet();
+    initSets();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -54,20 +54,45 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(unsigned options)
     : m_options(options)
 {
-    initRSet();
+    initSets();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::DefaultSanitizer::initRSet()
+void Lvk::Nlp::DefaultSanitizer::initSets()
 {
+    // Punctuation chars to be removed
+    m_punctSet.insert(',');
+    m_punctSet.insert(';');
+    m_punctSet.insert('.');
+    m_punctSet.insert('!');
+    m_punctSet.insert('?');
+    m_punctSet.insert(QString::fromUtf8(utf8_inverted_exclamation_mark)[0]);
+    m_punctSet.insert(QString::fromUtf8(utf8_inverted_question_mark)[0]);
+
+    // Map of vowels with diacritic to vowels without
+    // NOTE: this maps only makes sense for Spanish language.
+    m_diacMap.insert(QString::fromUtf8(utf8_a_acute)[0],     'a');
+    m_diacMap.insert(QString::fromUtf8(utf8_e_acute)[0],     'e');
+    m_diacMap.insert(QString::fromUtf8(utf8_i_acute)[0],     'i');
+    m_diacMap.insert(QString::fromUtf8(utf8_o_acute)[0],     'o');
+    m_diacMap.insert(QString::fromUtf8(utf8_u_acute)[0],     'u');
+    m_diacMap.insert(QString::fromUtf8(utf8_A_acute)[0],     'A');
+    m_diacMap.insert(QString::fromUtf8(utf8_E_acute)[0],     'E');
+    m_diacMap.insert(QString::fromUtf8(utf8_I_acute)[0],     'I');
+    m_diacMap.insert(QString::fromUtf8(utf8_O_acute)[0],     'O');
+    m_diacMap.insert(QString::fromUtf8(utf8_U_acute)[0],     'U');
+    m_diacMap.insert(QString::fromUtf8(utf8_u_diaeresis)[0], 'u');
+    m_diacMap.insert(QString::fromUtf8(utf8_U_diaeresis)[0], 'U');
+
     // Chars allowed to repeat once
     // NOTE: this set only makes sense for Spanish language.
     m_rSet.insert('r');
     m_rSet.insert('l');
     m_rSet.insert('n');
     m_rSet.insert('c');
-    m_rSet.insert('o');
+    m_rSet.insert('z');
+    //m_rSet.insert('o');
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,48 +103,23 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         return str;
     }
 
-    // TODO optimize!!! Implement algorithm O(n)
+    int rcount = 0;     // repeat count
+    QChar prev;         // previous char
+    QChar cur;          // current char
+    QString szStr;      // Sanitized string
 
-    QString szStr = str;
+    for (int i = 0; i < str.size(); ++i) {
+        prev = i > 0 ? str[i-1] : QChar();
+        cur = str[i];
 
-    if (m_options & RemoveDiacritic) {
-        szStr.replace(QString::fromUtf8(utf8_a_acute),     QString("a"));
-        szStr.replace(QString::fromUtf8(utf8_e_acute),     QString("e"));
-        szStr.replace(QString::fromUtf8(utf8_i_acute),     QString("i"));
-        szStr.replace(QString::fromUtf8(utf8_o_acute),     QString("o"));
-        szStr.replace(QString::fromUtf8(utf8_u_acute),     QString("u"));
-        szStr.replace(QString::fromUtf8(utf8_A_acute),     QString("A"));
-        szStr.replace(QString::fromUtf8(utf8_E_acute),     QString("E"));
-        szStr.replace(QString::fromUtf8(utf8_I_acute),     QString("I"));
-        szStr.replace(QString::fromUtf8(utf8_O_acute),     QString("O"));
-        szStr.replace(QString::fromUtf8(utf8_U_acute),     QString("U"));
-        szStr.replace(QString::fromUtf8(utf8_u_diaeresis), QString("u"));
-        szStr.replace(QString::fromUtf8(utf8_U_diaeresis), QString("U"));
-    }
+        bool append = true;
 
-    if (m_options & RemovePunctuation) {
-        szStr.remove(",");
-        szStr.remove(";");
-        szStr.remove(".");
-        szStr.remove("!");
-        szStr.remove("?");
-        szStr.remove(QString::fromUtf8(utf8_inverted_exclamation_mark));
-        szStr.remove(QString::fromUtf8(utf8_inverted_question_mark));
-    }
-
-    if (m_options & RemoveDupChars) {
+        //-------------------------------------------------------------------------------
+        // Removed dup chars
+        //
         // NOTE: this implementation only makes sense for Spanish language.
 
-        int rcount = 0;             // repeat count
-        QChar prev;                 // previous char
-        QChar cur;                  // current char
-        QString tmp;
-
-        tmp.append(szStr[0]);
-
-        for (int i = 1; i < szStr.size(); ++i) {
-            prev = szStr[i-1];
-            cur = szStr[i];
+        if ((m_options & RemoveDupChars) && i > 0) {
 
              if (cur.isLetter() && cur.toLower() == prev.toLower()) {
                 ++rcount;
@@ -127,14 +127,38 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
                  rcount = 0;
              }
 
-             bool append = rcount == 0 || (rcount == 1 && m_rSet.contains(cur));
+             append = rcount == 0 || (rcount == 1 && m_rSet.contains(cur));
 
-             if (append) {
-                 tmp.append(cur);
+             if (!append) {
+                 continue;
              }
         }
 
-        szStr = tmp;
+        //-------------------------------------------------------------------------------
+        // Remove punctuation
+
+        if (m_options & RemovePunctuation) {
+            append = !m_punctSet.contains(cur);
+
+            if (!append) {
+                continue;
+            }
+        }
+
+        //-------------------------------------------------------------------------------
+        // Remove diacritic
+
+        if (m_options & RemoveDiacritic) {
+            QHash<QChar,QChar>::const_iterator it = m_diacMap.find(cur);
+
+            if (it != m_diacMap.constEnd()) {
+                cur = *it;
+            }
+        }
+
+        //-------------------------------------------------------------------------------
+
+        szStr.append(cur);
     }
 
     qDebug() << "   - Sanitized:" << str << "->" << szStr;

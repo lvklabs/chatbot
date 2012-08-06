@@ -41,13 +41,17 @@ public:
 private Q_SLOTS:
     void initTestCase() {}
     void cleanupTestCase() {}
-    void testCase1_data();
-    void testCase1();
+    void testRmDiacriptAndPunct_data();
+    void testRmDiacriptAndPunct();
+    void testRemoveDupChars_data();
+    void testRemoveDupChars();
+    void testAllFlags_data();
+    void testAllFlags();
 };
 
 //--------------------------------------------------------------------------------------------------
 
-void testDefaultSanitizer::testCase1_data()
+void testDefaultSanitizer::testRmDiacriptAndPunct_data()
 {
     QFile dataFile(TEST_DATA_FILE);
 
@@ -77,7 +81,7 @@ void testDefaultSanitizer::testCase1_data()
 
 //--------------------------------------------------------------------------------------------------
 
-void testDefaultSanitizer::testCase1()
+void testDefaultSanitizer::testRmDiacriptAndPunct()
 {
     QFETCH(QString, input);
     QFETCH(QString, expectedOutput);
@@ -85,6 +89,66 @@ void testDefaultSanitizer::testCase1()
     unsigned options =
             Lvk::Nlp::DefaultSanitizer::RemoveDiacritic |
             Lvk::Nlp::DefaultSanitizer::RemovePunctuation;
+
+    QString output = Lvk::Nlp::DefaultSanitizer(options).sanitize(input);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void testDefaultSanitizer::testRemoveDupChars_data()
+{
+
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedOutput");
+
+    QTest::newRow("dup chars") << "Holaaaaaaa" << "Hola";
+    QTest::newRow("dup chars") << "Hoooooooooooooolaaaaaaa" << "Hola";
+    QTest::newRow("dup chars") << "Aaaaaabbbbbbbbbbccccccccddee;;;!!!" << "Abccde;;;!!!";
+    QTest::newRow("dup chars") << "Accion" << "Accion";
+    QTest::newRow("dup chars") << "Llorooooonaaa!!!!" << "Llorona!!!!";
+    QTest::newRow("dup chars") << "carrera a innovacion? la,a" << "carrera a innovacion? la,a";
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void testDefaultSanitizer::testRemoveDupChars()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedOutput);
+
+    unsigned options = Lvk::Nlp::DefaultSanitizer::RemoveDupChars;
+
+    QString output = Lvk::Nlp::DefaultSanitizer(options).sanitize(input);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void testDefaultSanitizer::testAllFlags_data()
+{
+
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedOutput");
+
+    QTest::newRow("dup chars") << "Holaaaaaaa; que haces!!" << "Hola que haces";
+
+    // TODO add more test cases!
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void testDefaultSanitizer::testAllFlags()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedOutput);
+
+    unsigned options =
+        Lvk::Nlp::DefaultSanitizer::RemoveDupChars |
+        Lvk::Nlp::DefaultSanitizer::RemoveDiacritic |
+        Lvk::Nlp::DefaultSanitizer::RemovePunctuation;
 
     QString output = Lvk::Nlp::DefaultSanitizer(options).sanitize(input);
 
