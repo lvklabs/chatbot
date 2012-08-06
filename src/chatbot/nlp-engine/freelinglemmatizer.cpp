@@ -10,11 +10,17 @@
 
 #include "freeling.h"
 
-#define KEY_TOKENIZER_FILE  "tokenizer"
-#define KEY_SPLITTER_FILE   "splitter"
-#define KEY_PROBS_FILE      "probs"
-#define KEY_QUANTS_FILE     "quants"
-#define KEY_DICT_FILE       "dict"
+#define KEY_TOKENIZER_FILE  1
+#define KEY_SPLITTER_FILE   2
+#define KEY_PROBS_FILE      3
+#define KEY_QUANTS_FILE     4
+#define KEY_DICT_FILE       5
+#define KEY_AFFIXES_FILE    6
+#define KEY_LOCUTIONS_FILE  7
+#define KEY_PUNCT_FILE      8
+
+typedef QHash<int, std::string> ConfigFilesMap;
+
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -23,7 +29,7 @@
 namespace
 {
 
-inline QString getLang()
+inline std::string getLang()
 {
     Lvk::Cmn::Settings settings;
     QString lang = settings.value(SETTING_NLP_LANGUAGE).toString();
@@ -32,32 +38,36 @@ inline QString getLang()
         lang = settings.value(SETTING_APP_LANGUAGE).toString().split("_").at(0);
     }
 
-    return lang;
+    return lang.toStdString();
 }
 
 
-inline void getFlConfigFiles(QHash<QString, QString> &configFiles)
+inline void getFlConfigFiles(ConfigFilesMap &configFiles)
 {
     Lvk::Cmn::Settings settings;
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-    QString flDataPath = dataPath + "/freeling/" + getLang() + "/";
+    std::string dataPath = settings.value(SETTING_DATA_PATH).toString().toStdString();
+    std::string flDataPath = dataPath + "/freeling/" + getLang() + "/";
 
     configFiles[KEY_TOKENIZER_FILE] = flDataPath + "tokenizer.dat";
     configFiles[KEY_SPLITTER_FILE]  = flDataPath + "splitter.dat";
     configFiles[KEY_PROBS_FILE]     = flDataPath + "probabilitats.dat";
     configFiles[KEY_QUANTS_FILE]    = flDataPath + "quantities.dat";
     configFiles[KEY_DICT_FILE]      = flDataPath + "dicc.src";
+    configFiles[KEY_AFFIXES_FILE]   = flDataPath + "afixos.dat";
+    configFiles[KEY_LOCUTIONS_FILE] = flDataPath + "locucions.dat";
+    configFiles[KEY_PUNCT_FILE]     = flDataPath + "tags.dat";
 }
 
 //--------------------------------------------------------------------------------------------------
 
-inline bool exists(QHash<QString, QString> &configFiles)
+inline bool exists(ConfigFilesMap &configFiles)
 {
-    QHash<QString, QString>::const_iterator it;
+    ConfigFilesMap::const_iterator it;
 
     for (it = configFiles.constBegin(); it != configFiles.constEnd(); ++it) {
-        if (!QFile::exists(it.value())) {
-            qCritical() << "File not found" << it.value();
+        const char* const filename = it.value().c_str();
+        if (!QFile::exists(filename)) {
+            qCritical() << "File not found" << filename;
             return false;
         }
     }
@@ -67,27 +77,35 @@ inline bool exists(QHash<QString, QString> &configFiles)
 //--------------------------------------------------------------------------------------------------
 
 template<class T>
-inline void init(T** p, const QString &configFile)
+inline void init(T** p, const std::string &configFile)
 {
-    *p  = new T(configFile.toStdString());
+    *p  = new T(configFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-inline void init(maco** p, const QHash<QString, QString> &configFiles)
+inline void init(maco** p, const ConfigFilesMap &configFiles)
 {
-    maco_options opt(getLang().toStdString());
+    maco_options opt(getLang());
 
-    // We use the bare minimum of modules(ner = NONE = no NER)
+    // Set all modules disabled:
     opt.set_active_modules(false, false, false, false, false, false, false, false, NER_NONE, false);
     opt.set_data_files("", "", "", "", "", "", "", "");
 
+    // Enable manually one by one:
     opt.ProbabilityAssignment = true;
     opt.DictionarySearch      = true;
     opt.QuantitiesDetection   = true;
-    opt.ProbabilityFile       = configFiles[KEY_PROBS_FILE].toStdString();
-    opt.DictionaryFile        = configFiles[KEY_DICT_FILE].toStdString();
-    opt.QuantitiesFile        = configFiles[KEY_QUANTS_FILE].toStdString();
+    opt.NumbersDetection      = true;
+    opt.AffixAnalysis         = true;
+    opt.DatesDetection        = true;
+    opt.PunctuationDetection  = true;
+    opt.ProbabilityFile       = configFiles[KEY_PROBS_FILE];
+    opt.DictionaryFile        = configFiles[KEY_DICT_FILE];
+    opt.QuantitiesFile        = configFiles[KEY_QUANTS_FILE];
+    opt.AffixFile             = configFiles[KEY_AFFIXES_FILE];
+    opt.LocutionsFile         = configFiles[KEY_LOCUTIONS_FILE];
+    opt.PunctuationFile       = configFiles[KEY_PUNCT_FILE];
 
     *p = new maco(opt);
 }
@@ -118,7 +136,7 @@ inline void convert(const std::list<sentence> &ls, QString &str)
 Lvk::Nlp::FreelingLemmatizer::FreelingLemmatizer()
     : m_flInit(false), m_tk(0), m_sp(0), m_morpho(0)
 {
-    QHash<QString, QString> configFiles;
+    ConfigFilesMap configFiles;
 
     getFlConfigFiles(configFiles);
 
