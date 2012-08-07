@@ -1,14 +1,12 @@
 v0.14
  - Integrated Freeling
  - Removing duplicated characters to improve matching.
- - Added "advanced options" tab where user can enable/disable sentence lemmatization
-   and other options.
- - Added filter in chat history
- - Added tool button to remove chat history conversations 
- - Added tool button to find the definition of a rule with match on the the chat
-   history 
- - Added tool button to teach a new rule from a message without match on the chat 
-   history
+ - Test chatbot tab: Moved between "Teach" and "Connect" tabs. Added options
+   where user can enable/disable sentence lemmatization and other options.
+ - History tab: Added filter and tool buttons to remove conversations, 
+   find the definition of a rule with match and teach a new rule from a 
+   message without match 
+ - Added button to skip account verification
  - Added new log file chatbot.log to log Chatbot issues
  - Removed unused feature "Reminder to save conversation"
  
