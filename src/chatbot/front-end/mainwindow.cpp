@@ -382,6 +382,9 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onChangeAccountButtonPressed()));
     connect(ui->cancelChangeAccountButton, SIGNAL(clicked()),
             SLOT(onCancelChangeAccountButtonPressed()));
+    connect(ui->verifyLaterButton,         SIGNAL(clicked()),
+            SLOT(onVerifyAccountSkipped()));
+
 
     // Conversation history tab
 
@@ -652,7 +655,8 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
     case ChatDisconnectedUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->curUsernameLabel->setText(m_appFacade->username());
+        ui->curUsernameLabel->setText(m_appFacade->username().isEmpty() ?
+                                          tr("(None)") : m_appFacade->username());
         ui->chatTypeIcon->setPixmap(m_appFacade->chatType() == BE::AppFacade::FbChat ?
                                         QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
         ui->connectToChatStackWidget->setCurrentIndex(0);
@@ -663,6 +667,10 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectionStatusLabel->setText(tr("Disconnected"));
         ui->connectionStatusLabel->setStyleSheet("");
         ui->rosterWidget->clear();
+        // If verification was skipped
+        ui->connectButton->setEnabled(!m_appFacade->username().isEmpty());
+        ui->chatTypeIcon->setVisible(!m_appFacade->username().isEmpty());
+        ui->passwordText->setEnabled(!m_appFacade->username().isEmpty());
         break;
 
     case ChatConnectingUiMode:
@@ -726,6 +734,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->gtalkChatRadio_v->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
+        ui->verifyLaterButton->setVisible(false);
         ui->passwordText->setText("");
         break;
 
@@ -742,6 +751,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->gtalkChatRadio_v->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
+        ui->verifyLaterButton->setVisible(true);
         ui->passwordText->setText("");
         break;
 
@@ -1927,7 +1937,9 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
         setUiMode(ChatDisconnectedUiMode);
     }
 
-    QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
+    if (!username.isEmpty()) {
+        QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1958,15 +1970,29 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onVerifyAccountSkipped()
+{
+    ui->fbChatRadio_v->setChecked(true);
+    ui->usernameText_v->setText("");
+
+    onVerifyAccountOk(BE::Roster());
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
 {
-    QString title = tr("Change Account");
-    QString msg   = tr("If you change your account some rules might not work anymore.\n"
-                       "Are you sure you want to change your account?");
+    if (!m_appFacade->username().isEmpty()) {
+        QString title = tr("Change Account");
+        QString msg   = tr("If you change your account some rules might not work anymore.\n"
+                           "Are you sure you want to change your account?");
 
-    QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
+        QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
 
-    if (QMessageBox::question(this, title, msg, buttons) == QMessageBox::Yes) {
+        if (QMessageBox::question(this, title, msg, buttons) == QMessageBox::Yes) {
+            setUiMode(ChangeAccountUiMode);
+        }
+    } else {
         setUiMode(ChangeAccountUiMode);
     }
 }

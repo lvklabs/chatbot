@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -1054,27 +1054,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                  </property>
                 </spacer>
                </item>
-               <item row="6" column="1">
-                <widget class="QToolButton" name="verifyAccountButton">
-                 <property name="text">
-                  <string>Verify account</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/res/verify_chatbot.png</normaloff>:/icons/res/verify_chatbot.png</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>24</width>
-                   <height>24</height>
-                  </size>
-                 </property>
-                 <property name="toolButtonStyle">
-                  <enum>Qt::ToolButtonTextBesideIcon</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
+               <item row="8" column="1">
                 <spacer name="verticalSpacer_11">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -1090,14 +1070,14 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                  </property>
                 </spacer>
                </item>
-               <item row="8" column="1">
+               <item row="9" column="1">
                 <widget class="QLabel" name="connectionStatusLabel_v">
                  <property name="text">
                   <string>Verifying...</string>
                  </property>
                 </widget>
                </item>
-               <item row="9" column="1">
+               <item row="10" column="1">
                 <widget class="QProgressBar" name="connectionProgressBar_v">
                  <property name="maximumSize">
                   <size>
@@ -1113,7 +1093,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                  </property>
                 </widget>
                </item>
-               <item row="10" column="1">
+               <item row="11" column="1">
                 <spacer name="verticalSpacer_12">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -1125,6 +1105,57 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="7" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QPushButton" name="verifyAccountButton">
+                   <property name="text">
+                    <string>Verify account</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../resources.qrc">
+                     <normaloff>:/icons/res/verify_chatbot.png</normaloff>:/icons/res/verify_chatbot.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="verifyLaterButton">
+                   <property name="text">
+                    <string>Verificar mas tarde</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../resources.qrc">
+                     <normaloff>:/icons/avatar_default_32x32.png</normaloff>:/icons/avatar_default_32x32.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
               </layout>
              </item>

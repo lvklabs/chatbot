@@ -237,6 +237,7 @@ private slots:
     void onVerifyAccountButtonPressed();
     void onVerifyAccountOk(const BE::Roster &roster);
     void onVerifyAccountError(int err);
+    void onVerifyAccountSkipped();
     void onChangeAccountButtonPressed();
     void onCancelChangeAccountButtonPressed();
 
