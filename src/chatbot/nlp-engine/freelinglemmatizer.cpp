@@ -92,7 +92,7 @@ inline void init(maco** p, const ConfigFilesMap &configFiles)
     opt.set_active_modules(false, false, false, false, false, false, false, false, NER_NONE, false);
     opt.set_data_files("", "", "", "", "", "", "", "");
 
-    // Enable manually one by one:
+    // Enable one by one:
     opt.ProbabilityAssignment = true;
     opt.DictionarySearch      = true;
     opt.QuantitiesDetection   = true;
@@ -100,6 +100,7 @@ inline void init(maco** p, const ConfigFilesMap &configFiles)
     opt.AffixAnalysis         = true;
     opt.DatesDetection        = true;
     opt.PunctuationDetection  = true;
+    opt.MultiwordsDetection   = true;
     opt.ProbabilityFile       = configFiles[KEY_PROBS_FILE];
     opt.DictionaryFile        = configFiles[KEY_DICT_FILE];
     opt.QuantitiesFile        = configFiles[KEY_QUANTS_FILE];

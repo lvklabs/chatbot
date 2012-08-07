@@ -43,8 +43,9 @@ Lemmatizer::Lemmatizer() :
     opt.AffixAnalysis         = true;
     opt.DatesDetection        = true;
     opt.PunctuationDetection  = true;
-    //opt.OrthographicCorrection = false; // According documentation this module is under
-                                          // development, and it is not operational yet.
+    opt.MultiwordsDetection   = true;
+    //opt.OrthographicCorrection = true; // According documentation this module is under
+                                         // development, and it is not operational yet.
 
     opt.ProbabilityFile = PROB_CONFIG_FILE;
     opt.DictionaryFile  = DICTIONARY_FILE;
