@@ -9,7 +9,9 @@ v0.14
  - Added button to skip account verification
  - Added new log file chatbot.log to log Chatbot issues
  - Removed unused feature "Reminder to save conversation"
- 
+ - Added a more descriptive message error when the user provides his/her 
+   email to connect to a Facebook
+
 v0.13
  - Tab changes focus of multiline input texts
  - Updated some strings to Spanish Argentina

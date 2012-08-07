@@ -749,6 +749,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
         ui->gtalkChatRadio_v->setEnabled(true);
+        ui->verifyLaterButton->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
         ui->verifyLaterButton->setVisible(true);
@@ -765,6 +766,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText_v->setEnabled(false);
         ui->fbChatRadio_v->setEnabled(false);
         ui->gtalkChatRadio_v->setEnabled(false);
+        ui->verifyLaterButton->setEnabled(false);
         ui->connectionProgressBar_v->setVisible(true);
         ui->connectionStatusLabel_v->setVisible(true);
         break;
@@ -779,6 +781,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
         ui->gtalkChatRadio_v->setEnabled(true);
+        ui->verifyLaterButton->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
         break;
