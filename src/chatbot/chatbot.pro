@@ -118,6 +118,7 @@ HEADERS += \
     common/globalstrings.h \
     common/logger.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    front-end/ruletextview.h
 
 
 SOURCES += \
@@ -157,6 +158,7 @@ SOURCES += \
     common/csvrow.cpp \
     common/logger.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
+    front-end/ruletextview.cpp
 
 
 FORMS += \
@@ -209,6 +211,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

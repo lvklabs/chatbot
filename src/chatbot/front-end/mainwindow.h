@@ -149,6 +149,7 @@ private:
     BE::Rule *addRule(const QString &name, BE::Rule *category);
 
     const Lvk::BE::Rule * findRule(quint64 ruleId) const;
+    void showRule(quint64 ruleId);
 
     BE::Rule *addCategoryWithDialog();
     BE::Rule *addRuleWithDialog();
@@ -216,7 +217,7 @@ private slots:
 
     BE::Rule *getCategoryFromDialog();
     void onTeachFromHistoryWidget(const QString &msg);
-    void onShowRule(quint64 ruleId);
+    void onHistoryShowRule(quint64 ruleId);
     void onRemovedAllHistory();
     void onRemovedHistory(const QDate &date, const QString &username);
 
@@ -231,6 +232,7 @@ private slots:
     void onUndoButtonPressed();
     void onTestInputTextEntered();
     void onClearTestConversationButtonPressed();
+    void onTestShowRule();
 
     void onVerifyAccountButtonPressed();
     void onVerifyAccountOk(const BE::Roster &roster);

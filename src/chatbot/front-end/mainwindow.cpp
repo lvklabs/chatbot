@@ -242,7 +242,6 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
-    ui->rightSideTabWidget->setCurrentIndex(0);
 
     // train tab widgets
     // TODO clear ui->categoriesTree
@@ -266,6 +265,10 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->testConversationText->clear();
     ui->testInputText->clear();
     ui->clearTestConversationButton->setEnabled(false);
+    ui->ruleView->clear();
+    ui->ruleViewGroupBox->setVisible(false);
+    ui->transfView->clear();
+    ui->transfViewGroupBox->setVisible(false);
 
     // advanced options tab widgets
     ui->rmDupCheckBox->setChecked(true);
@@ -360,6 +363,8 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->clearTestConversationButton, SIGNAL(clicked()),
             SLOT(onClearTestConversationButtonPressed()));
 
+    connect(ui->showRuleDefButton, SIGNAL(clicked()), SLOT(onTestShowRule()));
+
     // Chat connetion tab
 
     connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
@@ -384,7 +389,7 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onNewChatConversation(BE::Conversation::Entry)));
 
     connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
-    connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onShowRule(quint64)));
+    connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onHistoryShowRule(quint64)));
     connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
     connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
 
@@ -511,10 +516,10 @@ void Lvk::FE::MainWindow::loadSplittersSettings()
 {
     Cmn::Settings settings;
 
-    QList<int> centralSplSizes;
-    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
-    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
-    ui->centralSplitter->setSizes(centralSplSizes);
+//    QList<int> centralSplSizes;
+//    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
+//    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
+//    ui->centralSplitter->setSizes(centralSplSizes);
 
     QList<int> teachSplSizes;
     teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
@@ -547,8 +552,8 @@ void Lvk::FE::MainWindow::saveSplittersSettings()
     if (m_tabsLayout == TeachTabsLayout) {
         Cmn::Settings settings;
 
-        settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
-        settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
+        //settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
+        //settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
         settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
         settings.setValue(SETTING_MAIN_WINDOW_RULE_EDIT_W, ui->teachTabsplitter->sizes().at(1));
     }
@@ -803,15 +808,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
 
             ui->welcomeTab->setVisible(true);
             ui->teachTab->setVisible(false);
+            ui->testTab->setVisible(false);
             ui->connectTab->setVisible(false);
             ui->conversationsTab->setVisible(false);
-            ui->rightSideTabWidget->setVisible(false);
 
             ui->mainTabWidget->addTab(ui->welcomeTab, tr("Init"));
             ui->mainTabWidget->removePage(ui->teachTab);
+            ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->optionsTab);
             break;
 
         case VerifyAccountUiMode:
@@ -824,15 +829,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
 
             ui->welcomeTab->setVisible(false);
             ui->teachTab->setVisible(false);
+            ui->testTab->setVisible(false);
             ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(false);
-            ui->rightSideTabWidget->setVisible(false);
 
             ui->mainTabWidget->addTab(ui->connectTab, tr("Verify account"));
             ui->mainTabWidget->removePage(ui->welcomeTab);
+            ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->optionsTab);
             break;
 
         default:
@@ -843,15 +848,15 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
 
             ui->welcomeTab->setVisible(false);
             ui->teachTab->setVisible(true);
+            ui->testTab->setVisible(true);
             ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(true);
-            ui->rightSideTabWidget->setVisible(true);
 
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
+            ui->mainTabWidget->addTab(ui->testTab, tr("Test your chatbot"));
             ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
-            ui->mainTabWidget->addTab(ui->optionsTab, tr("Advanced options"));
             break;
         }
     }
@@ -1444,6 +1449,22 @@ const Lvk::BE::Rule *Lvk::FE::MainWindow::findRule(quint64 ruleId) const
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::showRule(quint64 ruleId)
+{
+    const BE::Rule *rule = findRule(ruleId);
+
+    if (rule) {
+        m_ruleTreeSelectionModel->clearSelection();
+        selectRule(rule);
+    } else {
+        QString title = tr("Rule not found");
+        QString msg = tr("Rule not found. The rule was removed.");
+        QMessageBox::information(this, title, msg, QMessageBox::Ok);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 // History actions
 //--------------------------------------------------------------------------------------------------
 
@@ -1461,18 +1482,9 @@ void Lvk::FE::MainWindow::onRemovedHistory(const QDate &date, const QString &use
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onShowRule(quint64 ruleId)
+void Lvk::FE::MainWindow::onHistoryShowRule(quint64 ruleId)
 {
-    const BE::Rule *rule = findRule(ruleId);
-
-    if (rule && rule->type() == BE::Rule::OrdinaryRule) {
-        m_ruleTreeSelectionModel->clearSelection();
-        selectRule(rule);
-    } else {
-        QString title = tr("Rule not found");
-        QString msg = tr("Rule not found. The rule was removed.");
-        QMessageBox::information(this, title, msg, QMessageBox::Ok);
-    }
+    showRule(ruleId);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1823,8 +1835,19 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
 void Lvk::FE::MainWindow::onClearTestConversationButtonPressed()
 {
     ui->clearTestConversationButton->setEnabled(false);
-
     ui->testConversationText->clear();
+    ui->ruleView->clear();
+    ui->ruleViewGroupBox->setVisible(false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onTestShowRule()
+{
+    qDebug() << ui->ruleView->ruleId();
+    if (ui->ruleView->ruleId()) {
+        showRule(ui->ruleView->ruleId());
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1834,22 +1857,30 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
     ui->ruleInputWidget->clearHighlight();
     ui->ruleOutputWidget->clearHighlight();
 
+    const BE::Rule *rule = 0;
+
     if (!matches.empty()) {
         // Assuming only one match
 
         quint64 ruleId = matches.first().first;
-        int inputNumber = matches.first().second;
+        //int inputNumber = matches.first().second;
 
-        const BE::Rule *rule = findRule(ruleId);
+        rule = findRule(ruleId);
 
-        if (rule) {
-            selectRule(rule);
-            ui->ruleInputWidget->highlightInput(inputNumber);
-        }
+        // Deprecated:
+        //if (rule) {
+            //selectRule(rule);
+            //ui->ruleInputWidget->highlightInput(inputNumber);
+        //}
     } else {
-        selectRule(evasivesRule());
-        ui->ruleOutputWidget->highlightOuput(0);
+        rule = evasivesRule();
+        // Deprecated:
+        //selectRule(evasivesRule());
+        //ui->ruleOutputWidget->highlightOuput(0);
     }
+
+    ui->ruleViewGroupBox->setVisible(true);
+    ui->ruleView->setRule(rule);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1859,7 +1890,11 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
 {
     if (!ui->usernameText_v->text().isEmpty()) {
-        setUiMode(VerifyAccountConnectingUiMode);
+        if (m_tabsLayout == VerifyAccountTabsLayout) {
+            setUiMode(VerifyAccountConnectingUiMode);
+        } else {
+            setUiMode(ChangeAccountConnectingUiMode);
+        }
 
         m_appFacade->verifyAccount(uiChatSelected(),
                                    ui->usernameText_v->text(),
@@ -1899,7 +1934,11 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 
 void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 {
-    setUiMode(VerifyAccountFailedUiMode);
+    if (m_tabsLayout == VerifyAccountTabsLayout) {
+        setUiMode(VerifyAccountFailedUiMode);
+    } else {
+        setUiMode(ChangeAccountFailedUiMode);
+    }
 
     QString title;
     QString msg;
@@ -2103,5 +2142,6 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
 
     m_appFacade->setNlpEngineOptions(options);
 }
+
 
 
