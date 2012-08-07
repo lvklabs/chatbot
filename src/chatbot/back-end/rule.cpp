@@ -283,6 +283,7 @@ void Lvk::BE::Rule::clear()
     m_name.clear();
     m_input.clear();
     m_output.clear();
+    m_target.clear();
     m_childItems.clear();
     m_status = Unsaved;
     m_checkState = Qt::Unchecked;
