@@ -641,27 +641,32 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Seleccioná una categoría para agregar la nueva regla:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1941"/>
+        <location filename="../front-end/mainwindow.cpp" line="1915"/>
+        <source>To connect you need to provide your Facebook username instead of your email.&lt;br/&gt;&lt;br/&gt;You don&apos;t have or remember your username? &lt;a href=&quot;http://www.facebook.com/username&quot;&gt;Click here&lt;/a&gt;</source>
+        <translation>Para conectar tu chatbot necesitás ingresar tu usuario de Facebook que es diferente a tu correo electrónico.&lt;br/&gt;&lt;br/&gt;¿Necesitás ayuda? ¿No tenés o no te acordás tu usuario? &lt;a href=&quot;http://www.facebook.com/username&quot;&gt;Click aquí&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="1958"/>
         <source>Account verified</source>
         <translation>Cuenta verificada</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1941"/>
+        <location filename="../front-end/mainwindow.cpp" line="1958"/>
         <source>Account verified!</source>
         <translation>¡Cuenta verificada!</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1959"/>
+        <location filename="../front-end/mainwindow.cpp" line="1976"/>
         <source>Account error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1960"/>
+        <location filename="../front-end/mainwindow.cpp" line="1977"/>
         <source>The account could not be verified. Please check your username and password and internet connection.</source>
         <translation>La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1964"/>
+        <location filename="../front-end/mainwindow.cpp" line="1981"/>
         <source>The account could not be verified. Your system does not support secure connections.</source>
         <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras.</translation>
     </message>
@@ -670,7 +675,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1963"/>
+        <location filename="../front-end/mainwindow.cpp" line="1980"/>
         <source>SSL error</source>
         <translation>Error SSL</translation>
     </message>
@@ -679,12 +684,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1986"/>
+        <location filename="../front-end/mainwindow.cpp" line="2003"/>
         <source>Change Account</source>
         <translation>Cambiar cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1987"/>
+        <location filename="../front-end/mainwindow.cpp" line="2004"/>
         <source>If you change your account some rules might not work anymore.
 Are you sure you want to change your account?</source>
         <translation>Si cambias tu cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro de que deseas cambiar tu cuenta?</translation>
@@ -759,12 +764,13 @@ Do you want to teach the changes made to the rule?</source>
         <translation type="obsolete">La regla ha cambiado. Desea enseñar los cambios realizados?</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1913"/>
+        <location filename="../front-end/mainwindow.cpp" line="1910"/>
+        <location filename="../front-end/mainwindow.cpp" line="1914"/>
         <source>Invalid username</source>
         <translation>Nombre de usuario inválido</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1913"/>
+        <location filename="../front-end/mainwindow.cpp" line="1911"/>
         <source>Please provide a username</source>
         <translation>Por favor ingrese un nombre de usuario</translation>
     </message>
@@ -795,12 +801,12 @@ Do you want to teach the changes made to the rule?</source>
         <translation type="obsolete">Todas las categorías</translation>
     </message>
     <message>
-        <location filename="../front-end/portdialog.cpp" line="132"/>
+        <location filename="../front-end/portdialog.cpp" line="87"/>
         <source>(All)</source>
         <translation>(Todo)</translation>
     </message>
     <message>
-        <location filename="../front-end/portdialog.cpp" line="229"/>
+        <location filename="../front-end/portdialog.cpp" line="184"/>
         <source>Please select at least one rule</source>
         <translation>Por favor seleccione al menos una regla</translation>
     </message>
@@ -1322,20 +1328,17 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Las reglas no pueden contener dos o más nombres de variables diferentes</translation>
     </message>
     <message>
-        <location filename="../front-end/portdialog.cpp" line="53"/>
-        <location filename="../front-end/ruletextview.cpp" line="55"/>
+        <location filename="../front-end/ruletextview.cpp" line="87"/>
         <source>&lt;b&gt;If user writes:&lt;/b&gt;&lt;br/&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Chatbot replies:&lt;/b&gt;&lt;br/&gt;%2</source>
         <translation>&lt;b&gt;Si el usuario escribe:&lt;/b&gt;&lt;br/&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Chatbot responde:&lt;/b&gt;&lt;br/&gt;%2</translation>
     </message>
     <message>
-        <location filename="../front-end/portdialog.cpp" line="58"/>
-        <location filename="../front-end/ruletextview.cpp" line="60"/>
+        <location filename="../front-end/ruletextview.cpp" line="92"/>
         <source>&lt;b&gt;Category:&lt;/b&gt;&lt;br/&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Rules:&lt;/b&gt;&lt;br/&gt;%2</source>
         <translation>&lt;b&gt;Categoría:&lt;/b&gt;&lt;br/&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Reglas:&lt;/b&gt;&lt;br/&gt;%2</translation>
     </message>
     <message>
-        <location filename="../front-end/portdialog.cpp" line="63"/>
-        <location filename="../front-end/ruletextview.cpp" line="65"/>
+        <location filename="../front-end/ruletextview.cpp" line="97"/>
         <source>&lt;b&gt;If Chatbot does not understand:&lt;/b&gt;&lt;br/&gt;%1</source>
         <translation>&lt;b&gt;Si el Chatbot no entiende:&lt;/b&gt;&lt;br/&gt;%1</translation>
     </message>
@@ -1430,7 +1433,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">&amp;Importar</translation>
     </message>
     <message>
-        <location filename="../front-end/ruletextview.cpp" line="68"/>
+        <location filename="../front-end/ruletextview.cpp" line="100"/>
         <source>&lt;Unknown Rule Type&gt;</source>
         <translation>&lt;Tipo de regla desconocida&gt;</translation>
     </message>

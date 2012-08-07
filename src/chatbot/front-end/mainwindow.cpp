@@ -1900,18 +1900,34 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 
 void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
 {
-    if (!ui->usernameText_v->text().isEmpty()) {
+    QString title;
+    QString errMsg;
+
+    QString username = ui->usernameText_v->text();
+    QString password = ui->passwordText_v->text();
+
+    if (username.isEmpty()) {
+        title = tr("Invalid username");
+        errMsg = tr("Please provide a username");
+    } else if (uiChatSelected() == BE::AppFacade::FbChat && username.contains("@") &&
+               !username.contains("@facebook.com")) {
+        title = tr("Invalid username");
+        errMsg = tr("To connect you need to provide your Facebook username instead of your "
+                    "email.<br/><br/>You don't have or remember your username? "
+                    "<a href=\"http://www.facebook.com/username\">Click here</a>");
+    }
+
+    if (errMsg.isEmpty()) {
         if (m_tabsLayout == VerifyAccountTabsLayout) {
             setUiMode(VerifyAccountConnectingUiMode);
         } else {
             setUiMode(ChangeAccountConnectingUiMode);
         }
 
-        m_appFacade->verifyAccount(uiChatSelected(),
-                                   ui->usernameText_v->text(),
-                                   ui->passwordText_v->text());
+        m_appFacade->verifyAccount(uiChatSelected(), username, password);
+
     } else {
-        QMessageBox::information(this, tr("Invalid username"), tr("Please provide a username"));
+        QMessageBox::information(this, title, errMsg);
 
         ui->usernameText_v->setFocus();
     }
