@@ -25,51 +25,6 @@
 #include <QMessageBox>
 
 //--------------------------------------------------------------------------------------------------
-// Helpers
-//--------------------------------------------------------------------------------------------------
-//
-// Helpers to get a string representation of rules
-
-namespace
-{
-
-QString rulesOfCategoryToString(const Lvk::BE::Rule *rule)
-{
-    QString str;
-    foreach (Lvk::BE::Rule *r, rule->children()) {
-        if (!r->input().isEmpty()) {
-            if (!str.isEmpty()) {
-                str.append("<br/>");
-            }
-            str.append(r->input().first());
-        }
-    }
-    return str;
-}
-
-QString ruleToString(const Lvk::BE::Rule *rule)
-{
-    if (rule && rule->type() == Lvk::BE::Rule::OrdinaryRule) {
-        return QString(QObject::tr("<b>If user writes:</b><br/>%1<br/><br/>"
-                                   "<b>Chatbot replies:</b><br/>%2"))
-                .arg(rule->input().join("<br/>"))
-                .arg(rule->output().join("<br/>"));
-    } else if (rule && rule->type() == Lvk::BE::Rule::ContainerRule) {
-        return QString(QObject::tr("<b>Category:</b><br/>%1<br/><br/>"
-                                   "<b>Rules:</b><br/>%2"))
-                .arg(rule->name())
-                .arg(rulesOfCategoryToString(rule));
-    } else if (rule && rule->type() == Lvk::BE::Rule::EvasiveRule) {
-        return QString(QObject::tr("<b>If Chatbot does not understand:</b><br/>%1"))
-                .arg(rule->output().join("<br/>"));
-    } else {
-        return "";
-    }
-}
-
-} // namespace
-
-//--------------------------------------------------------------------------------------------------
 // PortDialog
 //--------------------------------------------------------------------------------------------------
 
@@ -205,7 +160,7 @@ void Lvk::FE::PortDialog::onRuleSelectionChanged(const QItemSelection &selected,
         const BE::Rule *rule =
                 static_cast<const BE::Rule *>(selected.indexes().first().internalPointer());
 
-        ui->rulePreview->setText(rule != m_secondRoot ? ruleToString(rule) : "");
+        ui->rulePreview->setRule(rule != m_secondRoot ? rule : 0);
     }
 }
 

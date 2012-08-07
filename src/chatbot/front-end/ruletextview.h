@@ -65,6 +65,11 @@ public:
     void setRule(const BE::Rule *rule);
 
     /**
+     * Displays \a rule in the widget and highlights \a n-th input (starting from zero)
+     */
+    void setRule(const BE::Rule *rule, int n);
+
+    /**
      * Returns the ID of the rule being displayed. Returns 0 if there is no rule.
      */
     quint64 ruleId();

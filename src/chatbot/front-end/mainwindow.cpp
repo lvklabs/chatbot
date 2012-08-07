@@ -1868,12 +1868,13 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
     ui->ruleOutputWidget->clearHighlight();
 
     const BE::Rule *rule = 0;
+    int inputNumber = -1;
 
     if (!matches.empty()) {
         // Assuming only one match
 
         quint64 ruleId = matches.first().first;
-        //int inputNumber = matches.first().second;
+        inputNumber = matches.first().second;
 
         rule = findRule(ruleId);
 
@@ -1890,7 +1891,7 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
     }
 
     ui->ruleViewGroupBox->setVisible(true);
-    ui->ruleView->setRule(rule);
+    ui->ruleView->setRule(rule, inputNumber);
 }
 
 //--------------------------------------------------------------------------------------------------
