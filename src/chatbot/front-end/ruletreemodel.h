@@ -219,7 +219,13 @@ public:
 
     void notifyDataChanged();  // FIXME refactor to remove this!
 
+protected:
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+                      const QModelIndex & parent);
+
 private:
+
     RuleTreeModel(RuleTreeModel&);
     RuleTreeModel& operator=(RuleTreeModel&);
 

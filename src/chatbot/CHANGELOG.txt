@@ -3,7 +3,6 @@ v0.14
  - Removing duplicated characters to improve matching.
  - Added "advanced options" tab where user can enable/disable sentence lemmatization
    and other options.
- - Implemented drag & drop of rules
  - Added filter in chat history
  - Added tool button to remove chat history conversations 
  - Added tool button to find the definition of a rule with match on the the chat

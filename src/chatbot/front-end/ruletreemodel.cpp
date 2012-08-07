@@ -23,6 +23,9 @@
 #include "back-end/rule.h"
 
 #include <QIcon>
+#include <QMimeData>
+#include <QDataStream>
+#include <QtDebug>
 
 
 //--------------------------------------------------------------------------------------------------
@@ -496,5 +499,13 @@ void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
         QModelIndex index = indexFromItem(item);
         emit dataChanged(index, index);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData */*data*/, Qt::DropAction /*action*/,
+                                          int /*row*/, int /*column*/, const QModelIndex&/*parent*/)
+{
+    return false;
 }
 
