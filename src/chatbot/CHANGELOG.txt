@@ -1,3 +1,7 @@
+v0.15
+ - Logging simple stats: total words, total different words and connection
+ - Updated some strings
+
 v0.14
  - Integrated Freeling
  - Removing duplicated characters to improve matching.
