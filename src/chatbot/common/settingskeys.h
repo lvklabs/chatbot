@@ -28,6 +28,7 @@
 #define SETTING_LOGS_PATH                           "Files/LogsPath"
 #define SETTING_DATA_PATH                           "Files/DataPath"
 #define SETTING_LANG_PATH                           "Files/LangPath"
+#define SETTING_STATS_PATH                          "Files/StatsPath"
 
 #define SETTING_MAIN_WINDOW_SIZE                    "MainWindow/Size"
 #define SETTING_MAIN_WINDOW_POS                     "MainWindow/Position"

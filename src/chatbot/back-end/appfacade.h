@@ -390,6 +390,7 @@ private:
     void deleteCurrentChatbot();
     void refreshEvasivesToChatbot();
     void connectChatClientSignals();
+    void updateStats();
 };
 
 /// @}

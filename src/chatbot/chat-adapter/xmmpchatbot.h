@@ -185,6 +185,8 @@ private:
     ContactInfoList m_blackListRoster;
     QSet<QString> m_blackListSet;
 
+    uint m_connStartTime;
+
     void setupLogger();
     void connectSignals();
 
@@ -198,6 +200,8 @@ private:
     Error convertToLocalError(QXmppClient::Error err);
 
     void rebuildLocalRoster() const;
+
+    void updateConnectionStats();
 };
 
 /// @}

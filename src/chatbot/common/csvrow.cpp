@@ -95,6 +95,15 @@ Lvk::Cmn::CsvRow::CsvRow()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::Cmn::CsvRow::CsvRow(unsigned size)
+{
+    for (unsigned i = 0; i < size; ++i) {
+        m_cells.append(QString());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::Cmn::CsvRow::CsvRow(const QStringList &cells)
 {
     foreach (const QString &cell, cells) {
@@ -178,6 +187,13 @@ void Lvk::Cmn::CsvRow::append(const QString &cell)
 //--------------------------------------------------------------------------------------------------
 
 const QString & Lvk::Cmn::CsvRow::operator[](int n) const
+{
+    return m_cells[n];
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString & Lvk::Cmn::CsvRow::operator[](int n)
 {
     return m_cells[n];
 }

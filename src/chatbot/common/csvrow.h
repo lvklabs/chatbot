@@ -58,6 +58,11 @@ public:
     CsvRow();
 
     /**
+     * Constructs a CSV row with the given \a size
+     */
+    CsvRow(unsigned size);
+
+    /**
      * Constructs a CSV row with the given \a cells
      */
     CsvRow(const QStringList &cells);
@@ -83,9 +88,14 @@ public:
     int size() const;
 
     /**
-     * Returns the cell at position \a n
+     * Returns a const reference to the cell at position \a n
      */
-    const QString &operator[](int n) const ;
+    const QString &operator[](int n) const;
+
+    /**
+     * Returns a reference to the cell at position \a n
+     */
+    QString &operator[](int n);
 
     /**
      * Removes all cells

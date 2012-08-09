@@ -24,6 +24,7 @@
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
+#include "stats/statsmanager.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -38,6 +39,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QSslSocket>
+#include <QDateTime>
+
 #include <iostream>
 
 //--------------------------------------------------------------------------------------------------
@@ -76,6 +79,11 @@ Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
 
 Lvk::CA::XmppChatbot::~XmppChatbot()
 {
+    if (m_isConnected) {
+        updateConnectionStats();
+        m_isConnected = false;
+    }
+
     delete m_virtualUserMutex;
     delete m_rosterMutex;
     delete m_contactInfoMutex;
@@ -322,6 +330,8 @@ void Lvk::CA::XmppChatbot::onConnected()
 {
     m_isConnected = true;
 
+    m_connStartTime = QDateTime::currentDateTime().toTime_t();
+
     requestVCard(""); // own vcard
 }
 
@@ -330,6 +340,8 @@ void Lvk::CA::XmppChatbot::onConnected()
 void Lvk::CA::XmppChatbot::onDisconnected()
 {
     if (m_isConnected) {
+        updateConnectionStats();
+
         emit disconnected();
     } else {
         // QXmpp emits disconnected if TLS handshake can't be done, instead we emit
@@ -381,4 +393,12 @@ void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
     foreach (const QString &jid, m_xmppClient->rosterManager().getRosterBareJids()) {
         m_roster.append(getContactInfo(jid));
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::updateConnectionStats()
+{
+    uint duration = QDateTime::currentDateTime().toTime_t() - m_connStartTime;
+    Stats::StatsManager::manager()->addConnectionTime(duration);
 }
