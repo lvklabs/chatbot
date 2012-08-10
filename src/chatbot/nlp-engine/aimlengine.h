@@ -23,7 +23,11 @@
 #define LVK_NLP_AIMLENGINE_H
 
 #include "nlp-engine/engine.h"
+#include "ProgramQ/aimlparser.h"
 
+#include <QHash>
+#include <QString>
+#include <QSharedPointer>
 #include <memory>
 
 class AIMLParser;
@@ -171,12 +175,14 @@ private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);
 
+    typedef QHash<QString, QSharedPointer<AIMLParser> > ParsersMap;
+
     RuleList m_rules;
     std::auto_ptr<Sanitizer>  m_preSanitizer;
     std::auto_ptr<Sanitizer>  m_postSanitizer;
     std::auto_ptr<Lemmatizer> m_lemmatizer;
     std::auto_ptr<QFile>      m_logFile;
-    std::auto_ptr<AIMLParser> m_aimlParser;
+    ParsersMap                m_parsers;
     QMutex *m_mutex;
     bool m_dirty;
 
@@ -186,7 +192,7 @@ private:
                                        MatchList &matches, bool norm);
 
     void refreshAiml();
-    void buildAiml(QString &aiml);
+    void buildAiml(QString &aiml, const QString &target);
     void buildAiml(QString &aiml, const Rule &rule);
     void normalize(QString &input);
     void normalize(QStringList &inputList);

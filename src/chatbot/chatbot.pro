@@ -71,6 +71,7 @@ INCLUDEPATH += \
     $$QXMPP_INCLUDE_PATH
 
 HEADERS += \
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     front-end/mainwindow.h \
     front-end/ruletreemodel.h \
     front-end/ruleoutputwidget.h \
@@ -83,6 +84,7 @@ HEADERS += \
     front-end/autocompletetextedit.h \
     front-end/chathistorywidget.h \
     front-end/linefilteredit.h \
+    front-end/ruletextview.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/defaultvirtualuser.h \
@@ -118,14 +120,13 @@ HEADERS += \
     common/csvrow.h \
     common/globalstrings.h \
     common/logger.h \
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    front-end/ruletextview.h \
     stats/statsmanager.h \
     stats/statsfile.h \
     stats/csvstatsfile.h
 
 
 SOURCES += \
+    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
@@ -139,6 +140,7 @@ SOURCES += \
     front-end/autocompletetextedit.cpp \
     front-end/chathistorywidget.cpp \
     front-end/linefilteredit.cpp \
+    front-end/ruletextview.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -161,8 +163,6 @@ SOURCES += \
     common/csvdocument.cpp \
     common/csvrow.cpp \
     common/logger.cpp \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
-    front-end/ruletextview.cpp \
     stats/statsmanager.cpp \
     stats/csvstatsfile.cpp
 

@@ -1,3 +1,6 @@
+v0.16
+ - Fixed bug #20
+
 v0.15
  - Logging simple stats: total words, total different words and connection
  - Updated some strings

@@ -27,8 +27,6 @@
 #include "common/settingskeys.h"
 #include "common/logger.h"
 
-#include "ProgramQ/aimlparser.h"
-
 #include <QStringList>
 #include <QFile>
 #include <QDir>
@@ -37,7 +35,7 @@
 #include <QtDebug>
 #include <cassert>
 
-#define ANY_USER        "LvkNlpAimlEngineAnyUser"
+#define ANY_USER    ""
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -77,19 +75,24 @@ inline int getInputNumber(long categoryId)
 
 //--------------------------------------------------------------------------------------------------
 
-// AIML does not support our concept of "target", i.e. rules that are defined only
-// for a user or group of users. In order achieve that, for each target we are enconding the
-// target as a new word with form "TSTART" + Sanitized(target) + "TEND". Then we prepend this
-// new word to input of the rule
-
-QString inputWithTarget(const QString &input, const QString &target)
+// convert IDs returned by AIMLParser to Nlp::Engine::MatchList
+inline void convert(Lvk::Nlp::Engine::MatchList &matches, const QList<long> &categoriesId)
 {
-    if (target != ANY_USER) {
-        return "TSTART" + QString(target).replace(QRegExp("[^a-zA-Z0-9]"),"X") + "TEND "
-                + input;
-    } else {
-        return input;
+    matches.clear();
+
+    if (categoriesId.size() > 0) {
+        long catId = categoriesId.last();
+        matches.append(QPair<Lvk::Nlp::RuleId, int>(getRuleId(catId), getInputNumber(catId)));
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+// "std::make_ptr"-like function to construct QSharedPointers
+template<class T>
+inline QSharedPointer<T> makeSharedPtr(T *p)
+{
+    return QSharedPointer<T>(p);
 }
 
 } // namespace
@@ -103,13 +106,10 @@ Lvk::Nlp::AimlEngine::AimlEngine()
       m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
-      m_aimlParser(0),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
-
-    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -119,13 +119,10 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
       m_postSanitizer(new Nlp::NullSanitizer()),
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
-      m_aimlParser(0),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
-
-    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -136,13 +133,10 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer
       m_postSanitizer(postSanitizer),
       m_lemmatizer(lemmatizer),
       m_logFile(new QFile()),
-      m_aimlParser(0),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false)
 {
     initLog();
-
-    m_aimlParser.reset(new AIMLParser(m_logFile.get()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -230,11 +224,7 @@ QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchLis
 QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
                                                   MatchList &matches)
 {
-    if (target.isEmpty()) {
-        return getAllResponses(input, ANY_USER, matches, true);
-    } else {
-        return getAllResponses(input, target, matches, true);
-    }
+    return getAllResponses(input, target, matches, true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -260,16 +250,19 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
         normalize(normInput);
     }
 
+    QString response;
     QList<long> categoriesId;
-    QString response = m_aimlParser->getResponse(inputWithTarget(normInput, target), categoriesId);
+
+    ParsersMap::iterator it = m_parsers.find(target);
+    if (it != m_parsers.end()) {
+        response = (*it)->getResponse(normInput, categoriesId);
+    }
 
     QStringList responses;
 
     if (response != "Internal Error!" && categoriesId.size() > 0) { // FIXME harcoded string
         responses.append(response);
-
-        long catId = categoriesId.last();
-        matches.append(QPair<RuleId, int>(getRuleId(catId), getInputNumber(catId)));
+        convert(matches, categoriesId);
     } else if (target != ANY_USER) {
         // No response found with the given target, fallback to rules with any user:
         return getAllResponses(normInput, ANY_USER, matches, false);
@@ -285,21 +278,40 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
 void Lvk::Nlp::AimlEngine::refreshAiml()
 {
     QString aiml;
-    buildAiml(aiml);
 
-    m_aimlParser.reset(new AIMLParser(m_logFile.get())); // Bug in AIMLParser, needs new object
-    m_aimlParser->loadAimlFromString(aiml);
+    m_parsers.clear();
+
+    // Initialize AIML parser for rules without targets
+
+    buildAiml(aiml, ANY_USER);
+    m_parsers[ANY_USER] = makeSharedPtr(new AIMLParser(aiml, m_logFile.get()));
+
+    // Initialize AIML parser for each different target
+
+    foreach (const Nlp::Rule &rule, m_rules) {
+        foreach (const QString &target, rule.target()) {
+            if (!m_parsers.contains(target)) {
+                buildAiml(aiml, target);
+                m_parsers[target] = makeSharedPtr(new AIMLParser(aiml, m_logFile.get()));
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml)
+void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const QString &target)
 {
     aiml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
     aiml += "<aiml>";
 
+    // Build AIML for rules that match the given target
+
     for (int i = 0; i < m_rules.size(); ++i) {
-        buildAiml(aiml, m_rules[i]);
+        const QStringList &targetList = m_rules[i].target();
+        if ((target == ANY_USER && targetList.isEmpty()) || targetList.contains(target)) {
+            buildAiml(aiml, m_rules[i]);
+        }
     }
 
     aiml += "</aiml>";
@@ -314,34 +326,26 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 
     normalize(input);
 
-    for (int j = 0; j < input.size(); ++j) {
-        QStringList target = rule.target();
+    for (int i = 0; i < input.size(); ++i) {
+        // id is not part of AIML standar. It's an LVK extension to know which
+        // rule has matched
+        QString categoryId = QString::number(getCategoryId(rule.id(), i));
 
-        if (target.isEmpty()) {
-            target.append(ANY_USER);
-        }
+        aiml += "<category>";
+        aiml += "<id>" + categoryId + "</id>";
+        aiml += "<pattern>" + input[i] + "</pattern>";
 
-        for (int k = 0; k < target.size(); ++k) {
-            // id is not part of AIML standar. It's an LVK extension to know which
-            // rule has matched
-            QString categoryId = QString::number(getCategoryId(rule.id(), j));
-
-            aiml += "<category>";
-            aiml += "<id>" + categoryId + "</id>";
-            aiml += "<pattern>" + inputWithTarget(input[j], target[k]) + "</pattern>";
-
-            if (output.size() == 1) {
-                aiml += "<template>" + output[0] + "</template>";
-            } else if (output.size() > 1) {
-                aiml += "<template><random>";
-                for (int k = 0; k < output.size(); ++k) {
-                    aiml += "<li>" + output[k] + "</li>";
-                }
-                aiml += "</random></template>";
+        if (output.size() == 1) {
+            aiml += "<template>" + output[0] + "</template>";
+        } else if (output.size() > 1) {
+            aiml += "<template><random>";
+            for (int j = 0; j < output.size(); ++j) {
+                aiml += "<li>" + output[j] + "</li>";
             }
-
-            aiml += "</category>";
+            aiml += "</random></template>";
         }
+
+        aiml += "</category>";
     }
 }
 
