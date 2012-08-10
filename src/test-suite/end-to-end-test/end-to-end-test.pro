@@ -54,16 +54,16 @@ HEADERS += \
     ../../chatbot/front-end/rosterwidget.h \
     ../../chatbot/front-end/autocompletetextedit.h \
     ../../chatbot/front-end/linefilteredit.h \
+    ../../chatbot/front-end/ruletextview.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/defaultvirtualuser.h \
     ../../chatbot/back-end/conversation.h \
     ../../chatbot/back-end/conversationwriter.h \
     ../../chatbot/back-end/conversationreader.h \
-    ../../chatbot/back-end/contactinfo.h \
     ../../chatbot/back-end/chatbotrulesfile.h \
-    ../../chatbot/nlp-engine/nlpengine.h \
-    ../../chatbot/nlp-engine/nlprule.h \
+    ../../chatbot/nlp-engine/engine.h \
+    ../../chatbot/nlp-engine/rule.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/simpleaimlengine.h \
@@ -80,6 +80,8 @@ HEADERS += \
     ../../chatbot/common/csvdocument.h \
     ../../chatbot/common/csvrow.h \
     ../../chatbot/common/logger.h \
+    ../../chatbot/stats/statsmanager.h \
+    ../../chatbot/stats/csvstatsfile.h \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     testxmppclient.h \
     testmainwindow.h \
@@ -99,6 +101,7 @@ SOURCES += \
     ../../chatbot/front-end/rosterwidget.cpp \
     ../../chatbot/front-end/autocompletetextedit.cpp \
     ../../chatbot/front-end/linefilteredit.cpp \
+    ../../chatbot/front-end/ruletextview.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/defaultvirtualuser.cpp \
@@ -120,6 +123,8 @@ SOURCES += \
     ../../chatbot/common/csvdocument.cpp \
     ../../chatbot/common/csvrow.cpp \
     ../../chatbot/common/logger.cpp \
+    ../../chatbot/stats/statsmanager.cpp \
+    ../../chatbot/stats/csvstatsfile.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp
