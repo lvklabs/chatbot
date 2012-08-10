@@ -29,6 +29,8 @@
 
 #define STR_DATE_FORMAT   "yyyy-MM-dd"
 
+
+// Required for QHash<QDate>
 inline uint qHash(const QDate &d)
 {
     if (d.isNull()) {
@@ -38,10 +40,15 @@ inline uint qHash(const QDate &d)
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
 namespace
 {
 
-enum Columns {
+enum Columns
+{
     DateCol,
     LexixonSizeCol,
     TotalWordsCol,
@@ -49,7 +56,20 @@ enum Columns {
     TotalColums = 50    // Reserving lot of columns for future usage
 };
 
+inline Lvk::Cmn::CsvRow getColNames()
+{
+    Lvk::Cmn::CsvRow row(TotalColums);
+
+    row[DateCol]            = "Date";
+    row[LexixonSizeCol]     = "Lexixon Size";
+    row[TotalWordsCol]      = "Total Words";
+    row[ConnectionTimeCol]  = "Connection Time (secs)";
+
+    return row;
+}
+
 } // namespace
+
 
 //--------------------------------------------------------------------------------------------------
 // CsvStatsFile
@@ -157,6 +177,9 @@ void Lvk::Stats::CsvStatsFile::save()
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
+        file.write(getColNames().toString().toUtf8());
+        file.write("\n");
+
         DailyStats::const_iterator it;
         for (it = m_dailyStats.constBegin(); it != m_dailyStats.constEnd(); ++it) {
             const Cmn::CsvRow &row = *it;
