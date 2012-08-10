@@ -79,7 +79,12 @@ class AIMLParser
 
 public:
   AIMLParser(QIODevice *logDevice);
+
+  // lvk extension: construct and load aiml from string
+  AIMLParser(const QString &xml, QIODevice *logDevice);
+
   virtual ~AIMLParser();
+
   bool loadAiml(const QString&);
 
   // lvk extension: load aiml from string

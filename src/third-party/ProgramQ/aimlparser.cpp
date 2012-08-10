@@ -215,6 +215,21 @@ AIMLParser::AIMLParser(QIODevice *logDevice)
     // end lvk
 }
 
+// start lvk
+AIMLParser::AIMLParser(const QString &xml, QIODevice *logDevice)
+{
+    _indent = 0;
+    _root.parent = NULL;
+    QTime currentTime = QTime::currentTime();
+    int val = currentTime.msec() + currentTime.second() + currentTime.minute();
+    srand(val);
+
+    _logStream.setDevice(logDevice);
+
+    loadAimlFromString(xml);
+}
+// end lvk
+
 AIMLParser::~AIMLParser()
 {}
 
