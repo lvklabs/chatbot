@@ -103,6 +103,11 @@ public:
     void setHistoryLexiconSize(unsigned size);
 
     /**
+     * \copydoc StatsFile::setHistoryContacts()
+     */
+    void setHistoryContacts(unsigned count);
+
+    /**
      * \copydoc StatsFile::setRosterSize()
      */
     void setRosterSize(unsigned size);

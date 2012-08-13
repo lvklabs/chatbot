@@ -91,6 +91,11 @@ public:
     virtual void setHistoryLexiconSize(unsigned size) = 0;
 
     /**
+     * Sets \a count as the amount of different contacts found in the history.
+     */
+    virtual void setHistoryContacts(unsigned count) = 0;
+
+    /**
      * Sets \a size as the roster size, i.e. the amounts of chat contacts.
      */
     virtual void setRosterSize(unsigned size) = 0;

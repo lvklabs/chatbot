@@ -104,12 +104,17 @@ public:
     virtual void setHistoryLexiconSize(unsigned size);
 
     /**
+     * \copydoc StatsFile::setHistoryContacts()
+     */
+    virtual void setHistoryContacts(unsigned count);
+
+    /**
      * \copydoc StatsFile::setRosterSize()
      */
     virtual void setRosterSize(unsigned size);
 
     /**
-     * \copydoc StatsFile:: setEnabledRosterSize()
+     * \copydoc StatsFile::setEnabledRosterSize()
      */
     virtual void setEnabledRosterSize(unsigned size);
 
@@ -134,6 +139,7 @@ private:
     QMutex *m_mutex;
     QString m_filename;
     DailyStats m_dailyStats;
+    Cmn::CsvRow m_colNames;
 
     inline void setStat(int col, unsigned value, bool cumulative = false);
     inline void setStat(int col, const QString &value, bool cumulative = false);

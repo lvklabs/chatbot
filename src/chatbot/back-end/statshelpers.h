@@ -230,6 +230,14 @@ public:
         count(conv);
     }
 
+    /**
+     * Returns how many different contacts contains the history.
+     */
+    unsigned contacts()
+    {
+        return m_contacts.size();
+    }
+
 protected:
 
     /**
@@ -248,9 +256,13 @@ protected:
      */
     void count(const Lvk::BE::Conversation::Entry &entry)
     {
+        m_contacts.insert(entry.from);
         StatsHelper::count(entry.msg);
         StatsHelper::count(entry.response);
     }
+
+private:
+    QSet<QString> m_contacts;
 };
 
 

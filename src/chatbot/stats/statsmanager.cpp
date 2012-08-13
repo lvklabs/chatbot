@@ -133,6 +133,13 @@ void Lvk::Stats::StatsManager::setHistoryLines(unsigned count)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Stats::StatsManager::setHistoryContacts(unsigned count)
+{
+    m_statsFile->setHistoryContacts(count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Stats::StatsManager::setRosterSize(unsigned size)
 {
     m_statsFile->setRosterSize(size);
@@ -158,5 +165,4 @@ void Lvk::Stats::StatsManager::setTotalRulePoints(unsigned points)
 {
     m_statsFile->setTotalRulePoints(points);
 }
-
 
