@@ -44,21 +44,73 @@ class StatsFile;
 /// @{
 
 /**
- * \brief StatsManager class 
+ * \brief The StatsManager class provides a singleton class used to log all statistics
+ *
+ * The StatsManager class defines a method for each statistic we are interested in. Method names
+ * starting with \a set store absolut values, whereas those starting with \a add store cumulative
+ * values.
+ *
+ * Statistics are stored per chatbot ID on a daily basis. Before starting to log statistics we must
+ * set the chatbot ID with setChatbotId().
  */
 class StatsManager
 {
 public:
 
+    /**
+     * Returns the singleton instance.
+     */
     static StatsManager *manager();
 
+    /**
+     * Sets the chatbot ID of the chabot that we are logging statistics.
+     */
     void setChatbotId(const QString &id);
 
+    /**
+     * \copydoc StatsFile::setLexiconSize()
+     */
     void setLexiconSize(unsigned size);
 
+    /**
+     * \copydoc StatsFile::setTotalWords()
+     */
     void setTotalWords(unsigned count);
 
+    /**
+     * \copydoc StatsFile::setTotalRules()
+     */
+    void setTotalRules(unsigned count);
+
+    /**
+     * \copydoc StatsFile::setTotalRulePoints()
+     */
+    void setTotalRulePoints(unsigned points);
+
+    /**
+     * \copydoc StatsFile::addConnectionTime()
+     */
     void addConnectionTime(unsigned secs);
+
+    /**
+     * \copydoc StatsFile::setHistoryLines()
+     */
+    void setHistoryLines(unsigned count);
+
+    /**
+     * \copydoc StatsFile::setHistoryLexiconSize()
+     */
+    void setHistoryLexiconSize(unsigned size);
+
+    /**
+     * \copydoc StatsFile::setRosterSize()
+     */
+    void setRosterSize(unsigned size);
+
+    /**
+     * \copydoc StatsFile:: setEnabledRosterSize()
+     */
+    void setEnabledRosterSize(unsigned size);
 
 private:
     StatsManager();

@@ -45,30 +45,87 @@ namespace Stats
 /// @{
 
 /**
- * \brief CsvStatsFile class 
+ * \brief The CsvStatsFile class provides an implementation of the StatsFile interface that
+ *        loads/saves statistics from/to CSV files.
  */
-
 class CsvStatsFile : public StatsFile
 {
 
 public:
 
+    /**
+     * Constructs an empty CsvStatsFile object.
+     */
     CsvStatsFile();
 
-    ~CsvStatsFile();
-
+    /**
+     * Constructs a CsvStatsFile object and loads statistics from \a filename.
+     */
     CsvStatsFile(const QString &filename);
 
+    /**
+     * Destroys the object.
+     */
+    ~CsvStatsFile();
+
+    /**
+     * \copydoc StatsFile::setLexiconSize()
+     */
     virtual void setLexiconSize(unsigned size);
 
+    /**
+     * \copydoc StatsFile::setTotalWords()
+     */
     virtual void setTotalWords(unsigned count);
 
+    /**
+     * \copydoc StatsFile::setTotalRules()
+     */
+    virtual void setTotalRules(unsigned count);
+
+    /**
+     * \copydoc StatsFile::setTotalRulePoints()
+     */
+    virtual void setTotalRulePoints(unsigned points);
+
+    /**
+     * \copydoc StatsFile::addConnectionTime()
+     */
     virtual void addConnectionTime(unsigned secs);
 
+    /**
+     * \copydoc StatsFile::setHistoryLines()
+     */
+    virtual void setHistoryLines(unsigned count);
+
+    /**
+     * \copydoc StatsFile::setHistoryLexiconSize()
+     */
+    virtual void setHistoryLexiconSize(unsigned size);
+
+    /**
+     * \copydoc StatsFile::setRosterSize()
+     */
+    virtual void setRosterSize(unsigned size);
+
+    /**
+     * \copydoc StatsFile:: setEnabledRosterSize()
+     */
+    virtual void setEnabledRosterSize(unsigned size);
+
+    /**
+     * \copydoc StatsFile::load()
+     */
     virtual void load(const QString &filename);
 
+    /**
+     * \copydoc StatsFile::save()
+     */
     virtual void save();
 
+    /**
+     * \copydoc StatsFile::close()
+     */
     virtual void close();
 
 private:

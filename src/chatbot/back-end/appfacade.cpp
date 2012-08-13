@@ -21,6 +21,7 @@
 
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
+#include "back-end/statshelpers.h"
 #include "nlp-engine/engine.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/exactmatchengine.h"
@@ -127,96 +128,6 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
     return infoList;
 }
 
-//--------------------------------------------------------------------------------------------------
-// StatsHelper
-//
-// TODO move this class to a new file
-
-class StatsHelper
-{
-
-public:
-
-    StatsHelper(const Lvk::BE::Rule *rule)
-        : m_c(0)
-    {
-        if (rule) {
-            m_c = rcount(rule);
-        }
-    }
-
-    unsigned totalWords()
-    {
-        return m_c;
-    }
-
-    unsigned lexiconSize()
-    {
-        return m_lexicon.size();
-    }
-
-private:
-
-    QSet<QString> m_lexicon;
-    unsigned m_c;
-    Lvk::BE::DefaultSanitizer m_sanitizer;
-
-    unsigned rcount(const Lvk::BE::Rule *rule)
-    {
-        unsigned c = 0;
-
-        Lvk::BE::Rule::const_iterator it;
-        for (it = rule->begin(); it != rule->end(); ++it) {
-            if ((*it)->type() != Lvk::BE::Rule::ContainerRule) {
-                c += count(*it);
-            }
-        }
-
-        return c;
-    }
-
-    unsigned count(const Lvk::BE::Rule *rule)
-    {
-        unsigned c = 0;
-
-        c += count(rule->input());
-        c += count(rule->output());
-
-        return c;
-    }
-
-    unsigned count(const QStringList &l)
-
-    {
-        unsigned c = 0;
-
-        foreach (const QString &s, l) {
-            c += count(s);
-        }
-
-        return c;
-    }
-
-    unsigned count(const QString &s)
-    {
-        QStringList words = s.split(QRegExp("\\s+"));
-
-        updateLexicon(words);
-
-        return words.size();
-    }
-
-    void updateLexicon(const QStringList &words)
-    {
-        foreach (const QString &w, words) {
-            QString szw = m_sanitizer.sanitize(w).toLower();
-            if (!szw.isEmpty()) {
-                m_lexicon.insert(szw);
-            }
-        }
-    }
-};
-
 } // namespace
 
 
@@ -286,7 +197,6 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
         Stats::StatsManager::manager()->setChatbotId(m_rulesFile.chatbotId());
 
         setNlpEngineOptions(m_rulesFile.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
-
         refreshNlpEngine();
     } else {
         close();
@@ -432,7 +342,7 @@ Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
 {
     if (!m_chatbot) {
-        setupChatbot(FbChat); // FIXME FbChat, harmless so far but very error-prone
+        setupChatbot();
     }
 
     return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
@@ -715,6 +625,13 @@ void Lvk::BE::AppFacade::disconnectFromChat()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::BE::AppFacade::setupChatbot()
+{
+    setupChatbot(chatType());
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::AppFacade::setupChatbot(ChatType type)
 {
     if (type != FbChat && type != GTalkChat) {
@@ -835,12 +752,29 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 
 void Lvk::BE::AppFacade::updateStats()
 {
-    qDebug() << "Updating rule stats...";
+    {
+        qDebug() << "Updating rule stats...";
+        RuleStatsHelper stats(rootRule());
+        Stats::StatsManager::manager()->setLexiconSize(stats.lexiconSize());
+        Stats::StatsManager::manager()->setTotalWords(stats.totalWords());
+        Stats::StatsManager::manager()->setTotalRules(stats.totalRules());
+        Stats::StatsManager::manager()->setTotalRulePoints(stats.totalRulePoints());
+    }
 
-    StatsHelper stats(m_rulesFile.rootRule());
+    {
+        qDebug() << "Updating history stats...";
+        HistoryStatsHelper stats(chatHistory());
+        Stats::StatsManager::manager()->setHistoryLexiconSize(stats.lexiconSize());
+        Stats::StatsManager::manager()->setHistoryLines(stats.lines());
+    }
 
-    Stats::StatsManager::manager()->setLexiconSize(stats.lexiconSize());
-    Stats::StatsManager::manager()->setTotalWords(stats.totalWords());
+    if (m_chatbot) {
+        qDebug() << "Updating Roster stats...";
+        unsigned total = m_chatbot->roster().size();
+        unsigned disabled = m_chatbot->blackListRoster().size();
+        Stats::StatsManager::manager()->setRosterSize(total);
+        Stats::StatsManager::manager()->setEnabledRosterSize(total - disabled);
+    }
 }
 
 

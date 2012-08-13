@@ -386,6 +386,7 @@ private:
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
     QStringList getEvasives() const;
+    void setupChatbot();
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
     void refreshEvasivesToChatbot();

@@ -31,6 +31,11 @@ to reply users.
 \brief The Chat Adapters module provides connection to chat servers such as GTalk and Facebook Chat.
 
 
+\defgroup Stats Statistics
+
+\brief The Statistics module provides usage statistics of the application.
+
+
 \defgroup Cmn Common
 
 \brief The Common module provides classes, macros, strings and other declarations that are common

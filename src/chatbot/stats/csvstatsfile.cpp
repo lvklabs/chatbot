@@ -52,7 +52,13 @@ enum Columns
     DateCol,
     LexixonSizeCol,
     TotalWordsCol,
+    TotalRulesCol,
+    TotalRulePointsCol,
     ConnectionTimeCol = 10,
+    RosterSizeCol,
+    EnabledRosterSizeCol,
+    HistoryLinesCol,
+    HistoryLexiconSizeCol,
     TotalColums = 50    // Reserving lot of columns for future usage
 };
 
@@ -60,10 +66,16 @@ inline Lvk::Cmn::CsvRow getColNames()
 {
     Lvk::Cmn::CsvRow row(TotalColums);
 
-    row[DateCol]            = "Date";
-    row[LexixonSizeCol]     = "Lexixon Size";
-    row[TotalWordsCol]      = "Total Words";
-    row[ConnectionTimeCol]  = "Connection Time (secs)";
+    row[DateCol]               = "Date";
+    row[LexixonSizeCol]        = "Lexixon Size";
+    row[TotalWordsCol]         = "Total Words";
+    row[TotalRulesCol]         = "Total Rules";
+    row[TotalRulePointsCol]    = "Total Rule Points";
+    row[ConnectionTimeCol]     = "Connection Time (secs)";
+    row[HistoryLinesCol]       = "History Lines";
+    row[HistoryLexiconSizeCol] = "History Lexicon Size";
+    row[RosterSizeCol]         = "Roster Size";
+    row[EnabledRosterSizeCol]  = "Enabled Roster";
 
     return row;
 }
@@ -99,7 +111,6 @@ Lvk::Stats::CsvStatsFile::CsvStatsFile(const QString &filename)
 void Lvk::Stats::CsvStatsFile::setLexiconSize(unsigned size)
 {
     qDebug() << "CsvStatsFile: Setting lexicon size:" << size;
-
     setStat(LexixonSizeCol, size);
 }
 
@@ -108,8 +119,23 @@ void Lvk::Stats::CsvStatsFile::setLexiconSize(unsigned size)
 void Lvk::Stats::CsvStatsFile::setTotalWords(unsigned count)
 {
     qDebug() << "CsvStatsFile: Setting total words:" << count;
-
     setStat(TotalWordsCol, count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setTotalRules(unsigned count)
+{
+    qDebug() << "CsvStatsFile: Setting total rules:" << count;
+    setStat(TotalRulesCol, count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setTotalRulePoints(unsigned points)
+{
+    qDebug() << "CsvStatsFile: Setting total rule points:" << points;
+    setStat(TotalRulePointsCol, points);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -117,8 +143,39 @@ void Lvk::Stats::CsvStatsFile::setTotalWords(unsigned count)
 void Lvk::Stats::CsvStatsFile::addConnectionTime(unsigned secs)
 {
     qDebug() << "CsvStatsFile: Adding connection time:" << secs;
-
     setStat(ConnectionTimeCol, secs, true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setRosterSize(unsigned size)
+{
+    qDebug() << "CsvStatsFile: Setting roster size:" << size;
+    setStat(RosterSizeCol, size);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setEnabledRosterSize(unsigned size)
+{
+    qDebug() << "CsvStatsFile: Setting enabled roster size:" << size;
+    setStat(EnabledRosterSizeCol, size);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setHistoryLines(unsigned count)
+{
+    qDebug() << "CsvStatsFile: Setting history lines:" << count;
+    setStat(HistoryLinesCol, count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setHistoryLexiconSize(unsigned size)
+{
+    qDebug() << "CsvStatsFile: Setting history lexicon size:" << size;
+    setStat(HistoryLexiconSizeCol, size);
 }
 
 //--------------------------------------------------------------------------------------------------

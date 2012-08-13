@@ -116,4 +116,47 @@ void Lvk::Stats::StatsManager::addConnectionTime(unsigned secs)
     m_statsFile->addConnectionTime(secs);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+
+void Lvk::Stats::StatsManager::setHistoryLexiconSize(unsigned size)
+{
+    m_statsFile->setHistoryLexiconSize(size);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setHistoryLines(unsigned count)
+{
+    m_statsFile->setHistoryLines(count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setRosterSize(unsigned size)
+{
+    m_statsFile->setRosterSize(size);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setEnabledRosterSize(unsigned size)
+{
+    m_statsFile->setEnabledRosterSize(size);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setTotalRules(unsigned count)
+{
+    m_statsFile->setTotalRules(count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setTotalRulePoints(unsigned points)
+{
+    m_statsFile->setTotalRulePoints(points);
+}
+
 
