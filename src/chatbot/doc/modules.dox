@@ -2,7 +2,7 @@
 
 \defgroup Lvk LVK Chatbot
 
-LVK Chatbot is made-up with following modules: \ref FE, \ref BE \ref Nlp, \ref CA, \ref Cmn
+LVK Chatbot is made-up with following modules: \ref FE, \ref BE \ref Nlp, \ref CA,\ref Stats \ref Cmn
 
 
 \defgroup FE Front-end
@@ -33,7 +33,8 @@ to reply users.
 
 \defgroup Stats Statistics
 
-\brief The Statistics module provides usage statistics of the application.
+\brief The Statistics module provides usage statistics of the application such as rules lexicon size,
+history lines, connection time, among many others.
 
 
 \defgroup Cmn Common
