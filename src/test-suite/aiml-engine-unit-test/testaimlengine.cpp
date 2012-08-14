@@ -71,6 +71,8 @@ private:
     Lvk::Nlp::AimlEngine *m_engine;
     Lvk::Nlp::AimlEngine *m_engineWithDefSanitizer;
 
+    void testMatch(void (TestAimlEngine::*setRulesMemb)());
+
     void setRules1();
     void setRules2();
     void setRules3();
@@ -292,6 +294,34 @@ void TestAimlEngine::testAimlParserRegression()
     }
 
     QCOMPARE(failed, 0);
+}
+//--------------------------------------------------------------------------------------------------
+
+
+void TestAimlEngine::testMatch(void (TestAimlEngine::*setRulesMemb)())
+{
+    QFETCH(QString, targetUser);
+    QFETCH(QString, userInput);
+    QFETCH(QString, expectedOutput);
+    QFETCH(int, ruleId);
+    QFETCH(int, ruleInputNumber);
+
+    (this->*setRulesMemb)();
+
+    Lvk::Nlp::Engine::MatchList matches;
+    QString output;
+
+    output = m_engine->getResponse(userInput, targetUser, matches);
+
+    if (!expectedOutput.isNull()) {
+        QCOMPARE(output, expectedOutput);
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
+        QCOMPARE(matches[0].second, ruleInputNumber);
+    } else {
+        QVERIFY(output.isEmpty());
+        QCOMPARE(matches.size(), 0);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -571,27 +601,7 @@ void TestAimlEngine::testMatchWithTarget_data()
 
 void TestAimlEngine::testMatchWithTarget()
 {
-    QFETCH(QString, targetUser);
-    QFETCH(QString, userInput);
-    QFETCH(QString, expectedOutput);
-    QFETCH(int, ruleId);
-    QFETCH(int, ruleInputNumber);
-
-    setRules4();
-
-    Lvk::Nlp::Engine::MatchList matches;
-
-    QString output = m_engine->getResponse(userInput, targetUser, matches);
-
-    if (!expectedOutput.isNull()) {
-        QCOMPARE(output, expectedOutput);
-        QCOMPARE(matches.size(), 1);
-        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
-        QCOMPARE(matches[0].second, ruleInputNumber);
-    } else {
-        QVERIFY(output.isEmpty());
-        QCOMPARE(matches.size(), 0);
-    }
+    testMatch(&TestAimlEngine::setRules4);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -673,27 +683,7 @@ void TestAimlEngine::testMatchPriority_data()
 
 void TestAimlEngine::testMatchPriority()
 {
-    QFETCH(QString, targetUser);
-    QFETCH(QString, userInput);
-    QFETCH(QString, expectedOutput);
-    QFETCH(int, ruleId);
-    QFETCH(int, ruleInputNumber);
-
-    setRules5();
-
-    Lvk::Nlp::Engine::MatchList matches;
-
-    QString output = m_engine->getResponse(userInput, targetUser, matches);
-
-    if (!expectedOutput.isNull()) {
-        QCOMPARE(output, expectedOutput);
-        QCOMPARE(matches.size(), 1);
-        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
-        QCOMPARE(matches[0].second, ruleInputNumber);
-    } else {
-        QVERIFY(output.isEmpty());
-        QCOMPARE(matches.size(), 0);
-    }
+    testMatch(&TestAimlEngine::setRules5);
 }
 
 //--------------------------------------------------------------------------------------------------
