@@ -89,7 +89,7 @@ QVALUELIST_CLASSNAME<QDomNode> elementsByTagName(QDomNode *node, const QString& 
     {
         QDomNode n = childNodes.item(i);
         if (n.parentNode() == *node)
-	        list.append(n);
+            list.append(n);
     }
     return list;
 }
@@ -125,31 +125,31 @@ bool Node::match(QStringList::const_iterator input, const QStringList &inputWord
       
     if ((word == "*") || (word == "_"))
     {
-	    ++input;
-	    for (;input != inputWords.end(); input++)
-	    {
-		    for (Node *child = childs.first(); child; child = childs.next())
-		    {
-		        if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
+        ++input;
+        for (;input != inputWords.end(); input++)
+        {
+            for (Node *child = childs.first(); child; child = childs.next())
+            {
+                if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
                             capturedTopicTexts, categoriesId, leaf))
-		            return true;
-		    }
-	    }
+                    return true;
+            }
+        }
     }
     else
     {
-            if (!word.isEmpty())
-	    {
-		   if (word != *input)        
-	          return false;
-	       ++input;
-	    }
-	    for (Node *child = childs.first(); child; child = childs.next())
-	    {
-	        if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
+        if (!word.isEmpty())
+        {
+            if (word != *input)
+                return false;
+           ++input;
+        }
+        for (Node *child = childs.first(); child; child = childs.next())
+        {
+            if (child->match(input, inputWords, currentThat, currentTopic, capturedThatTexts,
                     capturedTopicTexts, categoriesId, leaf))
-	            return true;
-	    }
+                return true;
+        }
     }
     if (input == inputWords.end())
     {
@@ -409,13 +409,13 @@ void AIMLParser::parseCategory(QDomNode* categoryNode)
                 Node *n = new Node;
                 n->word = *it;
                 n->parent = whereToInsert;
-		        int index = 0;
+                int index = 0;
                 if (*it == "*")
                    index = whereToInsert->childs.count();
                 else if ((*it != "_") && whereToInsert->childs.count() &&
                    (whereToInsert->childs.at(0)->word == "_"))
-		           index = 1;
-		        whereToInsert->childs.insert(index, n);
+                   index = 1;
+                whereToInsert->childs.insert(index, n);
                 whereToInsert = n;
             }
             break;
@@ -692,7 +692,7 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
 
         //strip whitespaces from the beggining and the end of result
         if (_visitedNodeList.contains(&leaf->tmplate))
-        	result += "ProgramQ: Infinite loop detected!";
+            result += "ProgramQ: Infinite loop detected!";
         else
         {
             _visitedNodeList.append(&leaf->tmplate);
@@ -711,12 +711,12 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
         QStringList inversedList;
         for (QStringList::Iterator it = thatSentencesList.begin(); it != thatSentencesList.end(); ++it)
         {
-	        //perform substitutions for that string
-                itOld = _subOld.begin();
-                itNew = _subNew.begin();
-                for (; itOld != _subOld.end(); ++itOld, ++itNew )
-	            tempResult.replace(*itOld, *itNew);
-        	normalizeString(*it);
+            //perform substitutions for that string
+            itOld = _subOld.begin();
+            itNew = _subNew.begin();
+            for (; itOld != _subOld.end(); ++itOld, ++itNew )
+                tempResult.replace(*itOld, *itNew);
+            normalizeString(*it);
             inversedList.prepend(*it);
         }
         _thatList.prepend(inversedList);
