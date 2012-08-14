@@ -99,6 +99,16 @@ public:
     virtual void setHistoryLines(unsigned count);
 
     /**
+     * \copydoc StatsFile::setHistoryChabotLines()
+     */
+    virtual void setHistoryChabotLines(unsigned count);
+
+    /**
+     * \copydoc StatsFile::setHistoryChabotDiffLines()
+     */
+    virtual void setHistoryChabotDiffLines(unsigned count);
+
+    /**
      * \copydoc StatsFile::setHistoryLexiconSize()
      */
     virtual void setHistoryLexiconSize(unsigned size);

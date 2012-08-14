@@ -133,6 +133,20 @@ void Lvk::Stats::StatsManager::setHistoryLines(unsigned count)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Stats::StatsManager::setHistoryChabotLines(unsigned count)
+{
+    m_statsFile->setHistoryChabotLines(count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setHistoryChabotDiffLines(unsigned count)
+{
+    m_statsFile->setHistoryChabotDiffLines(count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Stats::StatsManager::setHistoryContacts(unsigned count)
 {
     m_statsFile->setHistoryContacts(count);

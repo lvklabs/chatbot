@@ -766,6 +766,8 @@ void Lvk::BE::AppFacade::updateStats()
         HistoryStatsHelper stats(chatHistory());
         Stats::StatsManager::manager()->setHistoryLexiconSize(stats.lexiconSize());
         Stats::StatsManager::manager()->setHistoryLines(stats.lines());
+        Stats::StatsManager::manager()->setHistoryChabotLines(stats.chatbotLines());
+        Stats::StatsManager::manager()->setHistoryChabotDiffLines(stats.chatbotDiffLines());
         Stats::StatsManager::manager()->setHistoryContacts(stats.contacts());
     }
 

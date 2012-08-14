@@ -85,6 +85,17 @@ public:
     virtual void setHistoryLines(unsigned count) = 0;
 
     /**
+     * Sets \a count as the total amount of lines in the chat history produced by the chatbot.
+     */
+    virtual void setHistoryChabotLines(unsigned count) = 0;
+
+    /**
+     * Sets \a count as the total amount of different lines in the chat history produced by the
+     * chatbot.
+     */
+    virtual void setHistoryChabotDiffLines(unsigned count) = 0;
+
+    /**
      * Sets \a size as the history lexicon size, i.e. the total amount of different words used
      * in the chat history.
      */

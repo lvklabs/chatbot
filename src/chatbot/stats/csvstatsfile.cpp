@@ -57,7 +57,9 @@ enum Columns
     ConnectionTimeCol = 10,
     RosterSizeCol,
     EnabledRosterSizeCol,
-    HistoryLinesCol,
+    HistoryTotalLinesCol,
+    HistoryChatbotLinesCol,
+    HistoryChatbotDiffLinesCol,
     HistoryLexiconSizeCol,
     HistoryContactsCol,
     TotalColums = 50    // Reserving lot of columns for future usage
@@ -73,17 +75,19 @@ enum Columns
 Lvk::Stats::CsvStatsFile::CsvStatsFile()
     : m_mutex(new QMutex()), m_colNames(TotalColums)
 {
-    m_colNames[DateCol]               = "Date";
-    m_colNames[LexixonSizeCol]        = "Lexixon Size";
-    m_colNames[TotalWordsCol]         = "Total Words";
-    m_colNames[TotalRulesCol]         = "Total Rules";
-    m_colNames[TotalRulePointsCol]    = "Total Rule Points";
-    m_colNames[ConnectionTimeCol]     = "Connection Time (secs)";
-    m_colNames[HistoryLinesCol]       = "History Lines";
-    m_colNames[HistoryLexiconSizeCol] = "History Lexicon Size";
-    m_colNames[HistoryContactsCol]    = "History Contacts";
-    m_colNames[RosterSizeCol]         = "Roster Size";
-    m_colNames[EnabledRosterSizeCol]  = "Enabled Roster";
+    m_colNames[DateCol]                = "Date";
+    m_colNames[LexixonSizeCol]         = "Lexixon Size";
+    m_colNames[TotalWordsCol]          = "Total Words";
+    m_colNames[TotalRulesCol]          = "Total Rules";
+    m_colNames[TotalRulePointsCol]     = "Total Rule Points";
+    m_colNames[ConnectionTimeCol]      = "Connection Time (secs)";
+    m_colNames[HistoryTotalLinesCol]   = "History Total Lines";
+    m_colNames[HistoryChatbotLinesCol] = "History Chatbot Lines";
+    m_colNames[HistoryChatbotDiffLinesCol] = "History Chabot Different Lines";
+    m_colNames[HistoryLexiconSizeCol]  = "History Lexicon Size";
+    m_colNames[HistoryContactsCol]     = "History Contacts";
+    m_colNames[RosterSizeCol]          = "Roster Size";
+    m_colNames[EnabledRosterSizeCol]   = "Enabled Roster";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -153,7 +157,21 @@ void Lvk::Stats::CsvStatsFile::setEnabledRosterSize(unsigned size)
 
 void Lvk::Stats::CsvStatsFile::setHistoryLines(unsigned count)
 {
-    setStat(HistoryLinesCol, count);
+    setStat(HistoryTotalLinesCol, count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setHistoryChabotLines(unsigned count)
+{
+    setStat(HistoryChatbotLinesCol, count);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::setHistoryChabotDiffLines(unsigned count)
+{
+    setStat(HistoryChatbotDiffLinesCol, count);
 }
 
 //--------------------------------------------------------------------------------------------------

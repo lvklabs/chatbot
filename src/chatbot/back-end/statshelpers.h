@@ -226,8 +226,25 @@ public:
      * \a conv.
      */
     HistoryStatsHelper(const Lvk::BE::Conversation &conv)
+        : m_chatbotLinesTotal(0)
     {
         count(conv);
+    }
+
+    /**
+     * Returns the total amount of lines in history produced by the chatbot
+     */
+    unsigned chatbotLines()
+    {
+        return m_chatbotLinesTotal;
+    }
+
+    /**
+     * Returns the total amount of different lines in history produced by the chatbot
+     */
+    unsigned chatbotDiffLines()
+    {
+        return m_chatbotLines.size();
     }
 
     /**
@@ -256,13 +273,20 @@ protected:
      */
     void count(const Lvk::BE::Conversation::Entry &entry)
     {
-        m_contacts.insert(entry.from);
         StatsHelper::count(entry.msg);
         StatsHelper::count(entry.response);
+
+        if (!entry.response.isEmpty()) {
+            m_contacts.insert(entry.from);
+            m_chatbotLines.insert(entry.response);
+            ++m_chatbotLinesTotal;
+        }
     }
 
 private:
     QSet<QString> m_contacts;
+    QSet<QString> m_chatbotLines;
+    unsigned m_chatbotLinesTotal;
 };
 
 
