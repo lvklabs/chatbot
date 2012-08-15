@@ -1,6 +1,6 @@
 v0.16
  - Fixed bug #20
- - Added "score" stab
+ - Added "score" stab. Implemented simple algorithm for scoring chatbots.
  - Logging new stats such as history lines, history lexicon size, rule points,
    among others
 
