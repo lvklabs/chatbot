@@ -22,6 +22,9 @@
 #ifndef LVK_STATS_STATSMANAGER_H
 #define LVK_STATS_STATSMANAGER_H
 
+#include "stats/id.h"
+#include "stats/history.h"
+
 #include <QString>
 #include <memory>
 
@@ -68,64 +71,31 @@ public:
     void setChatbotId(const QString &id);
 
     /**
-     * \copydoc StatsFile::setLexiconSize()
+     * \copydoc StatsFile::setStat()
      */
-    void setLexiconSize(unsigned size);
+    void setStat(Stats::Id id, const QVariant &value);
 
     /**
-     * \copydoc StatsFile::setTotalWords()
+     * \copydoc StatsFile::stat()
      */
-    void setTotalWords(unsigned count);
+    void stat(Stats::Id id, QVariant &value);
 
     /**
-     * \copydoc StatsFile::setTotalRules()
+     * \copydoc StatsFile::history()
      */
-    void setTotalRules(unsigned count);
+    void history(Stats::Id id, Stats::History &history);
 
     /**
-     * \copydoc StatsFile::setTotalRulePoints()
+     * This is an overloaded member function defined for convenience
+     *
+     * \see stat(Id, QVariant &)
      */
-    void setTotalRulePoints(unsigned points);
-
-    /**
-     * \copydoc StatsFile::addConnectionTime()
-     */
-    void addConnectionTime(unsigned secs);
-
-    /**
-     * \copydoc StatsFile::setHistoryLines()
-     */
-    void setHistoryLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryChabotLines()
-     */
-    void setHistoryChabotLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryChabotDiffLines()
-     */
-    void setHistoryChabotDiffLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryLexiconSize()
-     */
-    void setHistoryLexiconSize(unsigned size);
-
-    /**
-     * \copydoc StatsFile::setHistoryContacts()
-     */
-    void setHistoryContacts(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setRosterSize()
-     */
-    void setRosterSize(unsigned size);
-
-    /**
-     * \copydoc StatsFile::setEnabledRosterSize()
-     */
-    void setEnabledRosterSize(unsigned size);
+    inline QVariant stat(Stats::Id id)
+    {
+        QVariant value;
+        stat(id, value);
+        return value;
+    }
 
 private:
     StatsManager();

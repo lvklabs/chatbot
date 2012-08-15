@@ -22,6 +22,9 @@
 #ifndef LVK_STATS_STATSFILE_H
 #define LVK_STATS_STATSFILE_H
 
+#include "stats/id.h"
+#include "stats/history.h"
+
 class QString;
 
 namespace Lvk
@@ -54,68 +57,19 @@ public:
     virtual ~StatsFile() { }
 
     /**
-     * Sets \a size as the rules lexicon size, i.e. the amount of different words used to
-     * define rules.
+     * Sets \a value as the value for the statistic with the given \a id in the current date
      */
-    virtual void setLexiconSize(unsigned size) = 0;
+    virtual void setStat(Id id, const QVariant &value) = 0;
 
     /**
-     * Sets \a count as the total amount of words used to define rules.
+     * Returns the value of the given statistic \a id for current date
      */
-    virtual void setTotalWords(unsigned count) = 0;
+    virtual void stat(Id id, QVariant &value) = 0;
 
     /**
-     * Sets \a count as the total amount of rules.
+     * Returns the history of values of the given statistic \a id
      */
-    virtual void setTotalRules(unsigned count) = 0;
-
-    /**
-     * Sets \a points as the total amount of rule points.
-     */
-    virtual void setTotalRulePoints(unsigned points) = 0;
-
-    /**
-     * Adds \a secs seconds to the total connection time.
-     */
-    virtual void addConnectionTime(unsigned secs) = 0;
-
-    /**
-     * Sets \a count as the total amount of lines in the chat history.
-     */
-    virtual void setHistoryLines(unsigned count) = 0;
-
-    /**
-     * Sets \a count as the total amount of lines in the chat history produced by the chatbot.
-     */
-    virtual void setHistoryChabotLines(unsigned count) = 0;
-
-    /**
-     * Sets \a count as the total amount of different lines in the chat history produced by the
-     * chatbot.
-     */
-    virtual void setHistoryChabotDiffLines(unsigned count) = 0;
-
-    /**
-     * Sets \a size as the history lexicon size, i.e. the total amount of different words used
-     * in the chat history.
-     */
-    virtual void setHistoryLexiconSize(unsigned size) = 0;
-
-    /**
-     * Sets \a count as the amount of different contacts found in the history.
-     */
-    virtual void setHistoryContacts(unsigned count) = 0;
-
-    /**
-     * Sets \a size as the roster size, i.e. the amounts of chat contacts.
-     */
-    virtual void setRosterSize(unsigned size) = 0;
-
-    /**
-     * Sets \a size as the enabled roster size, i.e. the amounts of chat contacts allowed to chat
-     * with the chatbot.
-     */
-    virtual void setEnabledRosterSize(unsigned size) = 0;
+    virtual void history(Id id, History &history) = 0;
 
     /**
      * Loads statistics from \a filename

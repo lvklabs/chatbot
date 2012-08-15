@@ -400,5 +400,5 @@ void Lvk::CA::XmppChatbot::rebuildLocalRoster() const
 void Lvk::CA::XmppChatbot::updateConnectionStats()
 {
     uint duration = QDateTime::currentDateTime().toTime_t() - m_connStartTime;
-    Stats::StatsManager::manager()->addConnectionTime(duration);
+    Stats::StatsManager::manager()->setStat(Stats::ConnectionTime, duration);
 }

@@ -755,31 +755,33 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 
 void Lvk::BE::AppFacade::updateStats()
 {
+    using namespace Stats;
+
     {
         qDebug() << "Updating rule stats...";
         RuleStatsHelper stats(rootRule());
-        Stats::StatsManager::manager()->setLexiconSize(stats.lexiconSize());
-        Stats::StatsManager::manager()->setTotalWords(stats.totalWords());
-        Stats::StatsManager::manager()->setTotalRules(stats.totalRules());
-        Stats::StatsManager::manager()->setTotalRulePoints(stats.totalRulePoints());
+        StatsManager::manager()->setStat(LexiconSize, stats.lexiconSize());
+        StatsManager::manager()->setStat(TotalWords, stats.totalWords());
+        StatsManager::manager()->setStat(TotalRules, stats.totalRules());
+        StatsManager::manager()->setStat(TotalRulePoints, stats.totalRulePoints());
     }
 
     {
         qDebug() << "Updating history stats...";
         HistoryStatsHelper stats(chatHistory());
-        Stats::StatsManager::manager()->setHistoryLexiconSize(stats.lexiconSize());
-        Stats::StatsManager::manager()->setHistoryLines(stats.lines());
-        Stats::StatsManager::manager()->setHistoryChabotLines(stats.chatbotLines());
-        Stats::StatsManager::manager()->setHistoryChabotDiffLines(stats.chatbotDiffLines());
-        Stats::StatsManager::manager()->setHistoryContacts(stats.contacts());
+        StatsManager::manager()->setStat(HistoryLexiconSize, stats.lexiconSize());
+        StatsManager::manager()->setStat(HistoryTotalLines, stats.lines());
+        StatsManager::manager()->setStat(HistoryChatbotLines, stats.chatbotLines());
+        StatsManager::manager()->setStat(HistoryChatbotDiffLines, stats.chatbotDiffLines());
+        StatsManager::manager()->setStat(HistoryContacts, stats.contacts());
     }
 
     if (m_chatbot) {
         qDebug() << "Updating Roster stats...";
         unsigned total = m_chatbot->roster().size();
         unsigned disabled = m_chatbot->blackListRoster().size();
-        Stats::StatsManager::manager()->setRosterSize(total);
-        Stats::StatsManager::manager()->setEnabledRosterSize(total - disabled);
+        StatsManager::manager()->setStat(RosterSize, total);
+        StatsManager::manager()->setStat(EnabledRosterSize, total - disabled);
     }
 }
 
@@ -787,32 +789,15 @@ void Lvk::BE::AppFacade::updateStats()
 
 void Lvk::BE::AppFacade::getScore(BE::Score &score)
 {
-    const double K1  = 5.0;
-    const double K2  = 1.0;
-    const double K3  = 1.0;
-    const double S1_OFFSET = -40.0;
-    double sr = 0.0;
-    double sc = 0.0;
-    double sh = 0.0;
+    updateStats();
 
-    {
-        RuleStatsHelper stats(rootRule());
-        sr = (stats.totalRulePoints() + stats.lexiconSize());
-    }
+    const double RP_INITIAL = 0;
+    const double RP = Stats::StatsManager::manager()->stat(Stats::TotalRulePoints).toUInt();
+    const double HC = Stats::StatsManager::manager()->stat(Stats::HistoryContacts).toUInt();
 
-    if (m_chatbot) {
-        // FIXME
-        sc = 0.0;
-    }
-
-    {
-        HistoryStatsHelper stats(chatHistory());
-        sh = (0.2*stats.chatbotLines() + 0.8*stats.chatbotDiffLines())*std::sqrt(stats.contacts());
-    }
-
-    score.rules      = std::max(0.0, K1*sr - S1_OFFSET);
-    score.connection = K2*sc;
-    score.history    = K3*sh;
+    score.rules      = std::max(0.0, RP - RP_INITIAL);
+    score.connection = 0.0; // not used
+    score.history    = HC;
     score.total      = score.rules + score.connection + score.history;
 }
 

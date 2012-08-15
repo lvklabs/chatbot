@@ -22,6 +22,7 @@
 #ifndef LVK_STATS_CSVSTATSFILE_H
 #define LVK_STATS_CSVSTATSFILE_H
 
+#include "stats/id.h"
 #include "stats/statsfile.h"
 #include "common/csvrow.h"
 
@@ -69,64 +70,19 @@ public:
     ~CsvStatsFile();
 
     /**
-     * \copydoc StatsFile::setLexiconSize()
+     * \copydoc StatsFile::setStat()
      */
-    virtual void setLexiconSize(unsigned size);
+    virtual void setStat(Stats::Id id, const QVariant &value);
 
     /**
-     * \copydoc StatsFile::setTotalWords()
+     * \copydoc StatsFile::stat()
      */
-    virtual void setTotalWords(unsigned count);
+    virtual void stat(Stats::Id id, QVariant &value);
 
     /**
-     * \copydoc StatsFile::setTotalRules()
+     * \copydoc StatsFile::history()
      */
-    virtual void setTotalRules(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setTotalRulePoints()
-     */
-    virtual void setTotalRulePoints(unsigned points);
-
-    /**
-     * \copydoc StatsFile::addConnectionTime()
-     */
-    virtual void addConnectionTime(unsigned secs);
-
-    /**
-     * \copydoc StatsFile::setHistoryLines()
-     */
-    virtual void setHistoryLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryChabotLines()
-     */
-    virtual void setHistoryChabotLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryChabotDiffLines()
-     */
-    virtual void setHistoryChabotDiffLines(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setHistoryLexiconSize()
-     */
-    virtual void setHistoryLexiconSize(unsigned size);
-
-    /**
-     * \copydoc StatsFile::setHistoryContacts()
-     */
-    virtual void setHistoryContacts(unsigned count);
-
-    /**
-     * \copydoc StatsFile::setRosterSize()
-     */
-    virtual void setRosterSize(unsigned size);
-
-    /**
-     * \copydoc StatsFile::setEnabledRosterSize()
-     */
-    virtual void setEnabledRosterSize(unsigned size);
+    virtual void history(Stats::Id id, Stats::History &history);
 
     /**
      * \copydoc StatsFile::load()
@@ -152,7 +108,6 @@ private:
     Cmn::CsvRow m_colNames;
 
     inline void setStat(int col, unsigned value, bool cumulative = false);
-    inline void setStat(int col, const QString &value, bool cumulative = false);
 };
 
 /// @}
