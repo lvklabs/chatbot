@@ -399,6 +399,32 @@ void Lvk::BE::Rule::setName(const QString &name)
     }
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Rule::isComplete() const
+{
+    switch (m_type) {
+    case OrdinaryRule:
+        return m_input.size() > 0 && m_output.size() > 0;
+    case ContainerRule:
+        return m_name.size() > 0;
+    case EvasiveRule:
+        return m_output.size() > 0;
+    default:
+        return false;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::Rule::isEmpty() const
+{
+    return m_name.isEmpty() && m_output.isEmpty() && m_input.isEmpty() && m_target.isEmpty();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
 {
     stream << LVK_BE_RULE_VERSION;
@@ -517,8 +543,3 @@ void Lvk::BE::Rule::setId(quint64 id)
 {
     m_id = id;
 }
-
-
-
-
-

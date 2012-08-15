@@ -191,8 +191,9 @@ protected:
     {
         Lvk::BE::Rule::const_iterator it;
         for (it = rule->begin(); it != rule->end(); ++it) {
-            if ((*it)->type() != Lvk::BE::Rule::ContainerRule) {
-                count(*it);
+            const Lvk::BE::Rule *rule = *it;
+            if (rule->isComplete() && rule->type() != Lvk::BE::Rule::ContainerRule) {
+                count(rule);
                 m_rules++;
             }
         }

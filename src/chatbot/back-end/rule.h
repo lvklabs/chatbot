@@ -317,6 +317,22 @@ public:
     void setOutput(const QStringList &output);
 
     /**
+     * Returns true if output, input, target and name are empty. Otherwise; returns false.
+     */
+    bool isEmpty() const;
+
+    /**
+     * Returns true if:
+     * <ul>
+     * <li>The rule is OridnaryRule and contains at least one input and output</li>
+     * <li>The rule is ContainerRule and contains a name</li>
+     * <li>The rule is EvasiveRule and contains at least one output</li>
+     * </ul>
+     * Otherwise; returns false.
+     */
+    bool isComplete() const;
+
+    /**
      * Returns true if the rule is enabled. Otherwise; returns false. By default is disabled.
      */
     bool enabled() const;
