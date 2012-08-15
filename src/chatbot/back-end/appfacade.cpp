@@ -142,7 +142,7 @@ inline void setStat(Lvk::Stats::Id id, unsigned value)
 
 //--------------------------------------------------------------------------------------------------
 
-inline unsigned stat(Lvk::Stats::Id id)
+inline unsigned uIntStat(Lvk::Stats::Id id)
 {
     return Lvk::Stats::StatsManager::manager()->stat(id).toUInt();
 }
@@ -831,11 +831,10 @@ void Lvk::BE::AppFacade::score(BE::Score &score)
         }
     }
 
-    double rpInitial = 0;
-    double rp = stat(Stats::TotalRulePoints);
-    double hc = stat(Stats::HistoryContacts);
+    unsigned rp = uIntStat(Stats::TotalRulePoints);
+    unsigned hc = uIntStat(Stats::HistoryContacts);
 
-    score.rules      = std::max(0.0, rp - rpInitial);
+    score.rules      = rp;
     score.connection = 0.0; // not used
     score.history    = maxDailyValue + hc;
     score.total      = score.rules + score.connection + score.history;
