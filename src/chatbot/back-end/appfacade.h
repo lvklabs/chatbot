@@ -59,6 +59,7 @@ namespace BE
 
 class Rule;
 class DefaultVirtualUser;
+struct Score;
 
 /// \ingroup Lvk
 /// \addtogroup BE
@@ -323,6 +324,10 @@ public:
      */
     void clearChatHistory(const QDate &date, const QString &user);
 
+    /**
+     * Returns the score for the current chatbot
+     */
+    void getScore(Score &score);
 
 signals:
 

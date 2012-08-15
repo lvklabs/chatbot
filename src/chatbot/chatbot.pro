@@ -85,6 +85,7 @@ HEADERS += \
     front-end/chathistorywidget.h \
     front-end/linefilteredit.h \
     front-end/ruletextview.h \
+    front-end/scorewidget.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/defaultvirtualuser.h \
@@ -95,6 +96,7 @@ HEADERS += \
     back-end/conversationreader.h \
     back-end/chatbotrulesfile.h \
     back-end/statshelpers.h \
+    back-end/score.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -123,7 +125,7 @@ HEADERS += \
     common/logger.h \
     stats/statsmanager.h \
     stats/statsfile.h \
-    stats/csvstatsfile.h
+    stats/csvstatsfile.h \
 
 
 SOURCES += \
@@ -142,6 +144,7 @@ SOURCES += \
     front-end/chathistorywidget.cpp \
     front-end/linefilteredit.cpp \
     front-end/ruletextview.cpp \
+    front-end/scorewidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/defaultvirtualuser.cpp \
@@ -165,13 +168,14 @@ SOURCES += \
     common/csvrow.cpp \
     common/logger.cpp \
     stats/statsmanager.cpp \
-    stats/csvstatsfile.cpp
+    stats/csvstatsfile.cpp \
 
 
 FORMS += \
     front-end/mainwindow.ui \
     front-end/portdialog.ui \
-    front-end/chathistorywidget.ui
+    front-end/chathistorywidget.ui \
+    front-end/scorewidget.ui
 
 RESOURCES += \
     resources.qrc
@@ -218,6 +222,12 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
+
 
 
 

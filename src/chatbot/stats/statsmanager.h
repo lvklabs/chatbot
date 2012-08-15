@@ -123,7 +123,7 @@ public:
     void setRosterSize(unsigned size);
 
     /**
-     * \copydoc StatsFile:: setEnabledRosterSize()
+     * \copydoc StatsFile::setEnabledRosterSize()
      */
     void setEnabledRosterSize(unsigned size);
 

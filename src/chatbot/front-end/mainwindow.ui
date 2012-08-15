@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -1195,6 +1195,16 @@ Please insert your username and password and press &quot;Verify account&quot; bu
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="scoreTab">
+        <attribute name="title">
+         <string>Score</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_15">
+         <item row="0" column="0">
+          <widget class="Lvk::FE::ScoreWidget" name="scoreWidget" native="true"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -1329,6 +1339,12 @@ Please insert your username and password and press &quot;Verify account&quot; bu
    <class>Lvk::FE::RuleTextView</class>
    <extends>QTextEdit</extends>
    <header>front-end/ruletextview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::ScoreWidget</class>
+   <extends>QWidget</extends>
+   <header>front-end/scorewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

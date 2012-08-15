@@ -1,5 +1,8 @@
 v0.16
  - Fixed bug #20
+ - Added "score" stab
+ - Logging new stats such as history lines, history lexicon size, rule points,
+   among others
 
 v0.15
  - Logging simple stats: total words, total different words and connection

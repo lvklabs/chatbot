@@ -55,6 +55,7 @@ HEADERS += \
     ../../chatbot/front-end/autocompletetextedit.h \
     ../../chatbot/front-end/linefilteredit.h \
     ../../chatbot/front-end/ruletextview.h \
+    ../../chatbot/front-end/scorewidget.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/defaultvirtualuser.h \
@@ -102,6 +103,7 @@ SOURCES += \
     ../../chatbot/front-end/autocompletetextedit.cpp \
     ../../chatbot/front-end/linefilteredit.cpp \
     ../../chatbot/front-end/ruletextview.cpp \
+    ../../chatbot/front-end/scorewidget.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/defaultvirtualuser.cpp \

@@ -210,6 +210,8 @@ private:
 
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
 
+    void updateScore();
+
 private slots:
     void onAddCategoryButtonClicked();
     void onAddRuleButtonClicked();
@@ -261,6 +263,7 @@ private slots:
     void onExitMenuTriggered();
 
     void onSplitterMoved(int, int);
+    void onCurrentTabChanged(QWidget *tab);
 
     void onRmDupCheckBoxChanged(int);
     void onLemmatizerCheckBoxChanged(int);

@@ -22,6 +22,8 @@
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/statshelpers.h"
+#include "back-end/defaultvirtualuser.h"
+#include "back-end/score.h"
 #include "nlp-engine/engine.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/exactmatchengine.h"
@@ -31,8 +33,9 @@
 #include "common/random.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
-#include "back-end/defaultvirtualuser.h"
 #include "stats/statsmanager.h"
+
+#include <cmath>
 
 #ifdef FREELING_SUPPORT
 # include "nlp-engine/freelinglemmatizer.h"
@@ -780,6 +783,38 @@ void Lvk::BE::AppFacade::updateStats()
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::getScore(BE::Score &score)
+{
+    const double K1  = 5.0;
+    const double K2  = 1.0;
+    const double K3  = 1.0;
+    const double S1_OFFSET = -40.0;
+    double sr = 0.0;
+    double sc = 0.0;
+    double sh = 0.0;
+
+    {
+        RuleStatsHelper stats(rootRule());
+        sr = (stats.totalRulePoints() + stats.lexiconSize());
+    }
+
+    if (m_chatbot) {
+        // FIXME
+        sc = 0.0;
+    }
+
+    {
+        HistoryStatsHelper stats(chatHistory());
+        sh = (0.2*stats.chatbotLines() + 0.8*stats.chatbotDiffLines())*std::sqrt(stats.contacts());
+    }
+
+    score.rules      = std::max(0.0, K1*sr - S1_OFFSET);
+    score.connection = K2*sc;
+    score.history    = K3*sh;
+    score.total      = score.rules + score.connection + score.history;
+}
 
 
 

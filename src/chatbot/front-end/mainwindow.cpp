@@ -20,17 +20,18 @@
  */
 
 #include "front-end/mainwindow.h"
-#include "back-end/appfacade.h"
 #include "front-end/ruletreemodel.h"
-#include "back-end/rule.h"
-#include "ui_mainwindow.h"
 #include "front-end/exportdialog.h"
 #include "front-end/importdialog.h"
+#include "back-end/appfacade.h"
+#include "back-end/rule.h"
 #include "back-end/roster.h"
+#include "back-end/score.h"
+#include "back-end/conversationwriter.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
-#include "back-end/conversationwriter.h"
+#include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -365,6 +366,10 @@ void Lvk::FE::MainWindow::connectSignals()
 
     connect(ui->showRuleDefButton, SIGNAL(clicked()), SLOT(onTestShowRule()));
 
+    connect(ui->rmDupCheckBox, SIGNAL(stateChanged(int)), SLOT(onRmDupCheckBoxChanged(int)));
+    connect(ui->lemmatizerCheckBox, SIGNAL(stateChanged(int)),
+            SLOT(onLemmatizerCheckBoxChanged(int)));
+
     // Chat connetion tab
 
     connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
@@ -396,11 +401,10 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
     connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
 
-    // Options tab
+    // Misc
 
-    connect(ui->rmDupCheckBox, SIGNAL(stateChanged(int)), SLOT(onRmDupCheckBoxChanged(int)));
-    connect(ui->lemmatizerCheckBox, SIGNAL(stateChanged(int)),
-            SLOT(onLemmatizerCheckBoxChanged(int)));
+    connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
+            SLOT(onCurrentTabChanged(QWidget*)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -590,6 +594,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     // Edit rules tab //
+    // TODO create widget to displays rules!
 
     case RuleSelectionEmptyUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
@@ -652,6 +657,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         break;
 
     // Chat connection tab //
+    // TODO create a connection widget!
 
     case ChatDisconnectedUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
@@ -824,12 +830,14 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->testTab->setVisible(false);
             ui->connectTab->setVisible(false);
             ui->conversationsTab->setVisible(false);
+            ui->scoreTab->setVisible(false);
 
             ui->mainTabWidget->addTab(ui->welcomeTab, tr("Init"));
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
+            ui->mainTabWidget->removePage(ui->scoreTab);
             break;
 
         case VerifyAccountUiMode:
@@ -845,12 +853,14 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->testTab->setVisible(false);
             ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(false);
+            ui->scoreTab->setVisible(false);
 
             ui->mainTabWidget->addTab(ui->connectTab, tr("Verify account"));
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
+            ui->mainTabWidget->removePage(ui->scoreTab);
             break;
 
         default:
@@ -864,12 +874,14 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->testTab->setVisible(true);
             ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(true);
+            ui->scoreTab->setVisible(true);
 
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
             ui->mainTabWidget->addTab(ui->testTab, tr("Test your chatbot"));
             ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
+            ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
             break;
         }
     }
@@ -1094,6 +1106,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
         loadRoster(roster, rosterFilename());
         ui->ruleInputWidget->setRoster(roster);
 
+        // score
+        updateScore();
+
         // Advanced options
         unsigned options = m_appFacade->nlpEngineOptions();
 
@@ -1105,6 +1120,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
                                              Qt::Checked : Qt::Unchecked);
         ui->lemmatizerCheckBox->setCheckState(options & BE::AppFacade::LemmatizeSentence ?
                                                   Qt::Checked : Qt::Unchecked);
+
     } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
@@ -2163,6 +2179,15 @@ void Lvk::FE::MainWindow::onSplitterMoved(int, int)
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
+{
+    if (tab == ui->scoreTab) {
+        updateScore();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 // Advanced Options
 //--------------------------------------------------------------------------------------------------
 
@@ -2187,6 +2212,17 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
     options = enabled ? options | opt : options & ~opt;
 
     m_appFacade->setNlpEngineOptions(options);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Score
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::updateScore()
+{
+    BE::Score score;
+    m_appFacade->getScore(score);
+    ui->scoreWidget->setScore(score);
 }
 
 
