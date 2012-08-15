@@ -127,6 +127,7 @@ SOURCES += \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/csvstatsfile.cpp \
+    ../../chatbot/stats/history.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp
@@ -134,7 +135,8 @@ SOURCES += \
 FORMS += \
     ../../chatbot/front-end/mainwindow.ui \
     ../../chatbot/front-end/portdialog.ui \
-    ../../chatbot/front-end/chathistorywidget.ui
+    ../../chatbot/front-end/chathistorywidget.ui \
+    ../../chatbot/front-end/scorewidget.ui
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
