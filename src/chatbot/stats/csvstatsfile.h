@@ -82,7 +82,12 @@ public:
     /**
      * \copydoc StatsFile::history()
      */
-    virtual void history(Stats::Id id, Stats::History &history);
+    virtual void history(Stats::Id id, Stats::History &h);
+
+    /**
+     * \copydoc StatsFile::combinedHistory()
+     */
+    virtual void combinedHistory(Id id1, Id id2, History &h);
 
     /**
      * \copydoc StatsFile::load()

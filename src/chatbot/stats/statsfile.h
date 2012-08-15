@@ -69,7 +69,12 @@ public:
     /**
      * Returns the history of values of the given statistic \a id
      */
-    virtual void history(Id id, History &history) = 0;
+    virtual void history(Id id, History &h) = 0;
+
+    /**
+     * Returns a the history of a new statistic that is the conbination of \a id1 and \a id2
+     */
+    virtual void combinedHistory(Id id1, Id id2, History &h) = 0;
 
     /**
      * Loads statistics from \a filename

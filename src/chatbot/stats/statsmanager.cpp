@@ -111,8 +111,15 @@ void Lvk::Stats::StatsManager::stat(Stats::Id id, QVariant &value)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::StatsManager::history(Stats::Id id, Stats::History &history)
+void Lvk::Stats::StatsManager::history(Stats::Id id, Stats::History &h)
 {
-    m_statsFile->history(id, history);
+    m_statsFile->history(id, h);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::combinedHistory(Stats::Id id1, Stats::Id id2, Stats::History &h)
+{
+    m_statsFile->combinedHistory(id1, id2, h);
 }
 

@@ -2221,7 +2221,7 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
 void Lvk::FE::MainWindow::updateScore()
 {
     BE::Score score;
-    m_appFacade->getScore(score);
+    m_appFacade->score(score);
     ui->scoreWidget->setScore(score);
 }
 

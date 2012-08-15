@@ -36,6 +36,7 @@
 #include "stats/statsmanager.h"
 
 #include <cmath>
+#include <algorithm>
 
 #ifdef FREELING_SUPPORT
 # include "nlp-engine/freelinglemmatizer.h"
@@ -129,6 +130,35 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
     }
 
     return infoList;
+}
+
+//--------------------------------------------------------------------------------------------------
+// StatsManager helpers
+
+inline void setStat(Lvk::Stats::Id id, unsigned value)
+{
+    Lvk::Stats::StatsManager::manager()->setStat(id, value);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline unsigned stat(Lvk::Stats::Id id)
+{
+    return Lvk::Stats::StatsManager::manager()->stat(id).toUInt();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::Stats::History history(Lvk::Stats::Id id)
+{
+    return Lvk::Stats::StatsManager::manager()->history(id);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::Stats::History statCombinedHistory(Lvk::Stats::Id id1, Lvk::Stats::Id id2)
+{
+    return Lvk::Stats::StatsManager::manager()->combinedHistory(id1, id2);
 }
 
 } // namespace
@@ -755,49 +785,59 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 
 void Lvk::BE::AppFacade::updateStats()
 {
-    using namespace Stats;
-
     {
         qDebug() << "Updating rule stats...";
         RuleStatsHelper stats(rootRule());
-        StatsManager::manager()->setStat(LexiconSize, stats.lexiconSize());
-        StatsManager::manager()->setStat(TotalWords, stats.totalWords());
-        StatsManager::manager()->setStat(TotalRules, stats.totalRules());
-        StatsManager::manager()->setStat(TotalRulePoints, stats.totalRulePoints());
+        setStat(Stats::LexiconSize, stats.lexiconSize());
+        setStat(Stats::TotalWords, stats.totalWords());
+        setStat(Stats::TotalRules, stats.totalRules());
+        setStat(Stats::TotalRulePoints, stats.totalRulePoints());
     }
 
     {
         qDebug() << "Updating history stats...";
         HistoryStatsHelper stats(chatHistory());
-        StatsManager::manager()->setStat(HistoryLexiconSize, stats.lexiconSize());
-        StatsManager::manager()->setStat(HistoryTotalLines, stats.lines());
-        StatsManager::manager()->setStat(HistoryChatbotLines, stats.chatbotLines());
-        StatsManager::manager()->setStat(HistoryChatbotDiffLines, stats.chatbotDiffLines());
-        StatsManager::manager()->setStat(HistoryContacts, stats.contacts());
+        setStat(Stats::HistoryLexiconSize, stats.lexiconSize());
+        setStat(Stats::HistoryTotalLines, stats.lines());
+        setStat(Stats::HistoryChatbotLines, stats.chatbotLines());
+        setStat(Stats::HistoryChatbotDiffLines, stats.chatbotDiffLines());
+        setStat(Stats::HistoryContacts, stats.contacts());
     }
 
     if (m_chatbot) {
         qDebug() << "Updating Roster stats...";
         unsigned total = m_chatbot->roster().size();
         unsigned disabled = m_chatbot->blackListRoster().size();
-        StatsManager::manager()->setStat(RosterSize, total);
-        StatsManager::manager()->setStat(EnabledRosterSize, total - disabled);
+        setStat(Stats::RosterSize, total);
+        setStat(Stats::EnabledRosterSize, total - disabled);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::getScore(BE::Score &score)
+void Lvk::BE::AppFacade::score(BE::Score &score)
 {
     updateStats();
 
-    const double RP_INITIAL = 0;
-    const double RP = Stats::StatsManager::manager()->stat(Stats::TotalRulePoints).toUInt();
-    const double HC = Stats::StatsManager::manager()->stat(Stats::HistoryContacts).toUInt();
+    Stats::History h = statCombinedHistory(Stats::HistoryChatbotDiffLines,
+                                           Stats::HistoryLexiconSize);
 
-    score.rules      = std::max(0.0, RP - RP_INITIAL);
+    unsigned maxDailyValue = 0;
+
+    for (Stats::History::iterator it = h.begin(); it != h.end(); ++it) {
+        unsigned value = it->second.toUInt();
+        if (value > maxDailyValue) {
+            maxDailyValue = value;
+        }
+    }
+
+    double rpInitial = 0;
+    double rp = stat(Stats::TotalRulePoints);
+    double hc = stat(Stats::HistoryContacts);
+
+    score.rules      = std::max(0.0, rp - rpInitial);
     score.connection = 0.0; // not used
-    score.history    = HC;
+    score.history    = maxDailyValue + hc;
     score.total      = score.rules + score.connection + score.history;
 }
 

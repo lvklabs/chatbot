@@ -53,6 +53,13 @@ inline uint qHash(const QDate &d)
 }
 
 //--------------------------------------------------------------------------------------------------
+
+inline bool validId(Lvk::Stats::Id id)
+{
+    return id != Lvk::Stats::NullStat && static_cast<int>(id) < TotalColumns;
+}
+
+//--------------------------------------------------------------------------------------------------
 // CsvStatsFile
 //--------------------------------------------------------------------------------------------------
 //
@@ -108,7 +115,7 @@ void Lvk::Stats::CsvStatsFile::setStat(Stats::Id id, const QVariant &value)
 
 void Lvk::Stats::CsvStatsFile::stat(Stats::Id id, QVariant &value)
 {
-    if (id != NullStat && static_cast<int>(id) < TotalColumns) {
+    if (validId(id)) {
         QMutexLocker locker(m_mutex);
 
         DailyStats::const_iterator it = m_dailyStats.find(QDate::currentDate());
@@ -120,20 +127,39 @@ void Lvk::Stats::CsvStatsFile::stat(Stats::Id id, QVariant &value)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::CsvStatsFile::history(Stats::Id id, Stats::History &history)
+void Lvk::Stats::CsvStatsFile::history(Stats::Id id, Stats::History &h)
 {
-    history.clear();
+    h.clear();
 
-    if (id != NullStat && static_cast<int>(id) < TotalColumns) {
+    if (validId(id)) {
         QMutexLocker locker(m_mutex);
 
         DailyStats::const_iterator it;
         for (it = m_dailyStats.begin(); it != m_dailyStats.end(); ++it) {
             QVariant value = (*it)[id].toUInt();
-            history.append(it.key(), value);
+            h.append(it.key(), value);
         }
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::CsvStatsFile::combinedHistory(Stats::Id id1, Stats::Id id2,
+                                               Stats::History &h)
+{
+    h.clear();
+
+    if (validId(id1) && validId(id2)) {
+        QMutexLocker locker(m_mutex);
+
+        DailyStats::const_iterator it;
+        for (it = m_dailyStats.begin(); it != m_dailyStats.end(); ++it) {
+            QVariant value = (*it)[id1].toUInt() + (*it)[id2].toUInt();
+            h.append(it.key(), value);
+        }
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------------
 

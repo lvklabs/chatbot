@@ -83,7 +83,12 @@ public:
     /**
      * \copydoc StatsFile::history()
      */
-    void history(Stats::Id id, Stats::History &history);
+    void history(Stats::Id id, Stats::History &h);
+
+    /**
+     * \copydoc StatsFile::combinedHistory()
+     */
+    void combinedHistory(Id id1, Id id2, History &history);
 
     /**
      * This is an overloaded member function defined for convenience
@@ -95,6 +100,30 @@ public:
         QVariant value;
         stat(id, value);
         return value;
+    }
+
+    /**
+     * This is an overloaded member function defined for convenience
+     *
+     * \see history(Id, History &)
+     */
+    inline Stats::History history(Stats::Id id)
+    {
+        Stats::History h;
+        history(id, h);
+        return h;
+    }
+
+    /**
+     * This is an overloaded member function defined for convenience
+     *
+     * \see combinedHistory(Id, Id, History &)
+     */
+    inline Stats::History combinedHistory(Stats::Id id1, Stats::Id id2)
+    {
+        Stats::History h;
+        combinedHistory(id1, id2, h);
+        return h;
     }
 
 private:

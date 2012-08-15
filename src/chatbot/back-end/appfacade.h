@@ -327,7 +327,7 @@ public:
     /**
      * Returns the score for the current chatbot
      */
-    void getScore(Score &score);
+    void score(Score &score);
 
 signals:
 
