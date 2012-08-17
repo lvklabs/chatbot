@@ -144,8 +144,7 @@ void Lvk::Stats::CsvStatsFile::history(Stats::Id id, Stats::History &h)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::CsvStatsFile::combinedHistory(Stats::Id id1, Stats::Id id2,
-                                               Stats::History &h)
+void Lvk::Stats::CsvStatsFile::combinedHistory(Stats::Id id1, Stats::Id id2, Stats::History &h)
 {
     h.clear();
 
