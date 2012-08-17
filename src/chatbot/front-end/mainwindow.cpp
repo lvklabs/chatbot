@@ -1103,7 +1103,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // load persisted roster
         BE::Roster roster;
-        loadRoster(roster, rosterFilename());
+        if (QFile::exists(rosterFilename())) {
+            loadRoster(roster, rosterFilename());
+        }
         ui->ruleInputWidget->setRoster(roster);
 
         // score
