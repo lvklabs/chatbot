@@ -19,16 +19,10 @@
  *
  */
 
-#ifndef LVK_FE_SCOREWIDGET_H
-#define LVK_FE_SCOREWIDGET_H
+#ifndef LVK_CMN_GRAYLOGREMOTELOGGER_H
+#define LVK_CMN_GRAYLOGREMOTELOGGER_H
 
-#include <QWidget>
-
-#include "back-end/score.h"
-
-namespace Ui {
-    class ScoreWidget;
-}
+#include "common/remotelogger.h"
 
 namespace Lvk
 {
@@ -36,59 +30,50 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace FE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup FE
+/// \addtogroup Cmn
 /// @{
 
 /**
- * \brief The ScoreWidget class provides a widget to display the score of the chatbot
+ * \brief The GraylogRemoteLogger class logs messages in a Graylog Server.
+ *
+ * Graylog is an open source log management solution that stores logs in ElasticSearch database.
+ *
+ * The GraylogRemoteLogger sends UDP messages to the server set in the configuration file.
+ *
+ * More info about Graylog at http://graylog2.org/
  */
-class ScoreWidget : public QWidget
+class GraylogRemoteLogger : public RemoteLogger
 {
-    Q_OBJECT
-
 public:
 
     /**
-     * Constructs an ScoreWidget widget which is a child of the given parent.
+     * Creates a GraylogRemoteLogger object.
      */
-    explicit ScoreWidget(QWidget *parent = 0);
+    GraylogRemoteLogger();
 
     /**
-     * Destroys the object
+     * \copydoc RemoteLogger::log(const QString&)
      */
-    ~ScoreWidget();
+    virtual int log(const QString &msg);
 
     /**
-     * Sets the score
+     * \copydoc RemoteLogger::log(const QString &, const FieldList&)
      */
-    void setScore(const BE::Score &score);
-
-    /**
-     * Clears the widget
-     */
-    void clear();
-
-signals:
-
-    /**
-     * This signal is emitted whenever the "upload" button is pressed.
-     */
-    void upload();
-
-private:
-    Ui::ScoreWidget *ui;
+    virtual int log(const QString &msg, const FieldList &fields);
 };
 
 /// @}
 
-} // namespace FE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_FE_SCOREWIDGET_H
+
+#endif // LVK_CMN_GRAYLOGREMOTELOGGER_H
+

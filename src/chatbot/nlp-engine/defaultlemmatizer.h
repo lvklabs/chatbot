@@ -19,16 +19,14 @@
  *
  */
 
-#ifndef LVK_FE_SCOREWIDGET_H
-#define LVK_FE_SCOREWIDGET_H
+#ifndef LVK_NLP_DEFAULTLEMMATIZER_H
+#define LVK_NLP_DEFAULTLEMMATIZER_H
 
-#include <QWidget>
-
-#include "back-end/score.h"
-
-namespace Ui {
-    class ScoreWidget;
-}
+#ifdef FREELING_SUPPORT
+# include "nlp-engine/freelinglemmatizer.h"
+#else
+# include "nlp-engine/nulllemmatizer.h"
+#endif
 
 namespace Lvk
 {
@@ -36,59 +34,32 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace FE
+namespace Nlp
 {
 
 /// \ingroup Lvk
-/// \addtogroup FE
+/// \addtogroup Nlp
 /// @{
 
 /**
- * \brief The ScoreWidget class provides a widget to display the score of the chatbot
+ * \brief The DefaultLemmatizer class provides the Lemmatizer to be used according the
+ *        build settings
  */
-class ScoreWidget : public QWidget
-{
-    Q_OBJECT
 
-public:
-
-    /**
-     * Constructs an ScoreWidget widget which is a child of the given parent.
-     */
-    explicit ScoreWidget(QWidget *parent = 0);
-
-    /**
-     * Destroys the object
-     */
-    ~ScoreWidget();
-
-    /**
-     * Sets the score
-     */
-    void setScore(const BE::Score &score);
-
-    /**
-     * Clears the widget
-     */
-    void clear();
-
-signals:
-
-    /**
-     * This signal is emitted whenever the "upload" button is pressed.
-     */
-    void upload();
-
-private:
-    Ui::ScoreWidget *ui;
-};
+#ifdef FREELING_SUPPORT
+typedef FreelingLemmatizer DefaultLemmatizer;
+#else
+typedef NullLemmatizer DefaultLemmatizer;
+#endif
 
 /// @}
 
-} // namespace FE
+} // namespace Nlp
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_FE_SCOREWIDGET_H
+
+#endif // LVK_NLP_DEFAULTLEMMATIZER_H
+

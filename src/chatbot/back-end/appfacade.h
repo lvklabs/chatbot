@@ -327,7 +327,12 @@ public:
     /**
      * Returns the score for the current chatbot
      */
-    void score(Score &score);
+    Score score();
+
+    /**
+     * Uploads the current score to the server.
+     */
+    bool uploadScore();
 
 signals:
 

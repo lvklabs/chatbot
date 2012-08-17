@@ -11,7 +11,7 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="0" column="0" rowspan="2">
     <widget class="QTextEdit" name="textEdit">
      <property name="styleSheet">
       <string notr="true">QTextEdit { 
@@ -28,6 +28,26 @@ background:rgba(0,0,0,0);
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="uploadButton">
+     <property name="text">
+      <string>Upload</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

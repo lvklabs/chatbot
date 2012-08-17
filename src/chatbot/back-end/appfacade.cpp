@@ -26,21 +26,17 @@
 #include "back-end/score.h"
 #include "nlp-engine/engine.h"
 #include "nlp-engine/rule.h"
-#include "nlp-engine/exactmatchengine.h"
 #include "nlp-engine/simpleaimlengine.h"
 #include "nlp-engine/defaultsanitizer.h"
-#include "nlp-engine/nulllemmatizer.h"
+#include "nlp-engine/defaultlemmatizer.h"
 #include "common/random.h"
+#include "common/defaultremotelogger.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
 
 #include <cmath>
 #include <algorithm>
-
-#ifdef FREELING_SUPPORT
-# include "nlp-engine/freelinglemmatizer.h"
-#endif
 
 #define FILE_METADATA_CHAT_TYPE     "chat_type"
 #define FILE_METADATA_USERNAME      "username"
@@ -54,12 +50,7 @@ namespace BE
 
 typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
-
-#ifdef FREELING_SUPPORT
-typedef Lvk::Nlp::FreelingLemmatizer DefaultLemmatizer;
-#else
-typedef Lvk::Nlp::NullLemmatizer DefaultLemmatizer;
-#endif
+typedef Lvk::Nlp::DefaultLemmatizer DefaultLemmatizer;
 
 } // namespace BE
 
@@ -815,7 +806,7 @@ void Lvk::BE::AppFacade::updateStats()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::score(BE::Score &score)
+Lvk::BE::Score Lvk::BE::AppFacade::score()
 {
     updateStats();
 
@@ -834,10 +825,27 @@ void Lvk::BE::AppFacade::score(BE::Score &score)
     unsigned rp = uIntStat(Stats::TotalRulePoints);
     unsigned hc = uIntStat(Stats::HistoryContacts);
 
+    BE::Score score;
     score.rules      = rp;
     score.connection = 0.0; // not used
     score.history    = maxDailyValue + hc;
     score.total      = score.rules + score.connection + score.history;
+
+    return score;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::uploadScore()
+{
+    Lvk::BE::Score s = score();
+
+    Cmn::RemoteLogger::FieldList fields;
+    fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
+    fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.history)));
+    fields.append(Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
+
+    return Cmn::DefaultRemoteLogger().log("Score", fields) == 0;
 }
 
 

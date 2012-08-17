@@ -19,16 +19,10 @@
  *
  */
 
-#ifndef LVK_FE_SCOREWIDGET_H
-#define LVK_FE_SCOREWIDGET_H
+#ifndef LVK_CMN_NULLREMOTELOGGER_H
+#define LVK_CMN_NULLREMOTELOGGER_H
 
-#include <QWidget>
-
-#include "back-end/score.h"
-
-namespace Ui {
-    class ScoreWidget;
-}
+#include "common/remotelogger.h"
 
 namespace Lvk
 {
@@ -36,59 +30,45 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace FE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup FE
+/// \addtogroup Cmn
 /// @{
 
 /**
- * \brief The ScoreWidget class provides a widget to display the score of the chatbot
+ * \brief The NullRemoteLogger class provides a remote logger that does nothing
  */
-class ScoreWidget : public QWidget
-{
-    Q_OBJECT
 
+class NullRemoteLogger : public RemoteLogger
+{
 public:
 
     /**
-     * Constructs an ScoreWidget widget which is a child of the given parent.
+     * Creates a NullRemoteLogger object.
      */
-    explicit ScoreWidget(QWidget *parent = 0);
+    NullRemoteLogger() { }
 
     /**
-     * Destroys the object
+     * \copydoc RemoteLogger::log(const QString&)
      */
-    ~ScoreWidget();
+    virtual int log(const QString &/*msg*/) { return 0; }
 
     /**
-     * Sets the score
+     * \copydoc RemoteLogger::log(const QString &, const FieldList&)
      */
-    void setScore(const BE::Score &score);
-
-    /**
-     * Clears the widget
-     */
-    void clear();
-
-signals:
-
-    /**
-     * This signal is emitted whenever the "upload" button is pressed.
-     */
-    void upload();
-
-private:
-    Ui::ScoreWidget *ui;
+    virtual int log(const QString &/*msg*/, const FieldList &/*fields*/) { return 0; }
 };
 
 /// @}
 
-} // namespace FE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_FE_SCOREWIDGET_H
+
+#endif // LVK_CMN_NULLREMOTELOGGER_H
+

@@ -19,16 +19,11 @@
  *
  */
 
-#ifndef LVK_FE_SCOREWIDGET_H
-#define LVK_FE_SCOREWIDGET_H
+#ifndef LVK_CMN_ZLIBHELPER_H
+#define LVK_CMN_ZLIBHELPER_H
 
-#include <QWidget>
-
-#include "back-end/score.h"
-
-namespace Ui {
-    class ScoreWidget;
-}
+#include <zlib.h>
+#include <QByteArray>
 
 namespace Lvk
 {
@@ -36,59 +31,41 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace FE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup FE
+/// \addtogroup Cmn
 /// @{
 
 /**
- * \brief The ScoreWidget class provides a widget to display the score of the chatbot
+ * \brief The ZLibHelper class provides a wrapper to the Zlib library to compress
+ *        data easily
  */
-class ScoreWidget : public QWidget
+class ZLibHelper
 {
-    Q_OBJECT
-
 public:
-
     /**
-     * Constructs an ScoreWidget widget which is a child of the given parent.
-     */
-    explicit ScoreWidget(QWidget *parent = 0);
-
-    /**
-     * Destroys the object
-     */
-    ~ScoreWidget();
-
-    /**
-     * Sets the score
-     */
-    void setScore(const BE::Score &score);
-
-    /**
-     * Clears the widget
-     */
-    void clear();
-
-signals:
-
-    /**
-     * This signal is emitted whenever the "upload" button is pressed.
-     */
-    void upload();
+     * Compress (deflates) \a source and stores the result in \a dest.
+     * Returns Z_OK on success, Z_MEM_ERROR if memory could not be allocated for processing,
+     * Z_STREAM_ERROR if an invalid compression level is supplied, Z_VERSION_ERROR if the version
+     * of zlib.h and the version of the library linked do not match, or Z_ERRNO if there is
+     * an error reading or writing the files.
+    */
+    static int deflate(const QByteArray &source, QByteArray &dest);
 
 private:
-    Ui::ScoreWidget *ui;
+    ZLibHelper();
 };
 
 /// @}
 
-} // namespace FE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_FE_SCOREWIDGET_H
+
+#endif // LVK_CMN_ZLIBHELPER_H
+

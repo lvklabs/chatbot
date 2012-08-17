@@ -86,7 +86,14 @@ Lvk::FE::ScoreWidget::ScoreWidget(QWidget *parent) :
     ui(new Ui::ScoreWidget)
 {
     ui->setupUi(this);
+
     setScore(makeScore(0,0,0,0));
+
+#ifdef GELF_STATS_SUPPORT
+    connect(ui->uploadButton, SIGNAL(clicked()), SIGNAL(upload()));
+#else
+    ui->uploadButton->setVisible(false);
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------

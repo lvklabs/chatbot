@@ -401,6 +401,10 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
     connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
 
+    // Score tab
+
+    connect(ui->scoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
+
     // Misc
 
     connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
@@ -2222,9 +2226,16 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
 
 void Lvk::FE::MainWindow::updateScore()
 {
-    BE::Score score;
-    m_appFacade->score(score);
-    ui->scoreWidget->setScore(score);
+    ui->scoreWidget->setScore(m_appFacade->score());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onUploadScore()
+{
+    if (!m_appFacade->uploadScore()) {
+        QMessageBox::critical(this, tr("Upload score"), tr("Cannot upload score"));
+    }
 }
 
 

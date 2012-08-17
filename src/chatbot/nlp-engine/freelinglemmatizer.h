@@ -1,5 +1,5 @@
-#ifndef LVK_NLP_DEFAULTLEMMATIZER_H
-#define LVK_NLP_DEFAULTLEMMATIZER_H
+#ifndef LVK_NLP_FREELINGLEMMATIZER_H
+#define LVK_NLP_FREELINGLEMMATIZER_H
 
 #include "nlp-engine/lemmatizer.h"
 
@@ -59,4 +59,4 @@ private:
 
 } // namespace Lvk
 
-#endif // LVK_NLP_DEFAULTLEMMATIZER_H
+#endif // LVK_NLP_FREELINGLEMMATIZER_H

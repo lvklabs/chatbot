@@ -19,16 +19,14 @@
  *
  */
 
-#ifndef LVK_FE_SCOREWIDGET_H
-#define LVK_FE_SCOREWIDGET_H
+#ifndef LVK_CMN_DEFAULTREMOTELOGGER_H
+#define LVK_CMN_DEFAULTREMOTELOGGER_H
 
-#include <QWidget>
-
-#include "back-end/score.h"
-
-namespace Ui {
-    class ScoreWidget;
-}
+#ifdef GELF_STATS_SUPPORT
+# include "common/graylogremotelogger.h"
+#else
+# include "common/nullremotelogger.h"
+#endif
 
 namespace Lvk
 {
@@ -36,59 +34,32 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace FE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup FE
+/// \addtogroup Cmn
 /// @{
 
 /**
- * \brief The ScoreWidget class provides a widget to display the score of the chatbot
+ * \brief The DefaultRemoteLogger class provides the RemoteLogger to be used according the
+ *        build settings
  */
-class ScoreWidget : public QWidget
-{
-    Q_OBJECT
 
-public:
-
-    /**
-     * Constructs an ScoreWidget widget which is a child of the given parent.
-     */
-    explicit ScoreWidget(QWidget *parent = 0);
-
-    /**
-     * Destroys the object
-     */
-    ~ScoreWidget();
-
-    /**
-     * Sets the score
-     */
-    void setScore(const BE::Score &score);
-
-    /**
-     * Clears the widget
-     */
-    void clear();
-
-signals:
-
-    /**
-     * This signal is emitted whenever the "upload" button is pressed.
-     */
-    void upload();
-
-private:
-    Ui::ScoreWidget *ui;
-};
+#ifdef GELF_STATS_SUPPORT
+typedef GraylogRemoteLogger DefaultRemoteLogger;
+#else
+typedef NullRemoteLogger DefaultRemoteLogger;
+#endif
 
 /// @}
 
-} // namespace FE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_FE_SCOREWIDGET_H
+
+#endif // LVK_CMN_DEFAULTREMOTELOGGER_H
+

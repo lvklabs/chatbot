@@ -21,7 +21,7 @@ win32 {
     CONFIG  +=
     DEFINES += MAC_OS_X
 } else {
-    CONFIG  += freeling
+    CONFIG  += freeling gelf_stats
 }
 
 
@@ -107,7 +107,7 @@ HEADERS += \
     nlp-engine/nulllemmatizer.h \
     nlp-engine/rule.h \
     nlp-engine/engine.h \
-    nlp-engine/freelinglemmatizer.h \
+    nlp-engine/defaultlemmatizer.h \
     chat-adapter/chatvirtualuser.h \
     chat-adapter/chatbot.h \
     chat-adapter/xmmpchatbot.h \
@@ -123,6 +123,9 @@ HEADERS += \
     common/csvrow.h \
     common/globalstrings.h \
     common/logger.h \
+    common/remotelogger.h \
+    common/nullremotelogger.h \
+    common/defaultremotelogger.h \
     stats/statsmanager.h \
     stats/statsfile.h \
     stats/csvstatsfile.h \
@@ -158,7 +161,6 @@ SOURCES += \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
-    nlp-engine/freelinglemmatizer.cpp \
     chat-adapter/xmmpchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
@@ -200,9 +202,18 @@ LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 freeling {
     DEFINES += PCRE_STATIC FREELING_SUPPORT
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
-    HEADERS +=
-    SOURCES +=
+    HEADERS += nlp-engine/freelinglemmatizer.h
+    SOURCES += nlp-engine/freelinglemmatizer.cpp
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
+}
+
+
+gelf_stats {
+    DEFINES += GELF_STATS_SUPPORT
+    INCLUDEPATH +=
+    HEADERS += common/zlibhelper.h common/graylogremotelogger.h common/gelf.h
+    SOURCES += common/zlibhelper.cpp common/graylogremotelogger.cpp common/gelf.cpp
+    LIBS += -lz
 }
 
 
@@ -225,6 +236,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

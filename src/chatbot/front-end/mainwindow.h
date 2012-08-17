@@ -267,6 +267,8 @@ private slots:
 
     void onRmDupCheckBoxChanged(int);
     void onLemmatizerCheckBoxChanged(int);
+
+    void onUploadScore();
 };
 
 /// @}
