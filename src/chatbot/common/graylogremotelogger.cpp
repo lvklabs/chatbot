@@ -21,11 +21,18 @@
 
 #include "common/graylogremotelogger.h"
 #include "common/gelf.h"
+#include "common/version.h"
 
 #include <QUdpSocket>
+#include <QTcpSocket>
+#include <QDateTime>
+#include <QDebug>
+#include <QHostInfo>
 
-#define LOG_SERVER_HOST "127.0.0.1" // TODO read from config file
-#define LOG_SERVER_PORT 12201       // TODO read from config file
+#define LOG_SERVER_HOST     "127.0.0.1" // TODO read from config file
+#define LOG_SERVER_UDP_PORT 12201       // TODO read from config file
+#define LOG_SERVER_TCP_PORT 10514       // TODO read from config file
+
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -34,28 +41,7 @@
 namespace
 {
 
-// Send gelf message to remote server
-
-inline int sendMessage(const Lvk::Cmn::Gelf &msg)
-{
-    if (msg.data().size() == 0) {
-        return false;
-    }
-
-    QHostAddress addr(LOG_SERVER_HOST);
-
-    qint64 bytes = QUdpSocket().writeDatagram(msg.data(), addr, LOG_SERVER_PORT);
-
-    if (bytes == -1) {
-        //std::cout << "ERROR: UDP write failed" << std::endl;
-    }
-
-    return bytes != -1 ? 0 : 1;
-}
-
-//--------------------------------------------------------------------------------------------------
 // convert RemoteLogger::FieldList to Gelf::FieldList
-
 inline Lvk::Cmn::Gelf::FieldList convert(Lvk::Cmn::RemoteLogger::FieldList fields)
 {
     Lvk::Cmn::Gelf::FieldList gelfFields;
@@ -65,6 +51,104 @@ inline Lvk::Cmn::Gelf::FieldList convert(Lvk::Cmn::RemoteLogger::FieldList field
     return gelfFields;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+inline int sendUdpMessage(const QByteArray &data)
+{
+    QHostAddress addr(LOG_SERVER_HOST);
+
+    qint64 bytes = QUdpSocket().writeDatagram(data, addr, LOG_SERVER_UDP_PORT);
+
+    if (bytes == -1) {
+        qWarning() << "sendUdpMessage error";
+    }
+
+    return bytes != -1 ? 0 : 1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline int sendTcpMessage(const QByteArray &data)
+{
+    qint64 bytes = -1;
+
+    try {
+        QTcpSocket tcpSocket;
+
+        tcpSocket.connectToHost(QHostAddress(LOG_SERVER_HOST), LOG_SERVER_TCP_PORT);
+
+        if (!tcpSocket.waitForConnected()) {
+            throw 1;
+        }
+
+        bytes = tcpSocket.write(data);
+
+        if (bytes == -1) {
+            throw 2;
+        }
+
+        if (!tcpSocket.waitForBytesWritten()) {
+            throw 3;
+        }
+
+        qDebug() << "sendTcpMessage OK";
+
+    } catch (int err) {
+        qWarning() << "sendTcpMessage error" << err;
+        bytes = -1;
+    }
+
+    return bytes != -1 ? 0 : 1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+class Syslog
+{
+public:
+
+    Syslog(const QString &msg)
+    {
+        #define NILVALUE            "-"
+        #define SP                  " "
+        #define SYSLOG_VERSION      "1"
+        #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz+03:00" // FIXME timezone
+
+        QByteArray priority = "<165>";
+        QByteArray date = QDateTime::currentDateTime().toString(SYSLOG_DATE_FORMAT).toAscii();
+        QByteArray host = QHostInfo::localHostName().toAscii();
+        QByteArray app = APP_NAME "_" APP_VERSION_STR;
+
+        m_data.append(priority);              // PRI
+        m_data.append(SYSLOG_VERSION);        // VERSION
+        m_data.append(SP);                    // SP
+        m_data.append(date);                  // DATETIME
+        m_data.append(SP);                    // SP
+        m_data.append(host);                  // HOSTNAME
+        m_data.append(SP);                    // SP
+        m_data.append(app);                   // APP-NAME
+        m_data.append(SP);                    // SP
+        m_data.append(NILVALUE);              // PROCID
+        //data.append(SP);                    // SP
+        //data.append(NILVALUE);              // MSGID
+        //data.append(SP);                    // SP
+        //data.append(NILVALUE);              // STRUCTURED-DATA
+        m_data.append(SP);                    // SP
+        m_data.append(msg.toUtf8());          // MSG
+
+        //qDebug() << "Syslog message:" << m_data;
+    }
+
+    const QByteArray& data() const
+    {
+        return m_data;
+    }
+
+private:
+    QByteArray m_data;
+};
+
+
 } // namespace
 
 
@@ -73,6 +157,14 @@ inline Lvk::Cmn::Gelf::FieldList convert(Lvk::Cmn::RemoteLogger::FieldList field
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
+    : m_format(GELF)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
+    : m_format(format)
 {
 }
 
@@ -80,13 +172,22 @@ Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
 
 int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg)
 {
-    return sendMessage(Gelf(Gelf::Informational, msg));
+    return log(msg, FieldList());
 }
 
 //--------------------------------------------------------------------------------------------------
 
 int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fields)
 {
-    return sendMessage(Gelf(Gelf::Informational, msg, convert(fields)));
+    switch (m_format) {
+    case GELF:
+        return sendUdpMessage(Gelf(Gelf::Informational, msg, convert(fields)).data());
+    case SyslogTCP:
+        return sendTcpMessage(Syslog(msg).data());
+    case SyslogUDP:
+        return sendUdpMessage(Syslog(msg).data());
+    default:
+        return 1;
+    }
 }
 

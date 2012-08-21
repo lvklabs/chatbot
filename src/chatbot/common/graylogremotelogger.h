@@ -42,7 +42,7 @@ namespace Cmn
  *
  * Graylog is an open source log management solution that stores logs in ElasticSearch database.
  *
- * The GraylogRemoteLogger sends UDP messages to the server set in the configuration file.
+ * The GraylogRemoteLogger sends messages to the server set in the configuration file.
  *
  * More info about Graylog at http://graylog2.org/
  */
@@ -50,10 +50,22 @@ class GraylogRemoteLogger : public RemoteLogger
 {
 public:
 
+    enum LogFomat
+    {
+        GELF,
+        SyslogTCP,
+        SyslogUDP
+    };
+
     /**
      * Creates a GraylogRemoteLogger object.
      */
     GraylogRemoteLogger();
+
+    /**
+     * Creates a GraylogRemoteLogger object.
+     */
+    GraylogRemoteLogger(LogFomat format);
 
     /**
      * \copydoc RemoteLogger::log(const QString&)
@@ -64,6 +76,10 @@ public:
      * \copydoc RemoteLogger::log(const QString &, const FieldList&)
      */
     virtual int log(const QString &msg, const FieldList &fields);
+
+private:
+
+    LogFomat m_format;
 };
 
 /// @}
