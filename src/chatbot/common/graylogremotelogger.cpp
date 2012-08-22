@@ -42,13 +42,37 @@ namespace
 {
 
 // convert RemoteLogger::FieldList to Gelf::FieldList
-inline Lvk::Cmn::Gelf::FieldList convert(Lvk::Cmn::RemoteLogger::FieldList fields)
+inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::FieldList &fields)
 {
     Lvk::Cmn::Gelf::FieldList gelfFields;
     foreach (const Lvk::Cmn::RemoteLogger::Field &f, fields) {
         gelfFields.append(Lvk::Cmn::Gelf::Field(f));
     }
     return gelfFields;
+}
+
+// convert RemoteLogger::FieldList to QString
+inline QString toString(const Lvk::Cmn::RemoteLogger::FieldList &fields)
+{
+    QString s;
+    foreach (const Lvk::Cmn::RemoteLogger::Field &f, fields) {
+        if (s.isEmpty()) {
+            s += "{";
+        } else {
+            s += ",";
+        }
+        if (f.first.startsWith("_")) {
+            s += QString("\"%1\":\"%2\"").arg(f.first, f.second);
+        } else {
+            s += QString("\"_%1\":\"%2\"").arg(f.first, f.second);
+        }
+    }
+
+    if (!s.isEmpty()) {
+        s += "}";
+    }
+
+    return s;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -114,7 +138,7 @@ public:
         #define SYSLOG_VERSION      "1"
         #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz+03:00" // FIXME timezone
 
-        QByteArray priority = "<165>";
+        QByteArray priority = "<165>"; // FIXME
         QByteArray date = QDateTime::currentDateTime().toString(SYSLOG_DATE_FORMAT).toAscii();
         QByteArray host = QHostInfo::localHostName().toAscii();
         QByteArray app = APP_NAME "_" APP_VERSION_STR;
@@ -136,7 +160,7 @@ public:
         m_data.append(SP);                    // SP
         m_data.append(msg.toUtf8());          // MSG
 
-        //qDebug() << "Syslog message:" << m_data;
+        qDebug() << "Syslog message:" << m_data;
     }
 
     const QByteArray& data() const
@@ -181,11 +205,11 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fiel
 {
     switch (m_format) {
     case GELF:
-        return sendUdpMessage(Gelf(Gelf::Informational, msg, convert(fields)).data());
+        return sendUdpMessage(Gelf(Gelf::Informational, msg, toGelfFields(fields)).data());
     case SyslogTCP:
-        return sendTcpMessage(Syslog(msg).data());
+        return sendTcpMessage(Syslog(msg + " " + toString(fields)).data());
     case SyslogUDP:
-        return sendUdpMessage(Syslog(msg).data());
+        return sendUdpMessage(Syslog(msg + " " + toString(fields)).data());
     default:
         return 1;
     }

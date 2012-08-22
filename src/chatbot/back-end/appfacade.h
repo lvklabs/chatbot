@@ -402,6 +402,7 @@ private:
     void refreshEvasivesToChatbot();
     void connectChatClientSignals();
     void updateStats();
+    bool uploadScore(const Score &s, bool secure);
 };
 
 /// @}

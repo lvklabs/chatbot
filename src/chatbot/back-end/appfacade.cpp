@@ -152,24 +152,6 @@ inline Lvk::Stats::History statCombinedHistory(Lvk::Stats::Id id1, Lvk::Stats::I
     return Lvk::Stats::StatsManager::manager()->combinedHistory(id1, id2);
 }
 
-//--------------------------------------------------------------------------------------------------
-
-bool uploadScore(Lvk::BE::Score s, bool manualUpload)
-{
-    Lvk::Cmn::RemoteLogger::FieldList fields;
-    fields.append(Lvk::Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
-    fields.append(Lvk::Cmn::RemoteLogger::Field("history_score", QString::number(s.history)));
-    fields.append(Lvk::Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
-
-    if (manualUpload) {
-        Lvk::Cmn::DefaultRemoteLogger logger(Lvk::Cmn::DefaultRemoteLogger::SyslogTCP);
-        return logger.log("Manually uploaded score", fields) == 0;
-    } else {
-        Lvk::Cmn::DefaultRemoteLogger logger(Lvk::Cmn::DefaultRemoteLogger::GELF);
-        return logger.log("Stats score", fields) == 0;
-    }
-}
-
 } // namespace
 
 
@@ -849,8 +831,6 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
     score.history    = maxDailyValue + hc;
     score.total      = score.rules + score.connection + score.history;
 
-    ::uploadScore(score, false); // FIXME do not upload score here
-
     return score;
 }
 
@@ -858,8 +838,25 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
 
 bool Lvk::BE::AppFacade::uploadScore()
 {
-    return ::uploadScore(score(), true);
+    return uploadScore(score(), true);
 }
 
+//--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::AppFacade::uploadScore(const Score &s, bool secure)
+{
+    Cmn::RemoteLogger::FieldList fields;
+    fields.append(Cmn::RemoteLogger::Field("user_id",       username()));
+    fields.append(Cmn::RemoteLogger::Field("chatbot_id",    m_rulesFile.chatbotId()));
+    fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
+    fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.history)));
+    fields.append(Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
 
+    if (secure) {
+        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::SyslogTCP);
+        return logger.log("Manually uploaded score", fields) == 0;
+    } else {
+        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::GELF);
+        return logger.log("Stats score", fields) == 0;
+    }
+}
