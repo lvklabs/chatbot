@@ -1889,8 +1889,6 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
             m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
                                      QVariant(m_ruleBackup.name()), Qt::EditRole);
         }
-
-
     }
 
     m_ruleAdded = false;
