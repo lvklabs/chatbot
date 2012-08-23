@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>5</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -395,6 +395,9 @@
                <height>24</height>
               </size>
              </property>
+             <property name="popupMode">
+              <enum>QToolButton::DelayedPopup</enum>
+             </property>
              <property name="autoRaise">
               <bool>true</bool>
              </property>
@@ -426,17 +429,14 @@
             </widget>
            </item>
            <item>
-            <spacer name="rulesToolbarSpacer">
+            <spacer name="horizontalSpacer_8">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>10</width>
-               <height>0</height>
+               <width>40</width>
+               <height>20</height>
               </size>
              </property>
             </spacer>
@@ -1303,6 +1303,21 @@ Please insert your username and password and press &quot;Verify account&quot; bu
   <action name="actionExport">
    <property name="text">
     <string>Export rules...</string>
+   </property>
+  </action>
+  <action name="actionAddEmptyRule">
+   <property name="text">
+    <string>Add empty rule</string>
+   </property>
+  </action>
+  <action name="actionAddConditionalRule">
+   <property name="text">
+    <string>Add rule with conditional</string>
+   </property>
+  </action>
+  <action name="actionAddVarRule">
+   <property name="text">
+    <string>Add rule with variable</string>
    </property>
   </action>
  </widget>

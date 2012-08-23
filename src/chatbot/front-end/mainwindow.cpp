@@ -201,6 +201,12 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     ui->ruleInputWidget->installEventFilter(this);
     ui->ruleOutputWidget->installEventFilter(this);
 
+    QMenu *menu = new QMenu(this);
+    menu->addAction(ui->actionAddEmptyRule);
+    menu->addAction(ui->actionAddVarRule);
+    menu->addAction(ui->actionAddConditionalRule);
+    ui->addRuleButton->setMenu(menu);
+
     setWindowIcon(QIcon(APP_ICON_FILE));
 
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
@@ -341,6 +347,11 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(onRemoveButtonClicked()));
     connect(ui->teachRuleButton,   SIGNAL(clicked()), SLOT(onTeachButtonPressed()));
     connect(ui->undoRuleButton,    SIGNAL(clicked()), SLOT(onUndoButtonPressed()));
+
+    connect(ui->actionAddEmptyRule,      SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
+    connect(ui->actionAddVarRule,        SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
+    connect(ui->actionAddConditionalRule,SIGNAL(triggered()), SLOT(onAddConditionalRuleAction()));
+
 
     connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()),    SLOT(onRuleEdited()));
     connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),       SLOT(onRuleEdited()));
@@ -1276,7 +1287,7 @@ void Lvk::FE::MainWindow::onAddCategoryButtonClicked()
 
 void Lvk::FE::MainWindow::onAddRuleButtonClicked()
 {
-    addRuleWithDialog();
+    addRuleWithDialog(QStringList(), QStringList());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1288,7 +1299,27 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog()
+void Lvk::FE::MainWindow::onAddVarRuleAction()
+
+{
+    addRuleWithDialog(QStringList() << tr("This rule has a [variable]"),
+                      QStringList() << tr("Reply using [variable]"));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onAddConditionalRuleAction()
+{
+    addRuleWithDialog(QStringList() << tr("This rule has a [variable]"),
+                      // Cannot use STR_CF_IF and STR_CF_ELSE here. Qt Linguist does not parse.
+                      QStringList() << tr("{if [variable] = value} Use response 1"
+                                          " {else} Use response 2"));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog(const QStringList &tmplInput,
+                                                       const QStringList &tmplOutput)
 {
     BE::Rule *rule = 0;
 
@@ -1320,6 +1351,8 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog()
         rule = addRule("", parentCategory);
 
         if (rule) {
+            rule->setInput(tmplInput);
+            rule->setOutput(tmplOutput);
             selectRule(rule);
             ui->ruleInputWidget->setFocusOnInput();
         } else {
@@ -2237,6 +2270,7 @@ void Lvk::FE::MainWindow::onUploadScore()
         QMessageBox::critical(this, tr("Upload score"), tr("Cannot upload score"));
     }
 }
+
 
 
 

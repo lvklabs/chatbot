@@ -152,7 +152,7 @@ private:
     void showRule(quint64 ruleId);
 
     BE::Rule *addCategoryWithDialog();
-    BE::Rule *addRuleWithDialog();
+    BE::Rule *addRuleWithDialog(const QStringList &tmplInput, const QStringList &tmplOutput);
     bool removeSelectedRuleWithDialog();
 
     void setUiMode(UiMode mode);
@@ -216,6 +216,8 @@ private slots:
     void onAddCategoryButtonClicked();
     void onAddRuleButtonClicked();
     void onRemoveButtonClicked();
+    void onAddVarRuleAction();
+    void onAddConditionalRuleAction();
 
     BE::Rule *getCategoryFromDialog();
     void onTeachFromHistoryWidget(const QString &msg);
