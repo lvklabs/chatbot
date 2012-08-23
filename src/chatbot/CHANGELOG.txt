@@ -1,3 +1,10 @@
+v0.17
+ - Added options to the 'add rule' button to add rules with templates for 
+   variables and conditionals
+ - New Score algorithm
+ - Added 'upload score' button
+ - Implemented conection with Graylog server
+
 v0.16
  - Fixed bug #20
  - Added "score" stab. Implemented simple algorithm for scoring chatbots.
