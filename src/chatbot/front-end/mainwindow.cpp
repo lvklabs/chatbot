@@ -2298,7 +2298,14 @@ void Lvk::FE::MainWindow::updateScore()
 void Lvk::FE::MainWindow::onUploadScore()
 {
     if (!m_appFacade->uploadScore()) {
-        QMessageBox::critical(this, tr("Upload score"), tr("Cannot upload score"));
+        QString title = tr("Upload score");
+        QString message = tr("Could not upload score. Please, check your internet connection and"
+                             " try again");
+        QMessageBox::critical(this, title, message);
+    } else {
+        QString title = tr("Upload score");
+        QString message = tr("Score uploaded successfully!");
+        QMessageBox::information(this, title, message);
     }
 }
 
