@@ -179,6 +179,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_appFacade(new BE::AppFacade(this)),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
+    m_ruleAdded(false),
     m_testConversationLog(0),
     m_tabsLayout(NullLayout),
     m_connectionStatus(DisconnectedFromChat)
@@ -246,6 +247,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     }
 
     m_ruleEdited = false;
+    m_ruleAdded = false;
 
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
@@ -1055,7 +1057,7 @@ bool Lvk::FE::MainWindow::saveChanges()
     if (m_filename.isEmpty()) {
         saved = saveAsChanges();
     } else {
-        if (m_ruleEdited) {
+        if (m_ruleEdited || m_ruleAdded) {
             teachRule(selectedRule());
         }
 
@@ -1087,7 +1089,7 @@ bool Lvk::FE::MainWindow::saveAsChanges()
 
         setFilename(filename);
 
-        if (m_ruleEdited) {
+        if (m_ruleEdited || m_ruleAdded) {
             teachRule(selectedRule());
         }
 
@@ -1163,7 +1165,7 @@ void Lvk::FE::MainWindow::setFilename(const QString &filename)
 
 bool Lvk::FE::MainWindow::hasUnsavedChanges()
 {
-    return m_ruleEdited || m_appFacade->hasUnsavedChanges();
+    return m_ruleEdited || m_ruleAdded || m_appFacade->hasUnsavedChanges();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1354,6 +1356,13 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog(const QStringList &tmplIn
             rule->setInput(tmplInput);
             rule->setOutput(tmplOutput);
             selectRule(rule);
+
+            onRuleAdded();
+
+            if (tmplInput.size() > 0 || tmplOutput.size() > 0) {
+                onRuleEdited();
+            }
+
             ui->ruleInputWidget->setFocusOnInput();
         } else {
             QString title = tr("Internal error");
@@ -1628,6 +1637,7 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
     }
 
     m_ruleEdited = false;
+    m_ruleAdded = false;
 
     if (!selected.indexes().isEmpty()) {
         const BE::Rule *rule =
@@ -1732,6 +1742,19 @@ void Lvk::FE::MainWindow::onRuleTargetEdited(const QString &/*ruleInput*/)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onRuleAdded()
+{
+    const BE::Rule *selRule = selectedRule();
+
+    if (selRule) {
+        m_ruleAdded = true;
+
+        ui->undoRuleButton->setEnabled(true);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onRuleEdited()
 {
     const BE::Rule *selRule = selectedRule();
@@ -1805,21 +1828,20 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     if (!rule) {
         return;
     }
-    if (!m_ruleEdited) {
-        return;
-    }
-
-    if (rule->type() == BE::Rule::OrdinaryRule) {
-        rule->setTarget(ui->ruleInputWidget->targets());
-        rule->setInput(ui->ruleInputWidget->input());
-        rule->setOutput(ui->ruleOutputWidget->output());
-    } else if (rule->type() == BE::Rule::EvasiveRule) {
-        rule->setOutput(ui->ruleOutputWidget->output());
-    } else if (rule->type() == BE::Rule::ContainerRule) {
-        rule->setName(ui->categoryNameTextEdit->text());
+    if (m_ruleEdited || m_ruleAdded) {
+        if (rule->type() == BE::Rule::OrdinaryRule) {
+            rule->setTarget(ui->ruleInputWidget->targets());
+            rule->setInput(ui->ruleInputWidget->input());
+            rule->setOutput(ui->ruleOutputWidget->output());
+        } else if (rule->type() == BE::Rule::EvasiveRule) {
+            rule->setOutput(ui->ruleOutputWidget->output());
+        } else if (rule->type() == BE::Rule::ContainerRule) {
+            rule->setName(ui->categoryNameTextEdit->text());
+        }
     }
 
     m_ruleEdited = false;
+    m_ruleAdded = false;
 
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
@@ -1834,33 +1856,44 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
     if (!rule) {
         return;
     }
-    if (!m_ruleEdited) {
-        return;
+
+    if (m_ruleAdded) {
+        QModelIndex index = m_ruleTreeModel->indexFromItem(rule);
+        if (index.isValid()) {
+            // Removing the row will cause a selection change, invoking onRuleSelectionChanged,
+            // setting to false will avoid a onRuleSelectionChanged's dialog being prompted
+            // TODO m_ruleEdited and m_ruleAdded need a big refactoring or new design
+            m_ruleEdited = false;
+            m_ruleTreeModel->removeRow(index.row(), index.parent());
+        }
+    } else if (m_ruleEdited) {
+        // Refresh rule IO widgets
+        if (rule->type() == BE::Rule::OrdinaryRule) {
+            ui->ruleInputWidget->setTargets(m_ruleBackup.target());
+            ui->ruleInputWidget->setInput(m_ruleBackup.input());
+            ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
+        } else if (rule->type() == BE::Rule::EvasiveRule) {
+            ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
+        } else if (rule->type() == BE::Rule::ContainerRule) {
+            ui->categoryNameTextEdit->setText(m_ruleBackup.name());
+        }
+
+        // Refresh rule tree
+        if (rule->type() == BE::Rule::OrdinaryRule) {
+            QString ruleName = m_ruleBackup.input().isEmpty() ? "" : m_ruleBackup.input().first();
+            m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
+                                     QVariant(ruleName), Qt::EditRole);
+        } else if (rule->type() == BE::Rule::EvasiveRule) {
+            // Nothing to do
+        } else if (rule->type() == BE::Rule::ContainerRule) {
+            m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
+                                     QVariant(m_ruleBackup.name()), Qt::EditRole);
+        }
+
+
     }
 
-    // Refresh rule IO widgets
-    if (rule->type() == BE::Rule::OrdinaryRule) {
-        ui->ruleInputWidget->setTargets(m_ruleBackup.target());
-        ui->ruleInputWidget->setInput(m_ruleBackup.input());
-        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
-    } else if (rule->type() == BE::Rule::EvasiveRule) {
-        ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
-    } else if (rule->type() == BE::Rule::ContainerRule) {
-        ui->categoryNameTextEdit->setText(m_ruleBackup.name());
-    }
-
-    // Refresh rule tree
-    if (rule->type() == BE::Rule::OrdinaryRule) {
-        QString ruleName = m_ruleBackup.input().isEmpty() ? "" : m_ruleBackup.input().first();
-        m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
-                                 QVariant(ruleName), Qt::EditRole);
-    } else if (rule->type() == BE::Rule::EvasiveRule) {
-        // Nothing to do
-    } else if (rule->type() == BE::Rule::ContainerRule) {
-        m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
-                                 QVariant(m_ruleBackup.name()), Qt::EditRole);
-    }
-
+    m_ruleAdded = false;
     m_ruleEdited = false;
 
     ui->teachRuleButton->setEnabled(false);
@@ -1873,7 +1906,7 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
 
 void Lvk::FE::MainWindow::onTestInputTextEntered()
 {
-    if (m_ruleEdited) {
+    if (m_ruleEdited || m_ruleAdded) {
         handleRuleEdited(selectedRule());
     }
 

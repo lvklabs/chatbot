@@ -136,6 +136,7 @@ private:
     RuleTreeModel           *m_ruleTreeModel;
     QItemSelectionModel     *m_ruleTreeSelectionModel;
     bool                     m_ruleEdited;
+    bool                     m_ruleAdded;
     BE::Rule                 m_ruleBackup;
     BE::ConversationWriter  *m_testConversationLog;
     QString                  m_filename;
@@ -229,6 +230,7 @@ private slots:
     void onRuleTargetEdited(const QString &ruleInput);
     //void onRuleInputEditingFinished();
     //void onRuleOutputEditingFinished();
+    void onRuleAdded();
     void onRuleEdited();
     void onRuleSelectionChanged(const QItemSelection &selected,
                                     const QItemSelection &deselected);
