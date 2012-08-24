@@ -24,9 +24,8 @@
 #include "back-end/statshelpers.h"
 #include "back-end/defaultvirtualuser.h"
 #include "back-end/score.h"
-#include "nlp-engine/engine.h"
 #include "nlp-engine/rule.h"
-#include "nlp-engine/simpleaimlengine.h"
+#include "nlp-engine/defaultengine.h"
 #include "nlp-engine/defaultsanitizer.h"
 #include "nlp-engine/defaultlemmatizer.h"
 #include "common/random.h"
@@ -48,7 +47,7 @@ namespace Lvk
 namespace BE
 {
 
-typedef Lvk::Nlp::SimpleAimlEngine DefaultEngine;
+typedef Lvk::Nlp::DefaultEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 typedef Lvk::Nlp::DefaultLemmatizer DefaultLemmatizer;
 

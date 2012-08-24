@@ -130,7 +130,8 @@ HEADERS += \
     stats/statsfile.h \
     stats/csvstatsfile.h \
     stats/id.h \
-    stats/history.h
+    stats/history.h \
+    nlp-engine/defaultengine.h
 
 
 SOURCES += \
@@ -236,6 +237,7 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
 
 
 

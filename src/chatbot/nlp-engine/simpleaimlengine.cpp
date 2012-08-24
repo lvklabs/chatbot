@@ -65,6 +65,7 @@ private:
 #define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
 
 #define KEYWORD_REGEX   "\\*\\*\\s*$"
+#define REGEX_REGEX     "[+*]"
 
 #define STR_ERR_1       "A rule input cannot contain two or more variables"
 #define STR_ERR_2       "Rules cannot contain two or more different variable names"
@@ -180,18 +181,50 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
         ctx.input = ctx.rule.input().at(i);
         ctx.inputIdx = i;
 
-        if (convertVariables(inputList, ctx)) {
+        if (hasVariable(ctx.input)) {
+            convertVariables(inputList, ctx);
             continue;
         }
 
-        if (convertKeywordOp(inputList, ctx)) {
+        if (hasKeywordOp(ctx.input)) {
+            convertKeywordOp(inputList, ctx);
             continue;
         }
 
-        if (convertOtherOps(inputList, ctx)) {
-            continue;
-        }
+        convertRegexOp(inputList, ctx);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::SimpleAimlEngine::hasVariable(const QString &input)
+{
+    static QRegExp varNameRegex(VAR_NAME_REGEX);
+    return varNameRegex.indexIn(input) != -1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::SimpleAimlEngine::hasKeywordOp(const QString &input)
+{
+    static QRegExp keywordRegex(KEYWORD_REGEX);
+    return keywordRegex.indexIn(input) != -1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::SimpleAimlEngine::hasRegexOp(const QString &input)
+{
+    return input.contains(QRegExp(REGEX_REGEX));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::SimpleAimlEngine::hasConditional(const QString &output)
+{
+    static QRegExp ifElseRegex(IF_ELSE_REGEX);
+    static QRegExp ifRegex(IF_REGEX);
+    return ifElseRegex.indexIn(output) != -1 || ifRegex.indexIn(output) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -204,29 +237,22 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
  *    Do you like *
  */
 
-bool Lvk::Nlp::SimpleAimlEngine::convertVariables(QStringList &inputList, ConvertionContext &ctx)
+void Lvk::Nlp::SimpleAimlEngine::convertVariables(QStringList &inputList, ConvertionContext &ctx)
 {
     int pos = m_varNameRegex.indexIn(ctx.input);
 
-    // If variable decl found
-
-    if (pos != -1) {
-
-        if (pos != m_varNameRegex.lastIndexIn(ctx.input)) {
-            throw InvalidSyntaxException(QObject::tr(STR_ERR_1));
-        }
-        if (!ctx.varName.isNull() && ctx.varName != m_varNameRegex.cap(1)) {
-            throw InvalidSyntaxException(QObject::tr(STR_ERR_2));
-        }
-
-        ctx.varName = m_varNameRegex.cap(1);
-
-        QString newInput = ctx.input;
-        newInput.replace(m_varNameRegex, " * ");
-        inputList.append(newInput);
+    if (pos != m_varNameRegex.lastIndexIn(ctx.input)) {
+        throw InvalidSyntaxException(QObject::tr(STR_ERR_1));
+    }
+    if (!ctx.varName.isNull() && ctx.varName != m_varNameRegex.cap(1)) {
+        throw InvalidSyntaxException(QObject::tr(STR_ERR_2));
     }
 
-    return pos != -1;
+    ctx.varName = m_varNameRegex.cap(1);
+
+    QString newInput = ctx.input;
+    newInput.replace(m_varNameRegex, " * ");
+    inputList.append(newInput);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -242,32 +268,24 @@ bool Lvk::Nlp::SimpleAimlEngine::convertVariables(QStringList &inputList, Conver
  *    _ Footbal *
  */
 
-bool Lvk::Nlp::SimpleAimlEngine::convertKeywordOp(QStringList &inputList, ConvertionContext &ctx)
+void Lvk::Nlp::SimpleAimlEngine::convertKeywordOp(QStringList &inputList, ConvertionContext &ctx)
 {
-    int pos = m_keywordRegex.indexIn(ctx.input);
+    QString baseInput = ctx.input;
 
-    // if keyword operator found
+    baseInput.remove(m_keywordRegex);
 
-    if (pos != -1) {
-        QString baseInput = ctx.input;
+    inputList.append(baseInput);
+    inputList.append(baseInput + " _");
+    inputList.append("_ " + baseInput);
+    inputList.append("_ " + baseInput + " *");
 
-        baseInput.remove(m_keywordRegex);
+    RuleId id = ctx.rule.id();
+    int size = inputList.size();
 
-        inputList.append(baseInput);
-        inputList.append(baseInput + " _");
-        inputList.append("_ " + baseInput);
-        inputList.append("_ " + baseInput + " *");
-
-        RuleId id = ctx.rule.id();
-        int size = inputList.size();
-
-        m_indexRemap[id][size - 4] = ctx.inputIdx;
-        m_indexRemap[id][size - 3] = ctx.inputIdx;
-        m_indexRemap[id][size - 2] = ctx.inputIdx;
-        m_indexRemap[id][size - 1] = ctx.inputIdx;
-    }
-
-    return pos != -1;
+    m_indexRemap[id][size - 4] = ctx.inputIdx;
+    m_indexRemap[id][size - 3] = ctx.inputIdx;
+    m_indexRemap[id][size - 2] = ctx.inputIdx;
+    m_indexRemap[id][size - 1] = ctx.inputIdx;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -295,7 +313,7 @@ bool Lvk::Nlp::SimpleAimlEngine::convertKeywordOp(QStringList &inputList, Conver
  * Note that operator * needs an exponential rule expansion!
  */
 
-bool Lvk::Nlp::SimpleAimlEngine::convertOtherOps(QStringList &inputList, ConvertionContext &ctx)
+void Lvk::Nlp::SimpleAimlEngine::convertRegexOp(QStringList &inputList, ConvertionContext &ctx)
 {
     RuleId id = ctx.rule.id();
 
@@ -318,9 +336,6 @@ bool Lvk::Nlp::SimpleAimlEngine::convertOtherOps(QStringList &inputList, Convert
         inputList.append(newInput);
         m_indexRemap[id][inputList.size() - 1] = ctx.inputIdx;
     }
-
-
-    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -438,3 +453,5 @@ void Lvk::Nlp::SimpleAimlEngine::remap(Engine::MatchList &matches)
         }
     }
 }
+
+

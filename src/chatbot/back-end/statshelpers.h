@@ -25,6 +25,7 @@
 #include "back-end/rule.h"
 #include "back-end/conversation.h"
 #include "nlp-engine/defaultsanitizer.h"
+#include "nlp-engine/defaultengine.h"
 
 namespace Lvk
 {
@@ -43,7 +44,8 @@ namespace BE
  * \brief The StatsHelper class provides a base class to implement helper classes to get
  *        statistics.
  *
- *
+ * Given a string or a list of strings. the StatsHelper class counts total words, different words
+ * (i.e. lexicon size) and lines. Words are sanitized.
  */
 class StatsHelper
 {
@@ -55,6 +57,7 @@ public:
     StatsHelper()
         : m_words(0), m_lines(0)
     {
+        m_sanitizer.setLogEnabled(false);
     }
 
     /**
@@ -63,6 +66,8 @@ public:
     StatsHelper(const QString &s)
         : m_words(0), m_lines(0)
     {
+        m_sanitizer.setLogEnabled(false);
+
         count(s);
     }
 
@@ -144,7 +149,7 @@ private:
 
 /**
  * \brief The RuleStatsHelper class provides rule statistics such as total words,
- *        total rules and lexicon size.
+ *        total rules, lexicon size and rule points.
  */
 class RuleStatsHelper : public StatsHelper
 {
@@ -154,7 +159,7 @@ public:
      * Constructs a RuleStatsHelper and provides statistics for the given \a root rule.
      */
     RuleStatsHelper(const Lvk::BE::Rule *root)
-        : m_rules(0)
+        : m_rules(0), m_points(0)
     {
         if (root) {
             rcount(root);
@@ -172,13 +177,17 @@ public:
     /**
      * Returns the total amount of rule points.
      *
-     * TODO:  1 point simple rules
-     *        5 points rules with operators
-     *       10 points rules with conditionals or variables
+     * For each rule we give the following points:
+     * <ul>
+     *   <li>1 point simple rules</li>
+     *   <li>2 points rules with operators</li>
+     *   <li>3 points rules with variables</li>
+     *   <li>4 points rules with conditionals</li>
+     * </ul>
      */
     unsigned totalRulePoints()
     {
-        return m_rules*1;
+        return m_points;
     }
 
 protected:
@@ -195,6 +204,7 @@ protected:
             if (rule->isComplete() && rule->type() != Lvk::BE::Rule::ContainerRule) {
                 count(rule);
                 m_rules++;
+                m_points += points(rule);
             }
         }
     }
@@ -208,8 +218,62 @@ protected:
        StatsHelper::count(rule->output());
     }
 
+    /**
+     * Returns the points of the given \a rule
+     */
+    unsigned points(const Lvk::BE::Rule *rule)
+    {
+        unsigned p = 0;
+
+        // To calculate points Only using first non-empty output
+
+        QString output;
+        foreach (const QString &o, rule->output()) {
+            if (o.trimmed().size() > 0) {
+                output = o;
+                break;
+            }
+        }
+        foreach (const QString &input, rule->input()) {
+            p += points(input, output);
+        }
+
+        return p;
+    }
+
+    /**
+     * Returns the points of the pair \a (input, output).
+     * <ul>
+     *   <li>1 point simple rules</li>
+     *   <li>2 points rules with operators</li>
+     *   <li>3 points rules with variables</li>
+     *   <li>4 points rules with conditionals</li>
+     * </ul>
+     */
+    unsigned points(const QString &input, const QString &output)
+    {
+        if (input.isEmpty() || output.isEmpty()) {
+            return 0;
+        } else if (Nlp::DefaultEngine::hasVariable(input)) {
+            if (Nlp::DefaultEngine::hasConditional(output)) {
+                return 4;
+            } else if (Nlp::DefaultEngine::hasVariable(output)){
+                return 3;
+            } else {
+                return 1;
+            }
+        } else if (Nlp::DefaultEngine::hasKeywordOp(input)) {
+            return 2;
+        } else if (Nlp::DefaultEngine::hasRegexOp(input)) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
 private:
     unsigned m_rules;
+    unsigned m_points;
 };
 
 

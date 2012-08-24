@@ -117,6 +117,26 @@ public:
      */
     class InvalidSyntaxException;
 
+    /**
+     * Returns true if \a input contains a variable declaration. Otherwise; returns false.
+     */
+    static bool hasVariable(const QString &input);
+
+    /**
+     * Returns true if \a input contains a keyword operator. Otherwise; returns false.
+     */
+    static bool hasKeywordOp(const QString &input);
+
+    /**
+     * Returns true if \a input contains a regex operator. Otherwise; returns false.
+     */
+    static bool hasRegexOp(const QString &input);
+
+    /**
+     * Returns true if \a output contains an if-else conditional. Otherwise; returns false.
+     */
+    static bool hasConditional(const QString &output);
+
 private:
 
     struct ConvertionContext
@@ -146,9 +166,9 @@ private:
     void convertToPureAiml(Lvk::Nlp::Rule &newRules, const Lvk::Nlp::Rule &rule);
 
     void convertInputList(QStringList &inputList, ConvertionContext &ctx);
-    bool convertVariables(QStringList &inputList, ConvertionContext &ctx);
-    bool convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
-    bool convertOtherOps(QStringList &inputList, ConvertionContext &ctx);
+    void convertVariables(QStringList &inputList, ConvertionContext &ctx);
+    void convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
+    void convertRegexOp(QStringList &inputList, ConvertionContext &ctx);
     void convertOutputList(QStringList &outputList, ConvertionContext &ctx);
 
     void remap(Engine::MatchList &matches);

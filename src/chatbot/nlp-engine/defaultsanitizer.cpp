@@ -44,7 +44,7 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
-    : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars)
+    : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars), m_logEnabled(true)
 {
     initSets();
 }
@@ -52,7 +52,7 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(unsigned options)
-    : m_options(options)
+    : m_options(options), m_logEnabled(true)
 {
     initSets();
 }
@@ -161,7 +161,16 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         szStr.append(cur);
     }
 
-    qDebug() << "   - Sanitized:" << str << "->" << szStr;
+    if (m_logEnabled) {
+        qDebug() << "   - Sanitized:" << str << "->" << szStr;
+    }
 
     return szStr;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::DefaultSanitizer::setLogEnabled(bool enabled)
+{
+    m_logEnabled = enabled;
 }

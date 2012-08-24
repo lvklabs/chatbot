@@ -91,11 +91,17 @@ public:
      */
     virtual QString sanitize(const QString &str) const;
 
+    /**
+     * Enables or disables logging. The log is enabled by default.
+     */
+    void setLogEnabled(bool enabled);
+
 private:
     unsigned m_options;
     QSet<QChar> m_rSet;
     QSet<QChar> m_punctSet;
     QHash<QChar,QChar> m_diacMap;
+    bool m_logEnabled;
 
     void initSets();
 };
