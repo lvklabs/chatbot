@@ -90,6 +90,16 @@ public:
      * Closes the current statistics file.
      */
     virtual void close() = 0;
+
+    /**
+     * Clears the statistics and removes any file created.
+     */
+    virtual void clear() = 0;
+
+    /**
+     * Returns true if the file is empty. Otherwise; returns false.
+     */
+    virtual bool isEmpty() = 0;
 };
 
 /// @}

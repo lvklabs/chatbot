@@ -186,7 +186,7 @@ const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::chatHistory() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::DefaultVirtualUser::setChatHistory(const Lvk::BE::Conversation &conv)
+void Lvk::BE::DefaultVirtualUser::setChatHistory(const Conversation &conv)
 {
     QWriteLocker locker(m_rwLock);
 
@@ -198,6 +198,17 @@ void Lvk::BE::DefaultVirtualUser::setChatHistory(const Lvk::BE::Conversation &co
         qCritical() << "DefaultVirtualUser: Cannot write the conversation entry for chatbot id"
                     << m_id;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::DefaultVirtualUser::clearHistory()
+{
+    QWriteLocker locker(m_rwLock);
+
+    m_conversationHistory = Conversation();
+
+    resetHistoryLog();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -227,3 +238,4 @@ void Lvk::BE::DefaultVirtualUser::resetHistoryLog()
 
     m_convWriter = new BE::ConversationWriter(m_logFilename);
 }
+

@@ -99,6 +99,11 @@ public:
     void close();
 
     /**
+     * Returns the current filename. Returns an empty string if none was opened.
+     */
+    const QString &filename();
+
+    /**
      * Returns the root rule.
      */
     Rule *rootRule();

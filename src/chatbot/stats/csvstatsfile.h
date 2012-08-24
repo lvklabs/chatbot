@@ -104,6 +104,16 @@ public:
      */
     virtual void close();
 
+    /**
+     * \copydoc StatsFile::clear()
+     */
+    virtual void clear();
+
+    /**
+     * \copydoc StatsFile::isEmpty()
+     */
+    virtual bool isEmpty();
+
 private:
     typedef QHash<QDate, Cmn::CsvRow> DailyStats;
 

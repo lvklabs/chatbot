@@ -68,7 +68,7 @@ Lvk::BE::ChatbotRulesFile::ChatbotRulesFile()
     : m_dirty(false),
       m_rootRule(new Rule()),
       m_nextRuleId(1),
-      m_chatbotId(nullChatbotId())
+      m_chatbotId(newChatbotId())
 {
 }
 
@@ -140,8 +140,13 @@ bool Lvk::BE::ChatbotRulesFile::saveAs(const QString &filename)
     QString filenameBak = m_filename;
     QString chatbotIdBak = m_chatbotId;
 
+
+
+    if (m_filename.size() > 0 && m_filename != filename) {
+        m_chatbotId = newChatbotId();
+    }
+
     m_filename = filename;
-    m_chatbotId = newChatbotId();
 
     bool success = save();
 
@@ -187,7 +192,7 @@ void Lvk::BE::ChatbotRulesFile::close()
 {
     qDebug() << "Closing file" << m_filename;
 
-    m_chatbotId = nullChatbotId();
+    m_chatbotId = newChatbotId();
     m_rootRule = std::auto_ptr<Rule>(new Rule());
     m_filename = "";
     m_nextRuleId = 1;
@@ -195,6 +200,13 @@ void Lvk::BE::ChatbotRulesFile::close()
     setAsSaved();
 
     qDebug() << "File closed!";
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QString & Lvk::BE::ChatbotRulesFile::filename()
+{
+    return m_filename;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -410,3 +422,5 @@ quint64 Lvk::BE::ChatbotRulesFile::nextRuleId()
 {
     return m_nextRuleId++;
 }
+
+

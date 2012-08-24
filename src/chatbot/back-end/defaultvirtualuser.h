@@ -93,6 +93,11 @@ public:
     void setChatHistory(const Conversation &conv);
 
     /**
+     * Clears the chat history and removes any file created.
+     */
+    void clearHistory();
+
+    /**
      * Sets the NLP engine that is used to get responses.
      */
     void setNlpEngine(Nlp::Engine *engine);

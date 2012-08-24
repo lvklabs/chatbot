@@ -84,7 +84,9 @@ Lvk::Stats::StatsManager * Lvk::Stats::StatsManager::manager()
 void Lvk::Stats::StatsManager::setChatbotId(const QString &chatbotId)
 {
     if (!m_chatbotId.isEmpty()) {
-        m_statsFile->save();
+        if (!m_statsFile->isEmpty()) {
+            m_statsFile->save();
+        }
         m_statsFile->close();
         m_chatbotId.clear();
     }
@@ -121,5 +123,12 @@ void Lvk::Stats::StatsManager::history(Stats::Id id, Stats::History &h)
 void Lvk::Stats::StatsManager::combinedHistory(Stats::Id id1, Stats::Id id2, Stats::History &h)
 {
     m_statsFile->combinedHistory(id1, id2, h);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::clear()
+{
+    m_statsFile->clear();
 }
 

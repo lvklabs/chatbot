@@ -246,6 +246,29 @@ void Lvk::Stats::CsvStatsFile::close()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Stats::CsvStatsFile::clear()
+{
+    QMutexLocker locker(m_mutex);
+
+    m_dailyStats.clear();
+
+    if (m_filename.size() > 0) {
+        QFile::remove(m_filename);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Stats::CsvStatsFile::isEmpty()
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_dailyStats.isEmpty();
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
 inline void Lvk::Stats::CsvStatsFile::setStat(int col, unsigned value, bool cumulative /*= false*/)
 {
     assert(col < TotalColumns);

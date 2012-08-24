@@ -126,6 +126,11 @@ public:
         return h;
     }
 
+    /**
+     * Clears stats for the current chatbot ID
+     */
+    void clear();
+
 private:
     StatsManager();
     StatsManager(StatsManager&);

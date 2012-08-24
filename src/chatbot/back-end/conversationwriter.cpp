@@ -80,32 +80,22 @@ void makeCsvDoc(Lvk::Cmn::CsvDocument & doc, const Lvk::BE::Conversation & conv)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::ConversationWriter::ConversationWriter()
-    : m_device(0)
+    : m_device(0), m_init(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::ConversationWriter::ConversationWriter(const QString &filename)
-    : m_device(new QFile(filename))
+    : m_device(new QFile(filename)), m_init(false)
 {
-    qDebug() << "ConversationWriter: Opening" << filename;
-
-    if (!m_device->open(QIODevice::Append)) {
-        qCritical() << "ConversationWriter: Cannot open" << filename << "with append permissions";
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::ConversationWriter::ConversationWriter(QIODevice *device)
-    : m_device(device)
+    : m_device(device), m_init(false)
 {
-    if (!device->isOpen()) {
-        if (!m_device->open(QIODevice::Append)) {
-            qCritical() << "ConversationWriter: Cannot open IO device with append permissions";
-        }
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -119,7 +109,7 @@ Lvk::BE::ConversationWriter::~ConversationWriter()
 
 bool Lvk::BE::ConversationWriter::write(const Lvk::BE::Conversation &conv)
 {
-    if (!m_device) {
+    if (!init()) {
         return false;
     }
 
@@ -133,7 +123,7 @@ bool Lvk::BE::ConversationWriter::write(const Lvk::BE::Conversation &conv)
 
 bool Lvk::BE::ConversationWriter::write(const Conversation::Entry &entry)
 {
-    if (!m_device) {
+    if (!init()) {
         return false;
     }
 
@@ -152,7 +142,24 @@ bool Lvk::BE::ConversationWriter::atEnd()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
+inline bool Lvk::BE::ConversationWriter::init()
+{
+    if (!m_init) {
+        if (m_device) {
+            if (m_device->isOpen() || m_device->open(QIODevice::Append)) {
+                m_init = true;
+            } else {
+                qCritical() << "ConversationWriter: Cannot open IO device with append permissions";
+            }
+        }
+    }
+
+    return m_init;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
 {
     if (data.isEmpty()) {
         return true;
@@ -163,7 +170,7 @@ bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationWriter::flush()
+inline bool Lvk::BE::ConversationWriter::flush()
 {
     // flush() is not part of QIODevice interface. We only flush if it's type QFile.
 
@@ -171,3 +178,5 @@ bool Lvk::BE::ConversationWriter::flush()
 
     return file ? file->flush() : true;
 }
+
+

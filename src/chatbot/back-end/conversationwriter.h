@@ -100,9 +100,11 @@ private:
     ConversationWriter& operator=(const ConversationWriter&);
 
     QIODevice *m_device;
+    bool m_init;
 
-    bool writeln(const QByteArray &data);
-    bool flush();
+    inline bool init();
+    inline bool writeln(const QByteArray &data);
+    inline bool flush();
 };
 
 /// @}

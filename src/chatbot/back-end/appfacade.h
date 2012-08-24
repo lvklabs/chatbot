@@ -381,7 +381,7 @@ private:
     AppFacade(AppFacade&);
     AppFacade& operator=(AppFacade&);
 
-    ChatbotRulesFile m_rulesFile;
+    ChatbotRulesFile m_rules;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
     CA::Chatbot *m_chatbot;
@@ -399,7 +399,6 @@ private:
     void setupChatbot();
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
-    void refreshEvasivesToChatbot();
     void connectChatClientSignals();
     void updateStats();
     bool uploadScore(const Score &s, bool secure);

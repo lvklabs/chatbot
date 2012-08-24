@@ -4,12 +4,13 @@ v0.17
  - New Score algorithm
  - Added 'upload score' button
  - Implemented conection with Graylog server
+ - Fixed bug #22
 
 v0.16
- - Fixed bug #20
  - Added "score" stab. Implemented simple algorithm for scoring chatbots.
  - Logging new stats such as history lines, history lexicon size, rule points,
    among others
+ - Fixed bug #20
 
 v0.15
  - Logging simple stats: total words, total different words and connection

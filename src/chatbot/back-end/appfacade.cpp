@@ -211,16 +211,16 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
         defaultNlpOptions |= BE::AppFacade::LemmatizeSentence;
         #endif
 
-        m_rulesFile.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
-        m_rulesFile.setAsSaved();
+        m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
+        m_rules.setAsSaved();
     } else {
-        loaded = m_rulesFile.load(filename);
+        loaded = m_rules.load(filename);
     }
 
     if (loaded) {
-        Stats::StatsManager::manager()->setChatbotId(m_rulesFile.chatbotId());
+        Stats::StatsManager::manager()->setChatbotId(m_rules.chatbotId());
 
-        setNlpEngineOptions(m_rulesFile.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
+        setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
         refreshNlpEngine();
     } else {
         close();
@@ -233,7 +233,7 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
 bool Lvk::BE::AppFacade::setDefaultRules()
 {
-    Rule *rootRule = m_rulesFile.rootRule();
+    Rule *rootRule = m_rules.rootRule();
 
     if (!rootRule) {
         return false;
@@ -271,7 +271,7 @@ bool Lvk::BE::AppFacade::setDefaultRules()
 
 bool Lvk::BE::AppFacade::save()
 {
-    return m_rulesFile.save();
+    return m_rules.save();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -280,21 +280,27 @@ bool Lvk::BE::AppFacade::saveAs(const QString &filename)
 {
     deleteCurrentChatbot();
 
-    return m_rulesFile.saveAs(filename);
+    return m_rules.saveAs(filename);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 {
-    return m_rulesFile.hasUnsavedChanges();
+    return m_rules.hasUnsavedChanges();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::close()
 {
-    updateStats();
+    // If chatbot never saved
+    if (m_rules.filename().isEmpty()) {
+        Stats::StatsManager::manager()->clear();
+        virtualUser()->clearHistory();
+    } else {
+        updateStats();
+    }
 
     if (m_nlpEngine) {
         // CHECK Do not reset NLP options?
@@ -307,7 +313,7 @@ void Lvk::BE::AppFacade::close()
     }
 
     m_targets.clear();
-    m_rulesFile.close();
+    m_rules.close();
     m_evasivesRule = 0;
 
     Stats::StatsManager::manager()->setChatbotId("");
@@ -317,28 +323,28 @@ void Lvk::BE::AppFacade::close()
 
 bool Lvk::BE::AppFacade::importRules(const QString &inputFile)
 {
-    return m_rulesFile.importRules(inputFile);
+    return m_rules.importRules(inputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::importRules(BE::Rule *container, const QString &inputFile)
 {
-    return m_rulesFile.importRules(container, inputFile);
+    return m_rules.importRules(container, inputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::exportRules(const BE::Rule *container, const QString &outputFile)
 {
-    return m_rulesFile.exportRules(container, outputFile);
+    return m_rules.exportRules(container, outputFile);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
 {
-    bool merged = m_rulesFile.mergeRules(container);
+    bool merged = m_rules.mergeRules(container);
 
     refreshNlpEngine();
 
@@ -349,7 +355,7 @@ bool Lvk::BE::AppFacade::mergeRules(BE::Rule *container)
 
 Lvk::BE::Rule * Lvk::BE::AppFacade::rootRule()
 {
-    return m_rulesFile.rootRule();
+    return m_rules.rootRule();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -363,6 +369,7 @@ Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 // Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
+// TODO Expand VirtualUser interface in order to avoid this cast
 inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
 {
     if (!m_chatbot) {
@@ -439,9 +446,9 @@ void Lvk::BE::AppFacade::refreshNlpEngine()
 
     if (m_nlpEngine) {
         Nlp::RuleList nlpRules;
-        buildNlpRulesOf(m_rulesFile.rootRule(), nlpRules);
+        buildNlpRulesOf(m_rules.rootRule(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
-        refreshEvasivesToChatbot();
+        virtualUser()->setEvasives(getEvasives());
     } else {
         qCritical("NLP engine not set");
     }
@@ -459,7 +466,7 @@ void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleLi
         const BE::Rule *child = parentRule->child(i);
 
         if (!child->id()) {
-            const_cast<BE::Rule *>(child)->setId(m_rulesFile.nextRuleId());
+            const_cast<BE::Rule *>(child)->setId(m_rules.nextRuleId());
         }
 
         if (child->type() == Rule::OrdinaryRule) {
@@ -514,8 +521,8 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
 
     m_nlpOptions = options;
 
-    if (m_rulesFile.metadata(FILE_METADATA_NLP_OPTIONS).toUInt() != options) {
-        m_rulesFile.setMetadata(FILE_METADATA_NLP_OPTIONS, options);
+    if (m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt() != options) {
+        m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, options);
     }
 }
 
@@ -533,28 +540,28 @@ unsigned Lvk::BE::AppFacade::nlpEngineOptions()
 Lvk::BE::AppFacade::ChatType Lvk::BE::AppFacade::chatType()
 {
     return static_cast<BE::AppFacade::ChatType>
-            (m_rulesFile.metadata(FILE_METADATA_CHAT_TYPE).toInt());
+            (m_rules.metadata(FILE_METADATA_CHAT_TYPE).toInt());
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::setChatType(Lvk::BE::AppFacade::ChatType type)
 {
-    m_rulesFile.setMetadata(FILE_METADATA_CHAT_TYPE, type);
+    m_rules.setMetadata(FILE_METADATA_CHAT_TYPE, type);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 QString Lvk::BE::AppFacade::username()
 {
-    return m_rulesFile.metadata(FILE_METADATA_USERNAME).toString();
+    return m_rules.metadata(FILE_METADATA_USERNAME).toString();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::setUsername(const QString &username)
 {
-    m_rulesFile.setMetadata(FILE_METADATA_USERNAME, username);
+    m_rules.setMetadata(FILE_METADATA_USERNAME, username);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -659,13 +666,14 @@ void Lvk::BE::AppFacade::setupChatbot()
 void Lvk::BE::AppFacade::setupChatbot(ChatType type)
 {
     if (type != FbChat && type != GTalkChat) {
-        return;
+        qWarning() << "Invalid chat type, defaulting to FbChat!";
+        type = FbChat;
     }
 
     m_chatbot = newChatbot(type);
     m_currentChatbotType = type;
 
-    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rulesFile.chatbotId(), m_nlpEngine);
+    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rules.chatbotId(), m_nlpEngine);
     virtualUser->setEvasives(getEvasives());
 
     m_chatbot->setVirtualUser(virtualUser);
@@ -683,29 +691,13 @@ void Lvk::BE::AppFacade::deleteCurrentChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::refreshEvasivesToChatbot()
-{
-    if (m_chatbot && m_chatbot->virtualUser()) {
-        DefaultVirtualUser *virtualUser =
-                dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-
-        if (virtualUser) {
-            virtualUser->setEvasives(getEvasives());
-        }
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::BE::AppFacade::connectChatClientSignals()
 {
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
     // FIXME add method to remap Chatbot error codes to AppFacade error codes
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
-
-    // Hmmm this doesn't look nice. TODO consider some refactoring to avoid cast
-    connect(dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser()),
+    connect(virtualUser(),
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SIGNAL(newConversationEntry(BE::Conversation::Entry)));
 }
@@ -738,36 +730,27 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 
 const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
-    if (virtualUser()) {
-        return virtualUser()->chatHistory();
-    } else {
-        static Conversation nullConversation;
-        return nullConversation;
-    }
+    return virtualUser()->chatHistory();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::clearChatHistory()
 {
-    if (virtualUser()) {
-        virtualUser()->setChatHistory(Conversation());
-    }
+    virtualUser()->clearHistory();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
 {
-    if (virtualUser()) {
-        Conversation conv;
-        foreach (const Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
-            if (entry.from != user || entry.dateTime.date() != date) {
-                conv.append(entry);
-            }
+    Conversation conv;
+    foreach (const Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
+        if (entry.from != user || entry.dateTime.date() != date) {
+            conv.append(entry);
         }
-        virtualUser()->setChatHistory(conv);
     }
+    virtualUser()->setChatHistory(conv);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -847,7 +830,7 @@ bool Lvk::BE::AppFacade::uploadScore(const Score &s, bool secure)
 {
     Cmn::RemoteLogger::FieldList fields;
     fields.append(Cmn::RemoteLogger::Field("user_id",       username()));
-    fields.append(Cmn::RemoteLogger::Field("chatbot_id",    m_rulesFile.chatbotId()));
+    fields.append(Cmn::RemoteLogger::Field("chatbot_id",    m_rules.chatbotId()));
     fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
     fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.history)));
     fields.append(Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
