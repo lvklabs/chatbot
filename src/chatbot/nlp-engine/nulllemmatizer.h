@@ -50,4 +50,4 @@ public:
 
 } // namespace Lvk
 
-#endif // LVK_NLP_DEFAULTLEMMATIZER_H
+#endif // LVK_NLP_NULLLEMMATIZER_H

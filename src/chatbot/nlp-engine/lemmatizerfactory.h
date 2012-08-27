@@ -19,14 +19,10 @@
  *
  */
 
-#ifndef LVK_NLP_DEFAULTLEMMATIZER_H
-#define LVK_NLP_DEFAULTLEMMATIZER_H
+#ifndef LVK_NLP_LEMMATIZERFACTORY_H
+#define LVK_NLP_LEMMATIZERFACTORY_H
 
-#ifdef FREELING_SUPPORT
-# include "nlp-engine/freelinglemmatizer.h"
-#else
-# include "nlp-engine/nulllemmatizer.h"
-#endif
+#include "nlp-engine/lemmatizer.h"
 
 namespace Lvk
 {
@@ -42,15 +38,17 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The DefaultLemmatizer class provides the Lemmatizer to be used according the
- *        build settings
+ * \brief LemmatizerFactory class 
  */
 
-#ifdef FREELING_SUPPORT
-typedef FreelingLemmatizer DefaultLemmatizer;
-#else
-typedef NullLemmatizer DefaultLemmatizer;
-#endif
+class LemmatizerFactory
+{
+public:
+    /**
+     * Creates a default lemmatizer.
+     */
+    Lemmatizer *createLemmatizer();
+};
 
 /// @}
 
@@ -61,5 +59,5 @@ typedef NullLemmatizer DefaultLemmatizer;
 } // namespace Lvk
 
 
-#endif // LVK_NLP_DEFAULTLEMMATIZER_H
+#endif // LVK_NLP_LEMMATIZERFACTORY_H
 

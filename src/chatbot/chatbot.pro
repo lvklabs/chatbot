@@ -117,7 +117,6 @@ HEADERS += \
     nlp-engine/nulllemmatizer.h \
     nlp-engine/rule.h \
     nlp-engine/engine.h \
-    nlp-engine/defaultlemmatizer.h \
     nlp-engine/defaultengine.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/chatvirtualuser.h \
@@ -142,6 +141,7 @@ HEADERS += \
     stats/csvstatsfile.h \
     stats/id.h \
     stats/history.h \
+    nlp-engine/lemmatizerfactory.h
 
 
 SOURCES += \
@@ -186,6 +186,7 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/csvstatsfile.cpp \
     stats/history.cpp \
+    nlp-engine/lemmatizerfactory.cpp
 
 
 FORMS += \
@@ -248,6 +249,9 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

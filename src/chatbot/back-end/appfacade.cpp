@@ -27,7 +27,7 @@
 #include "nlp-engine/rule.h"
 #include "nlp-engine/defaultengine.h"
 #include "nlp-engine/defaultsanitizer.h"
-#include "nlp-engine/defaultlemmatizer.h"
+#include "nlp-engine/lemmatizerfactory.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
 #include "common/remoteloggerfactory.h"
@@ -50,7 +50,6 @@ namespace BE
 
 typedef Lvk::Nlp::DefaultEngine DefaultEngine;
 typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
-typedef Lvk::Nlp::DefaultLemmatizer DefaultLemmatizer;
 
 } // namespace BE
 
@@ -511,7 +510,7 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
     }
 
     if ((options & LemmatizeSentence) && !(m_nlpOptions & LemmatizeSentence)) {
-        m_nlpEngine->setLemmatizer(new DefaultLemmatizer());
+        m_nlpEngine->setLemmatizer(Nlp::LemmatizerFactory().createLemmatizer());
     }
     if (!(options & LemmatizeSentence) && (m_nlpOptions & LemmatizeSentence)) {
         m_nlpEngine->setLemmatizer(0);
