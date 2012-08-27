@@ -117,9 +117,9 @@ HEADERS += \
     nlp-engine/nulllemmatizer.h \
     nlp-engine/rule.h \
     nlp-engine/engine.h \
-    nlp-engine/defaultengine.h \
     nlp-engine/lemmatizerfactory.h \
     nlp-engine/sanitizerfactory.h \
+    nlp-engine/enginefactory.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/chatvirtualuser.h \
     chat-adapter/chatbot.h \
@@ -175,6 +175,7 @@ SOURCES += \
     nlp-engine/defaultsanitizer.cpp \
     nlp-engine/lemmatizerfactory.cpp \
     nlp-engine/sanitizerfactory.cpp \
+    nlp-engine/enginefactory.cpp \
     chat-adapter/xmppchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
     chat-adapter/gtalkchatbot.cpp \
@@ -251,6 +252,10 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

@@ -18,38 +18,16 @@
  * along with LVK Chatbot.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef LVK_NLP_DEFAULTENGINE_H
-#define LVK_NLP_DEFAULTENGINE_H
 
+#include "nlp-engine/enginefactory.h"
 #include "nlp-engine/simpleaimlengine.h"
 
-namespace Lvk
+//--------------------------------------------------------------------------------------------------
+// EngineFactory
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
 {
-
-/// \addtogroup Lvk
-/// @{
-
-namespace Nlp
-{
-
-/// \ingroup Lvk
-/// \addtogroup Nlp
-/// @{
-
-/**
- * \brief The DefaultEngine class provides the NLP engine to be used according the
- *        build settings
- */
-
-typedef SimpleAimlEngine DefaultEngine;
-
-/// @}
-
-} // namespace Nlp
-
-/// @}
-
-} // namespace Lvk
-
-#endif // LVK_NLP_DEFAULTENGINE_H
+    return new Nlp::SimpleAimlEngine();
+}
 

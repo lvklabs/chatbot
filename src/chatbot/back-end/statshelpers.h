@@ -24,8 +24,8 @@
 
 #include "back-end/rule.h"
 #include "back-end/conversation.h"
-#include "nlp-engine/defaultsanitizer.h"
-#include "nlp-engine/defaultengine.h"
+#include "nlp-engine/defaultsanitizer.h"       // TODO use factories
+#include "nlp-engine/simpleaimlengine.h"       // TODO use factories
 
 namespace Lvk
 {
@@ -254,17 +254,17 @@ protected:
     {
         if (input.isEmpty() || output.isEmpty()) {
             return 0;
-        } else if (Nlp::DefaultEngine::hasVariable(input)) {
-            if (Nlp::DefaultEngine::hasConditional(output)) {
+        } else if (Nlp::SimpleAimlEngine::hasVariable(input)) {
+            if (Nlp::SimpleAimlEngine::hasConditional(output)) {
                 return 4;
-            } else if (Nlp::DefaultEngine::hasVariable(output)){
+            } else if (Nlp::SimpleAimlEngine::hasVariable(output)) {
                 return 3;
             } else {
                 return 1;
             }
-        } else if (Nlp::DefaultEngine::hasKeywordOp(input)) {
+        } else if (Nlp::SimpleAimlEngine::hasKeywordOp(input)) {
             return 2;
-        } else if (Nlp::DefaultEngine::hasRegexOp(input)) {
+        } else if (Nlp::SimpleAimlEngine::hasRegexOp(input)) {
             return 2;
         } else {
             return 1;

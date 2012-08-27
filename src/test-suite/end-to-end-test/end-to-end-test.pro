@@ -115,6 +115,9 @@ SOURCES += \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
+    ../../chatbot/nlp-engine/lemmatizerfactory.cpp \
+    ../../chatbot/nlp-engine/sanitizerfactory.cpp \
+    ../../chatbot/nlp-engine/enginefactory.cpp \
     ../../chatbot/chat-adapter/xmppchatbot.cpp \
     ../../chatbot/chat-adapter/fbchatbot.cpp \
     ../../chatbot/chat-adapter/gtalkchatbot.cpp \
@@ -125,6 +128,7 @@ SOURCES += \
     ../../chatbot/common/csvdocument.cpp \
     ../../chatbot/common/csvrow.cpp \
     ../../chatbot/common/logger.cpp \
+    ../../chatbot/common/remoteloggerfactory.cpp \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/csvstatsfile.cpp \
     ../../chatbot/stats/history.cpp \

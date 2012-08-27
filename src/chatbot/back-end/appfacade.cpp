@@ -25,7 +25,7 @@
 #include "back-end/defaultvirtualuser.h"
 #include "back-end/score.h"
 #include "nlp-engine/rule.h"
-#include "nlp-engine/defaultengine.h"
+#include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
 #include "nlp-engine/lemmatizerfactory.h"
 #include "common/random.h"
@@ -42,18 +42,6 @@
 #define FILE_METADATA_USERNAME      "username"
 #define FILE_METADATA_NLP_OPTIONS   "nlp_options"
 
-namespace Lvk
-{
-
-namespace BE
-{
-
-typedef Lvk::Nlp::DefaultEngine DefaultEngine;
-
-} // namespace BE
-
-} // namespace Lvk
-
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -64,7 +52,7 @@ namespace
 
 // Make Nlp::Rule from BE::Rule
 
-inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule)
+inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 {
     Lvk::Nlp::Rule nlpRule(rule->id(), rule->input(), rule->output());
 
@@ -80,7 +68,7 @@ inline Lvk::Nlp::Rule makeNlpRule(const Lvk::BE::Rule *rule)
 
 //--------------------------------------------------------------------------------------------------
 
-inline Lvk::CA::Chatbot *newChatbot(Lvk::BE::AppFacade::ChatType type)
+inline Lvk::CA::Chatbot *createChatbot(Lvk::BE::AppFacade::ChatType type)
 {
     switch (type) {
     case Lvk::BE::AppFacade::FbChat:
@@ -160,7 +148,7 @@ inline Lvk::Stats::History statCombinedHistory(Lvk::Stats::Id id1, Lvk::Stats::I
 Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
-      m_nlpEngine(new DefaultEngine()),
+      m_nlpEngine(Nlp::EngineFactory().createEngine()),
       m_chatbot(0),
       m_tmpChatbot(0),
       m_nlpOptions(0),
@@ -475,7 +463,7 @@ void Lvk::BE::AppFacade::buildNlpRulesOf(const BE::Rule *parentRule, Nlp::RuleLi
 
         if (child->type() == Rule::OrdinaryRule) {
             storeTargets(child->target());
-            nlpRules.append(makeNlpRule(child));
+            nlpRules.append(toNlpRule(child));
         } else if (child->type() == Rule::EvasiveRule) {
             m_evasivesRule = const_cast<BE::Rule *>(child);
         } else if (child->type() == BE::Rule::ContainerRule) {
@@ -580,7 +568,7 @@ void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const 
         delete m_tmpChatbot;
     }
 
-    m_tmpChatbot = newChatbot(type);
+    m_tmpChatbot = createChatbot(type);
 
     if (m_tmpChatbot) {
         connect(m_tmpChatbot, SIGNAL(connected()), SLOT(onAccountOk()));
@@ -675,7 +663,7 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
         type = FbChat;
     }
 
-    m_chatbot = newChatbot(type);
+    m_chatbot = createChatbot(type);
     m_currentChatbotType = type;
 
     DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rules.chatbotId(), m_nlpEngine);
