@@ -396,7 +396,7 @@
               </size>
              </property>
              <property name="popupMode">
-              <enum>QToolButton::DelayedPopup</enum>
+              <enum>QToolButton::MenuButtonPopup</enum>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
