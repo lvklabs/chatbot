@@ -26,7 +26,7 @@
 #include "back-end/score.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/defaultengine.h"
-#include "nlp-engine/defaultsanitizer.h"
+#include "nlp-engine/sanitizerfactory.h"
 #include "nlp-engine/lemmatizerfactory.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
@@ -49,7 +49,6 @@ namespace BE
 {
 
 typedef Lvk::Nlp::DefaultEngine DefaultEngine;
-typedef Lvk::Nlp::DefaultSanitizer DefaultSanitizer;
 
 } // namespace BE
 
@@ -503,7 +502,7 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
     }
 
     if ((options & RemoveDupChars) && !(m_nlpOptions & RemoveDupChars)) {
-        m_nlpEngine->setPreSanitizer(new DefaultSanitizer(DefaultSanitizer::RemoveDupChars));
+        m_nlpEngine->setPreSanitizer(Nlp::SanitizerFactory().createPreSanitizer());
     }
     if (!(options & RemoveDupChars) && (m_nlpOptions & RemoveDupChars)) {
         m_nlpEngine->setPreSanitizer(0);
@@ -517,8 +516,7 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
     }
 
     if ((options & SanitizePostLemma) && !(m_nlpOptions & SanitizePostLemma)) {
-        m_nlpEngine->setPostSanitizer(new DefaultSanitizer(
-                DefaultSanitizer::RemoveDiacritic | DefaultSanitizer::RemovePunctuation));
+        m_nlpEngine->setPostSanitizer(Nlp::SanitizerFactory().createPostSanitizer());
     }
     if (!(options & SanitizePostLemma) && (m_nlpOptions & SanitizePostLemma)) {
         m_nlpEngine->setPostSanitizer(0);
