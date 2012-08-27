@@ -158,6 +158,20 @@ void Lvk::CA::XmppChatbot::disconnectFromServer()
 
 //--------------------------------------------------------------------------------------------------
 
+const QString & Lvk::CA::XmppChatbot::username()
+{
+    return m_user;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QString & Lvk::CA::XmppChatbot::domain()
+{
+    return m_domain;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::CA::XmppChatbot::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
 {
     QMutexLocker locker(m_virtualUserMutex);
@@ -355,6 +369,8 @@ void Lvk::CA::XmppChatbot::onDisconnected()
     }
 
     m_isConnected = false;
+    m_user.clear();
+    m_domain.clear();
 }
 
 //--------------------------------------------------------------------------------------------------

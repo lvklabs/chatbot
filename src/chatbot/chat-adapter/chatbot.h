@@ -87,6 +87,18 @@ public:
     virtual void disconnectFromServer() = 0;
 
     /**
+     * Returns the username used to connect to the server. Returns an empty string, if
+     * connectToServer() was never called or it is disconnected.
+     */
+    virtual const QString &username() = 0;
+
+    /**
+     * Returns the domain used to connect to the server. Returns an empty string, if
+     * connectToServer() was never called or it is disconnected.
+     */
+    virtual const QString &domain() = 0;
+
+    /**
      * Sets the virtual user.
      */
     virtual void setVirtualUser(VirtualUser *virtualUser) = 0;

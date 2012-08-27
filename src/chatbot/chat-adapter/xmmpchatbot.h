@@ -85,61 +85,64 @@ public:
     };
 
     /**
-     * Connects to the chat server at \a domain using \a user and \a password
-     * Emits \a connected signal on success. Otherwise; emits \a connectionError.
-     * If the connection ends prematurely, emits \a disconnected.
+     * \copydoc Chatbot::connectToServer(const QString&, const QString&, const QString&)
      */
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &domain);
 
     /**
-     * Disconnects from chat server.
+     * \copydoc Chatbot::disconnectFromServer()
      */
     virtual void disconnectFromServer();
 
     /**
-     * Sets the virtual user.
+     * \copydoc Chatbot::username()
+     */
+    virtual const QString &username();
+
+    /**
+     * \copydoc Chatbot::domain()
+     */
+    virtual const QString &domain();
+
+    /**
+     * \copydoc Chatbot::setVirtualUser()
      */
     virtual void setVirtualUser(VirtualUser *virtualUser);
 
     /**
-     * Returns the virtual user.
+     * \copydoc Chatbot::virtualUser()
      */
     virtual VirtualUser *virtualUser();
 
     /**
-     * Returns the roster. i.e. the list of all chat contacts.
+     * \copydoc Chatbot::roster()
      */
     virtual ContactInfoList roster() const;
 
     /**
-     * Sets the black list roster \a blackList.
-     * The black list roster is the list of contacts that the chatbot is forbidden to talk to.
-     * By default, this list is empty.
+     * \copydoc Chatbot::setBlackListRoster()
      */
     virtual void setBlackListRoster(const ContactInfoList &blackList);
 
     /**
-     * Returns the black list roster.
-     * The black list roster is the list of contacts that the chatbot is forbidden to talk to.
-     * By default, this list is empty.
+     * \copydoc Chatbot::blackListRoster()
      */
     virtual ContactInfoList blackListRoster() const;
 
 signals:
 
     /**
-     * This signal is emitted after invoking connectToServer() if the connection was successful.
+     * \copydoc Chatbot::connected()
      */
     void connected();
 
     /**
-     * This signal is emitted after invoking connectToServer() if the connection has ended.
+     * \copydoc Chatbot::disconnected()
      */
     void disconnected();
 
     /**
-     * This signal es emitted after invoking connectToServer() if there was an error while trying
-     * to connect to the chat server.
+     * \copydoc Chatbot::error()
      */
     void error(int err);
 

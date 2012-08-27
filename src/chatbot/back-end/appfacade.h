@@ -34,7 +34,7 @@
 #include "back-end/conversation.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
-
+#include "common/remotelogger.h"
 
 class QFile;
 
@@ -401,7 +401,10 @@ private:
     void deleteCurrentChatbot();
     void connectChatClientSignals();
     void updateStats();
-    bool uploadScore(const Score &s, bool secure);
+    bool logScore(bool manualUpload);
+    bool logAccountVerified(const QString &username, const QString &domain);
+    bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
+
 };
 
 /// @}
