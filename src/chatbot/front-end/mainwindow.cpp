@@ -1313,7 +1313,6 @@ void Lvk::FE::MainWindow::onAddVarRuleAction()
 void Lvk::FE::MainWindow::onAddConditionalRuleAction()
 {
     addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
-                      // Cannot use STR_CF_IF and STR_CF_ELSE here. Qt Linguist does not parse.
                       QStringList() << tr("{if [variable] = value} response 1"
                                           " {else} response 2"));
 }

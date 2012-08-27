@@ -53,7 +53,7 @@ public:
     /**
      * Creates a NullRemoteLogger object.
      */
-    NullRemoteLogger(LogFomat /*format*/) { }
+    NullRemoteLogger(LogFomat /*format*/, bool /*encrypt*/) { }
 
     /**
      * \copydoc RemoteLogger::log(const QString&)

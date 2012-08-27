@@ -870,10 +870,10 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
 
     // If secure conection use Syslog TCP, otherwise use GELF UDP
     if (secure) {
-        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::SyslogTCP);
+        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::SyslogTCP, true);
         return logger.log(msg, fullFields) == 0;
     } else {
-        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::GELF);
+        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::GELF, false);
         return logger.log(msg, fullFields) == 0;
     }
 }

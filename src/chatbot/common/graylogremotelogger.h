@@ -56,9 +56,10 @@ public:
     GraylogRemoteLogger();
 
     /**
-     * Creates a GraylogRemoteLogger object.
+     * Creates a GraylogRemoteLogger object with \a format. If \a encrypt is true, messages
+     * are encrypted before sending.
      */
-    GraylogRemoteLogger(LogFomat format);
+    GraylogRemoteLogger(LogFomat format, bool encrypt);
 
     /**
      * \copydoc RemoteLogger::log(const QString&)
@@ -73,6 +74,7 @@ public:
 private:
 
     LogFomat m_format;
+    bool m_encrypt;
 };
 
 /// @}

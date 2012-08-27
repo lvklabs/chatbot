@@ -181,14 +181,14 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
-    : m_format(GELF)
+    : m_format(GELF), m_encrypt(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
-    : m_format(format)
+Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format, bool encrypt)
+    : m_format(format), m_encrypt(encrypt)
 {
 }
 
@@ -203,13 +203,31 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg)
 
 int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fields)
 {
+    QByteArray data;
+
     switch (m_format) {
     case GELF:
-        return sendUdpMessage(Gelf(Gelf::Informational, msg, toGelfFields(fields)).data());
+        data = Gelf(Gelf::Informational, msg, toGelfFields(fields)).data();
+        break;
     case SyslogTCP:
-        return sendTcpMessage(Syslog(msg + " " + toString(fields)).data());
     case SyslogUDP:
-        return sendUdpMessage(Syslog(msg + " " + toString(fields)).data());
+        data = Syslog(msg + " " + toString(fields)).data();
+        break;
+   default:
+        qCritical() << "GraylogRemoteLogger: Invalid log format" << m_format;
+        break;
+    }
+
+    if (data.size() > 0 && m_encrypt) {
+        //TODO encrypt(data, key);
+    }
+
+    switch (m_format) {
+    case GELF:
+    case SyslogUDP:
+        return sendUdpMessage(data);
+    case SyslogTCP:
+        return sendTcpMessage(data);
     default:
         return 1;
     }
