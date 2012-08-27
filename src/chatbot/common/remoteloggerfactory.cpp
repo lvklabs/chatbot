@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef LVK_CMN_DEFAULTREMOTELOGGER_H
-#define LVK_CMN_DEFAULTREMOTELOGGER_H
+#include "remoteloggerfactory.h"
 
 #ifdef GELF_STATS_SUPPORT
 # include "common/graylogremotelogger.h"
@@ -28,38 +27,28 @@
 # include "common/nullremotelogger.h"
 #endif
 
-namespace Lvk
+//--------------------------------------------------------------------------------------------------
+// RemoteLoggerFactory
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createFastLogger()
 {
-
-/// \addtogroup Lvk
-/// @{
-
-namespace Cmn
-{
-
-/// \ingroup Lvk
-/// \addtogroup Cmn
-/// @{
-
-/**
- * \brief The DefaultRemoteLogger class provides the RemoteLogger to be used according the
- *        build settings
- */
-
 #ifdef GELF_STATS_SUPPORT
-typedef GraylogRemoteLogger DefaultRemoteLogger;
+    return new GraylogRemoteLogger(GraylogRemoteLogger::GELF, false);
 #else
-typedef NullRemoteLogger DefaultRemoteLogger;
+    return new NullRemoteLogger();
 #endif
 
-/// @}
+}
 
-} // namespace Cmn
+//--------------------------------------------------------------------------------------------------
 
-/// @}
-
-} // namespace Lvk
-
-
-#endif // LVK_CMN_DEFAULTREMOTELOGGER_H
+Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createSecureLogger()
+{
+#ifdef GELF_STATS_SUPPORT
+    return new GraylogRemoteLogger(GraylogRemoteLogger::SyslogTCP, true);
+#else
+    return new NullRemoteLogger();
+#endif
+}
 

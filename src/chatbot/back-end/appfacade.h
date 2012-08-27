@@ -389,6 +389,8 @@ private:
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
     unsigned m_nlpOptions;
+    Cmn::RemoteLogger *m_fastLogger;
+    Cmn::RemoteLogger *m_secureLogger;
 
     bool setDefaultRules();
 

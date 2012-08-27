@@ -51,6 +51,16 @@ class GraylogRemoteLogger : public RemoteLogger
 public:
 
     /**
+     * Graylog supported log formats.
+     */
+    enum LogFomat
+    {
+        GELF,       ///< Graylog Extended Log Format (always UDP connection)
+        SyslogTCP,  ///< Syslog over TCP connection
+        SyslogUDP   ///< Syslog over UDP connection
+    };
+
+    /**
      * Creates a GraylogRemoteLogger object.
      */
     GraylogRemoteLogger();

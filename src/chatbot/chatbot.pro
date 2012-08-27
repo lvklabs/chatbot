@@ -136,7 +136,7 @@ HEADERS += \
     common/logger.h \
     common/remotelogger.h \
     common/nullremotelogger.h \
-    common/defaultremotelogger.h \
+    common/remoteloggerfactory.h \
     stats/statsmanager.h \
     stats/statsfile.h \
     stats/csvstatsfile.h \
@@ -182,6 +182,7 @@ SOURCES += \
     common/csvdocument.cpp \
     common/csvrow.cpp \
     common/logger.cpp \
+    common/remoteloggerfactory.cpp \
     stats/statsmanager.cpp \
     stats/csvstatsfile.cpp \
     stats/history.cpp \
@@ -247,6 +248,9 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

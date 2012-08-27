@@ -30,7 +30,7 @@
 #include "nlp-engine/defaultlemmatizer.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
-#include "common/defaultremotelogger.h"
+#include "common/remoteloggerfactory.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
@@ -165,7 +165,9 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_nlpEngine(new DefaultEngine()),
       m_chatbot(0),
       m_tmpChatbot(0),
-      m_nlpOptions(0)
+      m_nlpOptions(0),
+      m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
 {
 }
 
@@ -177,7 +179,9 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nlpEngine(nlpEngine),
       m_chatbot(0),
       m_tmpChatbot(0),
-      m_nlpOptions(0) // FIXME value?
+      m_nlpOptions(0), // FIXME value?
+      m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
 {
 }
 
@@ -187,8 +191,10 @@ Lvk::BE::AppFacade::~AppFacade()
 {
     close();
 
-    delete m_chatbot;
+    delete m_secureLogger;
+    delete m_fastLogger;
     delete m_tmpChatbot;
+    delete m_chatbot;
     delete m_nlpEngine;
 }
 
@@ -870,10 +876,8 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
 
     // If secure conection use Syslog TCP, otherwise use GELF UDP
     if (secure) {
-        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::SyslogTCP, true);
-        return logger.log(msg, fullFields) == 0;
+        return m_secureLogger->log(msg, fullFields) == 0;
     } else {
-        Cmn::DefaultRemoteLogger logger(Cmn::DefaultRemoteLogger::GELF, false);
-        return logger.log(msg, fullFields) == 0;
+        return m_fastLogger->log(msg, fullFields) == 0;
     }
 }

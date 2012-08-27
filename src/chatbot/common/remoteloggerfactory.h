@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_CMN_NULLREMOTELOGGER_H
-#define LVK_CMN_NULLREMOTELOGGER_H
+#ifndef LVK_CMN_REMOTELOGGERFACTORY_H
+#define LVK_CMN_REMOTELOGGERFACTORY_H
 
 #include "common/remotelogger.h"
 
@@ -38,27 +38,23 @@ namespace Cmn
 /// @{
 
 /**
- * \brief The NullRemoteLogger class provides a remote logger that does nothing
+ * \brief The RemoteLoggerFactory class provides a factory of remote loggers.
  */
-
-class NullRemoteLogger : public RemoteLogger
+class RemoteLoggerFactory
 {
 public:
 
     /**
-     * Creates a NullRemoteLogger object.
+     * Constructs a remote logger that provides fast logging by using an unreliable channel.
+     * There is no guarantee of delivery.
      */
-    NullRemoteLogger() { }
+    RemoteLogger *createFastLogger();
 
     /**
-     * \copydoc RemoteLogger::log(const QString&)
+     * Constructs a remote logger that provides secure logging by using a reliable and
+     * encrypted channel.
      */
-    virtual int log(const QString &/*msg*/) { return 0; }
-
-    /**
-     * \copydoc RemoteLogger::log(const QString &, const FieldList&)
-     */
-    virtual int log(const QString &/*msg*/, const FieldList &/*fields*/) { return 0; }
+    RemoteLogger *createSecureLogger();
 };
 
 /// @}
@@ -70,5 +66,5 @@ public:
 } // namespace Lvk
 
 
-#endif // LVK_CMN_NULLREMOTELOGGER_H
+#endif // LVK_CMN_REMOTELOGGERFACTORY_H
 
