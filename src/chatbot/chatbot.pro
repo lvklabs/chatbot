@@ -16,7 +16,7 @@ DEFINES +=  \
     DRAG_AND_DROP_DISABLED
 
 win32 {
-    CONFIG  += freeling
+    CONFIG  += freeling gelf_stats
 } else:mac {
     CONFIG  +=
     DEFINES += MAC_OS_X
@@ -41,28 +41,38 @@ FREELING_BASE_PATH    = $$THIRD_PARTY_PATH/Freeling
 FREELING_INCLUDE_PATH = $$FREELING_BASE_PATH/include
 FREELING_LIB_PATH     = $$FREELING_BASE_PATH/lib
 
+ZLIB_BASE_PATH        = $$THIRD_PARTY_PATH/zlib
+ZLIB_INCLUDE_PATH     = $$ZLIB_BASE_PATH/include
+ZLIB_LIB_PATH         = $$ZLIB_BASE_PATH/lib
+
 
 CONFIG(debug, debug|release) {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32_d
         FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
+        ZLIB_LIBS          = -lz_win32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac_d
         FREELING_LIBS      = # TODO compile freeling for Mac
+        ZLIB_LIBS          = # TODO compile zlib for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
         FREELING_LIBS      = -lmorfo -lfries -lomlet
+        ZLIB_LIBS          = -lz
     }
 } else {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32
         FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
+        ZLIB_LIBS          = -lz_win32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac
         FREELING_LIBS      = # TODO compile freeling for Mac
+        ZLIB_LIBS          = # TODO compile zlib for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp
         FREELING_LIBS      = -lmorfo -lfries -lomlet
+        ZLIB_LIBS          = -lz
     }
 }
 
@@ -211,10 +221,10 @@ freeling {
 
 gelf_stats {
     DEFINES += GELF_STATS_SUPPORT
-    INCLUDEPATH +=
+    INCLUDEPATH += $$ZLIB_INCLUDE_PATH
     HEADERS += common/zlibhelper.h common/graylogremotelogger.h common/gelf.h
     SOURCES += common/zlibhelper.cpp common/graylogremotelogger.cpp common/gelf.cpp
-    LIBS += -lz
+    LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
 }
 
 
