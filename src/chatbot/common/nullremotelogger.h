@@ -51,6 +51,11 @@ public:
     NullRemoteLogger() { }
 
     /**
+     * Creates a NullRemoteLogger object.
+     */
+    NullRemoteLogger(LogFomat /*format*/) { }
+
+    /**
      * \copydoc RemoteLogger::log(const QString&)
      */
     virtual int log(const QString &/*msg*/) { return 0; }

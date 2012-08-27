@@ -22,7 +22,7 @@
 #ifndef LVK_CA_FBCHATBOT_H
 #define LVK_CA_FBCHATBOT_H
 
-#include "chat-adapter/xmmpchatbot.h"
+#include "chat-adapter/xmppchatbot.h"
 #include "chat-adapter/chatcorpus.h"
 
 #include <QHash>

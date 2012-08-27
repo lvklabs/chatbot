@@ -72,7 +72,7 @@ HEADERS += \
     ../../chatbot/nlp-engine/nullsanitizer.h \
     ../../chatbot/chat-adapter/chatvirtualuser.h \
     ../../chatbot/chat-adapter/chatbot.h \
-    ../../chatbot/chat-adapter/xmmpchatbot.h \
+    ../../chatbot/chat-adapter/xmppchatbot.h \
     ../../chatbot/chat-adapter/fbchatbot.h \
     ../../chatbot/chat-adapter/gtalkchatbot.h \
     ../../chatbot/chat-adapter/chatcorpus.h \
@@ -115,7 +115,7 @@ SOURCES += \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
-    ../../chatbot/chat-adapter/xmmpchatbot.cpp \
+    ../../chatbot/chat-adapter/xmppchatbot.cpp \
     ../../chatbot/chat-adapter/fbchatbot.cpp \
     ../../chatbot/chat-adapter/gtalkchatbot.cpp \
     ../../chatbot/chat-adapter/chatbot.cpp \

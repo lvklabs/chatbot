@@ -50,13 +50,6 @@ class GraylogRemoteLogger : public RemoteLogger
 {
 public:
 
-    enum LogFomat
-    {
-        GELF,
-        SyslogTCP,
-        SyslogUDP
-    };
-
     /**
      * Creates a GraylogRemoteLogger object.
      */

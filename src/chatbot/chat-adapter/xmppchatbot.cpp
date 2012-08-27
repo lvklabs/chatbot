@@ -19,7 +19,7 @@
  *
  */
 
-#include "chat-adapter/xmmpchatbot.h"
+#include "chat-adapter/xmppchatbot.h"
 #include "chat-adapter/chatvirtualuser.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"

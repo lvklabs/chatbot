@@ -50,6 +50,16 @@ class RemoteLogger
 public:
 
     /**
+     * Logging formats.
+     */
+    enum LogFomat
+    {
+        GELF,       ///< Graylog Extended Log Format (always UDP connection)
+        SyslogTCP,  ///< Syslog over TCP connection
+        SyslogUDP   ///< Syslog over UDP connection
+    };
+
+    /**
      * The Field class provides a (key, value) pair to set additional information besides
      * the log message
      */
