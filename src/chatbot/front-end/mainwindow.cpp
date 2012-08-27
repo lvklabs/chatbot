@@ -638,7 +638,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
-        ui->teachRuleButton->setText(tr("Save changes"));
+        ui->teachRuleButton->setText(tr("Change name"));
         break;
 
     case EditRuleUiMode:
@@ -1304,18 +1304,18 @@ void Lvk::FE::MainWindow::onRemoveButtonClicked()
 void Lvk::FE::MainWindow::onAddVarRuleAction()
 
 {
-    addRuleWithDialog(QStringList() << tr("This rule has a [variable]"),
-                      QStringList() << tr("Reply using [variable]"));
+    addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
+                      QStringList() << tr("left text [variable] right text"));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onAddConditionalRuleAction()
 {
-    addRuleWithDialog(QStringList() << tr("This rule has a [variable]"),
+    addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
                       // Cannot use STR_CF_IF and STR_CF_ELSE here. Qt Linguist does not parse.
-                      QStringList() << tr("{if [variable] = value} Use response 1"
-                                          " {else} Use response 2"));
+                      QStringList() << tr("{if [variable] = value} response 1"
+                                          " {else} response 2"));
 }
 
 //--------------------------------------------------------------------------------------------------
