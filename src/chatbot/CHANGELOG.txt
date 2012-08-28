@@ -3,6 +3,7 @@ v0.17
  - Added options to the 'add rule' button to add rules with templates for 
    variables and conditionals
  - New Score algorithm
+ - New UI to display scores
  - Added 'upload score' button
  - Implemented conection with Graylog server
  - Logging stats for account verification and score in Graylog server

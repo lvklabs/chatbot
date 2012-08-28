@@ -21,7 +21,8 @@
 
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
-#include "back-end/statshelpers.h"
+#include "back-end/historystatshelper.h"
+#include "back-end/rulestatshelper.h"
 #include "back-end/defaultvirtualuser.h"
 #include "back-end/score.h"
 #include "nlp-engine/rule.h"
@@ -752,6 +753,8 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 
 void Lvk::BE::AppFacade::updateStats()
 {
+    const unsigned IMPORTANT_CONTACT_TRESHOLD = 20;
+
     {
         qDebug() << "Updating rule stats...";
         RuleStatsHelper stats(rootRule());
@@ -770,7 +773,7 @@ void Lvk::BE::AppFacade::updateStats()
         setStat(Stats::HistoryChatbotLines, stats.chatbotLines());
         setStat(Stats::HistoryChatbotDiffLines, stats.chatbotDiffLines());
         setStat(Stats::HistoryContacts, stats.contacts());
-        setStat(Stats::HistoryImportantContacts, stats.contacts(20));
+        setStat(Stats::HistoryImportantContacts, stats.contacts(IMPORTANT_CONTACT_TRESHOLD));
     }
 
     if (m_chatbot) {
@@ -800,6 +803,8 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
 //        }
 //    }
 
+    const unsigned IMPORTANT_CONTACT_POINTS = 1000;
+
     unsigned trp  = uIntStat(Stats::TotalRulePoints);
     unsigned hic  = uIntStat(Stats::HistoryImportantContacts);
     unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSize);
@@ -807,7 +812,7 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
 
     BE::Score score;
     score.conversations = hcls + hcl;
-    score.contacts      = hic*1000;
+    score.contacts      = hic*IMPORTANT_CONTACT_POINTS;
     score.rules         = trp;
     score.total         = score.conversations + score.contacts + score.rules;
 

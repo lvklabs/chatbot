@@ -113,7 +113,9 @@ HEADERS += \
     back-end/conversationwriter.h \
     back-end/conversationreader.h \
     back-end/chatbotrulesfile.h \
-    back-end/statshelpers.h \
+    back-end/rulestatshelper.h \
+    back-end/historystatshelper.h \
+    back-end/statshelper.h \
     back-end/score.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
@@ -260,6 +262,9 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

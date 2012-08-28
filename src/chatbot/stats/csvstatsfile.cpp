@@ -68,19 +68,21 @@ inline bool validId(Lvk::Stats::Id id)
 Lvk::Stats::CsvStatsFile::CsvStatsFile()
     : m_mutex(new QMutex()), m_colNames(TotalColumns)
 {
-    m_colNames[DateCol]             = "Date";
-    m_colNames[LexiconSize]         = "Lexixon Size";
-    m_colNames[TotalWords]          = "Total Words";
-    m_colNames[TotalRules]          = "Total Rules";
-    m_colNames[TotalRulePoints]     = "Total Rule Points";
-    m_colNames[ConnectionTime]      = "Connection Time (secs)";
-    m_colNames[HistoryTotalLines]   = "History Total Lines";
-    m_colNames[HistoryChatbotLines] = "History Chatbot Lines";
-    m_colNames[HistoryChatbotDiffLines] = "History Chabot Different Lines";
-    m_colNames[HistoryLexiconSize]  = "History Lexicon Size";
-    m_colNames[HistoryContacts]     = "History Contacts";
-    m_colNames[RosterSize]          = "Roster Size";
-    m_colNames[EnabledRosterSize]   = "Enabled Roster";
+    m_colNames[DateCol]                   = "Date";
+    m_colNames[LexiconSize]               = "Lexixon Size";
+    m_colNames[TotalWords]                = "Total Words";
+    m_colNames[TotalRules]                = "Total Rules";
+    m_colNames[TotalRulePoints]           = "Total Rule Points";
+    m_colNames[ConnectionTime]            = "Connection Time (secs)";
+    m_colNames[HistoryTotalLines]         = "History Total Lines";
+    m_colNames[HistoryChatbotLines]       = "History Chatbot Lines";
+    m_colNames[HistoryChatbotDiffLines]   = "History Chabot Different Lines";
+    m_colNames[HistoryLexiconSize]        = "History Lexicon Size";
+    m_colNames[HistoryChatbotLexiconSize] = "History Chatbot Lexicon Size";
+    m_colNames[HistoryImportantContacts]  = "History Important Contacts";
+    m_colNames[HistoryContacts]           = "History Contacts";
+    m_colNames[RosterSize]                = "Roster Size";
+    m_colNames[EnabledRosterSize]         = "Enabled Roster";
 }
 
 //--------------------------------------------------------------------------------------------------
