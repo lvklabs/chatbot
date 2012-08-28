@@ -52,8 +52,8 @@
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
 #define FILE_EXPORT_EXTENSION       QString(QObject::tr("cef"))
 
-#define FB_ICON_FILE                ":/icons/facebook_24x24.png"
-#define GMAIL_ICON_FILE             ":/icons/gmail_24x24.png"
+#define FB_ICON_FILE                ":/icons/facebook.png"
+#define GMAIL_ICON_FILE             ":/icons/gmail.png"
 
 
 //--------------------------------------------------------------------------------------------------

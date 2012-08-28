@@ -26,8 +26,8 @@
 
 #define ICON_SIZE                   16
 #define ICON_RIGHT_MARGIN           5
-#define CLEAR_DEFAULT_ICON          ":/icons/clear_16x16.png"
-#define CLEAR_HOVER_ICON            ":/icons/clear_hover_16x16.png"
+#define CLEAR_DEFAULT_ICON          ":/icons/clear.png"
+#define CLEAR_HOVER_ICON            ":/icons/clear_hover.png"
 
 
 //--------------------------------------------------------------------------------------------------

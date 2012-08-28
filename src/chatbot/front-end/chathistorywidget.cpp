@@ -29,10 +29,10 @@
 #define DATE_FORMAT     "dd/MM/yy"
 #define TIME_FORMAT     "hh:mm:ss"
 
-#define MATCH_ICON      ":/icons/match_16x16.png"
-#define NO_MATCH_ICON   ":/icons/no_match_16x16.png"
-#define FB_ICON         ":/icons/facebook_24x24.png"
-#define GMAIL_ICON      ":/icons/gmail_24x24.png"
+#define MATCH_ICON      ":/icons/match.png"
+#define NO_MATCH_ICON   ":/icons/no_match.png"
+#define FB_ICON         ":/icons/facebook.png"
+#define GMAIL_ICON      ":/icons/gmail.png"
 #define LOCAL_TEST_ICON ":/icons/app_icon"
 
 #define USERNAME_START_TOKEN  "<"

@@ -372,11 +372,11 @@ QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, i
     case Qt::DecorationRole:
         switch (item->type()) {
         case BE::Rule::OrdinaryRule:
-            return QIcon(":/icons/rule_16x16.png");
+            return QIcon(":/icons/rule.png");
         case BE::Rule::ContainerRule:
-            return QIcon(":/icons/category_16x16.png");
+            return QIcon(":/icons/category.png");
         case BE::Rule::EvasiveRule:
-            return QIcon(":/icons/category_locked_16x16.png");
+            return QIcon(":/icons/category_locked.png");
         default:
             return QVariant();
         }

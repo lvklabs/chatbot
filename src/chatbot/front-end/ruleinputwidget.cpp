@@ -90,7 +90,7 @@ void Lvk::FE::RuleInputWidget::setupUi()
     m_targetTextEdit->setVisible(false);
     m_targetTextEdit->setPlaceholderText(m_strAnyUser);
 
-    m_selectUsersButton->setIcon(QIcon(":/icons/users_32x32.png"));
+    m_selectUsersButton->setIcon(QIcon(":/icons/users.png"));
     m_selectUsersButton->setText(tr("Select users"));
     m_selectUsersButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 

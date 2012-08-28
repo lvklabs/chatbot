@@ -13,8 +13,16 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    DRAG_AND_DROP_DISABLED
+    DRAG_AND_DROP_DISABLED # Drag and drop not working
 
+# Icon theme can be
+# - chatbot: Chatbot custom icon theme
+# - gnome  : Gnome-like icon theme
+ICON_THEME = chatbot
+
+# Chatbot config options are:
+# - freeling  : Enable freeling lemmatizer
+# - gelf_stats: Enable Graylog statistics on remote server
 win32 {
     CONFIG  += freeling gelf_stats
 } else:mac {
@@ -199,10 +207,10 @@ FORMS += \
     front-end/scorewidget.ui
 
 RESOURCES += \
-    resources.qrc
+    res/$${ICON_THEME}_theme.qrc
 
 RC_FILE = \
-    chatbot.rc
+    res/chatbot.rc
 
 TRANSLATIONS = \
     lang/chatbot_es_AR.ts
@@ -210,7 +218,7 @@ TRANSLATIONS = \
 OTHER_FILES += \
     doc/mainpage.dox \
     doc/modules.dox \
-    chatbot.rc
+    res/chatbot.rc
 
 LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 

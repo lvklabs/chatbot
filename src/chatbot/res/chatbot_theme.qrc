@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="category.png">chatbot_theme/category.png</file>
+        <file alias="add_category.png">chatbot_theme/add_category.png</file>
+        <file alias="remove.png">chatbot_theme/remove.png</file>
+        <file alias="rule.png">chatbot_theme/rule.png</file>
+        <file alias="add_rule.png">chatbot_theme/add_rule.png</file>
+        <file alias="clear_conv.png">chatbot_theme/clear_conv.png</file>
+        <file alias="category_locked.png">chatbot_theme/category_locked.png</file>
+        <file alias="no_match.png">chatbot_theme/no_match.png</file>
+        <file alias="match.png">chatbot_theme/match.png</file>
+        <file alias="facebook.png">chatbot_theme/facebook.png</file>
+        <file alias="gmail.png">chatbot_theme/gmail.png</file>
+        <file alias="teach_rule.png">chatbot_theme/teach_rule.png</file>
+        <file alias="undo.png">chatbot_theme/undo.png</file>
+        <file alias="app_icon">icon/chatbot_icon_128x228.png</file>
+        <file alias="users.png">chatbot_theme/users.png</file>
+        <file alias="new_chatbot.png">chatbot_theme/new_chatbot.png</file>
+        <file alias="open_chatbot.png">chatbot_theme/open_chatbot.png</file>
+        <file alias="open_last_chatbot.png">chatbot_theme/open_last_chatbot.png</file>
+        <file alias="verify_chatbot.png">chatbot_theme/verify_chatbot.png</file>
+        <file alias="clear.png">chatbot_theme/clear.png</file>
+        <file alias="clear_hover.png">chatbot_theme/clear_hover.png</file>
+        <file alias="add_rule_history.png">chatbot_theme/add_rule_history.png</file>
+        <file alias="remove_history.png">chatbot_theme/remove_history.png</file>
+        <file alias="show_rule.png">chatbot_theme/show_rule.png</file>
+        <file alias="change_account.png">chatbot_theme/change_account.png</file>
+        <file alias="verify_later.png">chatbot_theme/verify_later.png</file>
+        <file alias="connect.png">chatbot_theme/connect.png</file>
+    </qresource>
+</RCC>

@@ -25,7 +25,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -86,8 +86,8 @@
                   <string>Create new chatbot</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/res/new_chatbot.png</normaloff>:/icons/res/new_chatbot.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/new_chatbot.png</normaloff>:/icons/new_chatbot.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -106,8 +106,8 @@
                   <string>Open existent chatbot</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/res/open_chatbot.png</normaloff>:/icons/res/open_chatbot.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -155,8 +155,8 @@
                   <string>Open my last chatbot</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/res/open_last_chatbot.png</normaloff>:/icons/res/open_last_chatbot.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/open_last_chatbot.png</normaloff>:/icons/open_last_chatbot.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -229,7 +229,7 @@
             <bool>false</bool>
            </property>
            <widget class="QWidget" name="verticalLayoutWidget">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <layout class="QVBoxLayout" name="categoryTreeLayout">
              <item>
               <widget class="QTreeView" name="categoriesTree">
                <property name="mouseTracking">
@@ -252,7 +252,7 @@
             </layout>
            </widget>
            <widget class="QWidget" name="verticalLayoutWidget_2">
-            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,1,0,0">
+            <layout class="QVBoxLayout" name="ruleEditLayout" stretch="0,0,0,0,1,0,0">
              <item>
               <widget class="QLabel" name="categoryNameLabel">
                <property name="text">
@@ -301,8 +301,8 @@
                   <string>Undo changes</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/undo_24x24.png</normaloff>:/icons/undo_24x24.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -318,8 +318,8 @@
                   <string>Teach rule to the chatbot</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/teach_rule_24x24.png</normaloff>:/icons/teach_rule_24x24.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/teach_rule.png</normaloff>:/icons/teach_rule.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -361,8 +361,8 @@
               <string>Add category</string>
              </property>
              <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/icons/add_category_32x32.png</normaloff>:/icons/add_category_32x32.png</iconset>
+              <iconset resource="../res/chatbot_theme.qrc">
+               <normaloff>:/icons/add_category.png</normaloff>:/icons/add_category.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -386,8 +386,8 @@
               <string>Add rule</string>
              </property>
              <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/icons/add_rule_32x32.png</normaloff>:/icons/add_rule_32x32.png</iconset>
+              <iconset resource="../res/chatbot_theme.qrc">
+               <normaloff>:/icons/add_rule.png</normaloff>:/icons/add_rule.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -414,8 +414,8 @@
               <string>Remove rule or category</string>
              </property>
              <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/icons/remove_32x32.png</normaloff>:/icons/remove_32x32.png</iconset>
+              <iconset resource="../res/chatbot_theme.qrc">
+               <normaloff>:/icons/remove.png</normaloff>:/icons/remove.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -464,8 +464,8 @@
               <string>Clear</string>
              </property>
              <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/icons/clear_32x32.png</normaloff>:/icons/clear_32x32.png</iconset>
+              <iconset resource="../res/chatbot_theme.qrc">
+               <normaloff>:/icons/clear_conv.png</normaloff>:/icons/clear_conv.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -564,8 +564,8 @@
                   <string>Show definition</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/show_rule_32x32.png</normaloff>:/icons/show_rule_32x32.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/show_rule.png</normaloff>:/icons/show_rule.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -625,7 +625,7 @@
             <number>1</number>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="connectionPage">
             <layout class="QFormLayout" name="formLayout_2">
@@ -691,7 +691,7 @@
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="../resources.qrc">:/icons/facebook_24x24.png</pixmap>
+                  <pixmap resource="../res/chatbot_theme.qrc">:/icons/facebook.png</pixmap>
                  </property>
                 </widget>
                </item>
@@ -720,8 +720,8 @@
                   <string>Change user...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/avatar_default_32x32.png</normaloff>:/icons/avatar_default_32x32.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/change_account.png</normaloff>:/icons/change_account.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -814,6 +814,10 @@
                </property>
                <property name="text">
                 <string>Connect</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/chatbot_theme.qrc">
+                 <normaloff>:/icons/connect.png</normaloff>:/icons/connect.png</iconset>
                </property>
               </widget>
              </item>
@@ -960,8 +964,8 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                   <string> Facebook</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/facebook_24x24.png</normaloff>:/icons/facebook_24x24.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/facebook.png</normaloff>:/icons/facebook.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -980,8 +984,8 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                   <string> Gmail or Google Talk</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/icons/gmail_24x24.png</normaloff>:/icons/gmail_24x24.png</iconset>
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/gmail.png</normaloff>:/icons/gmail.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1060,59 +1064,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                  </property>
                 </spacer>
                </item>
-               <item row="8" column="1">
-                <spacer name="verticalSpacer_11">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="9" column="1">
-                <widget class="QLabel" name="connectionStatusLabel_v">
-                 <property name="text">
-                  <string>Verifying...</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="1">
-                <widget class="QProgressBar" name="connectionProgressBar_v">
-                 <property name="maximumSize">
-                  <size>
-                   <width>200</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="maximum">
-                  <number>0</number>
-                 </property>
-                 <property name="value">
-                  <number>-1</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="1">
-                <spacer name="verticalSpacer_12">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>133</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="7" column="1">
+               <item row="6" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
                   <widget class="QPushButton" name="verifyAccountButton">
@@ -1120,8 +1072,8 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                     <string>Verify account</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../resources.qrc">
-                     <normaloff>:/icons/res/verify_chatbot.png</normaloff>:/icons/res/verify_chatbot.png</iconset>
+                    <iconset resource="../res/chatbot_theme.qrc">
+                     <normaloff>:/icons/verify_chatbot.png</normaloff>:/icons/verify_chatbot.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1137,8 +1089,8 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                     <string>Verificar mas tarde</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../resources.qrc">
-                     <normaloff>:/icons/avatar_default_32x32.png</normaloff>:/icons/avatar_default_32x32.png</iconset>
+                    <iconset resource="../res/chatbot_theme.qrc">
+                     <normaloff>:/icons/verify_later.png</normaloff>:/icons/verify_later.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1162,6 +1114,58 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                   </spacer>
                  </item>
                 </layout>
+               </item>
+               <item row="7" column="1">
+                <spacer name="verticalSpacer_11">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>10</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="8" column="1">
+                <widget class="QLabel" name="connectionStatusLabel_v">
+                 <property name="text">
+                  <string>Verifying...</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
+                <widget class="QProgressBar" name="connectionProgressBar_v">
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="maximum">
+                  <number>0</number>
+                 </property>
+                 <property name="value">
+                  <number>-1</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <spacer name="verticalSpacer_12">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>133</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -1363,7 +1367,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../res/chatbot_theme.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -8,6 +8,6 @@ if ! [ -f $main_project_pro ]; then
   exit 1
 fi
 
-rm -f ../chatbot-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__*/qrc_resources.*
+rm -f ../chatbot-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__*/qrc_.*
 
 
