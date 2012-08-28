@@ -1,4 +1,5 @@
 v0.17
+ - New icon theme
  - Added options to the 'add rule' button to add rules with templates for 
    variables and conditionals
  - New Score algorithm
