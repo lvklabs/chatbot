@@ -765,10 +765,12 @@ void Lvk::BE::AppFacade::updateStats()
         qDebug() << "Updating history stats...";
         HistoryStatsHelper stats(chatHistory());
         setStat(Stats::HistoryLexiconSize, stats.lexiconSize());
+        setStat(Stats::HistoryChatbotLexiconSize, stats.chatbotLexiconSize());
         setStat(Stats::HistoryTotalLines, stats.lines());
         setStat(Stats::HistoryChatbotLines, stats.chatbotLines());
         setStat(Stats::HistoryChatbotDiffLines, stats.chatbotDiffLines());
         setStat(Stats::HistoryContacts, stats.contacts());
+        setStat(Stats::HistoryImportantContacts, stats.contacts(20));
     }
 
     if (m_chatbot) {
@@ -786,26 +788,28 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
 {
     updateStats();
 
-    Stats::History h = statCombinedHistory(Stats::HistoryChatbotDiffLines,
-                                           Stats::HistoryLexiconSize);
+//    Stats::History h = statCombinedHistory(Stats::HistoryChatbotDiffLines,
+//                                           Stats::HistoryLexiconSize);
 
-    unsigned maxDailyValue = 0;
+//    unsigned maxDailyValue = 0;
 
-    for (Stats::History::iterator it = h.begin(); it != h.end(); ++it) {
-        unsigned value = it->second.toUInt();
-        if (value > maxDailyValue) {
-            maxDailyValue = value;
-        }
-    }
+//    for (Stats::History::iterator it = h.begin(); it != h.end(); ++it) {
+//        unsigned value = it->second.toUInt();
+//        if (value > maxDailyValue) {
+//            maxDailyValue = value;
+//        }
+//    }
 
-    unsigned rp = uIntStat(Stats::TotalRulePoints);
-    unsigned hc = uIntStat(Stats::HistoryContacts);
+    unsigned trp  = uIntStat(Stats::TotalRulePoints);
+    unsigned hic  = uIntStat(Stats::HistoryImportantContacts);
+    unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSize);
+    unsigned hcl  = uIntStat(Stats::HistoryChatbotLines);
 
     BE::Score score;
-    score.rules      = rp;
-    score.connection = 0.0; // not used
-    score.history    = maxDailyValue + hc;
-    score.total      = score.rules + score.connection + score.history;
+    score.conversations = hcls + hcl;
+    score.contacts      = hic*1000;
+    score.rules         = trp;
+    score.total         = score.conversations + score.contacts + score.rules;
 
     return score;
 }
@@ -825,7 +829,7 @@ bool Lvk::BE::AppFacade::logScore(bool manualUpload)
 
     Cmn::RemoteLogger::FieldList fields;
     fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
-    fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.history)));
+    fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.conversations)));
     fields.append(Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
 
     if (manualUpload) {

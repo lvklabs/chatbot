@@ -22,15 +22,6 @@
 #include "scorewidget.h"
 #include "ui_scorewidget.h"
 
-#define PARTIAL_SCORE_HTML_FORMAT "<span style=\"/*font-size:12pt*/;\">%1: </span>"\
-                                  "<span style=\"/*font-size:12pt*/; color:#d30000;\">%2</span>"
-#define TOTAL_SCORE_HTML_FORMAT   "<span style=\"font-size:16pt;\">%1: </span>"\
-                                  "<span style=\"font-size:16pt; color:#d30000;\">%2</span>"
-
-//#define SCORES_HTML_FORMAT        "<p>%1</p><p>%2</p><p>%3</p><p>%4</p>"
-#define SCORES_HTML_FORMAT        "<p>%1</p><p>%2</p><p>%3</p>"
-
-
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
@@ -42,36 +33,11 @@ inline Lvk::BE::Score makeScore(double sr, double sc, double sh, double st)
 {
     Lvk::BE::Score score;
     score.rules = sr;
-    score.connection = sc;
-    score.history = sh;
+    score.contacts = sc;
+    score.conversations = sh;
     score.total = st;
 
     return score;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString getHtmlPartialScore(const QString &scoreStr, unsigned score)
-{
-    return QString(PARTIAL_SCORE_HTML_FORMAT).arg(scoreStr, QString::number(score));
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString getHtmlTotalScore(const QString &scoreStr, unsigned score)
-{
-    return QString(TOTAL_SCORE_HTML_FORMAT).arg(scoreStr, QString::number(score));
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString getHtmlScore(const Lvk::BE::Score &score)
-{
-    return QString(SCORES_HTML_FORMAT).arg(
-                getHtmlPartialScore(QObject::tr("Rule defintions score"), score.rules),
-                //getHtmlPartialScore(QObject::tr("Chatbot connection score"), score.connection),
-                getHtmlPartialScore(QObject::tr("Chatbot conversations score"), score.history),
-                getHtmlTotalScore(QObject::tr("Total score"), score.total));
 }
 
 } // namespace
@@ -89,11 +55,7 @@ Lvk::FE::ScoreWidget::ScoreWidget(QWidget *parent) :
 
     setScore(makeScore(0,0,0,0));
 
-#ifdef GELF_STATS_SUPPORT
     connect(ui->uploadButton, SIGNAL(clicked()), SIGNAL(upload()));
-#else
-    ui->uploadButton->setVisible(false);
-#endif
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -107,7 +69,10 @@ Lvk::FE::ScoreWidget::~ScoreWidget()
 
 void Lvk::FE::ScoreWidget::setScore(const BE::Score &score)
 {
-    ui->textEdit->setHtml(getHtmlScore(score));
+    ui->convPointsValue->setText(QString::number(score.conversations));
+    ui->contactsPointsValue->setText(QString::number(score.contacts));
+    ui->rulePointsValue->setText(QString::number(score.rules));
+    ui->totalPointsValue->setText(QString::number(score.total));
 }
 
 //--------------------------------------------------------------------------------------------------

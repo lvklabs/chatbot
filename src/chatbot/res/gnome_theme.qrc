@@ -27,5 +27,6 @@
         <file alias="change_account.png">gnome_theme/avatar_default.png</file>
         <file alias="verify_later.png">gnome_theme/avatar_default.png</file>
         <file alias="connect.png"></file>
+        <file alias="upload.png">gnome_theme/upload.png</file>
     </qresource>
 </RCC>

@@ -52,7 +52,9 @@ enum Id
     HistoryChatbotLines,        ///< The total amount of lines in the chat history produced by the chatbot.
     HistoryChatbotDiffLines,    ///< The total amount of different lines in the chat history produced by the chatbot
     HistoryLexiconSize,         ///< The history lexicon size, i.e. the total amount of different words used
-    HistoryContacts             ///< The amount of different contacts found in the history.
+    HistoryChatbotLexiconSize,  ///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot
+    HistoryContacts,            ///< The amount of different contacts found in the history.
+    HistoryImportantContacts    ///< The amount of different contacts found in the history with long converations
 };
 
 /// @}

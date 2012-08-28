@@ -2296,6 +2296,7 @@ void Lvk::FE::MainWindow::updateScore()
 
 void Lvk::FE::MainWindow::onUploadScore()
 {
+#ifdef GELF_STATS_SUPPORT
     if (!m_appFacade->uploadScore()) {
         QString title = tr("Upload score");
         QString message = tr("Could not upload score. Please, check your internet connection and"
@@ -2306,6 +2307,11 @@ void Lvk::FE::MainWindow::onUploadScore()
         QString message = tr("Score uploaded successfully!");
         QMessageBox::information(this, title, message);
     }
+#else
+    QString title = tr("Upload score");
+    QString message = tr("This version does not support score uploading");
+    QMessageBox::information(this, title, message);
+#endif
 }
 
 

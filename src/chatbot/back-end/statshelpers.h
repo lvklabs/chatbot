@@ -121,11 +121,33 @@ protected:
      */
     void count(const QString &s)
     {
-        QStringList words = s.split(QRegExp("\\s+"));
+        QStringList words = splitSentence(s);
 
         m_lines += 1;
         m_words += words.size();
-        updateLexicon(words);
+        updateLexicon(words, m_lexicon);
+    }
+
+    /**
+     * Splits sentence \a s and returns the list of words
+     */
+    QStringList splitSentence(const QString &s)
+    {
+        return s.split(QRegExp("\\s+"));
+    }
+
+    /**
+     * Updates \a lexicon with the given list of words \a words. Each word is sanitized before
+     * inserting.
+     */
+    void updateLexicon(const QStringList &words, QSet<QString> &lexicon)
+    {
+        foreach (const QString &w, words) {
+            QString szw = m_sanitizer.sanitize(w).toLower();
+            if (!szw.isEmpty()) {
+                lexicon.insert(szw);
+            }
+        }
     }
 
 private:
@@ -133,16 +155,6 @@ private:
     unsigned m_words;
     unsigned m_lines;
     Lvk::Nlp::DefaultSanitizer m_sanitizer;
-
-    void updateLexicon(const QStringList &words)
-    {
-        foreach (const QString &w, words) {
-            QString szw = m_sanitizer.sanitize(w).toLower();
-            if (!szw.isEmpty()) {
-                m_lexicon.insert(szw);
-            }
-        }
-    }
 };
 
 
@@ -320,6 +332,24 @@ public:
         return m_contacts.size();
     }
 
+    /**
+     * Returns how many different contacts with at least \a minChats chat entries contains
+     * the history.
+     */
+    unsigned contacts(unsigned /*minChats*/)
+    {
+        return m_contacts.size(); // FIXME
+    }
+
+    /**
+     * Returns the chatbot lexicon size. i.e. the total amount of different words used by
+     * the chatbot.
+     */
+    unsigned chatbotLexiconSize()
+    {
+        return m_chatbotLexicon.size();
+    }
+
 protected:
 
     /**
@@ -344,6 +374,7 @@ protected:
         if (!entry.response.isEmpty()) {
             m_contacts.insert(entry.from);
             m_chatbotLines.insert(entry.response);
+            updateLexicon(splitSentence(entry.response), m_chatbotLexicon);
             ++m_chatbotLinesTotal;
         }
     }
@@ -351,6 +382,7 @@ protected:
 private:
     QSet<QString> m_contacts;
     QSet<QString> m_chatbotLines;
+    QSet<QString> m_chatbotLexicon;
     unsigned m_chatbotLinesTotal;
 };
 
