@@ -138,7 +138,6 @@ private:
     bool                     m_ruleEdited;
     bool                     m_ruleAdded;
     BE::Rule                 m_ruleBackup;
-    BE::ConversationWriter  *m_testConversationLog;
     QString                  m_filename;
     QString                  m_lastFilename;
     UiTabsLayout             m_tabsLayout;

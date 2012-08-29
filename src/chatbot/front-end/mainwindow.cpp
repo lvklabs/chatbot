@@ -46,7 +46,6 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 
-#define TEST_CONVERSATION_LOG_FILE  "local_tests.log"
 #define APP_ICON_FILE               ":/icons/app_icon"
 
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
@@ -180,7 +179,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleTreeModel(0),
     m_ruleEdited(false),
     m_ruleAdded(false),
-    m_testConversationLog(0),
     m_tabsLayout(NullLayout),
     m_connectionStatus(DisconnectedFromChat)
 {
@@ -190,10 +188,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     Lvk::Cmn::Settings settings;
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
-
-    QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
-    QString testConvLogFilename = logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE;
-    m_testConversationLog = new Lvk::BE::ConversationWriter(testConvLogFilename);
 
     setupUi();
 
@@ -206,7 +200,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
 Lvk::FE::MainWindow::~MainWindow()
 {
-    delete m_testConversationLog;
     delete m_appFacade;
     delete ui;
 
@@ -1920,20 +1913,13 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
 
     QString response = m_appFacade->getResponse(input, matches);
 
+    qDebug() << "Test input:" << input << " Response:" << response << " Matches:" << matches.size();
+
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
     ui->clearTestConversationButton->setEnabled(true);
 
     highlightMatchedRules(matches);
-
-    // Log conversation
-    BE::Conversation::Entry entry(QDateTime::currentDateTime(),"test", "test", input, response,
-                                  !matches.isEmpty());
-
-    // Disabled conversation history
-    //onNewChatConversation(entry);
-
-    m_testConversationLog->write(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
