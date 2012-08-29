@@ -77,8 +77,14 @@ void Lvk::FE::ScoreWidget::setScore(const BE::Score &score)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ScoreWidget::setUploadVisible(bool visible)
+{
+    ui->uploadButton->setVisible(visible);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::ScoreWidget::clear()
 {
     setScore(makeScore(0,0,0,0));
 }
-

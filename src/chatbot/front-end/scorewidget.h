@@ -68,6 +68,11 @@ public:
     void setScore(const BE::Score &score);
 
     /**
+     * Sets if the upload button is visible or not. By default is visible.
+     */
+    void setUploadVisible(bool visible);
+
+    /**
      * Clears the widget
      */
     void clear();

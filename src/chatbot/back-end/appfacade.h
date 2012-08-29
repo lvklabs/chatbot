@@ -325,9 +325,14 @@ public:
     void clearChatHistory(const QDate &date, const QString &user);
 
     /**
-     * Returns the score for the current chatbot
+     * Returns the current score for the chatbot
      */
-    Score score();
+    Score currentScore();
+
+    /**
+     * Returns the best score for the chatbot
+     */
+    Score bestScore();
 
     /**
      * Uploads the current score to the server.

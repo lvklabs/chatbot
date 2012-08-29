@@ -190,6 +190,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
+    ui->curScoreWidget->setUploadVisible(false);
 
     Lvk::Cmn::Settings settings;
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
@@ -416,7 +417,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Score tab
 
-    connect(ui->scoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
+    connect(ui->curScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
 
     // Misc
 
@@ -2289,7 +2290,8 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
 
 void Lvk::FE::MainWindow::updateScore()
 {
-    ui->scoreWidget->setScore(m_appFacade->score());
+    ui->curScoreWidget->setScore(m_appFacade->currentScore());
+    ui->bestScoreWidget->setScore(m_appFacade->bestScore());
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -787,7 +787,7 @@ void Lvk::BE::AppFacade::updateStats()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Score Lvk::BE::AppFacade::score()
+Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
 {
     updateStats();
 
@@ -821,6 +821,13 @@ Lvk::BE::Score Lvk::BE::AppFacade::score()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::BE::Score Lvk::BE::AppFacade::bestScore()
+{
+    return currentScore(); // FIXME
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::BE::AppFacade::uploadScore()
 {
     return logScore(true);
@@ -830,7 +837,7 @@ bool Lvk::BE::AppFacade::uploadScore()
 
 bool Lvk::BE::AppFacade::logScore(bool manualUpload)
 {
-    Score s = score();
+    Score s = bestScore();
 
     Cmn::RemoteLogger::FieldList fields;
     fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
@@ -875,3 +882,4 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
         return m_fastLogger->log(msg, fullFields) == 0;
     }
 }
+
