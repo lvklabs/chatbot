@@ -211,6 +211,7 @@ Lvk::FE::MainWindow::~MainWindow()
 void Lvk::FE::MainWindow::setupUi()
 {
     ui->setupUi(this);
+
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
     ui->curScoreWidget->setLabelsVisible(false);
@@ -1847,6 +1848,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     ui->undoRuleButton->setEnabled(false);
 
     m_appFacade->refreshNlpEngine();
+    m_appFacade->save();
 }
 
 //--------------------------------------------------------------------------------------------------
