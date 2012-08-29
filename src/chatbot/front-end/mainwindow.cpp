@@ -214,7 +214,6 @@ void Lvk::FE::MainWindow::setupUi()
 
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
-    ui->curScoreWidget->setLabelsVisible(false);
 
     clear();
 
