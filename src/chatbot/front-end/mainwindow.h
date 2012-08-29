@@ -144,6 +144,8 @@ private:
     UiTabsLayout             m_tabsLayout;
     ConnectionStatus         m_connectionStatus;
 
+    void setupUi();
+
     void clear(bool resetModel);
 
     BE::Rule *addCategory(const QString &name);

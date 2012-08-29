@@ -188,32 +188,14 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     checkAppExpiration();
 
-    ui->setupUi(this);
-    ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
-    ui->curScoreWidget->setUploadVisible(false);
-
     Lvk::Cmn::Settings settings;
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
-
-    clear();
-
-    connectSignals();
-
-    ui->testInputText->installEventFilter(this);
-    ui->ruleInputWidget->installEventFilter(this);
-    ui->ruleOutputWidget->installEventFilter(this);
-
-    QMenu *menu = new QMenu(this);
-    menu->addAction(ui->actionAddEmptyRule);
-    menu->addAction(ui->actionAddVarRule);
-    menu->addAction(ui->actionAddConditionalRule);
-    ui->addRuleButton->setMenu(menu);
-
-    setWindowIcon(QIcon(APP_ICON_FILE));
 
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
     QString testConvLogFilename = logsPath + QDir::separator() + TEST_CONVERSATION_LOG_FILE;
     m_testConversationLog = new Lvk::BE::ConversationWriter(testConvLogFilename);
+
+    setupUi();
 
     loadAllSettings();
 
@@ -233,6 +215,31 @@ Lvk::FE::MainWindow::~MainWindow()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::setupUi()
+{
+    ui->setupUi(this);
+    ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
+    ui->curScoreWidget->setUploadVisible(false);
+    ui->curScoreWidget->setLabelsVisible(false);
+
+    clear();
+
+    connectSignals();
+
+    ui->testInputText->installEventFilter(this);
+    ui->ruleInputWidget->installEventFilter(this);
+    ui->ruleOutputWidget->installEventFilter(this);
+
+    QMenu *menu = new QMenu(this);
+    menu->addAction(ui->actionAddEmptyRule);
+    menu->addAction(ui->actionAddVarRule);
+    menu->addAction(ui->actionAddConditionalRule);
+    ui->addRuleButton->setMenu(menu);
+
+    setWindowIcon(QIcon(APP_ICON_FILE));
+}
+
+//--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::clear()
 {
@@ -2315,6 +2322,7 @@ void Lvk::FE::MainWindow::onUploadScore()
     QMessageBox::information(this, title, message);
 #endif
 }
+
 
 
 
