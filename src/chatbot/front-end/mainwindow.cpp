@@ -2247,6 +2247,19 @@ void Lvk::FE::MainWindow::onSplitterMoved(int, int)
 
 void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
 {
+    if (m_ruleEdited || m_ruleAdded) {
+        // No QTabWidget does not have aboutToChange signal, so we are doing this trick:
+        disconnect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)), this,
+                   SLOT(onCurrentTabChanged(QWidget*)));
+
+        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
+        handleRuleEdited(selectedRule());
+        ui->mainTabWidget->setCurrentWidget(tab);
+
+        connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
+                SLOT(onCurrentTabChanged(QWidget*)));
+    }
+
     if (tab == ui->scoreTab) {
         updateScore();
     }
