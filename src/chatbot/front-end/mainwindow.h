@@ -31,6 +31,7 @@
 class TestMainWindow;
 class QModelIndex;
 class QFile;
+class QLabel;
 
 namespace Ui
 {
@@ -90,9 +91,10 @@ public:
     void clear();
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
 
-    virtual bool eventFilter(QObject *object, QEvent *event);
+    virtual bool event(QEvent *event);
+
+    virtual void closeEvent(QCloseEvent *event);
 
 private:
     MainWindow(MainWindow&);
@@ -142,6 +144,7 @@ private:
     QString                  m_lastFilename;
     UiTabsLayout             m_tabsLayout;
     ConnectionStatus         m_connectionStatus;
+    QLabel                  *m_scoreLabel;
 
     void setupUi();
 
@@ -213,6 +216,7 @@ private:
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
 
     void updateScore();
+    void updateScoreLabelPos();
 
 private slots:
     void onAddCategoryButtonClicked();

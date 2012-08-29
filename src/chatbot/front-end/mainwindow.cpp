@@ -23,6 +23,7 @@
 #include "front-end/ruletreemodel.h"
 #include "front-end/exportdialog.h"
 #include "front-end/importdialog.h"
+#include "front-end/scorewidget.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -180,7 +181,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleEdited(false),
     m_ruleAdded(false),
     m_tabsLayout(NullLayout),
-    m_connectionStatus(DisconnectedFromChat)
+    m_connectionStatus(DisconnectedFromChat),
+    m_scoreLabel(0)
 {
     qDebug() << "Setting up main window...";
 
@@ -215,13 +217,12 @@ void Lvk::FE::MainWindow::setupUi()
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
 
+    m_scoreLabel = new QLabel(ui->mainTabWidget);
+    m_scoreLabel->setAlignment(Qt::AlignRight);
+
     clear();
 
     connectSignals();
-
-    ui->testInputText->installEventFilter(this);
-    ui->ruleInputWidget->installEventFilter(this);
-    ui->ruleOutputWidget->installEventFilter(this);
 
     QMenu *menu = new QMenu(this);
     menu->addAction(ui->actionAddEmptyRule);
@@ -279,6 +280,11 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->ruleViewGroupBox->setVisible(false);
     ui->transfView->clear();
     ui->transfViewGroupBox->setVisible(false);
+
+    // score tab widgets
+    ui->curScoreWidget->clear();
+    ui->bestScoreWidget->clear();
+    m_scoreLabel->setText(QString(100, QChar(' '))); // Reserving space. Does not autoresize.
 
     // advanced options tab widgets
     ui->rmDupCheckBox->setChecked(true);
@@ -417,7 +423,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Score tab
 
-    connect(ui->curScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
+    connect(ui->bestScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
 
     // Misc
 
@@ -445,20 +451,19 @@ void Lvk::FE::MainWindow::selectFirstRule()
 // Event handling
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::MainWindow::eventFilter(QObject *object, QEvent *event)
+bool Lvk::FE::MainWindow::event(QEvent *event)
 {
-    if (event->type() == QEvent::FocusOut) {
-        if (object == ui->testInputText) {
-            ui->ruleInputWidget->clearHighlight();
-            ui->ruleOutputWidget->clearHighlight();
-//        } else if (object == ui->ruleInputWidget) {
-//            onRuleInputEditingFinished();
-//        } else if (object == ui->ruleOutputWidget) {
-//            onRuleOutputEditingFinished();
-        }
+    switch (event->type()) {
+    case QEvent::WindowStateChange:
+    case QEvent::Resize:
+        updateScoreLabelPos();
+        break;
+    default:
+        //Nothing to do
+        break;
     }
 
-    return QMainWindow::eventFilter(object, event);
+    return QMainWindow::event(event);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -856,6 +861,8 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
+
+            m_scoreLabel->setVisible(false);
             break;
 
         case VerifyAccountUiMode:
@@ -879,6 +886,8 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
+
+            m_scoreLabel->setVisible(false);
             break;
 
         default:
@@ -900,6 +909,8 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
             ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
+
+            m_scoreLabel->setVisible(true);
             break;
         }
     }
@@ -1446,6 +1457,7 @@ bool Lvk::FE::MainWindow::removeSelectedRuleWithDialog()
 
             if (removed) {
                 m_appFacade->refreshNlpEngine();
+                updateScore();
             } else {
                 dialogTitle = tr("Internal error");
                 dialogText = tr("The rule/category could not be removed because of an internal"
@@ -1716,6 +1728,7 @@ void Lvk::FE::MainWindow::startEditMode()
     setUiMode(ChatDisconnectedUiMode);
     setUiMode(EditRuleUiMode);
     selectFirstRule();
+    updateScore();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1848,6 +1861,8 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
 
     m_appFacade->refreshNlpEngine();
     m_appFacade->save();
+
+    updateScore();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1947,30 +1962,16 @@ void Lvk::FE::MainWindow::onTestShowRule()
 
 void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &matches)
 {
-    ui->ruleInputWidget->clearHighlight();
-    ui->ruleOutputWidget->clearHighlight();
-
     const BE::Rule *rule = 0;
     int inputNumber = -1;
 
     if (!matches.empty()) {
         // Assuming only one match
-
         quint64 ruleId = matches.first().first;
         inputNumber = matches.first().second;
-
         rule = findRule(ruleId);
-
-        // Deprecated:
-        //if (rule) {
-            //selectRule(rule);
-            //ui->ruleInputWidget->highlightInput(inputNumber);
-        //}
     } else {
         rule = evasivesRule();
-        // Deprecated:
-        //selectRule(evasivesRule());
-        //ui->ruleOutputWidget->highlightOuput(0);
     }
 
     ui->ruleViewGroupBox->setVisible(true);
@@ -2185,6 +2186,8 @@ void Lvk::FE::MainWindow::onDisconnection()
 void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &entry)
 {
     ui->chatHistory->addConversationEntry(entry);
+
+    updateScore();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2258,10 +2261,6 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
         connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
                 SLOT(onCurrentTabChanged(QWidget*)));
     }
-
-    if (tab == ui->scoreTab) {
-        updateScore();
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2297,8 +2296,27 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
 
 void Lvk::FE::MainWindow::updateScore()
 {
-    ui->curScoreWidget->setScore(m_appFacade->currentScore());
-    ui->bestScoreWidget->setScore(m_appFacade->bestScore());
+    BE::Score cur = m_appFacade->currentScore();
+    BE::Score best = m_appFacade->bestScore();
+
+    QString curScoreStr = QString("%1 + %2 + %3 = %4").arg(QString::number(cur.conversations),
+                                                           QString::number(cur.contacts),
+                                                           QString::number(cur.rules),
+                                                           QString::number(cur.total));
+    m_scoreLabel->setText(tr("Score: ") + curScoreStr);
+    updateScoreLabelPos();
+
+    ui->curScoreWidget->setScore(cur);
+    ui->bestScoreWidget->setScore(best);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::updateScoreLabelPos()
+{
+    if (m_scoreLabel) {
+        m_scoreLabel->move(ui->mainTabWidget->width() - m_scoreLabel->width() - 5, 5);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2322,8 +2340,6 @@ void Lvk::FE::MainWindow::onUploadScore()
     QMessageBox::information(this, title, message);
 #endif
 }
-
-
 
 
 

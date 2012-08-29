@@ -82,6 +82,17 @@ void Lvk::FE::ScoreWidget::setUploadVisible(bool visible)
     ui->uploadButton->setVisible(visible);
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScoreWidget::setLabelsVisible(bool visible)
+{
+    ui->convPointsLabel->setVisible(visible);
+    ui->contactsPointsLabel->setVisible(visible);
+    ui->rulePointsLabel->setVisible(visible);
+    ui->totalPointsLabel->setVisible(visible);
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScoreWidget::clear()

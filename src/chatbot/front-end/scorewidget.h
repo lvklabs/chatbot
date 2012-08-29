@@ -73,6 +73,11 @@ public:
     void setUploadVisible(bool visible);
 
     /**
+     * Sets if the labels are visible or not. By default is visible.
+     */
+    void setLabelsVisible(bool visible);
+
+    /**
      * Clears the widget
      */
     void clear();
