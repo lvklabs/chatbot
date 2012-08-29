@@ -24,7 +24,7 @@
     <widget class="QLabel" name="convPointsLabel">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -41,7 +41,7 @@
     <widget class="QLabel" name="convPointsValue">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -58,7 +58,7 @@
     <widget class="QLabel" name="labelPlus2">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -75,7 +75,7 @@
     <widget class="QLabel" name="labelEq">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -92,7 +92,7 @@
     <widget class="QLabel" name="totalPointsLabel">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -109,7 +109,7 @@
     <widget class="QLabel" name="totalPointsValue">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -171,7 +171,7 @@
     <widget class="QLabel" name="rulePointsLabel">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -188,7 +188,7 @@
     <widget class="QLabel" name="contactsPointsLabel">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -205,7 +205,7 @@
     <widget class="QLabel" name="contactsPointsValue">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -222,7 +222,7 @@
     <widget class="QLabel" name="labelPlus1">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -252,7 +252,7 @@
     <widget class="QLabel" name="rulePointsValue">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
