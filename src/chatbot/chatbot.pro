@@ -117,6 +117,7 @@ HEADERS += \
     back-end/historystatshelper.h \
     back-end/statshelper.h \
     back-end/score.h \
+    back-end/scorealgorithm.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -179,6 +180,7 @@ SOURCES += \
     back-end/conversationwriter.cpp \
     back-end/conversationreader.cpp \
     back-end/chatbotrulesfile.cpp \
+    back-end/scorealgorithm.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
@@ -262,6 +264,10 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

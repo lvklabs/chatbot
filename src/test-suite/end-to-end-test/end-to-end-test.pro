@@ -111,6 +111,7 @@ SOURCES += \
     ../../chatbot/back-end/conversationwriter.cpp \
     ../../chatbot/back-end/conversationreader.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
+    ../../chatbot/back-end/scorealgorithm.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \

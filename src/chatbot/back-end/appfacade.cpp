@@ -118,27 +118,6 @@ inline void setStat(Lvk::Stats::Id id, unsigned value)
     Lvk::Stats::StatsManager::manager()->setStat(id, value);
 }
 
-//--------------------------------------------------------------------------------------------------
-
-inline unsigned uIntStat(Lvk::Stats::Id id)
-{
-    return Lvk::Stats::StatsManager::manager()->stat(id).toUInt();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline Lvk::Stats::History history(Lvk::Stats::Id id)
-{
-    return Lvk::Stats::StatsManager::manager()->history(id);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline Lvk::Stats::History statCombinedHistory(Lvk::Stats::Id id1, Lvk::Stats::Id id2)
-{
-    return Lvk::Stats::StatsManager::manager()->combinedHistory(id1, id2);
-}
-
 } // namespace
 
 
@@ -791,32 +770,7 @@ Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
 {
     updateStats();
 
-//    Stats::History h = statCombinedHistory(Stats::HistoryChatbotDiffLines,
-//                                           Stats::HistoryLexiconSize);
-
-//    unsigned maxDailyValue = 0;
-
-//    for (Stats::History::iterator it = h.begin(); it != h.end(); ++it) {
-//        unsigned value = it->second.toUInt();
-//        if (value > maxDailyValue) {
-//            maxDailyValue = value;
-//        }
-//    }
-
-    const unsigned IMPORTANT_CONTACT_POINTS = 1000;
-
-    unsigned trp  = uIntStat(Stats::TotalRulePoints);
-    unsigned hic  = uIntStat(Stats::HistoryImportantContacts);
-    unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSize);
-    unsigned hcl  = uIntStat(Stats::HistoryChatbotLines);
-
-    BE::Score score;
-    score.conversations = hcls + hcl;
-    score.contacts      = hic*IMPORTANT_CONTACT_POINTS;
-    score.rules         = trp;
-    score.total         = score.conversations + score.contacts + score.rules;
-
-    return score;
+    return m_scoreAlgo.score();
 }
 
 //--------------------------------------------------------------------------------------------------

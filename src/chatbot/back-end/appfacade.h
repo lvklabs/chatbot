@@ -34,6 +34,7 @@
 #include "back-end/conversation.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
+#include "back-end/scorealgorithm.h"
 #include "common/remotelogger.h"
 
 class QFile;
@@ -396,6 +397,7 @@ private:
     unsigned m_nlpOptions;
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
+    ScoreAlgorithm m_scoreAlgo;
 
     bool setDefaultRules();
 
