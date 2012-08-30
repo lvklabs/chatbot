@@ -28,6 +28,7 @@
 #include <QPair>
 #include <QVariant>
 #include <QSet>
+#include <QTimer>
 
 #include "back-end/chatbotrulesfile.h"
 #include "nlp-engine/rule.h"
@@ -215,7 +216,7 @@ public:
      *
      * \see NlpEngineOption
      */
-    unsigned nlpEngineOptions();
+    unsigned nlpEngineOptions() const;
 
     /**
      * Chat server type
@@ -228,7 +229,7 @@ public:
     /**
      * Returns the chat type. By default returns FbChat.
      */
-    ChatType chatType();
+    ChatType chatType() const;
 
     /**
      * Sets the chat type.
@@ -240,7 +241,7 @@ public:
     /**
      * Returns the username used to connect to chat.
      */
-    QString username();
+    QString username() const;
 
     /**
      * Sets the username to connect to chat.
@@ -298,10 +299,15 @@ public:
     void disconnectFromChat();
 
     /**
+     * Returns true if the chatbot is connected. Otherwise; returns false.
+     */
+    bool isConnected() const;
+
+    /**
      * Returns the roster of the last connected or verified user. Before calling this method
      * must be connected.
      */
-    Roster roster();
+    Roster roster() const;
 
     /**
      * Sets the list of people the chatbot cannot talk to. Before calling this method you
@@ -340,6 +346,11 @@ public:
      */
     bool uploadScore();
 
+    /**
+     * Returns the number of remaining seconds to start a new score interval.
+     */
+    int scoreRemainingTime() const;
+
 signals:
 
     /**
@@ -377,11 +388,20 @@ signals:
      */
     void newConversationEntry(const BE::Conversation::Entry &entry);
 
+    /**
+     * When the chatbot is connected this signal is emitted every second with the remaining
+     * seconds to the next score interval.
+     */
+    void scoreRemainingTime(int secs);
+
 private slots:
 
     void onAccountOk();
-
     void onAccountError(int err);
+
+    void emitRemainingTime();
+    void startTicking();
+    void stopTicking();
 
 private:
     AppFacade(AppFacade&);
@@ -398,6 +418,8 @@ private:
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
     ScoreAlgorithm m_scoreAlgo;
+    int m_intervTime;
+    QTimer m_intervTimer;
 
     bool setDefaultRules();
 
@@ -413,7 +435,6 @@ private:
     bool logScore(bool manualUpload);
     bool logAccountVerified(const QString &username, const QString &domain);
     bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
-
 };
 
 /// @}

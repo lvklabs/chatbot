@@ -284,6 +284,8 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     // score tab widgets
     ui->curScoreWidget->clear();
     ui->bestScoreWidget->clear();
+    ui->remainingTimeLabel->clear();
+    m_scoreLabel->setVisible(true);
     m_scoreLabel->setText(QString(100, QChar(' '))); // Reserving space. Does not autoresize.
 
     // advanced options tab widgets
@@ -424,6 +426,8 @@ void Lvk::FE::MainWindow::connectSignals()
     // Score tab
 
     connect(ui->bestScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
+
+    connect(m_appFacade, SIGNAL(scoreRemainingTime(int)), SLOT(onScoreRemainingTime(int)));
 
     // Misc
 
@@ -1139,6 +1143,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // score
         updateScore();
+        onScoreRemainingTime(m_appFacade->scoreRemainingTime());
 
         // Advanced options
         unsigned options = m_appFacade->nlpEngineOptions();
@@ -2261,6 +2266,12 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
         connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
                 SLOT(onCurrentTabChanged(QWidget*)));
     }
+
+    if (tab == ui->scoreTab) {
+        m_scoreLabel->setVisible(false);
+    } else {
+        m_scoreLabel->setVisible(true);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2339,6 +2350,20 @@ void Lvk::FE::MainWindow::onUploadScore()
     QString message = tr("This version does not support score uploading");
     QMessageBox::information(this, title, message);
 #endif
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
+{
+    QTime time = QTime(0,0,0).addSecs(secs);
+
+    QString status = m_appFacade->isConnected() ?
+                tr("Chatbot connected") : tr("Chatbot disconnected");
+
+    QString text = QString(tr("Remaining time: %1 (%2)")).arg(time.toString("hh:mm:ss"), status);
+
+    ui->remainingTimeLabel->setText(text);
 }
 
 

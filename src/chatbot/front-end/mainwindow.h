@@ -278,6 +278,7 @@ private slots:
     void onLemmatizerCheckBoxChanged(int);
 
     void onUploadScore();
+    void onScoreRemainingTime(int time);
 };
 
 /// @}

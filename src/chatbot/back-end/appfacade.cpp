@@ -43,6 +43,8 @@
 #define FILE_METADATA_USERNAME      "username"
 #define FILE_METADATA_NLP_OPTIONS   "nlp_options"
 
+#define SCORE_INTERVAL_SEC          (5*3600) // In seconds. TODO read from config file
+
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -133,8 +135,10 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_tmpChatbot(0),
       m_nlpOptions(0),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
+      m_intervTime(0)
 {
+    connect(&m_intervTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -147,8 +151,10 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_tmpChatbot(0),
       m_nlpOptions(0), // FIXME value?
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
+      m_intervTime(0)
 {
+    connect(&m_intervTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -284,9 +290,12 @@ void Lvk::BE::AppFacade::close()
         deleteCurrentChatbot();
     }
 
+    stopTicking();
+
     m_targets.clear();
     m_rules.close();
     m_evasivesRule = 0;
+    m_intervTime = 0;
 
     Stats::StatsManager::manager()->setChatbotId("");
 }
@@ -499,7 +508,7 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned Lvk::BE::AppFacade::nlpEngineOptions()
+unsigned Lvk::BE::AppFacade::nlpEngineOptions() const
 {
     return m_nlpOptions;
 }
@@ -508,7 +517,7 @@ unsigned Lvk::BE::AppFacade::nlpEngineOptions()
 // Chat methods
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::AppFacade::ChatType Lvk::BE::AppFacade::chatType()
+Lvk::BE::AppFacade::ChatType Lvk::BE::AppFacade::chatType() const
 {
     return static_cast<BE::AppFacade::ChatType>
             (m_rules.metadata(FILE_METADATA_CHAT_TYPE).toInt());
@@ -523,7 +532,7 @@ void Lvk::BE::AppFacade::setChatType(Lvk::BE::AppFacade::ChatType type)
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::AppFacade::username()
+QString Lvk::BE::AppFacade::username() const
 {
     return m_rules.metadata(FILE_METADATA_USERNAME).toString();
 }
@@ -629,6 +638,13 @@ void Lvk::BE::AppFacade::disconnectFromChat()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::AppFacade::isConnected() const
+{
+    return m_chatbot && m_chatbot->isConnected();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::AppFacade::setupChatbot()
 {
     setupChatbot(chatType());
@@ -670,14 +686,18 @@ void Lvk::BE::AppFacade::connectChatClientSignals()
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
     // FIXME add method to remap Chatbot error codes to AppFacade error codes
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+
     connect(virtualUser(),
             SIGNAL(newConversationEntry(BE::Conversation::Entry)),
             SIGNAL(newConversationEntry(BE::Conversation::Entry)));
+
+    connect(m_chatbot, SIGNAL(connected()),    SLOT(startTicking()));
+    connect(m_chatbot, SIGNAL(disconnected()), SLOT(stopTicking()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster Lvk::BE::AppFacade::roster()
+Lvk::BE::Roster Lvk::BE::AppFacade::roster() const
 {
     Roster roster;
 
@@ -836,4 +856,41 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
         return m_fastLogger->log(msg, fullFields) == 0;
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::startTicking()
+{
+    const int TICK_MSEC = 1000;
+
+    m_intervTimer.start(TICK_MSEC);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::stopTicking()
+{
+    m_intervTimer.stop();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::emitRemainingTime()
+{
+    m_intervTime = (m_intervTime + 1) % SCORE_INTERVAL_SEC;
+
+    emit scoreRemainingTime(SCORE_INTERVAL_SEC - m_intervTime);
+
+    if (m_intervTime == 0) {
+        // TODO Update best score if necessary. Emit newBestScore()
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::BE::AppFacade::scoreRemainingTime() const
+{
+    return SCORE_INTERVAL_SEC - m_intervTime;
+}
+
 

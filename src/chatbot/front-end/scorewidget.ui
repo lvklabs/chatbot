@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>718</width>
-    <height>75</height>
+    <height>125</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -159,35 +159,6 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="12" rowspan="2">
-    <widget class="QPushButton" name="uploadButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font">
-      <font>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Upload</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../res/chatbot_theme.qrc">
-       <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="6">
     <widget class="QLabel" name="rulePointsLabel">
      <property name="font">
@@ -305,6 +276,35 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="12" rowspan="2">
+    <widget class="QPushButton" name="uploadButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Upload</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../res/chatbot_theme.qrc">
+       <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
      </property>
     </widget>
    </item>
