@@ -27,7 +27,6 @@ win32 {
     CONFIG  += freeling gelf_stats
 } else:mac {
     CONFIG  +=
-    DEFINES += MAC_OS_X
 } else {
     CONFIG  += freeling gelf_stats
 }

@@ -22,10 +22,10 @@
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
-#ifndef MAC_OS_X
-#  define SETTINGS_FILENAME   "./chatbot.conf"
-#else
+#ifdef Q_WS_MAC
 #  define SETTINGS_FILENAME   "./chatbot.app/Contents/MacOS/chatbot.conf"
+#else
+#  define SETTINGS_FILENAME   "./chatbot.conf"
 #endif
 
 //--------------------------------------------------------------------------------------------------

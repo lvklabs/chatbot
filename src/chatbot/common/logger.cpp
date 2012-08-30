@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QString>
 #include <QDateTime>
+#include <QSysInfo>
 
 #define DEBUG_STR            "Debug: "
 #define WARNING_STR          "Warning: "
@@ -49,7 +50,7 @@
 namespace
 {
 
-bool makeLogsPath()
+inline bool makeLogsPath()
 {
     Lvk::Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
@@ -66,12 +67,25 @@ bool makeLogsPath()
 
 //--------------------------------------------------------------------------------------------------
 
-QString chatbotLogFilename()
+inline QString chatbotLogFilename()
 {
     Lvk::Cmn::Settings settings;
     QString logsPath = settings.value(SETTING_LOGS_PATH).toString();
 
     return logsPath + QDir::separator() + LOG_FILENAME;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString getOSType()
+{
+#ifdef Q_WS_X11
+    return QString("Linux");
+#elif defined(Q_WS_WIN)
+    return QString("Windows v%1").arg(QSysInfo::WindowsVersion());
+#elif defined(Q_WS_MAC)
+    return QString("Mac v%1").arg(QSysInfo::MacintoshVersion());
+#endif
 }
 
 } // namespace
@@ -102,6 +116,7 @@ void Lvk::Cmn::Logger::init()
             qInstallMsgHandler(msgHandler);
             qDebug() << "Logger initialized on"
                      << APP_NAME " v" APP_VERSION_STR " rev:" APP_VERSION_REV;
+            qDebug() << "OS Type:" << getOSType();
         } else {
             delete m_logFile;
             m_logFile = 0;

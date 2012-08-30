@@ -2013,6 +2013,8 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
             setUiMode(ChangeAccountConnectingUiMode);
         }
 
+        qDebug() << "MainWindow: Verifying Account...";
+
         m_appFacade->verifyAccount(uiChatSelected(), username, password);
 
     } else {
@@ -2026,6 +2028,8 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
 
 void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 {
+    qDebug() << "MainWindow: Verify Account Ok";
+
     ui->ruleInputWidget->setRoster(roster);
 
     BE::AppFacade::ChatType chatType = uiChatSelected();
@@ -2052,6 +2056,8 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 
 void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 {
+    qDebug() << "MainWindow: Verify Account Error" << err;
+
     if (m_tabsLayout == VerifyAccountTabsLayout) {
         setUiMode(VerifyAccountFailedUiMode);
     } else {
@@ -2078,6 +2084,8 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 
 void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 {
+    qDebug() << "MainWindow: Verify Account Skipped";
+
     ui->fbChatRadio_v->setChecked(true);
     ui->usernameText_v->setText("");
 
@@ -2107,6 +2115,8 @@ void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
 
 void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
 {
+    qDebug() << "MainWindow: Verify Account Canceled";
+
     m_appFacade->cancelVerifyAccount();
 
     if (m_tabsLayout == VerifyAccountTabsLayout) {
@@ -2126,6 +2136,8 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
         m_connectionStatus =  ConnectingToChat;
         setUiMode(ChatConnectingUiMode);
 
+        qDebug() << "MainWindow: Connecting chatbot...";
+
         m_appFacade->connectToChat(ui->passwordText->text());
     }
 }
@@ -2138,6 +2150,8 @@ void Lvk::FE::MainWindow::onDisconnectButtonPressed()
         m_connectionStatus = DisconnectedFromChat;
         setUiMode(ChatDisconnectedUiMode);
 
+        qDebug() << "MainWindow: Disconnecting chatbot...";
+
         m_appFacade->disconnectFromChat();
     }
 }
@@ -2146,6 +2160,9 @@ void Lvk::FE::MainWindow::onDisconnectButtonPressed()
 
 void Lvk::FE::MainWindow::onConnectionOk()
 {
+
+    qDebug() << "MainWindow: Chatbot connection OK";
+
     m_connectionStatus = ConnectedToChat;
     setUiMode(ChatConnectionOkUiMode);
 
@@ -2169,6 +2186,8 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
 void Lvk::FE::MainWindow::onConnectionError(int err)
 {
+    qDebug() << "MainWindow: Chatbot connection error" << err;
+
     m_connectionStatus = ConnectionError;
 
     if (err != BE::AppFacade::SSLNotSupportedError) {
@@ -2182,6 +2201,8 @@ void Lvk::FE::MainWindow::onConnectionError(int err)
 
 void Lvk::FE::MainWindow::onDisconnection()
 {
+    qDebug() << "MainWindow: Chatbot disconnected";
+
     m_connectionStatus = DisconnectedFromChat;
     setUiMode(ChatDisconnectedUiMode);
 }
