@@ -136,9 +136,9 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_nlpOptions(0),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
-      m_intervTime(0)
+      m_scoreTime(0)
 {
-    connect(&m_intervTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
+    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -152,9 +152,9 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nlpOptions(0), // FIXME value?
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
-      m_intervTime(0)
+      m_scoreTime(0)
 {
-    connect(&m_intervTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
+    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -295,7 +295,7 @@ void Lvk::BE::AppFacade::close()
     m_targets.clear();
     m_rules.close();
     m_evasivesRule = 0;
-    m_intervTime = 0;
+    m_scoreTime = 0;
 
     Stats::StatsManager::manager()->setChatbotId("");
 }
@@ -863,25 +863,25 @@ void Lvk::BE::AppFacade::startTicking()
 {
     const int TICK_MSEC = 1000;
 
-    m_intervTimer.start(TICK_MSEC);
+    m_scoreTimer.start(TICK_MSEC);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::stopTicking()
 {
-    m_intervTimer.stop();
+    m_scoreTimer.stop();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::emitRemainingTime()
 {
-    m_intervTime = (m_intervTime + 1) % SCORE_INTERVAL_SEC;
+    m_scoreTime = (m_scoreTime + 1) % SCORE_INTERVAL_SEC;
 
-    emit scoreRemainingTime(SCORE_INTERVAL_SEC - m_intervTime);
+    emit scoreRemainingTime(SCORE_INTERVAL_SEC - m_scoreTime);
 
-    if (m_intervTime == 0) {
+    if (m_scoreTime == 0) {
         // TODO Update best score if necessary. Emit newBestScore()
     }
 }
@@ -890,7 +890,7 @@ void Lvk::BE::AppFacade::emitRemainingTime()
 
 int Lvk::BE::AppFacade::scoreRemainingTime() const
 {
-    return SCORE_INTERVAL_SEC - m_intervTime;
+    return SCORE_INTERVAL_SEC - m_scoreTime;
 }
 
 

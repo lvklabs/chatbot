@@ -418,8 +418,8 @@ private:
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
     ScoreAlgorithm m_scoreAlgo;
-    int m_intervTime;
-    QTimer m_intervTimer;
+    int m_scoreTime;
+    QTimer m_scoreTimer;
 
     bool setDefaultRules();
 
