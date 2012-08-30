@@ -24,8 +24,8 @@
 #include "common/random.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
-#include "back-end/conversationreader.h"
-#include "back-end/conversationwriter.h"
+#include "common/conversationreader.h"
+#include "common/conversationwriter.h"
 
 #include <QFile>
 #include <QDir>
@@ -81,14 +81,14 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
     m_logFilename = dataPath + QDir::separator() + logFilename;
 
     if (QFile::exists(m_logFilename)) {
-        BE::ConversationReader convReader(m_logFilename);
+        Cmn::ConversationReader convReader(m_logFilename);
         if (!convReader.read(&m_conversationHistory)) {
             qWarning() << "DefaultVirtualUser: Cannot read the conversation history for chatbot id"
                        << id;
         }
     }
 
-    m_convWriter = new BE::ConversationWriter(m_logFilename);
+    m_convWriter = new Cmn::ConversationWriter(m_logFilename);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
                                                  const CA::ContactInfo &contact)
 {
-    Conversation::Entry entry = getEntry(input, contact);
+    Cmn::Conversation::Entry entry = getEntry(input, contact);
 
     {
         QWriteLocker locker(m_rwLock);
@@ -125,8 +125,8 @@ QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
 //--------------------------------------------------------------------------------------------------
 
 
-Lvk::BE::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString &input,
-                                                                   const CA::ContactInfo &contact)
+Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString &input,
+                                                                    const CA::ContactInfo &contact)
 {
     QWriteLocker locker(m_rwLock);
 
@@ -161,11 +161,11 @@ Lvk::BE::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString
         QDateTime dateTime = QDateTime::currentDateTime();
         QString from = getFromString(contact);
 
-        return Conversation::Entry(dateTime, from, m_id, input, response, matched, ruleId);
+        return Cmn::Conversation::Entry(dateTime, from, m_id, input, response, matched, ruleId);
     } else {
         qCritical("DefaultVirtualUser: No engine set");
 
-        return Conversation::Entry();
+        return Cmn::Conversation::Entry();
     }
 }
 
@@ -178,7 +178,7 @@ QPixmap Lvk::BE::DefaultVirtualUser::getAvatar()
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::chatHistory() const
+const Lvk::Cmn::Conversation & Lvk::BE::DefaultVirtualUser::chatHistory() const
 {
     QReadLocker locker(m_rwLock);
     return m_conversationHistory;
@@ -186,7 +186,7 @@ const Lvk::BE::Conversation & Lvk::BE::DefaultVirtualUser::chatHistory() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::DefaultVirtualUser::setChatHistory(const Conversation &conv)
+void Lvk::BE::DefaultVirtualUser::setChatHistory(const Cmn::Conversation &conv)
 {
     QWriteLocker locker(m_rwLock);
 
@@ -206,7 +206,7 @@ void Lvk::BE::DefaultVirtualUser::clearHistory()
 {
     QWriteLocker locker(m_rwLock);
 
-    m_conversationHistory = Conversation();
+    m_conversationHistory = Cmn::Conversation();
 
     resetHistoryLog();
 }
@@ -236,6 +236,6 @@ void Lvk::BE::DefaultVirtualUser::resetHistoryLog()
 
     QFile::remove(m_logFilename);
 
-    m_convWriter = new BE::ConversationWriter(m_logFilename);
+    m_convWriter = new Cmn::ConversationWriter(m_logFilename);
 }
 

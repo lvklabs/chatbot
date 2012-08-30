@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QStringList>
 #include "chat-adapter/chatvirtualuser.h"
-#include "back-end/conversation.h"
+#include "common/conversation.h"
 
 class QFile;
 class QReadWriteLock;
@@ -41,14 +41,17 @@ namespace Nlp
     class Engine;
 }
 
+namespace Cmn
+{
+    class ConversationWriter;
+}
+
 namespace BE
 {
 
 /// \ingroup Lvk
 /// \addtogroup BE
 /// @{
-
-class ConversationWriter;
 
 /**
  * \brief The DefaultVirtualUser class provides the default implementation of the interface
@@ -85,12 +88,12 @@ public:
     /**
      * Returns the chat history of the current virtual user id.
      */
-    const Conversation &chatHistory() const;
+    const Cmn::Conversation &chatHistory() const;
 
     /**
      * Sets the chat history of the current virtual user id.
      */
-    void setChatHistory(const Conversation &conv);
+    void setChatHistory(const Cmn::Conversation &conv);
 
     /**
      * Clears the chat history and removes any file created.
@@ -114,9 +117,9 @@ signals:
     /**
      * This signal is emitted whenever the virtual user receives a chat message. \a entry
      * contains the received message, the chatbot response and other useful information.
-     * \see BE::Conversation::Entry
+     * \see Cmn::Conversation::Entry
      */
-    void newConversationEntry(const BE::Conversation::Entry &entry);
+    void newConversationEntry(const Cmn::Conversation::Entry &entry);
 
 private:
     DefaultVirtualUser(DefaultVirtualUser&);
@@ -126,13 +129,13 @@ private:
     QString m_logFilename;
     Nlp::Engine *m_engine;
     QStringList m_evasives;
-    Conversation m_conversationHistory;
-    ConversationWriter *m_convWriter;
+    Cmn::Conversation m_conversationHistory;
+    Cmn::ConversationWriter *m_convWriter;
     QReadWriteLock *m_rwLock;
 
-    Conversation::Entry getEntry(const QString &input, const CA::ContactInfo &contact);
+    Cmn::Conversation::Entry getEntry(const QString &input, const CA::ContactInfo &contact);
     void resetHistoryLog();
-    void logConversationEntry(const Conversation::Entry &entry);
+    void logConversationEntry(const Cmn::Conversation::Entry &entry);
     void logError(const QString &msg);
 };
 

@@ -78,7 +78,7 @@ QString hashKey(const QString &date, const QString &from)
 }
 
 // builds a hash key with the given data
-QString hashKey(const Lvk::BE::Conversation::Entry &entry)
+QString hashKey(const Lvk::Cmn::Conversation::Entry &entry)
 {
     return hashKey(entry.dateTime.toString(DATE_FORMAT), entry.from);
 }
@@ -129,7 +129,7 @@ Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(QWidget *parent)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent)
+Lvk::FE::ChatHistoryWidget::ChatHistoryWidget(const Lvk::Cmn::Conversation &conv, QWidget *parent)
     : QWidget(parent), ui(new Ui::ChatHistoryWidget)
 {
     ui->setupUi(this);
@@ -255,7 +255,7 @@ void Lvk::FE::ChatHistoryWidget::clearConversations()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::Cmn::Conversation::Entry &entry)
 {
     QString key = hashKey(entry);
 
@@ -342,7 +342,7 @@ void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &cur
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::Cmn::Conversation::Entry &entry)
 {
     QString time = entry.dateTime.toString(TIME_FORMAT);
     QString matchStr = entry.match ? tr("Response found") : tr("Response not found");
@@ -369,7 +369,7 @@ void Lvk::FE::ChatHistoryWidget::addConversationTableRow(const Lvk::BE::Conversa
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::FE::ChatHistoryWidget::addDateContactTableRow(const Lvk::Cmn::Conversation::Entry &entry)
 {
     QString date = entry.dateTime.toString(DATE_FORMAT);
     QString username = getUsername(entry.from);
@@ -399,7 +399,7 @@ void Lvk::FE::ChatHistoryWidget::addDateContactTableRow(const Lvk::BE::Conversat
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ChatHistoryWidget::setConversation(const Lvk::BE::Conversation &conv)
+void Lvk::FE::ChatHistoryWidget::setConversation(const Lvk::Cmn::Conversation &conv)
 {
     clear();
 

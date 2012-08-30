@@ -106,11 +106,8 @@ HEADERS += \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/defaultvirtualuser.h \
-    back-end/conversation.h \
     back-end/roster.h \
     back-end/target.h \
-    back-end/conversationwriter.h \
-    back-end/conversationreader.h \
     back-end/chatbotrulesfile.h \
     back-end/rulestatshelper.h \
     back-end/historystatshelper.h \
@@ -144,6 +141,9 @@ HEADERS += \
     common/csvdocument.h \
     common/csvrow.h \
     common/globalstrings.h \
+    common/conversation.h \
+    common/conversationwriter.h \
+    common/conversationreader.h \
     common/logger.h \
     common/remotelogger.h \
     common/nullremotelogger.h \
@@ -175,9 +175,6 @@ SOURCES += \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/defaultvirtualuser.cpp \
-    back-end/conversation.cpp \
-    back-end/conversationwriter.cpp \
-    back-end/conversationreader.cpp \
     back-end/chatbotrulesfile.cpp \
     back-end/scorealgorithm.cpp \
     nlp-engine/exactmatchengine.cpp \
@@ -196,6 +193,9 @@ SOURCES += \
     common/settings.cpp \
     common/csvdocument.cpp \
     common/csvrow.cpp \
+    common/conversation.cpp \
+    common/conversationwriter.cpp \
+    common/conversationreader.cpp \
     common/logger.cpp \
     common/remoteloggerfactory.cpp \
     stats/statsmanager.cpp \

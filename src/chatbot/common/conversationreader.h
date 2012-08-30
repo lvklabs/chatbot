@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef LVK_BE_CONVERSATIONREADER_H
-#define LVK_BE_CONVERSATIONREADER_H
+#ifndef LVK_CMN_CONVERSATIONREADER_H
+#define LVK_CMN_CONVERSATIONREADER_H
 
-#include "back-end/conversation.h"
+#include "common/conversation.h"
 
 class QIODevice;
 class QString;
@@ -33,11 +33,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Cmn
 /// @{
 
 /**
@@ -99,12 +99,12 @@ private:
 
 /// @}
 
-} // namespace BE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_BE_CONVERSATIONREADER_H
+#endif // LVK_CMN_CONVERSATIONREADER_H
 

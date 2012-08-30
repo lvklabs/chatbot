@@ -688,8 +688,8 @@ void Lvk::BE::AppFacade::connectChatClientSignals()
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
 
     connect(virtualUser(),
-            SIGNAL(newConversationEntry(BE::Conversation::Entry)),
-            SIGNAL(newConversationEntry(BE::Conversation::Entry)));
+            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
 
     connect(m_chatbot, SIGNAL(connected()),    SLOT(startTicking()));
     connect(m_chatbot, SIGNAL(disconnected()), SLOT(stopTicking()));
@@ -721,7 +721,7 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 // Chat history
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::BE::Conversation & Lvk::BE::AppFacade::chatHistory()
+const Lvk::Cmn::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
     return virtualUser()->chatHistory();
 }
@@ -737,8 +737,8 @@ void Lvk::BE::AppFacade::clearChatHistory()
 
 void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
 {
-    Conversation conv;
-    foreach (const Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
+    Cmn::Conversation conv;
+    foreach (const Cmn::Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
         if (entry.from != user || entry.dateTime.date() != date) {
             conv.append(entry);
         }

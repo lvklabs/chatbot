@@ -26,7 +26,7 @@
 #include <QHash>
 #include <QList>
 
-#include "back-end/conversation.h"
+#include "common/conversation.h"
 
 namespace Ui {
     class ChatHistoryWidget;
@@ -56,7 +56,7 @@ namespace FE
  *
  * The ChatHistoryWidget is used in the "History" tab.
  *
- * \see BE::Conversation
+ * \see Cmn::Conversation
  */
 class ChatHistoryWidget : public QWidget
 {
@@ -75,7 +75,7 @@ public:
      * Constructs an ChatHistoryWidget widget which is a child of \a parent and
      * it is initialized with conversation \a conv
      */
-    explicit ChatHistoryWidget(const Lvk::BE::Conversation &conv, QWidget *parent = 0);
+    explicit ChatHistoryWidget(const Lvk::Cmn::Conversation &conv, QWidget *parent = 0);
 
     /**
      * Destroys the object.
@@ -95,12 +95,12 @@ public:
     /**
      * Sets conversation \a conv
      */
-    void setConversation(const Lvk::BE::Conversation &conv);
+    void setConversation(const Lvk::Cmn::Conversation &conv);
 
     /**
      * Adds a single conversation entry \a conv.
      */
-    void addConversationEntry(const Lvk::BE::Conversation::Entry &entry);
+    void addConversationEntry(const Lvk::Cmn::Conversation::Entry &entry);
 
 signals:
 
@@ -130,15 +130,15 @@ private:
 
     Ui::ChatHistoryWidget *ui;
 
-    typedef QList<Lvk::BE::Conversation::Entry> EntryList;
+    typedef QList<Lvk::Cmn::Conversation::Entry> EntryList;
     QHash<QString, EntryList> m_entries;
 
     void setupTables();
     void setupMenus();
     void connectSignals();
 
-    void addConversationTableRow(const Lvk::BE::Conversation::Entry &entry);
-    void addDateContactTableRow(const Lvk::BE::Conversation::Entry &entry);
+    void addConversationTableRow(const Lvk::Cmn::Conversation::Entry &entry);
+    void addDateContactTableRow(const Lvk::Cmn::Conversation::Entry &entry);
     void removeDateContactRow(int row);
     void filter(const QString &text);
     bool rowHasMatchStatus(int row);

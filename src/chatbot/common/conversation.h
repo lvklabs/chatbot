@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_BE_CONVERSATION_H
-#define LVK_BE_CONVERSATION_H
+#ifndef LVK_CMN_CONVERSATION_H
+#define LVK_CMN_CONVERSATION_H
 
 #include <QDateTime>
 #include <QString>
@@ -32,11 +32,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Cmn
 /// @{
 
 /**
@@ -149,11 +149,11 @@ private:
 
 /// @}
 
-} // namespace BE
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_BE_CONVERSATION_H
+#endif // LVK_CMN_CONVERSATION_H

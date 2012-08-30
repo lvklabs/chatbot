@@ -28,7 +28,7 @@
 #include "back-end/rule.h"
 #include "back-end/roster.h"
 #include "back-end/score.h"
-#include "back-end/conversationwriter.h"
+#include "common/conversationwriter.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -415,8 +415,8 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Conversation history tab
 
-    connect(m_appFacade, SIGNAL(newConversationEntry(BE::Conversation::Entry)),
-            SLOT(onNewChatConversation(BE::Conversation::Entry)));
+    connect(m_appFacade, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+            SLOT(onNewChatConversation(Cmn::Conversation::Entry)));
 
     connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
     connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onHistoryShowRule(quint64)));
@@ -2209,7 +2209,7 @@ void Lvk::FE::MainWindow::onDisconnection()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onNewChatConversation(const BE::Conversation::Entry &entry)
+void Lvk::FE::MainWindow::onNewChatConversation(const Cmn::Conversation::Entry &entry)
 {
     ui->chatHistory->addConversationEntry(entry);
 

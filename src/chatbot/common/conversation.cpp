@@ -19,7 +19,7 @@
  *
  */
 
-#include "back-end/conversation.h"
+#include "common/conversation.h"
 #include "common/globalstrings.h"
 
 #include <QStringList>
@@ -31,14 +31,14 @@
 
 #define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
 
-Lvk::BE::Conversation::Entry::Entry()
+Lvk::Cmn::Conversation::Entry::Entry()
     : match(false), ruleId(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Conversation::Entry::Entry(const QDateTime &dateTime, const QString &from,
+Lvk::Cmn::Conversation::Entry::Entry(const QDateTime &dateTime, const QString &from,
                                     const QString &to, const QString &msg, const QString &response,
                                     bool match, quint64 ruleId /*= 0*/)
     : dateTime(dateTime), from(from), to(to), msg(msg), response(response), match(match),
@@ -48,7 +48,7 @@ Lvk::BE::Conversation::Entry::Entry(const QDateTime &dateTime, const QString &fr
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::Conversation::Entry::isNull() const
+bool Lvk::Cmn::Conversation::Entry::isNull() const
 {
     return dateTime.isNull()
             && from.isNull()
@@ -61,7 +61,7 @@ bool Lvk::BE::Conversation::Entry::isNull() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Conversation::Entry::clear()
+void Lvk::Cmn::Conversation::Entry::clear()
 {
     dateTime = QDateTime();
     from.clear();
@@ -74,7 +74,7 @@ void Lvk::BE::Conversation::Entry::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::Conversation::Entry::operator==(const Lvk::BE::Conversation::Entry &other) const
+bool Lvk::Cmn::Conversation::Entry::operator==(const Lvk::Cmn::Conversation::Entry &other) const
 {
     QString strDate      = dateTime.toString(STR_GLOBAL_DATE_TIME_FORMAT);
     QString strOtherDate = other.dateTime.toString(STR_GLOBAL_DATE_TIME_FORMAT);
@@ -88,7 +88,7 @@ bool Lvk::BE::Conversation::Entry::operator==(const Lvk::BE::Conversation::Entry
             && ruleId   == other.ruleId;
 }
 
-bool Lvk::BE::Conversation::Entry::operator!=(const Lvk::BE::Conversation::Entry &other) const
+bool Lvk::Cmn::Conversation::Entry::operator!=(const Lvk::Cmn::Conversation::Entry &other) const
 {
     return !this->operator==(other);
 }
@@ -97,55 +97,55 @@ bool Lvk::BE::Conversation::Entry::operator!=(const Lvk::BE::Conversation::Entry
 // Conversation
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Conversation::Conversation()
+Lvk::Cmn::Conversation::Conversation()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Conversation::setEntries(const QList<Lvk::BE::Conversation::Entry> &entries)
+void Lvk::Cmn::Conversation::setEntries(const QList<Lvk::Cmn::Conversation::Entry> &entries)
 {
     m_entries = entries;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QList<Lvk::BE::Conversation::Entry> & Lvk::BE::Conversation::entries()
+QList<Lvk::Cmn::Conversation::Entry> & Lvk::Cmn::Conversation::entries()
 {
     return m_entries;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<Lvk::BE::Conversation::Entry> & Lvk::BE::Conversation::entries() const
+const QList<Lvk::Cmn::Conversation::Entry> & Lvk::Cmn::Conversation::entries() const
 {
     return m_entries;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Conversation::append(const Lvk::BE::Conversation::Entry &entry)
+void Lvk::Cmn::Conversation::append(const Lvk::Cmn::Conversation::Entry &entry)
 {
     m_entries.append(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::Conversation::clear()
+void Lvk::Cmn::Conversation::clear()
 {
     m_entries.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::Conversation::operator==(const Lvk::BE::Conversation &other) const
+bool Lvk::Cmn::Conversation::operator==(const Lvk::Cmn::Conversation &other) const
 {
     return m_entries == other.m_entries;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::Conversation::operator!=(const Lvk::BE::Conversation &other) const
+bool Lvk::Cmn::Conversation::operator!=(const Lvk::Cmn::Conversation &other) const
 {
     return !this->operator==(other);
 }

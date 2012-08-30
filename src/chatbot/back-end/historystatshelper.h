@@ -23,7 +23,7 @@
 #define LVK_BE_HISTORYSTATSHELPER_H
 
 #include "back-end/statshelper.h"
-#include "back-end/conversation.h"
+#include "common/conversation.h"
 
 #include <QHash>
 #include <functional>
@@ -54,7 +54,7 @@ public:
      * Constructs a HistoryStatsHelper and provides statistics for the given conversation
      * \a conv.
      */
-    HistoryStatsHelper(const Lvk::BE::Conversation &conv)
+    HistoryStatsHelper(const Lvk::Cmn::Conversation &conv)
         : m_chatbotLinesTotal(0)
     {
         count(conv);
@@ -108,9 +108,9 @@ protected:
     /**
      * Counts all words in the given conversation \a conv and gets statistics
      */
-    void count(const Lvk::BE::Conversation &conv)
+    void count(const Lvk::Cmn::Conversation &conv)
     {
-        QList<Lvk::BE::Conversation::Entry>::const_iterator it;
+        QList<Lvk::Cmn::Conversation::Entry>::const_iterator it;
         for (it = conv.entries().begin(); it != conv.entries().end(); ++it) {
              count(*it);
         }
@@ -119,7 +119,7 @@ protected:
     /**
      * Counts all words in the given conversation \a entry and gets statistics
      */
-    void count(const Lvk::BE::Conversation::Entry &entry)
+    void count(const Lvk::Cmn::Conversation::Entry &entry)
     {
         StatsHelper::count(entry.msg);
         StatsHelper::count(entry.response);

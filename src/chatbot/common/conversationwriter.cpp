@@ -19,7 +19,7 @@
  *
  */
 
-#include "back-end/conversationwriter.h"
+#include "common/conversationwriter.h"
 #include "common/csvrow.h"
 #include "common/csvdocument.h"
 #include "common/globalstrings.h"
@@ -44,7 +44,7 @@ inline QString sanitize(const QString &str)
 
 //--------------------------------------------------------------------------------------------------
 
-void makeCsvRow(Lvk::Cmn::CsvRow & row, const Lvk::BE::Conversation::Entry & entry)
+void makeCsvRow(Lvk::Cmn::CsvRow & row, const Lvk::Cmn::Conversation::Entry & entry)
 {
     row.clear();
     row.append(entry.dateTime.toString(STR_CSV_CONV_DATE_TIME_FORMAT));
@@ -58,13 +58,13 @@ void makeCsvRow(Lvk::Cmn::CsvRow & row, const Lvk::BE::Conversation::Entry & ent
 
 //--------------------------------------------------------------------------------------------------
 
-void makeCsvDoc(Lvk::Cmn::CsvDocument & doc, const Lvk::BE::Conversation & conv)
+void makeCsvDoc(Lvk::Cmn::CsvDocument & doc, const Lvk::Cmn::Conversation & conv)
 {
     Lvk::Cmn::CsvRow row;
 
     doc.clear();
 
-    foreach (const Lvk::BE::Conversation::Entry &entry, conv.entries()) {
+    foreach (const Lvk::Cmn::Conversation::Entry &entry, conv.entries()) {
         if (!entry.isNull()) {
             makeCsvRow(row, entry);
             doc.append(row);
@@ -79,35 +79,35 @@ void makeCsvDoc(Lvk::Cmn::CsvDocument & doc, const Lvk::BE::Conversation & conv)
 // ConversationWriter
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationWriter::ConversationWriter()
+Lvk::Cmn::ConversationWriter::ConversationWriter()
     : m_device(0), m_init(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationWriter::ConversationWriter(const QString &filename)
+Lvk::Cmn::ConversationWriter::ConversationWriter(const QString &filename)
     : m_device(new QFile(filename)), m_init(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationWriter::ConversationWriter(QIODevice *device)
+Lvk::Cmn::ConversationWriter::ConversationWriter(QIODevice *device)
     : m_device(device), m_init(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationWriter::~ConversationWriter()
+Lvk::Cmn::ConversationWriter::~ConversationWriter()
 {
     delete m_device;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationWriter::write(const Lvk::BE::Conversation &conv)
+bool Lvk::Cmn::ConversationWriter::write(const Lvk::Cmn::Conversation &conv)
 {
     if (!init()) {
         return false;
@@ -121,7 +121,7 @@ bool Lvk::BE::ConversationWriter::write(const Lvk::BE::Conversation &conv)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationWriter::write(const Conversation::Entry &entry)
+bool Lvk::Cmn::ConversationWriter::write(const Conversation::Entry &entry)
 {
     if (!init()) {
         return false;
@@ -135,14 +135,14 @@ bool Lvk::BE::ConversationWriter::write(const Conversation::Entry &entry)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationWriter::atEnd()
+bool Lvk::Cmn::ConversationWriter::atEnd()
 {
     return !m_device || m_device->atEnd();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-inline bool Lvk::BE::ConversationWriter::init()
+inline bool Lvk::Cmn::ConversationWriter::init()
 {
     if (!m_init) {
         if (m_device) {
@@ -159,7 +159,7 @@ inline bool Lvk::BE::ConversationWriter::init()
 
 //--------------------------------------------------------------------------------------------------
 
-inline bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
+inline bool Lvk::Cmn::ConversationWriter::writeln(const QByteArray &data)
 {
     if (data.isEmpty()) {
         return true;
@@ -170,7 +170,7 @@ inline bool Lvk::BE::ConversationWriter::writeln(const QByteArray &data)
 
 //--------------------------------------------------------------------------------------------------
 
-inline bool Lvk::BE::ConversationWriter::flush()
+inline bool Lvk::Cmn::ConversationWriter::flush()
 {
     // flush() is not part of QIODevice interface. We only flush if it's type QFile.
 

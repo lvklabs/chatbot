@@ -25,8 +25,8 @@
 #include <QMainWindow>
 
 #include "back-end/appfacade.h"
-#include "back-end/conversation.h"
 #include "back-end/rule.h"
+#include "common/conversation.h"
 
 class TestMainWindow;
 class QModelIndex;
@@ -259,7 +259,7 @@ private slots:
     void onDisconnection();
     void onRosterSelectionChanged();
 
-    void onNewChatConversation(const BE::Conversation::Entry &entry);
+    void onNewChatConversation(const Cmn::Conversation::Entry &entry);
 
     void onNewMenuTriggered();
     void onOpenMenuTriggered();

@@ -19,7 +19,7 @@
  *
  */
 
-#include "back-end/conversationreader.h"
+#include "common/conversationreader.h"
 #include "common/csvrow.h"
 #include "common/csvdocument.h"
 #include "common/globalstrings.h"
@@ -35,7 +35,7 @@
 namespace
 {
 
-void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Cmn::CsvRow & row)
+void makeEntry(Lvk::Cmn::Conversation::Entry & entry, const Lvk::Cmn::CsvRow & row)
 {
     entry.clear();
 
@@ -54,11 +54,11 @@ void makeEntry(Lvk::BE::Conversation::Entry & entry, const Lvk::Cmn::CsvRow & ro
 
 //--------------------------------------------------------------------------------------------------
 
-void makeConversation(Lvk::BE::Conversation & conv, const Lvk::Cmn::CsvDocument & doc)
+void makeConversation(Lvk::Cmn::Conversation & conv, const Lvk::Cmn::CsvDocument & doc)
 {
     conv.clear();
 
-    Lvk::BE::Conversation::Entry entry;
+    Lvk::Cmn::Conversation::Entry entry;
 
     foreach (const Lvk::Cmn::CsvRow &row, doc.rows()) {
         makeEntry(entry, row);
@@ -74,14 +74,14 @@ void makeConversation(Lvk::BE::Conversation & conv, const Lvk::Cmn::CsvDocument 
 // ConversationReader
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationReader::ConversationReader()
+Lvk::Cmn::ConversationReader::ConversationReader()
     : m_device(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationReader::ConversationReader(const QString &filename)
+Lvk::Cmn::ConversationReader::ConversationReader(const QString &filename)
     : m_device(new QFile(filename))
 {
     qDebug() << "ConversationReader: Opening" << filename;
@@ -93,7 +93,7 @@ Lvk::BE::ConversationReader::ConversationReader(const QString &filename)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationReader::ConversationReader(QIODevice *device)
+Lvk::Cmn::ConversationReader::ConversationReader(QIODevice *device)
     : m_device(device)
 {
     if (!m_device->isOpen()) {
@@ -105,14 +105,14 @@ Lvk::BE::ConversationReader::ConversationReader(QIODevice *device)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ConversationReader::~ConversationReader()
+Lvk::Cmn::ConversationReader::~ConversationReader()
 {
     delete m_device;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationReader::read(Lvk::BE::Conversation *conv)
+bool Lvk::Cmn::ConversationReader::read(Lvk::Cmn::Conversation *conv)
 {
     if (!m_device) {
         return false;
@@ -129,7 +129,7 @@ bool Lvk::BE::ConversationReader::read(Lvk::BE::Conversation *conv)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationReader::read(Conversation::Entry *entry)
+bool Lvk::Cmn::ConversationReader::read(Conversation::Entry *entry)
 {
     if (!m_device) {
         return false;
@@ -148,7 +148,7 @@ bool Lvk::BE::ConversationReader::read(Conversation::Entry *entry)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::ConversationReader::atEnd()
+bool Lvk::Cmn::ConversationReader::atEnd()
 {
     return !m_device || m_device->atEnd();
 }

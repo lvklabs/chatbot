@@ -32,11 +32,11 @@
 
 #include "back-end/chatbotrulesfile.h"
 #include "nlp-engine/rule.h"
-#include "back-end/conversation.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
 #include "back-end/scorealgorithm.h"
 #include "common/remotelogger.h"
+#include "common/conversation.h"
 
 class QFile;
 
@@ -319,7 +319,7 @@ public:
      * Returns the chat history of the current chatbot. Before calling this method you
      * must \a load() a chatbot file.
      */
-    const Conversation &chatHistory();
+    const Cmn::Conversation &chatHistory();
 
     /**
      * Clears the chat history of the current chatbot. All persisted data is also deleted.
@@ -384,9 +384,9 @@ signals:
     /**
      * This signal is emitted whenever the chatbot receives a chat message. \a entry
      * contains the received message, the chatbot response and other useful information.
-     * \see BE::Conversation::Entry
+     * \see Cmn::Conversation::Entry
      */
-    void newConversationEntry(const BE::Conversation::Entry &entry);
+    void newConversationEntry(const Cmn::Conversation::Entry &entry);
 
     /**
      * When the chatbot is connected this signal is emitted every second with the remaining
