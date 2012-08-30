@@ -72,7 +72,7 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
       m_id(id),
       m_engine(engine),
       m_convWriter(0),
-      m_rwLock(new QReadWriteLock())
+      m_rwLock(new QReadWriteLock(QReadWriteLock::Recursive))
 {
     Lvk::Cmn::Settings settings;
 

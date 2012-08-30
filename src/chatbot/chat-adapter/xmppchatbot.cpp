@@ -65,9 +65,9 @@ inline QString getBareJid(const QString &from)
 Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
       m_virtualUser(0),
-      m_contactInfoMutex(new QMutex()),
+      m_contactInfoMutex(new QMutex(QMutex::Recursive)),
       m_rosterMutex(new QMutex()),
-      m_virtualUserMutex(new QMutex()),
+      m_virtualUserMutex(new QMutex(QMutex::Recursive)),
       m_isConnected(false),
       m_rosterHasChanged(false)
 {
