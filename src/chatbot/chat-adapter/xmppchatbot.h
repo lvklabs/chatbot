@@ -95,6 +95,11 @@ public:
     virtual void disconnectFromServer();
 
     /**
+     * \copydoc Chatbot::isConnected()
+     */
+    virtual bool isConnected() const;
+
+    /**
      * \copydoc Chatbot::username()
      */
     virtual const QString &username();

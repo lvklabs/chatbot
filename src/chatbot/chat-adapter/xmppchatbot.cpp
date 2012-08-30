@@ -158,6 +158,13 @@ void Lvk::CA::XmppChatbot::disconnectFromServer()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::CA::XmppChatbot::isConnected() const
+{
+    return m_xmppClient->isConnected();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const QString & Lvk::CA::XmppChatbot::username()
 {
     return m_user;
@@ -418,3 +425,4 @@ void Lvk::CA::XmppChatbot::updateConnectionStats()
     uint duration = QDateTime::currentDateTime().toTime_t() - m_connStartTime;
     Stats::StatsManager::manager()->setStat(Stats::ConnectionTime, duration);
 }
+

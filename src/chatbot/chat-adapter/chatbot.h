@@ -87,6 +87,11 @@ public:
     virtual void disconnectFromServer() = 0;
 
     /**
+     * Returns true if the chatbot is connected. Otherwise; returns false.
+     */
+    virtual bool isConnected() const = 0;
+
+    /**
      * Returns the username used to connect to the server. Returns an empty string, if
      * connectToServer() was never called or it is disconnected.
      */
