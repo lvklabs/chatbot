@@ -2,13 +2,18 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS = \
-    default-sanitizer-unit-test \
-    aiml-engine-unit-test  \
-    simple-aiml-engine-unit-test \
-    csv-document-unit-test \
-    end-to-end-test \
-    conversation-rw-unit-test
+unit_tests {
+    SUBDIRS += \
+        default-sanitizer-unit-test \
+        aiml-engine-unit-test  \
+        simple-aiml-engine-unit-test \
+        csv-document-unit-test \
+        conversation-rw-unit-test
+}
 
+end_to_end_tests {
+    SUBDIRS += \
+        end-to-end-test \
+}
 
 
