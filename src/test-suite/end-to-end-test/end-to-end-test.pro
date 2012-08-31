@@ -61,7 +61,6 @@ HEADERS += \
     ../../chatbot/front-end/scorewidget.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
-    ../../chatbot/back-end/defaultvirtualuser.h \
     ../../chatbot/back-end/roster.h \
     ../../chatbot/back-end/target.h \
     ../../chatbot/back-end/chatbotrulesfile.h \
@@ -70,6 +69,7 @@ HEADERS += \
     ../../chatbot/back-end/statshelper.h \
     ../../chatbot/back-end/score.h \
     ../../chatbot/back-end/scorealgorithm.h \
+    ../../chatbot/back-end/aiadapter.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/simpleaimlengine.h \
@@ -85,12 +85,12 @@ HEADERS += \
     ../../chatbot/nlp-engine/enginefactory.h \
     ../../chatbot/chat-adapter/xmppchatbot.h \
     ../../chatbot/chat-adapter/historyhelper.h \
-    ../../chatbot/chat-adapter/virtualuser.h \
     ../../chatbot/chat-adapter/chatbot.h \
     ../../chatbot/chat-adapter/fbchatbot.h \
     ../../chatbot/chat-adapter/gtalkchatbot.h \
     ../../chatbot/chat-adapter/contactinfo.h \
     ../../chatbot/chat-adapter/chatcorpus.h \
+    ../../chatbot/chat-adapter/chatbotai.h \
     ../../chatbot/common/random.h\
     ../../chatbot/common/version.h \
     ../../chatbot/common/settings.h \
@@ -130,9 +130,9 @@ SOURCES += \
     ../../chatbot/front-end/scorewidget.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/rule.cpp \
-    ../../chatbot/back-end/defaultvirtualuser.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
     ../../chatbot/back-end/scorealgorithm.cpp \
+    ../../chatbot/back-end/aiadapter.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \

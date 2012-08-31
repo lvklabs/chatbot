@@ -105,7 +105,6 @@ HEADERS += \
     front-end/scorewidget.h \
     back-end/appfacade.h \
     back-end/rule.h \
-    back-end/defaultvirtualuser.h \
     back-end/roster.h \
     back-end/target.h \
     back-end/chatbotrulesfile.h \
@@ -114,6 +113,7 @@ HEADERS += \
     back-end/statshelper.h \
     back-end/score.h \
     back-end/scorealgorithm.h \
+    back-end/aiadapter.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -129,12 +129,12 @@ HEADERS += \
     nlp-engine/enginefactory.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
-    chat-adapter/virtualuser.h \
     chat-adapter/chatbot.h \
     chat-adapter/fbchatbot.h \
     chat-adapter/gtalkchatbot.h \
     chat-adapter/contactinfo.h \
     chat-adapter/chatcorpus.h \
+    chat-adapter/chatbotai.h \
     common/random.h\
     common/version.h \
     common/settings.h \
@@ -175,9 +175,9 @@ SOURCES += \
     front-end/scorewidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
-    back-end/defaultvirtualuser.cpp \
     back-end/chatbotrulesfile.cpp \
     back-end/scorealgorithm.cpp \
+    back-end/aiadapter.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
@@ -265,6 +265,12 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
+
 
 
 

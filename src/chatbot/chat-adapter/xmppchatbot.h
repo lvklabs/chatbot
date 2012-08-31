@@ -111,14 +111,14 @@ public:
     virtual const QString &domain();
 
     /**
-     * \copydoc Chatbot::setVirtualUser()
+     * \copydoc Chatbot::setAI()
      */
-    virtual void setVirtualUser(VirtualUser *virtualUser);
+    virtual void setAI(ChatbotAI *ai);
 
     /**
-     * \copydoc Chatbot::virtualUser()
+     * \copydoc Chatbot::AI()
      */
-    virtual VirtualUser *virtualUser();
+    virtual ChatbotAI *AI();
 
     /**
      * \copydoc Chatbot::roster()
@@ -193,11 +193,11 @@ private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
 
-    std::auto_ptr<VirtualUser> m_virtualUser;
+    std::auto_ptr<ChatbotAI> m_ai;
     QHash<QString, QXmppVCardIq> m_vCards;
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;
-    QMutex *m_virtualUserMutex;
+    QMutex *m_aiMutex;
 
     bool m_isConnected;
     bool m_rosterHasChanged;

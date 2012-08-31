@@ -20,6 +20,7 @@
  */
 
 #include "front-end/chathistorywidget.h"
+#include "common/globalstrings.h"
 #include "ui_chathistorywidget.h"
 
 #include <QIcon>
@@ -34,9 +35,6 @@
 #define FB_ICON         ":/icons/facebook.png"
 #define GMAIL_ICON      ":/icons/gmail.png"
 #define LOCAL_TEST_ICON ":/icons/app_icon"
-
-#define USERNAME_START_TOKEN  "<"
-#define USERNAME_END_TOKEN    ">"
 
 
 enum DateContactTableColumns

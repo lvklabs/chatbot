@@ -19,20 +19,17 @@
  *
  */
 
-#include "back-end/defaultvirtualuser.h"
+#include "back-end/aiadapter.h"
 #include "nlp-engine/engine.h"
+#include "chat-adapter/contactinfo.h"
 #include "common/random.h"
+#include "common/globalstrings.h"
 
 #include <QDateTime>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QtDebug>
-
-// Note: ConversationHistoryWidget relies on these tokens.
-//       If you change them, update the widget accordingly.
-#define USERNAME_START_TOKEN    "<"
-#define USERNAME_END_TOKEN      ">"
 
 
 //--------------------------------------------------------------------------------------------------
@@ -52,35 +49,30 @@ QString getFromString(const Lvk::CA::ContactInfo &contact)
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
-// DefaultVirtualUser
+// AIAdapter
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
-                                                Nlp::Engine *engine /*= 0*/,
-                                                QObject *parent /*= 0*/)
-    : QObject(parent),
-      m_id(id),
-      m_engine(engine),
-      m_rwLock(new QReadWriteLock(QReadWriteLock::Recursive))
+Lvk::BE::AIAdapter::AIAdapter(const QString &id, Nlp::Engine *engine /*= 0*/)
+    : m_id(id), m_engine(engine), m_rwLock(new QReadWriteLock(QReadWriteLock::Recursive))
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
+Lvk::BE::AIAdapter::~AIAdapter()
 {
     delete m_rwLock;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString &input,
-                                                                    const CA::ContactInfo &contact)
+Lvk::Cmn::Conversation::Entry Lvk::BE::AIAdapter::getEntry(const QString &input,
+                                                           const CA::ContactInfo &contact)
 {
     QWriteLocker locker(m_rwLock);
 
     if (m_engine) {
-        qDebug() << "DefaultVirtualUser: Getting response for input" << input
+        qDebug() << "AIAdapter: Getting response for input" << input
                  << "and username" << contact.username;
 
         quint64 ruleId = 0;
@@ -90,20 +82,20 @@ Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QStrin
 
 
         if (matched) {
-            qDebug() << "DefaultVirtualUser: Got response" << response;
+            qDebug() << "AIAdapter: Got response" << response;
 
             if (matches.size() > 0) {
                 ruleId = matches.first().first;
             } else {
-                qWarning() << "DefaultVirtualUser: Got response but empty match list";
+                qWarning() << "AIAdapter: Got response but empty match list";
             }
         } else {
             if (m_evasives.size() > 0) {
                 response = m_evasives[Cmn::Random::getInt(0, m_evasives.size() - 1)];
-                qDebug() << "DefaultVirtualUser: No match. Using evasive" << response;
+                qDebug() << "AIAdapter: No match. Using evasive" << response;
             } else {
                 response.clear();
-                qDebug() << "DefaultVirtualUser: No match and no evasives found";
+                qDebug() << "AIAdapter: No match and no evasives found";
             }
         }
 
@@ -112,7 +104,7 @@ Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QStrin
 
         return Cmn::Conversation::Entry(dateTime, from, m_id, input, response, matched, ruleId);
     } else {
-        qCritical("DefaultVirtualUser: No engine set");
+        qCritical("AIAdapter: No engine set");
 
         return Cmn::Conversation::Entry();
     }
@@ -120,14 +112,7 @@ Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QStrin
 
 //--------------------------------------------------------------------------------------------------
 
-QPixmap Lvk::BE::DefaultVirtualUser::getAvatar()
-{
-    return QPixmap();   // For future usage
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::DefaultVirtualUser::setNlpEngine(Nlp::Engine *engine)
+void Lvk::BE::AIAdapter::setNlpEngine(Nlp::Engine *engine)
 {
     QWriteLocker locker(m_rwLock);
     m_engine = engine;
@@ -135,7 +120,7 @@ void Lvk::BE::DefaultVirtualUser::setNlpEngine(Nlp::Engine *engine)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::DefaultVirtualUser::setEvasives(const QStringList &evasives)
+void Lvk::BE::AIAdapter::setEvasives(const QStringList &evasives)
 {
     QWriteLocker locker(m_rwLock);
     m_evasives = evasives;

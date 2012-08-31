@@ -19,15 +19,13 @@
  *
  */
 
-#ifndef LVK_BE_DEFAULTVIRTUALUSER_H
-#define LVK_BE_DEFAULTVIRTUALUSER_H
+#ifndef LVK_BE_AIADAPTER_H
+#define LVK_BE_AIADAPTER_H
 
-#include <QObject>
+#include <QString>
 #include <QStringList>
-#include "chat-adapter/virtualuser.h"
-#include "common/conversation.h"
+#include "chat-adapter/chatbotai.h"
 
-class QFile;
 class QReadWriteLock;
 
 namespace Lvk
@@ -54,36 +52,28 @@ namespace BE
 /// @{
 
 /**
- * \brief The DefaultVirtualUser class provides the default implementation of the interface
- *        VirtualUser.
+ * \brief The AIAdapter adapts a Nlp::Engine as a CA::ChatbotAI
  */
-class DefaultVirtualUser : public QObject, public CA::VirtualUser
+class AIAdapter : public CA::ChatbotAI
 {
-    Q_OBJECT
 
 public:
 
     /**
-     * Constructs a virtual user with id \a id, NLP engine \a engine and parent object \a parent.
+     * Constructs an AIAdapter with chatbot id \a id, NLP engine \a engine.
      */
-    DefaultVirtualUser(const QString &id, Nlp::Engine *engine = 0, QObject *parent = 0);
+    AIAdapter(const QString &id, Nlp::Engine *engine = 0);
 
     /**
-     * Destroys the object
+     * Destroys the object. The engine passed is not distroyed.
      */
-    ~DefaultVirtualUser();
+    ~AIAdapter();
 
     /**
-     * \copydoc CA::VirtualUser::getEntry()
+     * \copydoc CA::ChatbotAI::getEntry()
      */
     virtual Cmn::Conversation::Entry getEntry(const QString &input,
                                               const CA::ContactInfo &contact);
-
-    /**
-     * \copydoc CA::VirtualUser::getAvatar()
-     */
-    virtual QPixmap getAvatar();
-
     /**
      * Sets the NLP engine that is used to get responses.
      */
@@ -97,14 +87,13 @@ public:
     void setEvasives(const QStringList &evasives);
 
 private:
-    DefaultVirtualUser(DefaultVirtualUser&);
-    DefaultVirtualUser& operator=(DefaultVirtualUser&);
+    AIAdapter(AIAdapter&);
+    AIAdapter& operator=(AIAdapter&);
 
     QString m_id;
     Nlp::Engine *m_engine;
     QStringList m_evasives;
     QReadWriteLock *m_rwLock;
-
 };
 
 /// @}
@@ -116,4 +105,4 @@ private:
 
 } // namespace Lvk
 
-#endif // LVK_BE_DEFAULTVIRTUALUSER_H
+#endif // LVK_BE_AIADAPTER_H

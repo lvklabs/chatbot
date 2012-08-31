@@ -42,17 +42,15 @@ namespace CA
 /// \addtogroup CA
 /// @{
 
-class VirtualUser;
+class ChatbotAI;
 
 
 /**
  * \brief The Chatbot class provides the abstract interface for all chatbots.
  *
  * A chatbot connects to a chat server and waits for a conversation to start. If a message arrives
- * it replies but it does not start conversations by its own.
- * Before connecting to a chat server a VirtualUser must be set with setVirtualUser().
- * The VirtualUser class provides the information to behave like a human being. Most
- * notably, the virtual user knows how to reply a contact given a sentence.
+ * it replies but it does not start conversations by its own. To reply a message the chatbot
+ * requires a ChatbotAI object to be set with setAI().
  *
  * \see VirtualUser, XmppChatbot, FbChatbot, GTalkChatbot
  */
@@ -105,14 +103,14 @@ public:
     virtual const QString &domain() = 0;
 
     /**
-     * Sets the virtual user.
+     * Sets the AI for the chatbot.
      */
-    virtual void setVirtualUser(VirtualUser *virtualUser) = 0;
+    virtual void setAI(ChatbotAI *AI) = 0;
 
     /**
-     * Returns the virtual user.
+     * Returns the AI of the chatbot
      */
-    virtual VirtualUser *virtualUser() = 0;
+    virtual ChatbotAI *AI() = 0;
 
     /**
      * Returns the roster. i.e. the list of all chat contacts.

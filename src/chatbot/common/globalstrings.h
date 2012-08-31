@@ -30,4 +30,7 @@
 
 #define STR_CHAT_CORPUS_DATE_TIME_FORMAT       STR_GLOBAL_DATE_TIME_FORMAT
 
+#define USERNAME_START_TOKEN                    "<"
+#define USERNAME_END_TOKEN                      ">"
+
 #endif // LVK_CMN_GLOBALSTRINGS_H

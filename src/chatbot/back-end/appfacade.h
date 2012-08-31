@@ -60,7 +60,7 @@ namespace BE
 {
 
 class Rule;
-class DefaultVirtualUser;
+class AIAdapter;
 struct Score;
 
 /// \ingroup Lvk
@@ -423,9 +423,9 @@ private:
 
     bool setDefaultRules();
 
-    inline DefaultVirtualUser *virtualUser();
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
+    void refreshEvasives();
     QStringList getEvasives() const;
     void setupChatbot();
     void setupChatbot(ChatType type);

@@ -20,7 +20,7 @@
  */
 
 #include "chat-adapter/xmppchatbot.h"
-#include "chat-adapter/virtualuser.h"
+#include "chat-adapter/chatbotai.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
@@ -65,10 +65,10 @@ inline QString getBareJid(const QString &from)
 Lvk::CA::XmppChatbot::XmppChatbot(const QString &chatbotId, QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
       m_history(chatbotId),
-      m_virtualUser(0),
+      m_ai(0),
       m_contactInfoMutex(new QMutex(QMutex::Recursive)),
       m_rosterMutex(new QMutex()),
-      m_virtualUserMutex(new QMutex(QMutex::Recursive)),
+      m_aiMutex(new QMutex(QMutex::Recursive)),
       m_isConnected(false),
       m_rosterHasChanged(false)
 {
@@ -85,7 +85,7 @@ Lvk::CA::XmppChatbot::~XmppChatbot()
         m_isConnected = false;
     }
 
-    delete m_virtualUserMutex;
+    delete m_aiMutex;
     delete m_rosterMutex;
     delete m_contactInfoMutex;
     delete m_xmppClient;
@@ -180,20 +180,20 @@ const QString & Lvk::CA::XmppChatbot::domain()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::XmppChatbot::setVirtualUser(Lvk::CA::VirtualUser *virtualUser)
+void Lvk::CA::XmppChatbot::setAI(Lvk::CA::ChatbotAI *ai)
 {
-    QMutexLocker locker(m_virtualUserMutex);
+    QMutexLocker locker(m_aiMutex);
 
-    m_virtualUser.reset(virtualUser);
+    m_ai.reset(ai);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::VirtualUser * Lvk::CA::XmppChatbot::virtualUser()
+Lvk::CA::ChatbotAI * Lvk::CA::XmppChatbot::AI()
 {
-    QMutexLocker locker(m_virtualUserMutex);
+    QMutexLocker locker(m_aiMutex);
 
-    return m_virtualUser.get();
+    return m_ai.get();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -290,12 +290,12 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
         Cmn::Conversation::Entry entry;
 
         {
-            QMutexLocker locker(m_virtualUserMutex);
+            QMutexLocker locker(m_aiMutex);
 
-            if (m_virtualUser.get()) {
-               entry = m_virtualUser->getEntry(msg.body(), info);
+            if (m_ai.get()) {
+               entry = m_ai->getEntry(msg.body(), info);
             } else {
-                qCritical() << "XmppChatbot: No virtual user set";
+                qCritical() << "XmppChatbot: No AI set";
             }
         }
 

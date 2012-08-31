@@ -67,7 +67,7 @@ void Lvk::CA::HistoryHelper::init()
     if (QFile::exists(m_filename)) {
         Cmn::ConversationReader convReader(m_filename);
         if (!convReader.read(&m_conv)) {
-            qWarning() << "DefaultVirtualUser: Cannot read the conversation history for chatbot id"
+            qWarning() << "HistoryHelper: Cannot read the conversation history for chatbot id"
                        << m_id;
         }
     }

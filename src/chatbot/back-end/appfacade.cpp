@@ -23,7 +23,7 @@
 #include "back-end/rule.h"
 #include "back-end/historystatshelper.h"
 #include "back-end/rulestatshelper.h"
-#include "back-end/defaultvirtualuser.h"
+#include "back-end/aiadapter.h"
 #include "back-end/score.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
@@ -362,13 +362,6 @@ Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 // Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
-inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
-{
-    return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
-}
-
-//--------------------------------------------------------------------------------------------------
-
 QStringList Lvk::BE::AppFacade::getEvasives() const
 {
     return m_evasivesRule ? const_cast<const BE::Rule*>(m_evasivesRule)->output() : QStringList();
@@ -436,7 +429,7 @@ void Lvk::BE::AppFacade::refreshNlpEngine()
         Nlp::RuleList nlpRules;
         buildNlpRulesOf(m_rules.rootRule(), nlpRules);
         m_nlpEngine->setRules(nlpRules);
-        virtualUser()->setEvasives(getEvasives());
+        refreshEvasives();
     } else {
         qCritical("NLP engine not set");
     }
@@ -475,6 +468,13 @@ void Lvk::BE::AppFacade::storeTargets(const TargetList &targets)
     foreach (const Target &t, targets) {
         m_targets.insert(t.username);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::refreshEvasives()
+{
+    dynamic_cast<AIAdapter *>(m_chatbot->AI())->setEvasives(getEvasives());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -621,14 +621,14 @@ void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const 
 {
     setupChatbot(type);
 
-	m_chatbot->connectToServer(user, passwd);
+    m_chatbot->connectToServer(user, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::disconnectFromChat()
 {
-	m_chatbot->disconnectFromServer();
+    m_chatbot->disconnectFromServer();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -659,14 +659,11 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
     }
 
     if (!m_chatbot) {
-        m_chatbot = createChatbot(m_rules.chatbotId(), type);
         m_currentChatbotType = type;
+        m_chatbot = createChatbot(m_rules.chatbotId(), type);
+        m_chatbot->setAI(new AIAdapter(m_rules.chatbotId(), m_nlpEngine));
 
-        DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rules.chatbotId(), m_nlpEngine);
-        virtualUser->setEvasives(getEvasives());
-
-        m_chatbot->setVirtualUser(virtualUser);
-
+        refreshEvasives();
         connectChatbotSignals();
     }
 }
