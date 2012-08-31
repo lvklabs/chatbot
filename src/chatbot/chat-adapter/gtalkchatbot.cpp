@@ -27,8 +27,8 @@
 // FbChatbot
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::GTalkChatbot::GTalkChatbot(QObject *parent)
-    : XmppChatbot(parent)
+Lvk::CA::GTalkChatbot::GTalkChatbot(const QString &chatbotId, QObject *parent)
+    : XmppChatbot(chatbotId, parent)
 {
 }
 

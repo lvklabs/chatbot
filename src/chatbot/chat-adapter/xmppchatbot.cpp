@@ -20,7 +20,7 @@
  */
 
 #include "chat-adapter/xmppchatbot.h"
-#include "chat-adapter/chatvirtualuser.h"
+#include "chat-adapter/virtualuser.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
@@ -62,8 +62,9 @@ inline QString getBareJid(const QString &from)
 // XmppChatbot
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::XmppChatbot::XmppChatbot(QObject *parent)
+Lvk::CA::XmppChatbot::XmppChatbot(const QString &chatbotId, QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
+      m_history(chatbotId),
       m_virtualUser(0),
       m_contactInfoMutex(new QMutex(QMutex::Recursive)),
       m_rosterMutex(new QMutex()),
@@ -286,16 +287,26 @@ void Lvk::CA::XmppChatbot::onMessageReceived(const QXmppMessage& msg)
     if (!isInBlackList(bareJid)) {
         ContactInfo info = getContactInfo(bareJid);
 
-        QMutexLocker locker(m_virtualUserMutex);
+        Cmn::Conversation::Entry entry;
 
-        if (m_virtualUser.get()) {
-            QString response = m_virtualUser->getResponse(msg.body(), info);
+        {
+            QMutexLocker locker(m_virtualUserMutex);
 
-            if (!response.isEmpty()) {
-                m_xmppClient->sendPacket(QXmppMessage("", msg.from(), response));
+            if (m_virtualUser.get()) {
+               entry = m_virtualUser->getEntry(msg.body(), info);
+            } else {
+                qCritical() << "XmppChatbot: No virtual user set";
             }
-        } else {
-            qCritical() << "XmppChatbot: No virtual user set";
+        }
+
+        if (!entry.isNull()) {
+            if (!entry.response.isEmpty()) {
+                m_xmppClient->sendPacket(QXmppMessage("", msg.from(), entry.response));
+            }
+
+            m_history.append(entry);
+
+            emit newConversationEntry(entry);
         }
     } else {
         qDebug() << "XmppChatbot: Ignoring message" << msg.body() << "because user"
@@ -425,4 +436,26 @@ void Lvk::CA::XmppChatbot::updateConnectionStats()
     uint duration = QDateTime::currentDateTime().toTime_t() - m_connStartTime;
     Stats::StatsManager::manager()->setStat(Stats::ConnectionTime, duration);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::Cmn::Conversation & Lvk::CA::XmppChatbot::chatHistory() const
+{
+    return m_history.history();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::setChatHistory(const Cmn::Conversation &conv)
+{
+    m_history.setHistory(conv);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::clearHistory()
+{
+    m_history.clear();
+}
+
 

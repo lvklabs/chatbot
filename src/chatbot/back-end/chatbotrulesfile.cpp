@@ -140,8 +140,6 @@ bool Lvk::BE::ChatbotRulesFile::saveAs(const QString &filename)
     QString filenameBak = m_filename;
     QString chatbotIdBak = m_chatbotId;
 
-
-
     if (m_filename.size() > 0 && m_filename != filename) {
         m_chatbotId = newChatbotId();
     }

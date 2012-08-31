@@ -42,50 +42,74 @@ INCLUDEPATH += \
     $$QXMPP_INCLUDE_PATH
 
 HEADERS += \
+    testxmppclient.h \
+    testmainwindow.h \
+    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     ../../chatbot/front-end/mainwindow.h \
     ../../chatbot/front-end/ruletreemodel.h \
     ../../chatbot/front-end/ruleoutputwidget.h \
     ../../chatbot/front-end/ruleinputwidget.h \
     ../../chatbot/front-end/testconversationwidget.h \
-    ../../chatbot/front-end/chathistorywidget.h \
     ../../chatbot/front-end/portdialog.h \
     ../../chatbot/front-end/exportdialog.h \
     ../../chatbot/front-end/importdialog.h \
     ../../chatbot/front-end/rosterwidget.h \
     ../../chatbot/front-end/autocompletetextedit.h \
+    ../../chatbot/front-end/chathistorywidget.h \
     ../../chatbot/front-end/linefilteredit.h \
     ../../chatbot/front-end/ruletextview.h \
     ../../chatbot/front-end/scorewidget.h \
-    ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/appfacade.h \
+    ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/defaultvirtualuser.h \
-    ../../chatbot/back-end/conversation.h \
-    ../../chatbot/back-end/conversationwriter.h \
-    ../../chatbot/back-end/conversationreader.h \
+    ../../chatbot/back-end/roster.h \
+    ../../chatbot/back-end/target.h \
     ../../chatbot/back-end/chatbotrulesfile.h \
-    ../../chatbot/nlp-engine/engine.h \
-    ../../chatbot/nlp-engine/rule.h \
+    ../../chatbot/back-end/rulestatshelper.h \
+    ../../chatbot/back-end/historystatshelper.h \
+    ../../chatbot/back-end/statshelper.h \
+    ../../chatbot/back-end/score.h \
+    ../../chatbot/back-end/scorealgorithm.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/simpleaimlengine.h \
+    ../../chatbot/nlp-engine/sanitizer.h \
     ../../chatbot/nlp-engine/defaultsanitizer.h \
     ../../chatbot/nlp-engine/nullsanitizer.h \
-    ../../chatbot/chat-adapter/chatvirtualuser.h \
-    ../../chatbot/chat-adapter/chatbot.h \
+    ../../chatbot/nlp-engine/lemmatizer.h \
+    ../../chatbot/nlp-engine/nulllemmatizer.h \
+    ../../chatbot/nlp-engine/rule.h \
+    ../../chatbot/nlp-engine/engine.h \
+    ../../chatbot/nlp-engine/lemmatizerfactory.h \
+    ../../chatbot/nlp-engine/sanitizerfactory.h \
+    ../../chatbot/nlp-engine/enginefactory.h \
     ../../chatbot/chat-adapter/xmppchatbot.h \
+    ../../chatbot/chat-adapter/historyhelper.h \
+    ../../chatbot/chat-adapter/virtualuser.h \
+    ../../chatbot/chat-adapter/chatbot.h \
     ../../chatbot/chat-adapter/fbchatbot.h \
     ../../chatbot/chat-adapter/gtalkchatbot.h \
+    ../../chatbot/chat-adapter/contactinfo.h \
     ../../chatbot/chat-adapter/chatcorpus.h \
     ../../chatbot/common/random.h\
+    ../../chatbot/common/version.h \
     ../../chatbot/common/settings.h \
+    ../../chatbot/common/settingskeys.h \
     ../../chatbot/common/csvdocument.h \
     ../../chatbot/common/csvrow.h \
+    ../../chatbot/common/globalstrings.h \
+    ../../chatbot/common/conversation.h \
+    ../../chatbot/common/conversationwriter.h \
+    ../../chatbot/common/conversationreader.h \
     ../../chatbot/common/logger.h \
+    ../../chatbot/common/remotelogger.h \
+    ../../chatbot/common/nullremotelogger.h \
+    ../../chatbot/common/remoteloggerfactory.h \
     ../../chatbot/stats/statsmanager.h \
+    ../../chatbot/stats/statsfile.h \
     ../../chatbot/stats/csvstatsfile.h \
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
-    testxmppclient.h \
-    testmainwindow.h \
+    ../../chatbot/stats/id.h \
+    ../../chatbot/stats/history.h \
 
 
 SOURCES += \
@@ -95,21 +119,18 @@ SOURCES += \
     ../../chatbot/front-end/ruleoutputwidget.cpp \
     ../../chatbot/front-end/ruleinputwidget.cpp \
     ../../chatbot/front-end/testconversationwidget.cpp \
-    ../../chatbot/front-end/chathistorywidget.cpp \
     ../../chatbot/front-end/portdialog.cpp \
     ../../chatbot/front-end/exportdialog.cpp \
     ../../chatbot/front-end/importdialog.cpp \
     ../../chatbot/front-end/rosterwidget.cpp \
     ../../chatbot/front-end/autocompletetextedit.cpp \
+    ../../chatbot/front-end/chathistorywidget.cpp \
     ../../chatbot/front-end/linefilteredit.cpp \
     ../../chatbot/front-end/ruletextview.cpp \
     ../../chatbot/front-end/scorewidget.cpp \
-    ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/appfacade.cpp \
+    ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/defaultvirtualuser.cpp \
-    ../../chatbot/back-end/conversation.cpp \
-    ../../chatbot/back-end/conversationwriter.cpp \
-    ../../chatbot/back-end/conversationreader.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
     ../../chatbot/back-end/scorealgorithm.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
@@ -119,6 +140,7 @@ SOURCES += \
     ../../chatbot/nlp-engine/lemmatizerfactory.cpp \
     ../../chatbot/nlp-engine/sanitizerfactory.cpp \
     ../../chatbot/nlp-engine/enginefactory.cpp \
+    ../../chatbot/chat-adapter/historyhelper.cpp \
     ../../chatbot/chat-adapter/xmppchatbot.cpp \
     ../../chatbot/chat-adapter/fbchatbot.cpp \
     ../../chatbot/chat-adapter/gtalkchatbot.cpp \
@@ -128,6 +150,9 @@ SOURCES += \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/csvdocument.cpp \
     ../../chatbot/common/csvrow.cpp \
+    ../../chatbot/common/conversation.cpp \
+    ../../chatbot/common/conversationwriter.cpp \
+    ../../chatbot/common/conversationreader.cpp \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/common/remoteloggerfactory.cpp \
     ../../chatbot/stats/statsmanager.cpp \
@@ -142,6 +167,7 @@ FORMS += \
     ../../chatbot/front-end/portdialog.ui \
     ../../chatbot/front-end/chathistorywidget.ui \
     ../../chatbot/front-end/scorewidget.ui
+
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

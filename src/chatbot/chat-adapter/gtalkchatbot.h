@@ -53,9 +53,9 @@ class GTalkChatbot : public XmppChatbot
 public:
 
     /**
-     * Constructs a GTalk chatbot with parent object \a parent
+     * Constructs a GTalk chatbot with ID \a chatbotId parent object \a parent
      */
-    GTalkChatbot(QObject *parent = 0);
+    GTalkChatbot(const QString &chatbotId, QObject *parent = 0);
 
     /**
      * Connects to the GTalk server using \a user and \a password.

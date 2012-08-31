@@ -71,13 +71,13 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 
 //--------------------------------------------------------------------------------------------------
 
-inline Lvk::CA::Chatbot *createChatbot(Lvk::BE::AppFacade::ChatType type)
+inline Lvk::CA::Chatbot *createChatbot(const QString &id, Lvk::BE::AppFacade::ChatType type)
 {
     switch (type) {
     case Lvk::BE::AppFacade::FbChat:
-        return new Lvk::CA::FbChatbot();
+        return new Lvk::CA::FbChatbot(id);
     case Lvk::BE::AppFacade::GTalkChat:
-        return new Lvk::CA::GTalkChatbot();
+        return new Lvk::CA::GTalkChatbot(id);
     default:
         qCritical() << "newChatbot() Invalid chat type" << type;
         return 0;
@@ -139,6 +139,8 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_scoreTime(0)
 {
     connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
+
+    setupChatbot();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -155,6 +157,8 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_scoreTime(0)
 {
     connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
+
+    setupChatbot();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -199,9 +203,11 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
         Stats::StatsManager::manager()->setChatbotId(m_rules.chatbotId());
 
         setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
+        setupChatbot();
         refreshNlpEngine();
     } else {
         close();
+        setupChatbot();
     }
 
     return loaded;
@@ -256,9 +262,15 @@ bool Lvk::BE::AppFacade::save()
 
 bool Lvk::BE::AppFacade::saveAs(const QString &filename)
 {
-    deleteCurrentChatbot();
+    bool saved = m_rules.saveAs(filename);
 
-    return m_rules.saveAs(filename);
+    if (saved) {
+        // New chat chatbot id, we need to reset the chatbot
+        deleteCurrentChatbot();
+        setupChatbot();
+    }
+
+    return saved;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -275,7 +287,7 @@ void Lvk::BE::AppFacade::close()
     // If chatbot never saved
     if (m_rules.filename().isEmpty()) {
         Stats::StatsManager::manager()->clear();
-        virtualUser()->clearHistory();
+        m_chatbot->clearHistory();
     } else {
         logScore(false);
     }
@@ -350,13 +362,8 @@ Lvk::BE::Rule * Lvk::BE::AppFacade::evasivesRule()
 // Nlp Engine methods
 //--------------------------------------------------------------------------------------------------
 
-// TODO Expand VirtualUser interface in order to avoid this cast
 inline Lvk::BE::DefaultVirtualUser * Lvk::BE::AppFacade::virtualUser()
 {
-    if (!m_chatbot) {
-        setupChatbot();
-    }
-
     return dynamic_cast<DefaultVirtualUser *>(m_chatbot->virtualUser());
 }
 
@@ -557,7 +564,7 @@ void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const 
         delete m_tmpChatbot;
     }
 
-    m_tmpChatbot = createChatbot(type);
+    m_tmpChatbot = createChatbot("", type);
 
     if (m_tmpChatbot) {
         connect(m_tmpChatbot, SIGNAL(connected()), SLOT(onAccountOk()));
@@ -612,28 +619,16 @@ void Lvk::BE::AppFacade::connectToChat(const QString &passwd)
 void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const QString &user,
                                        const QString &passwd)
 {
-    if (m_chatbot && m_currentChatbotType != type) {
-        deleteCurrentChatbot();
-    }
+    setupChatbot(type);
 
-    if (!m_chatbot) {
-        setupChatbot(type);
-    }
-
-    if (m_chatbot) {
-        m_chatbot->connectToServer(user, passwd);
-    } else {
-        emit connectionError(UnknownServerTypeError);
-    }
+	m_chatbot->connectToServer(user, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::disconnectFromChat()
 {
-    if (m_chatbot) {
-        m_chatbot->disconnectFromServer();
-    }
+	m_chatbot->disconnectFromServer();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -659,62 +654,57 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
         type = FbChat;
     }
 
-    m_chatbot = createChatbot(type);
-    m_currentChatbotType = type;
+    if (m_chatbot && m_currentChatbotType != type) {
+        deleteCurrentChatbot();
+    }
 
-    DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rules.chatbotId(), m_nlpEngine);
-    virtualUser->setEvasives(getEvasives());
+    if (!m_chatbot) {
+        m_chatbot = createChatbot(m_rules.chatbotId(), type);
+        m_currentChatbotType = type;
 
-    m_chatbot->setVirtualUser(virtualUser);
+        DefaultVirtualUser *virtualUser = new DefaultVirtualUser(m_rules.chatbotId(), m_nlpEngine);
+        virtualUser->setEvasives(getEvasives());
 
-    connectChatClientSignals();
+        m_chatbot->setVirtualUser(virtualUser);
+
+        connectChatbotSignals();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::deleteCurrentChatbot()
 {
-    delete m_chatbot;
+    delete m_chatbot; // TODO consider using std::auto_ptr
     m_chatbot = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::connectChatClientSignals()
+void Lvk::BE::AppFacade::connectChatbotSignals()
 {
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
-    // FIXME add method to remap Chatbot error codes to AppFacade error codes
-    connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
-
-    connect(virtualUser(),
-            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
-            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
-
     connect(m_chatbot, SIGNAL(connected()),    SLOT(startTicking()));
     connect(m_chatbot, SIGNAL(disconnected()), SLOT(stopTicking()));
+    // FIXME add method to remap Chatbot error codes to AppFacade error codes
+    connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+    connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Roster Lvk::BE::AppFacade::roster() const
 {
-    Roster roster;
-
-    if (m_chatbot) {
-        roster = toBERoster(m_chatbot->roster());
-    }
-
-    return roster;
+    return toBERoster(m_chatbot->roster());
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 {
-    if (m_chatbot) {
-        m_chatbot->setBlackListRoster(toCAContactInfoList(roster));
-    }
+    m_chatbot->setBlackListRoster(toCAContactInfoList(roster));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -723,14 +713,14 @@ void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
 
 const Lvk::Cmn::Conversation & Lvk::BE::AppFacade::chatHistory()
 {
-    return virtualUser()->chatHistory();
+    return m_chatbot->chatHistory();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::clearChatHistory()
 {
-    virtualUser()->clearHistory();
+    m_chatbot->clearHistory();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -738,12 +728,13 @@ void Lvk::BE::AppFacade::clearChatHistory()
 void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user)
 {
     Cmn::Conversation conv;
-    foreach (const Cmn::Conversation::Entry &entry, virtualUser()->chatHistory().entries()) {
+    foreach (const Cmn::Conversation::Entry &entry, m_chatbot->chatHistory().entries()) {
         if (entry.from != user || entry.dateTime.date() != date) {
             conv.append(entry);
         }
     }
-    virtualUser()->setChatHistory(conv);
+
+    m_chatbot->setChatHistory(conv);
 }
 
 //--------------------------------------------------------------------------------------------------

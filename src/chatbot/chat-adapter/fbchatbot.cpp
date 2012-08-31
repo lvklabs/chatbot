@@ -117,9 +117,8 @@ public:
 // FbChatbot
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::FbChatbot::FbChatbot(QObject *parent)
-    : XmppChatbot(parent),
-      m_ownMsgExtension(new FbOwnMessageExtension())
+Lvk::CA::FbChatbot::FbChatbot(const QString &chatbotId, QObject *parent)
+    : XmppChatbot(chatbotId, parent), m_ownMsgExtension(new FbOwnMessageExtension())
 {
     m_xmppClient->addExtension(m_ownMsgExtension);
 }

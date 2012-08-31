@@ -55,9 +55,9 @@ class FbChatbot : public XmppChatbot
 public:
 
     /**
-     * Constructs a Facebook chatbot with parent object \a parent
+     * Constructs a Facebook chatbot with ID \a chatbotId parent object \a parent
      */
-    FbChatbot(QObject *parent = 0);
+    FbChatbot(const QString &chatbotId, QObject *parent = 0);
 
     /**
      * Destroys the object

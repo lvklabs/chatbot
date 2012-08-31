@@ -430,7 +430,7 @@ private:
     void setupChatbot();
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
-    void connectChatClientSignals();
+    void connectChatbotSignals();
     void updateStats();
     bool logScore(bool manualUpload);
     bool logAccountVerified(const QString &username, const QString &domain);

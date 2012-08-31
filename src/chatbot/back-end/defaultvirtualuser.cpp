@@ -22,22 +22,12 @@
 #include "back-end/defaultvirtualuser.h"
 #include "nlp-engine/engine.h"
 #include "common/random.h"
-#include "common/settings.h"
-#include "common/settingskeys.h"
-#include "common/conversationreader.h"
-#include "common/conversationwriter.h"
 
-#include <QFile>
-#include <QDir>
 #include <QDateTime>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QtDebug>
-
-#define HISTORY_BASE_FILENAME       "history_"
-#define HISTORY_EXT_FILENAME        "dat"
-#define DATE_TIME_LOG_FORMAT        "dd-MM-yy hh:mm:ss"
 
 // Note: ConversationHistoryWidget relies on these tokens.
 //       If you change them, update the widget accordingly.
@@ -71,24 +61,8 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
     : QObject(parent),
       m_id(id),
       m_engine(engine),
-      m_convWriter(0),
       m_rwLock(new QReadWriteLock(QReadWriteLock::Recursive))
 {
-    Lvk::Cmn::Settings settings;
-
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-    QString logFilename = HISTORY_BASE_FILENAME + id + "." + HISTORY_EXT_FILENAME;
-    m_logFilename = dataPath + QDir::separator() + logFilename;
-
-    if (QFile::exists(m_logFilename)) {
-        Cmn::ConversationReader convReader(m_logFilename);
-        if (!convReader.read(&m_conversationHistory)) {
-            qWarning() << "DefaultVirtualUser: Cannot read the conversation history for chatbot id"
-                       << id;
-        }
-    }
-
-    m_convWriter = new Cmn::ConversationWriter(m_logFilename);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -96,34 +70,9 @@ Lvk::BE::DefaultVirtualUser::DefaultVirtualUser(const QString &id,
 Lvk::BE::DefaultVirtualUser::~DefaultVirtualUser()
 {
     delete m_rwLock;
-    delete m_convWriter;
 }
 
 //--------------------------------------------------------------------------------------------------
-
-QString Lvk::BE::DefaultVirtualUser::getResponse(const QString &input,
-                                                 const CA::ContactInfo &contact)
-{
-    Cmn::Conversation::Entry entry = getEntry(input, contact);
-
-    {
-        QWriteLocker locker(m_rwLock);
-
-        m_conversationHistory.append(entry);
-
-        if (!m_convWriter->write(entry)) {
-            qCritical() << "DefaultVirtualUser: Cannot write the conversation entry for chatbot id"
-                        << m_id;
-        }
-    }
-
-    emit newConversationEntry(entry);
-
-    return entry.response;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 
 Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QString &input,
                                                                     const CA::ContactInfo &contact)
@@ -144,7 +93,7 @@ Lvk::Cmn::Conversation::Entry Lvk::BE::DefaultVirtualUser::getEntry(const QStrin
             qDebug() << "DefaultVirtualUser: Got response" << response;
 
             if (matches.size() > 0) {
-                ruleId = matches.first().first; // CHECK first() or last()
+                ruleId = matches.first().first;
             } else {
                 qWarning() << "DefaultVirtualUser: Got response but empty match list";
             }
@@ -178,41 +127,6 @@ QPixmap Lvk::BE::DefaultVirtualUser::getAvatar()
 
 //--------------------------------------------------------------------------------------------------
 
-const Lvk::Cmn::Conversation & Lvk::BE::DefaultVirtualUser::chatHistory() const
-{
-    QReadLocker locker(m_rwLock);
-    return m_conversationHistory;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::DefaultVirtualUser::setChatHistory(const Cmn::Conversation &conv)
-{
-    QWriteLocker locker(m_rwLock);
-
-    m_conversationHistory = conv;
-
-    resetHistoryLog();
-
-    if (!m_convWriter->write(conv)) {
-        qCritical() << "DefaultVirtualUser: Cannot write the conversation entry for chatbot id"
-                    << m_id;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::DefaultVirtualUser::clearHistory()
-{
-    QWriteLocker locker(m_rwLock);
-
-    m_conversationHistory = Cmn::Conversation();
-
-    resetHistoryLog();
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::BE::DefaultVirtualUser::setNlpEngine(Nlp::Engine *engine)
 {
     QWriteLocker locker(m_rwLock);
@@ -228,14 +142,5 @@ void Lvk::BE::DefaultVirtualUser::setEvasives(const QStringList &evasives)
 }
 
 
-//--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::DefaultVirtualUser::resetHistoryLog()
-{
-    delete m_convWriter;
-
-    QFile::remove(m_logFilename);
-
-    m_convWriter = new Cmn::ConversationWriter(m_logFilename);
-}
 

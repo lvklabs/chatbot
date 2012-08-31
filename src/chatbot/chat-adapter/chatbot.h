@@ -25,6 +25,7 @@
 #include <QObject>
 
 #include "chat-adapter/contactinfo.h"
+#include "common/conversation.h"
 
 class QString;
 
@@ -132,6 +133,21 @@ public:
      */
     virtual ContactInfoList blackListRoster() const = 0;
 
+    /**
+     * Returns the chat history of the chatbot
+     */
+    virtual const Cmn::Conversation &chatHistory() const = 0;
+
+    /**
+     * Sets the chat history of the chatbot.
+     */
+    virtual void setChatHistory(const Cmn::Conversation &conv) = 0;
+
+    /**
+     * Clears the chat history.
+     */
+    virtual void clearHistory() = 0;
+
 signals:
 
     /**
@@ -149,6 +165,11 @@ signals:
      * to connect to the chat server.
      */
     void error(int err);
+
+    /**
+     * This signal is emitted whenever the chatbot receives a chat message.
+     */
+    void newConversationEntry(const Cmn::Conversation::Entry &entry);
 };
 
 /// @}

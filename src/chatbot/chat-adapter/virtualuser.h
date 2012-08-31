@@ -19,12 +19,14 @@
  *
  */
 
-#ifndef LVK_CA_CHATVIRTUALUSER_H
-#define LVK_CA_CHATVIRTUALUSER_H
+#ifndef LVK_CA_VIRTUALUSER_H
+#define LVK_CA_VIRTUALUSER_H
 
 #include <QString>
 #include <QPixmap>
+
 #include "chat-adapter/contactinfo.h"
+#include "common/conversation.h"
 
 namespace Lvk
 {
@@ -55,9 +57,11 @@ public:
     virtual ~VirtualUser() {}
 
     /**
-     * Returns a response for the given \a input and \a contact.
+     * Returns an entry with the response for the given \a input and \a contact.
+     * If no response is found, it returns a null entry.
      */
-    virtual QString getResponse(const QString &input, const ContactInfo &contact) = 0;
+    virtual Cmn::Conversation::Entry getEntry(const QString &input,
+                                              const CA::ContactInfo &contact) = 0;
 
     /**
      * Returns the avatar of the virtual user.
@@ -74,4 +78,4 @@ public:
 } // namespace Lvk
 
 
-#endif // LVK_CA_CHATVIRTUALUSER_H
+#endif // LVK_CA_VIRTUALUSER_H

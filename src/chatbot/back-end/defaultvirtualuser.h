@@ -24,7 +24,7 @@
 
 #include <QObject>
 #include <QStringList>
-#include "chat-adapter/chatvirtualuser.h"
+#include "chat-adapter/virtualuser.h"
 #include "common/conversation.h"
 
 class QFile;
@@ -57,7 +57,6 @@ namespace BE
  * \brief The DefaultVirtualUser class provides the default implementation of the interface
  *        VirtualUser.
  */
-
 class DefaultVirtualUser : public QObject, public CA::VirtualUser
 {
     Q_OBJECT
@@ -75,30 +74,15 @@ public:
     ~DefaultVirtualUser();
 
     /**
-     * Returns a response for the given \a input and \a contact. If no response is found, it
-     * returns an empty string.
+     * \copydoc CA::VirtualUser::getEntry()
      */
-    virtual QString getResponse(const QString &input, const CA::ContactInfo &contact);
+    virtual Cmn::Conversation::Entry getEntry(const QString &input,
+                                              const CA::ContactInfo &contact);
 
     /**
-     * Returns the avatar of the virtual user.
+     * \copydoc CA::VirtualUser::getAvatar()
      */
     virtual QPixmap getAvatar();
-
-    /**
-     * Returns the chat history of the current virtual user id.
-     */
-    const Cmn::Conversation &chatHistory() const;
-
-    /**
-     * Sets the chat history of the current virtual user id.
-     */
-    void setChatHistory(const Cmn::Conversation &conv);
-
-    /**
-     * Clears the chat history and removes any file created.
-     */
-    void clearHistory();
 
     /**
      * Sets the NLP engine that is used to get responses.
@@ -112,31 +96,15 @@ public:
      */
     void setEvasives(const QStringList &evasives);
 
-signals:
-
-    /**
-     * This signal is emitted whenever the virtual user receives a chat message. \a entry
-     * contains the received message, the chatbot response and other useful information.
-     * \see Cmn::Conversation::Entry
-     */
-    void newConversationEntry(const Cmn::Conversation::Entry &entry);
-
 private:
     DefaultVirtualUser(DefaultVirtualUser&);
     DefaultVirtualUser& operator=(DefaultVirtualUser&);
 
     QString m_id;
-    QString m_logFilename;
     Nlp::Engine *m_engine;
     QStringList m_evasives;
-    Cmn::Conversation m_conversationHistory;
-    Cmn::ConversationWriter *m_convWriter;
     QReadWriteLock *m_rwLock;
 
-    Cmn::Conversation::Entry getEntry(const QString &input, const CA::ContactInfo &contact);
-    void resetHistoryLog();
-    void logConversationEntry(const Cmn::Conversation::Entry &entry);
-    void logError(const QString &msg);
 };
 
 /// @}

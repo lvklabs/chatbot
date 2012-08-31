@@ -30,6 +30,7 @@
 #include "QXmppMessage.h"
 #include "QXmppRosterIq.h"
 #include "chat-adapter/chatbot.h"
+#include "chat-adapter/historyhelper.h"
 
 class QXmppVCardIq;
 class QMutex;
@@ -63,9 +64,9 @@ class XmppChatbot : public Chatbot
 public:
 
     /**
-     * Constructs a XMPP chatbot with parent object \a parent
+     * Constructs a XMPP chatbot with ID \a chatbotId and parent object \a parent
      */
-    XmppChatbot(QObject *parent = 0);
+    XmppChatbot(const QString &chatbotId, QObject *parent = 0);
 
     /**
      * Destroys the chatbot and disconnects from the chat server if nescessary.
@@ -134,6 +135,21 @@ public:
      */
     virtual ContactInfoList blackListRoster() const;
 
+    /**
+     * Returns the chat history of the chatbot
+     */
+    virtual const Cmn::Conversation &chatHistory() const;
+
+    /**
+     * Sets the chat history of the chatbot.
+     */
+    virtual void setChatHistory(const Cmn::Conversation &conv);
+
+    /**
+     * Clears the chat history.
+     */
+    virtual void clearHistory();
+
 signals:
 
     /**
@@ -153,15 +169,10 @@ signals:
 
 protected slots:
     virtual void onConnected();
-
     virtual void onDisconnected();
-
     virtual void onMessageReceived(const QXmppMessage &);
-
     virtual void onVCardReceived(const QXmppVCardIq &);
-
     virtual void onRosterReceived();
-
     virtual void onRosterChanged(const QString &);
 
 protected:
@@ -169,6 +180,7 @@ protected:
     QString m_user;
     QString m_domain;
     QString m_name;
+    HistoryHelper m_history;
 
     bool isInBlackList(const QString &jid);
 

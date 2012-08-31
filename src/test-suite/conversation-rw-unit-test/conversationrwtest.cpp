@@ -5,14 +5,14 @@
 #include <QString>
 #include <QList>
 
-#include "back-end/conversation.h"
-#include "back-end/conversationreader.h"
-#include "back-end/conversationwriter.h"
+#include "common/conversation.h"
+#include "common/conversationreader.h"
+#include "common/conversationwriter.h"
 
-typedef QList<Lvk::BE::Conversation::Entry> EntryList;
+typedef QList<Lvk::Cmn::Conversation::Entry> EntryList;
 
-Q_DECLARE_METATYPE(Lvk::BE::Conversation)
-Q_DECLARE_METATYPE(Lvk::BE::Conversation::Entry)
+Q_DECLARE_METATYPE(Lvk::Cmn::Conversation)
+Q_DECLARE_METATYPE(Lvk::Cmn::Conversation::Entry)
 Q_DECLARE_METATYPE(EntryList)
 
 //--------------------------------------------------------------------------------------------------
@@ -43,13 +43,13 @@ ConversationRwTest::ConversationRwTest()
 
 void ConversationRwTest::testReadWriteConversation_data()
 {
-    QTest::addColumn<Lvk::BE::Conversation>("conv");
+    QTest::addColumn<Lvk::Cmn::Conversation>("conv");
     QTest::addColumn<bool>("ioDevCtor");    // Use QIODevice constructor
 
-    Lvk::BE::Conversation conv1;
-    Lvk::BE::Conversation conv2;
+    Lvk::Cmn::Conversation conv1;
+    Lvk::Cmn::Conversation conv2;
 
-    Lvk::BE::Conversation::Entry entry1;
+    Lvk::Cmn::Conversation::Entry entry1;
     entry1.dateTime = QDateTime::currentDateTime();
     entry1.from     = "user A";
     entry1.to       = "user B";
@@ -57,7 +57,7 @@ void ConversationRwTest::testReadWriteConversation_data()
     entry1.response = "Do I know you?";
     entry1.match    = true;
 
-    Lvk::BE::Conversation::Entry entry2;
+    Lvk::Cmn::Conversation::Entry entry2;
     entry2.dateTime = QDateTime::currentDateTime();
     entry2.from     = "user A";
     entry2.to       = "user B";
@@ -79,7 +79,7 @@ void ConversationRwTest::testReadWriteConversation_data()
 
 void ConversationRwTest::testReadWriteConversation()
 {
-    QFETCH(Lvk::BE::Conversation, conv);
+    QFETCH(Lvk::Cmn::Conversation, conv);
     QFETCH(bool, ioDevCtor);
 
     const QString CONV_FILENAME = "chat_conv_test1.txt";
@@ -92,12 +92,12 @@ void ConversationRwTest::testReadWriteConversation()
 
     ////////////////////////// WRITE ////////////////////////////
 
-    Lvk::BE::ConversationWriter *writer = 0;
+    Lvk::Cmn::ConversationWriter *writer = 0;
 
     if (ioDevCtor) {
-        writer = new Lvk::BE::ConversationWriter(new QFile(CONV_FILENAME));
+        writer = new Lvk::Cmn::ConversationWriter(new QFile(CONV_FILENAME));
     } else {
-        writer = new Lvk::BE::ConversationWriter(CONV_FILENAME);
+        writer = new Lvk::Cmn::ConversationWriter(CONV_FILENAME);
     }
 
     QVERIFY(writer->write(conv));
@@ -110,13 +110,13 @@ void ConversationRwTest::testReadWriteConversation()
 
     ////////////////////////// READ ////////////////////////////
 
-    Lvk::BE::Conversation convRead;
-    Lvk::BE::ConversationReader *reader = 0;
+    Lvk::Cmn::Conversation convRead;
+    Lvk::Cmn::ConversationReader *reader = 0;
 
     if (ioDevCtor) {
-        reader = new Lvk::BE::ConversationReader(new QFile(CONV_FILENAME));
+        reader = new Lvk::Cmn::ConversationReader(new QFile(CONV_FILENAME));
     } else {
-        reader = new Lvk::BE::ConversationReader(CONV_FILENAME);
+        reader = new Lvk::Cmn::ConversationReader(CONV_FILENAME);
     }
 
     QVERIFY(reader->read(&convRead));
@@ -140,7 +140,7 @@ void ConversationRwTest::testReadWriteConversationEntry_data()
     QTest::addColumn<EntryList>("entries");
     QTest::addColumn<bool>("ioDevCtor");    // Use QIODevice constructor
 
-    Lvk::BE::Conversation::Entry entry1;
+    Lvk::Cmn::Conversation::Entry entry1;
     entry1.dateTime = QDateTime::currentDateTime();
     entry1.from     = "user A";
     entry1.to       = "user B";
@@ -148,7 +148,7 @@ void ConversationRwTest::testReadWriteConversationEntry_data()
     entry1.response = "Do I know you?";
     entry1.match    = true;
 
-    Lvk::BE::Conversation::Entry entry2;
+    Lvk::Cmn::Conversation::Entry entry2;
     entry2.dateTime = QDateTime::currentDateTime();
     entry2.from     = "user A";
     entry2.to       = "user B";
@@ -177,15 +177,15 @@ void ConversationRwTest::testReadWriteConversationEntry()
 
     ////////////////////////// WRITE ////////////////////////////
 
-    Lvk::BE::ConversationWriter *writer = 0;
+    Lvk::Cmn::ConversationWriter *writer = 0;
 
     if (ioDevCtor) {
-        writer = new Lvk::BE::ConversationWriter(new QFile(CONV_FILENAME));
+        writer = new Lvk::Cmn::ConversationWriter(new QFile(CONV_FILENAME));
     } else {
-        writer = new Lvk::BE::ConversationWriter(CONV_FILENAME);
+        writer = new Lvk::Cmn::ConversationWriter(CONV_FILENAME);
     }
 
-    foreach (const Lvk::BE::Conversation::Entry &entry, entries) {
+    foreach (const Lvk::Cmn::Conversation::Entry &entry, entries) {
         QVERIFY(writer->write(entry));
     }
 
@@ -197,16 +197,16 @@ void ConversationRwTest::testReadWriteConversationEntry()
 
     ////////////////////////// READ ////////////////////////////
 
-    Lvk::BE::Conversation::Entry entryRead;
-    Lvk::BE::ConversationReader *reader = 0;
+    Lvk::Cmn::Conversation::Entry entryRead;
+    Lvk::Cmn::ConversationReader *reader = 0;
 
     if (ioDevCtor) {
-        reader = new Lvk::BE::ConversationReader(new QFile(CONV_FILENAME));
+        reader = new Lvk::Cmn::ConversationReader(new QFile(CONV_FILENAME));
     } else {
-        reader = new Lvk::BE::ConversationReader(CONV_FILENAME);
+        reader = new Lvk::Cmn::ConversationReader(CONV_FILENAME);
     }
 
-    foreach (const Lvk::BE::Conversation::Entry &entry, entries) {
+    foreach (const Lvk::Cmn::Conversation::Entry &entry, entries) {
         QVERIFY(!reader->atEnd());
         QVERIFY(reader->read(&entryRead));
         QCOMPARE(entry, entryRead);
