@@ -24,6 +24,7 @@
 #include "front-end/exportdialog.h"
 #include "front-end/importdialog.h"
 #include "front-end/scorewidget.h"
+#include "front-end/tinyscorewidget.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -182,7 +183,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleAdded(false),
     m_tabsLayout(NullLayout),
     m_connectionStatus(DisconnectedFromChat),
-    m_scoreLabel(0)
+    m_tinyScore(0)
 {
     qDebug() << "Setting up main window...";
 
@@ -217,8 +218,7 @@ void Lvk::FE::MainWindow::setupUi()
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
 
-    m_scoreLabel = new QLabel(ui->mainTabWidget);
-    m_scoreLabel->setAlignment(Qt::AlignRight);
+    m_tinyScore = new TinyScoreWidget(ui->mainTabWidget);
 
     clear();
 
@@ -285,8 +285,8 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->curScoreWidget->clear();
     ui->bestScoreWidget->clear();
     ui->remainingTimeLabel->clear();
-    m_scoreLabel->setVisible(true);
-    m_scoreLabel->setText(QString(100, QChar(' '))); // Reserving space. Does not autoresize.
+    m_tinyScore->clear();
+    m_tinyScore->setVisible(true);
 
     // advanced options tab widgets
     ui->rmDupCheckBox->setChecked(true);
@@ -460,7 +460,7 @@ bool Lvk::FE::MainWindow::event(QEvent *event)
     switch (event->type()) {
     case QEvent::WindowStateChange:
     case QEvent::Resize:
-        updateScoreLabelPos();
+        updateTinyScorePos();
         break;
     default:
         //Nothing to do
@@ -866,7 +866,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
 
-            m_scoreLabel->setVisible(false);
+            m_tinyScore->setVisible(false);
             break;
 
         case VerifyAccountUiMode:
@@ -891,7 +891,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
 
-            m_scoreLabel->setVisible(false);
+            m_tinyScore->setVisible(false);
             break;
 
         default:
@@ -914,7 +914,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
             ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
 
-            m_scoreLabel->setVisible(true);
+            m_tinyScore->setVisible(true);
             break;
         }
     }
@@ -2289,9 +2289,9 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
     }
 
     if (tab == ui->scoreTab) {
-        m_scoreLabel->setVisible(false);
+        m_tinyScore->setVisible(false);
     } else {
-        m_scoreLabel->setVisible(true);
+        m_tinyScore->setVisible(true);
     }
 }
 
@@ -2331,12 +2331,8 @@ void Lvk::FE::MainWindow::updateScore()
     BE::Score cur = m_appFacade->currentScore();
     BE::Score best = m_appFacade->bestScore();
 
-    QString curScoreStr = QString("%1 + %2 + %3 = %4").arg(QString::number(cur.conversations),
-                                                           QString::number(cur.contacts),
-                                                           QString::number(cur.rules),
-                                                           QString::number(cur.total));
-    m_scoreLabel->setText(tr("Score: ") + curScoreStr);
-    updateScoreLabelPos();
+    m_tinyScore->setScore(cur, best);
+    updateTinyScorePos();
 
     ui->curScoreWidget->setScore(cur);
     ui->bestScoreWidget->setScore(best);
@@ -2344,10 +2340,10 @@ void Lvk::FE::MainWindow::updateScore()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::updateScoreLabelPos()
+void Lvk::FE::MainWindow::updateTinyScorePos()
 {
-    if (m_scoreLabel) {
-        m_scoreLabel->move(ui->mainTabWidget->width() - m_scoreLabel->width() - 5, 5);
+    if (m_tinyScore) {
+        m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, -5);
     }
 }
 
@@ -2379,6 +2375,8 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 {
     QTime time = QTime(0,0,0).addSecs(secs);
 
+    m_tinyScore->setRemainingTime(time);
+
     QString status = m_appFacade->isConnected() ?
                 tr("Chatbot connected") : tr("Chatbot disconnected");
 
@@ -2386,6 +2384,4 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
     ui->remainingTimeLabel->setText(text);
 }
-
-
 

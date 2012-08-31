@@ -108,22 +108,22 @@
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="220"/>
+        <location filename="../back-end/appfacade.cpp" line="226"/>
         <source>Greetings</source>
         <translation>Saludos</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="226"/>
+        <location filename="../back-end/appfacade.cpp" line="232"/>
         <source>Hello</source>
         <translation>Hola</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="227"/>
+        <location filename="../back-end/appfacade.cpp" line="233"/>
         <source>Hello!</source>
         <translation>Hola!</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="233"/>
+        <location filename="../back-end/appfacade.cpp" line="239"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
     </message>
@@ -159,83 +159,83 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
 <context>
     <name>Lvk::FE::ChatHistoryWidget</name>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="169"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="167"/>
         <source>Date</source>
         <translation>Fecha</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="170"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="168"/>
         <source>Username</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="187"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="185"/>
         <source>Time</source>
         <translation>Hora</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="188"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="186"/>
         <source>Message</source>
         <translation>Mensaje</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="189"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="187"/>
         <source>Response</source>
         <translation>Respuesta</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="320"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="318"/>
         <source>Remove conversation with %1 on %2</source>
         <translation>Borrar conversación con %1 con fecha %2</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="348"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="346"/>
         <source>Response found</source>
         <translation>Respuesta encontrada</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="348"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="346"/>
         <source>Response not found</source>
         <translation>Respuesta no encontrada</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="395"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="393"/>
         <source>(test)</source>
         <translation>(test)</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="457"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="455"/>
         <source>Teach rule</source>
         <translation>Enseñar regla</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="458"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="456"/>
         <source>Teach new rule for message: &quot;%1&quot; ?</source>
         <translation>¿Enseñar nueva regla para el mensaje &quot;%1&quot; ?</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="471"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="469"/>
         <source>Show rule definition</source>
         <translation>Mostrar definición de la regla</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="472"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="470"/>
         <source>Show rule definition for message: &quot;%1&quot; ?</source>
         <translation>¿Mostrar la definición de la regla para el mensaje &quot;%1&quot; ?</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="486"/>
-        <location filename="../front-end/chathistorywidget.cpp" line="511"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="484"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="509"/>
         <source>Remove conversation</source>
         <translation>Borrar conversación</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="487"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="485"/>
         <source>Are you sure you want to remove all conversations?</source>
         <translation>¿Estás seguro de que querés borrar todas las conversaciones?</translation>
     </message>
     <message>
-        <location filename="../front-end/chathistorywidget.cpp" line="512"/>
+        <location filename="../front-end/chathistorywidget.cpp" line="510"/>
         <source>Are you sure you want to remove the conversation with %1 on %2?</source>
         <translation>¿Estás seguro de que querés borrar la conversación con %1 con fecha %2?</translation>
     </message>
@@ -683,69 +683,68 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Para conectar tu chatbot necesitás ingresar tu usuario de Facebook que es diferente a tu correo electrónico.&lt;br/&gt;&lt;br/&gt;¿Necesitás ayuda? ¿No tenés o no te acordás tu usuario? &lt;a href=&quot;http://www.facebook.com/username&quot;&gt;Click aquí&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2047"/>
+        <location filename="../front-end/mainwindow.cpp" line="2051"/>
         <source>Account verified</source>
         <translation>Cuenta verificada</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2047"/>
+        <location filename="../front-end/mainwindow.cpp" line="2051"/>
         <source>Account verified!</source>
         <translation>¡Cuenta verificada!</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2065"/>
+        <location filename="../front-end/mainwindow.cpp" line="2071"/>
         <source>Account error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2066"/>
+        <location filename="../front-end/mainwindow.cpp" line="2072"/>
         <source>The account could not be verified. Please check your username and password and internet connection.</source>
         <translation>La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2070"/>
+        <location filename="../front-end/mainwindow.cpp" line="2076"/>
         <source>The account could not be verified. Your system does not support secure connections.</source>
         <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2317"/>
         <source>Score: </source>
-        <translation>Puntos: </translation>
+        <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2339"/>
-        <location filename="../front-end/mainwindow.cpp" line="2344"/>
-        <location filename="../front-end/mainwindow.cpp" line="2349"/>
+        <location filename="../front-end/mainwindow.cpp" line="2356"/>
+        <location filename="../front-end/mainwindow.cpp" line="2361"/>
+        <location filename="../front-end/mainwindow.cpp" line="2366"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2340"/>
+        <location filename="../front-end/mainwindow.cpp" line="2357"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2345"/>
+        <location filename="../front-end/mainwindow.cpp" line="2362"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2350"/>
+        <location filename="../front-end/mainwindow.cpp" line="2367"/>
         <source>This version does not support score uploading</source>
         <translation>Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2362"/>
+        <location filename="../front-end/mainwindow.cpp" line="2381"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2362"/>
+        <location filename="../front-end/mainwindow.cpp" line="2381"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2364"/>
+        <location filename="../front-end/mainwindow.cpp" line="2383"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -758,7 +757,7 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2069"/>
+        <location filename="../front-end/mainwindow.cpp" line="2075"/>
         <source>SSL error</source>
         <translation>Error SSL</translation>
     </message>
@@ -767,12 +766,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2092"/>
+        <location filename="../front-end/mainwindow.cpp" line="2100"/>
         <source>Change Account</source>
         <translation>Cambiar cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2093"/>
+        <location filename="../front-end/mainwindow.cpp" line="2101"/>
         <source>If you change your account some rules might not work anymore.
 Are you sure you want to change your account?</source>
         <translation>Si cambias tu cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro de que deseas cambiar tu cuenta?</translation>
@@ -961,6 +960,19 @@ Do you want to teach the changes made to the rule?</source>
         <location filename="../front-end/testconversationwidget.cpp" line="59"/>
         <source>Chatbot:</source>
         <translation>Chatbot:</translation>
+    </message>
+</context>
+<context>
+    <name>Lvk::FE::TinyScoreWidget</name>
+    <message>
+        <location filename="../front-end/tinyscorewidget.cpp" line="36"/>
+        <source>Current points: %1 / Best: %2</source>
+        <translation>Puntos actuales: %1 / Mejor: %2</translation>
+    </message>
+    <message>
+        <location filename="../front-end/tinyscorewidget.cpp" line="46"/>
+        <source>Remaining time: %1</source>
+        <translation>Tiempo restante: %1</translation>
     </message>
 </context>
 <context>
@@ -1461,38 +1473,38 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>&lt;b&gt;Si el Chatbot no entiende:&lt;/b&gt;&lt;br/&gt;%1</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="52"/>
+        <location filename="../front-end/mainwindow.cpp" line="53"/>
         <source>crf</source>
         <translation>crf</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="53"/>
+        <location filename="../front-end/mainwindow.cpp" line="54"/>
         <source>cef</source>
         <translation>cef</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="79"/>
+        <location filename="../front-end/mainwindow.cpp" line="80"/>
         <source>Chatbot Rule Files</source>
         <translation>Archivos Chabot</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="80"/>
-        <location filename="../front-end/mainwindow.cpp" line="89"/>
+        <location filename="../front-end/mainwindow.cpp" line="81"/>
+        <location filename="../front-end/mainwindow.cpp" line="90"/>
         <source>All files</source>
         <translation>Todos los archivos</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="88"/>
+        <location filename="../front-end/mainwindow.cpp" line="89"/>
         <source>Chatbot Export Files</source>
         <translation>Archivos de exportación Chatbot</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="157"/>
+        <location filename="../front-end/mainwindow.cpp" line="158"/>
         <source>Application demo has expired</source>
         <translation>Aplicación de prueba ha expirado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="158"/>
+        <location filename="../front-end/mainwindow.cpp" line="159"/>
         <source>This application demo has expired. Please download a new version.</source>
         <translation>Esta aplicación de prueba ha expirado. Por favor descarga una nueva version.</translation>
     </message>

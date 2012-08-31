@@ -60,7 +60,7 @@ namespace FE
 /// @{
 
 class RuleTreeModel;
-
+class TinyScoreWidget;
 
 /**
  * \brief The MainWindow class provides the application main window.
@@ -144,7 +144,7 @@ private:
     QString                  m_lastFilename;
     UiTabsLayout             m_tabsLayout;
     ConnectionStatus         m_connectionStatus;
-    QLabel                  *m_scoreLabel;
+    TinyScoreWidget         *m_tinyScore;
 
     void setupUi();
 
@@ -216,7 +216,7 @@ private:
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
 
     void updateScore();
-    void updateScoreLabelPos();
+    void updateTinyScorePos();
 
 private slots:
     void onAddCategoryButtonClicked();

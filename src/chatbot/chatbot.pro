@@ -154,6 +154,7 @@ HEADERS += \
     stats/csvstatsfile.h \
     stats/id.h \
     stats/history.h \
+    front-end/tinyscorewidget.h
 
 
 SOURCES += \
@@ -203,13 +204,15 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/csvstatsfile.cpp \
     stats/history.cpp \
+    front-end/tinyscorewidget.cpp
 
 
 FORMS += \
     front-end/mainwindow.ui \
     front-end/portdialog.ui \
     front-end/chathistorywidget.ui \
-    front-end/scorewidget.ui
+    front-end/scorewidget.ui \
+    front-end/tinyscorewidget.ui
 
 RESOURCES += \
     res/$${ICON_THEME}_theme.qrc
@@ -265,6 +268,9 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 
