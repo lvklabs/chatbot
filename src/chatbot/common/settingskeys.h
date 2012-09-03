@@ -23,6 +23,7 @@
 #define LVK_CMN_SETTINGSKEYS_H
 
 #define SETTING_APP_LANGUAGE                        "Application/Language"
+#define SETTING_APP_STATS                           "Application/Statistics"
 
 #define SETTING_LAST_FILE                           "Files/LastFile"
 #define SETTING_LOGS_PATH                           "Files/LogsPath"
@@ -41,5 +42,9 @@
 #define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
 
 #define SETTING_NLP_LANGUAGE                        "NlpEngine/Language"
+
+#define SETTING_LOG_SERVER_HOST                     "LogServer/Host"
+#define SETTING_LOG_SERVER_UDP_PORT                 "LogServer/UdpPort"
+#define SETTING_LOG_SERVER_TCP_PORT                 "LogServer/TcpPort"
 
 #endif // LVK_CMN_SETTINGSKEYS_H

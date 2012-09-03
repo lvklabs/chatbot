@@ -55,6 +55,14 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
             defaultValue = QString("./stats");
         } else if (key == SETTING_APP_LANGUAGE) {
             defaultValue = QString("es_AR");
+        } else if (key == SETTING_APP_STATS) {
+            defaultValue = true;
+        } else if (key == SETTING_LOG_SERVER_HOST) {
+            defaultValue = QString("127.0.0.1");
+        } else if (key == SETTING_LOG_SERVER_UDP_PORT) {
+            defaultValue = 12201;
+        } else if (key == SETTING_LOG_SERVER_TCP_PORT) {
+            defaultValue = 10514;
         }
     }
 

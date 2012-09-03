@@ -85,6 +85,11 @@ private:
 
     LogFomat m_format;
     bool m_encrypt;
+    QString m_host;
+    unsigned m_udpPort;
+    unsigned m_tcpPort;
+
+    void initHostPort();
 };
 
 /// @}

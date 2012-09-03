@@ -22,16 +22,14 @@
 #include "common/graylogremotelogger.h"
 #include "common/gelf.h"
 #include "common/version.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 
 #include <QUdpSocket>
 #include <QTcpSocket>
 #include <QDateTime>
 #include <QDebug>
 #include <QHostInfo>
-
-#define LOG_SERVER_HOST     "127.0.0.1" // TODO read from config file
-#define LOG_SERVER_UDP_PORT 12201       // TODO read from config file
-#define LOG_SERVER_TCP_PORT 10514       // TODO read from config file
 
 
 //--------------------------------------------------------------------------------------------------
@@ -77,11 +75,9 @@ inline QString toString(const Lvk::Cmn::RemoteLogger::FieldList &fields)
 
 //--------------------------------------------------------------------------------------------------
 
-inline int sendUdpMessage(const QByteArray &data)
+inline int sendUdpMessage(const QByteArray &data, const QString &host, unsigned port)
 {
-    QHostAddress addr(LOG_SERVER_HOST);
-
-    qint64 bytes = QUdpSocket().writeDatagram(data, addr, LOG_SERVER_UDP_PORT);
+    qint64 bytes = QUdpSocket().writeDatagram(data, QHostAddress(host), port);
 
     if (bytes == -1) {
         qWarning() << "sendUdpMessage error";
@@ -92,14 +88,14 @@ inline int sendUdpMessage(const QByteArray &data)
 
 //--------------------------------------------------------------------------------------------------
 
-inline int sendTcpMessage(const QByteArray &data)
+inline int sendTcpMessage(const QByteArray &data, const QString &host, unsigned port)
 {
     qint64 bytes = -1;
 
     try {
         QTcpSocket tcpSocket;
 
-        tcpSocket.connectToHost(QHostAddress(LOG_SERVER_HOST), LOG_SERVER_TCP_PORT);
+        tcpSocket.connectToHost(QHostAddress(host), port);
 
         if (!tcpSocket.waitForConnected()) {
             throw 1;
@@ -181,15 +177,27 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
-    : m_format(GELF), m_encrypt(false)
+    : m_format(GELF), m_encrypt(false), m_udpPort(0), m_tcpPort(0)
 {
+    initHostPort();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format, bool encrypt)
-    : m_format(format), m_encrypt(encrypt)
+    : m_format(format), m_encrypt(encrypt), m_udpPort(0), m_tcpPort(0)
 {
+    initHostPort();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Cmn::GraylogRemoteLogger::initHostPort()
+{
+    Cmn::Settings settings;
+    m_host    = settings.value(SETTING_LOG_SERVER_HOST).toString();
+    m_udpPort = settings.value(SETTING_LOG_SERVER_UDP_PORT).toUInt();
+    m_tcpPort = settings.value(SETTING_LOG_SERVER_TCP_PORT).toUInt();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -219,15 +227,17 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fiel
     }
 
     if (data.size() > 0 && m_encrypt) {
+        ///////////////////////////
         //TODO encrypt(data, key);
+        ///////////////////////////
     }
 
     switch (m_format) {
     case GELF:
     case SyslogUDP:
-        return sendUdpMessage(data);
+        return sendUdpMessage(data, m_host, m_udpPort);
     case SyslogTCP:
-        return sendTcpMessage(data);
+        return sendTcpMessage(data, m_host, m_tcpPort);
     default:
         return 1;
     }
