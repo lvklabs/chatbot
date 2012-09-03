@@ -103,6 +103,7 @@ HEADERS += \
     front-end/linefilteredit.h \
     front-end/ruletextview.h \
     front-end/scorewidget.h \
+    front-end/tinyscorewidget.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -149,12 +150,12 @@ HEADERS += \
     common/remotelogger.h \
     common/nullremotelogger.h \
     common/remoteloggerfactory.h \
+    common/remoteloggerkeys.h \
     stats/statsmanager.h \
     stats/statsfile.h \
     stats/csvstatsfile.h \
     stats/id.h \
     stats/history.h \
-    front-end/tinyscorewidget.h
 
 
 SOURCES += \
@@ -174,6 +175,7 @@ SOURCES += \
     front-end/linefilteredit.cpp \
     front-end/ruletextview.cpp \
     front-end/scorewidget.cpp \
+    front-end/tinyscorewidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -204,7 +206,6 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/csvstatsfile.cpp \
     stats/history.cpp \
-    front-end/tinyscorewidget.cpp
 
 
 FORMS += \
@@ -268,6 +269,7 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
 
 
 

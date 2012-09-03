@@ -32,6 +32,9 @@
 #include "common/random.h"
 #include "common/globalstrings.h"
 #include "common/remoteloggerfactory.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+#include "common/remoteloggerkeys.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
@@ -134,6 +137,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_chatbot(0),
       m_tmpChatbot(0),
       m_nlpOptions(0),
+      m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
       m_scoreTime(0)
@@ -152,6 +156,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_chatbot(0),
       m_tmpChatbot(0),
       m_nlpOptions(0), // FIXME value?
+      m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
       m_scoreTime(0)
@@ -289,7 +294,7 @@ void Lvk::BE::AppFacade::close()
         Stats::StatsManager::manager()->clear();
         m_chatbot->clearHistory();
     } else {
-        logScore(false);
+        logScore();
     }
 
     if (m_nlpEngine) {
@@ -735,7 +740,7 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 }
 
 //--------------------------------------------------------------------------------------------------
-// Stats & Score
+// Stats
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::updateStats()
@@ -774,6 +779,58 @@ void Lvk::BE::AppFacade::updateStats()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::AppFacade::logScore()
+{
+    Score s = bestScore();
+
+    Cmn::RemoteLogger::FieldList fields;
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
+
+    return remoteLog("Score", fields, false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::logAccountVerified(const QString &username, const QString &domain)
+{
+    QString timestamp = QDateTime::currentDateTime().toString(STR_GLOBAL_DATE_TIME_FORMAT);
+
+    Cmn::RemoteLogger::FieldList fields;
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TIMESTAMP, timestamp));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_USERNAME,  username));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_DOMAIN,    domain));
+
+    return remoteLog("Account Verified", fields, false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields,
+                                   bool secure)
+{
+    if (!m_statsEnabled) {
+        return true;
+    }
+
+    Cmn::RemoteLogger::FieldList fullFields = fields;
+    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
+    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
+
+    // If secure conection use Syslog TCP, otherwise use GELF UDP
+    if (secure) {
+        return m_secureLogger->log(msg, fullFields) == 0;
+    } else {
+        return m_fastLogger->log(msg, fullFields) == 0;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Score
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
 {
     updateStats();
@@ -785,64 +842,27 @@ Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
 
 Lvk::BE::Score Lvk::BE::AppFacade::bestScore()
 {
-    return currentScore(); // FIXME
+    //////////////////////
+    // FIXME
+    return currentScore();
+    //////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::uploadScore()
 {
-    return logScore(true);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::logScore(bool manualUpload)
-{
     Score s = bestScore();
 
     Cmn::RemoteLogger::FieldList fields;
-    fields.append(Cmn::RemoteLogger::Field("rules_score",   QString::number(s.rules)));
-    fields.append(Cmn::RemoteLogger::Field("history_score", QString::number(s.conversations)));
-    fields.append(Cmn::RemoteLogger::Field("total_score",   QString::number(s.total)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID,     m_rules.chatbotId()));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,        username()));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
+    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
 
-    if (manualUpload) {
-        return remoteLog("Manually uploaded score", fields, true);
-    } else {
-        return remoteLog("Score", fields, false);
-    }
-}
-
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::logAccountVerified(const QString &username, const QString &domain)
-{
-    QString timestamp = QDateTime::currentDateTime().toString(STR_GLOBAL_DATE_TIME_FORMAT);
-
-    Cmn::RemoteLogger::FieldList fields;
-    fields.append(Cmn::RemoteLogger::Field("timestamp", timestamp));
-    fields.append(Cmn::RemoteLogger::Field("username", username));
-    fields.append(Cmn::RemoteLogger::Field("domain", domain));
-
-    return remoteLog("Account Verified", fields, false);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields,
-                                   bool secure)
-{
-    Cmn::RemoteLogger::FieldList fullFields = fields;
-    fullFields.prepend(Cmn::RemoteLogger::Field("chatbot_id", m_rules.chatbotId()));
-    fullFields.prepend(Cmn::RemoteLogger::Field("user_id", username()));
-
-    // If secure conection use Syslog TCP, otherwise use GELF UDP
-    if (secure) {
-        return m_secureLogger->log(msg, fullFields) == 0;
-    } else {
-        return m_fastLogger->log(msg, fullFields) == 0;
-    }
+    return m_secureLogger->log("Manually uploaded score", fields) == 0;
 }
 
 //--------------------------------------------------------------------------------------------------

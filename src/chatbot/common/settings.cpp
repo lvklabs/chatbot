@@ -55,7 +55,7 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
             defaultValue = QString("./stats");
         } else if (key == SETTING_APP_LANGUAGE) {
             defaultValue = QString("es_AR");
-        } else if (key == SETTING_APP_STATS) {
+        } else if (key == SETTING_APP_SEND_STATS) {
             defaultValue = true;
         } else if (key == SETTING_LOG_SERVER_HOST) {
             defaultValue = QString("127.0.0.1");

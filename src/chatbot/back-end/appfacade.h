@@ -415,6 +415,7 @@ private:
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
     unsigned m_nlpOptions;
+    bool m_statsEnabled;
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
     ScoreAlgorithm m_scoreAlgo;
@@ -432,7 +433,7 @@ private:
     void deleteCurrentChatbot();
     void connectChatbotSignals();
     void updateStats();
-    bool logScore(bool manualUpload);
+    bool logScore();
     bool logAccountVerified(const QString &username, const QString &domain);
     bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
 };

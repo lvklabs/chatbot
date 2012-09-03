@@ -23,7 +23,7 @@
 #define LVK_CMN_SETTINGSKEYS_H
 
 #define SETTING_APP_LANGUAGE                        "Application/Language"
-#define SETTING_APP_STATS                           "Application/Statistics"
+#define SETTING_APP_SEND_STATS                      "Application/SendStatistics"
 
 #define SETTING_LAST_FILE                           "Files/LastFile"
 #define SETTING_LOGS_PATH                           "Files/LogsPath"
