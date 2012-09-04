@@ -25,6 +25,7 @@
 #include "front-end/importdialog.h"
 #include "front-end/scorewidget.h"
 #include "front-end/tinyscorewidget.h"
+#include "front-end/sendscoredialog.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -2352,15 +2353,20 @@ void Lvk::FE::MainWindow::updateTinyScorePos()
 void Lvk::FE::MainWindow::onUploadScore()
 {
 #ifdef GELF_STATS_SUPPORT
-    if (!m_appFacade->uploadScore()) {
-        QString title = tr("Upload score");
-        QString message = tr("Could not upload score. Please, check your internet connection and"
-                             " try again");
-        QMessageBox::critical(this, title, message);
-    } else {
-        QString title = tr("Upload score");
-        QString message = tr("Score uploaded successfully!");
-        QMessageBox::information(this, title, message);
+    QString details;
+    getSendScoreDetails(details);
+
+    if (FE::SendScoreDialog(details, this).exec() == QDialog::Accepted) {
+        if (!m_appFacade->uploadScore()) {
+            QString title = tr("Upload score");
+            QString message = tr("Could not upload score. Please, check your internet connection "
+                                 "and try again");
+            QMessageBox::critical(this, title, message);
+        } else {
+            QString title = tr("Upload score");
+            QString message = tr("Score uploaded successfully!");
+            QMessageBox::information(this, title, message);
+        }
     }
 #else
     QString title = tr("Upload score");
@@ -2383,5 +2389,39 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
     QString text = QString(tr("Remaining time: %1 (%2)")).arg(time.toString("hh:mm:ss"), status);
 
     ui->remainingTimeLabel->setText(text);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::getSendScoreDetails(QString &details)
+{
+    details.clear();
+
+    // Append best score
+    BE::Score s = m_appFacade->bestScore();
+    details += QString("%1,%2,%3,%4\n").arg(QString::number(s.contacts),
+                                            QString::number(s.conversations),
+                                            QString::number(s.rules),
+                                            QString::number(s.total));
+
+    // Append rule definitions with custom format (it's not important)
+    BE::Rule::iterator it;
+    for (it = m_appFacade->rootRule()->begin(); it != m_appFacade->rootRule()->end(); ++it) {
+        const BE::Rule *rule = *it;
+        if (rule == m_appFacade->rootRule()) {
+            continue;
+        }
+        switch (rule->type()) {
+        case BE::Rule::OrdinaryRule:
+            details += "   " + rule->input().join(",") + " ==> " + rule->output().join(",") + "\n";
+            break;
+        case BE::Rule::ContainerRule:
+            details += "[[" + rule->name() + "]]\n";
+            break;
+        case BE::Rule::EvasiveRule:
+            details += "[[_]]\n" + rule->output().join(",") + "\n";
+            break;
+        }
+    }
 }
 

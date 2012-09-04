@@ -217,6 +217,7 @@ private:
 
     void updateScore();
     void updateTinyScorePos();
+    void getSendScoreDetails(QString &details);
 
 private slots:
     void onAddCategoryButtonClicked();

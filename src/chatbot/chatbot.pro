@@ -104,6 +104,7 @@ HEADERS += \
     front-end/ruletextview.h \
     front-end/scorewidget.h \
     front-end/tinyscorewidget.h \
+    front-end/sendscoredialog.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -176,6 +177,7 @@ SOURCES += \
     front-end/ruletextview.cpp \
     front-end/scorewidget.cpp \
     front-end/tinyscorewidget.cpp \
+    front-end/sendscoredialog.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -213,7 +215,8 @@ FORMS += \
     front-end/portdialog.ui \
     front-end/chathistorywidget.ui \
     front-end/scorewidget.ui \
-    front-end/tinyscorewidget.ui
+    front-end/tinyscorewidget.ui \
+    front-end/sendscoredialog.ui
 
 RESOURCES += \
     res/$${ICON_THEME}_theme.qrc
@@ -269,6 +272,9 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

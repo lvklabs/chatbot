@@ -59,6 +59,7 @@ HEADERS += \
     ../../chatbot/front-end/linefilteredit.h \
     ../../chatbot/front-end/ruletextview.h \
     ../../chatbot/front-end/scorewidget.h \
+    ../../chatbot/front-end/sendscoredialog.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/roster.h \
@@ -128,6 +129,7 @@ SOURCES += \
     ../../chatbot/front-end/linefilteredit.cpp \
     ../../chatbot/front-end/ruletextview.cpp \
     ../../chatbot/front-end/scorewidget.cpp \
+    ../../chatbot/front-end/sendscoredialog.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
@@ -166,7 +168,8 @@ FORMS += \
     ../../chatbot/front-end/mainwindow.ui \
     ../../chatbot/front-end/portdialog.ui \
     ../../chatbot/front-end/chathistorywidget.ui \
-    ../../chatbot/front-end/scorewidget.ui
+    ../../chatbot/front-end/scorewidget.ui \
+    ../../chatbot/front-end/sendscoredialog.ui
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

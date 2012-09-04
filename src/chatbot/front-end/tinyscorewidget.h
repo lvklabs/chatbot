@@ -23,6 +23,10 @@ namespace FE
 /// \addtogroup FE
 /// @{
 
+/**
+ * \brief The TinyScoreWidget class provides a tiny widget to display the score of the chatbot
+ *        all the time.
+ */
 class TinyScoreWidget : public QWidget
 {
     Q_OBJECT

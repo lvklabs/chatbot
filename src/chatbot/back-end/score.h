@@ -40,10 +40,10 @@ namespace BE
  */
 struct Score
 {
-    double rules;       ///< Score obteined by rule definitions
-    double contacts;  ///< Score obteined by chatbot connection time
-    double conversations;     ///< Score obteined by chat history
-    double total;       ///< Total score
+    double rules;         ///< Score obteined by rule definitions
+    double contacts;      ///< Score obteined by chat contacts
+    double conversations; ///< Score obteined by chat conversations
+    double total;         ///< Total score
 };
 
 /// @}
