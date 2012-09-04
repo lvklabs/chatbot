@@ -996,12 +996,12 @@ Do you want to teach the changes made to the rule?</source>
         <translation type="obsolete">Tiempo restante: %1</translation>
     </message>
     <message>
-        <location filename="../front-end/tinyscorewidget.cpp" line="36"/>
-        <source>%1 / %2</source>
-        <translation></translation>
+        <location filename="../front-end/tinyscorewidget.cpp" line="38"/>
+        <source>Score: %1 / %2</source>
+        <translation>Puntos: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../front-end/tinyscorewidget.cpp" line="46"/>
+        <location filename="../front-end/tinyscorewidget.cpp" line="48"/>
         <source>%1</source>
         <translation></translation>
     </message>
