@@ -25,7 +25,7 @@ Lvk::FE::SendScoreDialog::SendScoreDialog(QString details, QWidget *parent) :
     ui->label->setText(tr("Send score? This will also send your rule definitions."
                           "<br/><a href=\"#\">See what I'm sending</a>"));
 
-    alignCenter(500, 100);
+    alignCenter(500, 120);
 
     connect(ui->label,        SIGNAL(linkActivated(QString)), SLOT(onLinkActivated(QString)));
     connect(ui->rejectButton, SIGNAL(clicked()),              SLOT(reject()));

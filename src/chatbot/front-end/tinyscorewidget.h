@@ -60,6 +60,9 @@ public slots:
      */
     void setRemainingTime(const QTime &time);
 
+protected:
+    bool event(QEvent *event);
+
 private:
     Ui::TinyScoreWidget *ui;
 };

@@ -1,6 +1,8 @@
 #include "tinyscorewidget.h"
 #include "ui_tinyscorewidget.h"
 
+#include <QtDebug>
+
 
 //--------------------------------------------------------------------------------------------------
 // TinyScoreWidget
@@ -46,4 +48,14 @@ void Lvk::FE::TinyScoreWidget::setRemainingTime(const QTime &time)
     QString text = QString(tr("%1")).arg(time.toString("hh:mm:ss"));
 
     ui->timeLabel->setText(text);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::TinyScoreWidget::event(QEvent *event)
+{
+    // TODO remove this debug info
+    if (event->type() == QEvent::MouseButtonPress) qDebug() << "TinyScoreWidget click event";
+
+    return false;
 }
