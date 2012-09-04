@@ -287,7 +287,6 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->bestScoreWidget->clear();
     ui->remainingTimeLabel->clear();
     m_tinyScore->clear();
-    m_tinyScore->setVisible(true);
 
     // advanced options tab widgets
     ui->rmDupCheckBox->setChecked(true);
@@ -866,8 +865,6 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
-
-            m_tinyScore->setVisible(false);
             break;
 
         case VerifyAccountUiMode:
@@ -891,8 +888,6 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
-
-            m_tinyScore->setVisible(false);
             break;
 
         default:
@@ -914,8 +909,6 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
             ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
-
-            m_tinyScore->setVisible(true);
             break;
         }
     }
@@ -2288,12 +2281,6 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
         connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
                 SLOT(onCurrentTabChanged(QWidget*)));
     }
-
-    if (tab == ui->scoreTab) {
-        m_tinyScore->setVisible(false);
-    } else {
-        m_tinyScore->setVisible(true);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2344,7 +2331,7 @@ void Lvk::FE::MainWindow::updateScore()
 void Lvk::FE::MainWindow::updateTinyScorePos()
 {
     if (m_tinyScore) {
-        m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, -5);
+        m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, 7);
     }
 }
 

@@ -25,25 +25,25 @@ Lvk::FE::TinyScoreWidget::~TinyScoreWidget()
 
 void Lvk::FE::TinyScoreWidget::clear()
 {
-    ui->bottomLabel->clear();
-    ui->topLabel->clear();
+    ui->scoreLabel->clear();
+    ui->timeLabel->clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::TinyScoreWidget::setScore(const BE::Score &current, const BE::Score &best)
 {
-    QString text = QString(tr("Current points: %1 / Best: %2")).arg(QString::number(current.total),
+    QString text = QString(tr("%1 / %2")).arg(QString::number(current.total),
                                                                     QString::number(best.total));
 
-    ui->topLabel->setText(text);
+    ui->scoreLabel->setText(text);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::TinyScoreWidget::setRemainingTime(const QTime &time)
 {
-    QString text = QString(tr("Remaining time: %1")).arg(time.toString("hh:mm:ss"));
+    QString text = QString(tr("%1")).arg(time.toString("hh:mm:ss"));
 
-    ui->bottomLabel->setText(text);
+    ui->timeLabel->setText(text);
 }

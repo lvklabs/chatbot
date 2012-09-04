@@ -649,11 +649,6 @@
               </property>
               <item>
                <widget class="QLabel" name="remainingTimeLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>11</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string notr="true">Remaining Time: 03:40:30</string>
                 </property>
@@ -1400,6 +1395,11 @@ Please insert your username and password and press &quot;Verify account&quot; bu
  </widget>
  <customwidgets>
   <customwidget>
+   <class>Lvk::FE::RuleTextView</class>
+   <extends>QTextEdit</extends>
+   <header>front-end/ruletextview.h</header>
+  </customwidget>
+  <customwidget>
    <class>Lvk::FE::RuleOutputWidget</class>
    <extends>QPlainTextEdit</extends>
    <header>front-end/ruleoutputwidget.h</header>
@@ -1426,11 +1426,6 @@ Please insert your username and password and press &quot;Verify account&quot; bu
    <extends>QWidget</extends>
    <header>front-end/chathistorywidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Lvk::FE::RuleTextView</class>
-   <extends>QTextEdit</extends>
-   <header>front-end/ruletextview.h</header>
   </customwidget>
   <customwidget>
    <class>Lvk::FE::ScoreWidget</class>

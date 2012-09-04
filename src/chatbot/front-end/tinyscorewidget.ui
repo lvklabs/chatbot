@@ -6,29 +6,43 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>349</width>
-    <height>34</height>
+    <width>255</width>
+    <height>20</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="topLabel">
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="scoreLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-      <string notr="true">Score</string>
+      <string notr="true">Current: 13432 / Best: 43223</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -36,14 +50,15 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="bottomLabel">
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
+    <widget class="QLabel" name="timeLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-      <string notr="true">Current: 13432 / Best: 43223 / Remaining Time: 03:40:43</string>
+      <string notr="true">03:40:43</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
