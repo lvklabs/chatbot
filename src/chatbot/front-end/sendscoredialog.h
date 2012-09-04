@@ -44,6 +44,8 @@ public:
 private:
     Ui::SendScoreDialog *ui;
 
+    void alignCenter(int w, int h);
+
 private slots:
     void onLinkActivated(const QString&);
 };

@@ -4,6 +4,8 @@
 #include <QPixmap>
 #include <QImage>
 #include <QIcon>
+#include <QStyle>
+#include <QDesktopWidget>
 
 //--------------------------------------------------------------------------------------------------
 // TinyScoreWidget
@@ -23,6 +25,8 @@ Lvk::FE::SendScoreDialog::SendScoreDialog(QString details, QWidget *parent) :
     ui->label->setText(tr("Send score? This will also send your rule definitions."
                           "<br/><a href=\"#\">See what I'm sending</a>"));
 
+    alignCenter(500, 100);
+
     connect(ui->label,        SIGNAL(linkActivated(QString)), SLOT(onLinkActivated(QString)));
     connect(ui->rejectButton, SIGNAL(clicked()),              SLOT(reject()));
     connect(ui->acceptButton, SIGNAL(clicked()),              SLOT(accept()));
@@ -39,10 +43,16 @@ Lvk::FE::SendScoreDialog::~SendScoreDialog()
 
 void Lvk::FE::SendScoreDialog::onLinkActivated(const QString &)
 {
-    setMinimumWidth(width()*1.5);
-    setMinimumHeight(height()*3);
+    alignCenter(500*1.2, 100*3);
     ui->detailsLabel->setVisible(true);
     ui->detailsText->setVisible(true);
     ui->label->setText(tr("Send score? This will also send your rule definitions."));
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::SendScoreDialog::alignCenter(int w, int h)
+{
+    QRect g = parentWidget() ? parentWidget()->geometry() : qApp->desktop()->availableGeometry();
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, QSize(w, h), g));
+}
