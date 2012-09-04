@@ -7,6 +7,18 @@
 #include <QStyle>
 #include <QDesktopWidget>
 
+#ifdef WIN32
+# define DIALOG_INIT_W  500
+# define DIALOG_INIT_H  100
+# define DIALOG_DET_W   (500*1.2)
+# define DIALOG_DET_H   (100*3)
+#else
+# define DIALOG_INIT_W  500
+# define DIALOG_INIT_H  120
+# define DIALOG_DET_W   (500*1.2)
+# define DIALOG_DET_H   (100*3)
+#endif
+
 //--------------------------------------------------------------------------------------------------
 // TinyScoreWidget
 //--------------------------------------------------------------------------------------------------
@@ -25,7 +37,7 @@ Lvk::FE::SendScoreDialog::SendScoreDialog(QString details, QWidget *parent) :
     ui->label->setText(tr("Send score? This will also send your rule definitions."
                           "<br/><a href=\"#\">See what I'm sending</a>"));
 
-    alignCenter(500, 120);
+    alignCenter(DIALOG_INIT_W, DIALOG_INIT_H);
 
     connect(ui->label,        SIGNAL(linkActivated(QString)), SLOT(onLinkActivated(QString)));
     connect(ui->rejectButton, SIGNAL(clicked()),              SLOT(reject()));
@@ -43,7 +55,7 @@ Lvk::FE::SendScoreDialog::~SendScoreDialog()
 
 void Lvk::FE::SendScoreDialog::onLinkActivated(const QString &)
 {
-    alignCenter(500*1.2, 100*3);
+    alignCenter(DIALOG_DET_W, DIALOG_DET_H);
     ui->detailsLabel->setVisible(true);
     ui->detailsText->setVisible(true);
     ui->label->setText(tr("Send score? This will also send your rule definitions."));
