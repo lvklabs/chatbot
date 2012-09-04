@@ -82,9 +82,9 @@ inline QString getOSType()
 #ifdef Q_WS_X11
     return QString("Linux");
 #elif defined(Q_WS_WIN)
-    return QString("Windows v%1").arg(QSysInfo::WindowsVersion());
+    return QString("Windows 0x%1").arg(QString::number(QSysInfo::WindowsVersion,16));
 #elif defined(Q_WS_MAC)
-    return QString("Mac v%1").arg(QSysInfo::MacintoshVersion());
+    return QString("Mac 0x%1").arg(QString::number(QSysInfo::MacintoshVersion,16));
 #endif
 }
 
