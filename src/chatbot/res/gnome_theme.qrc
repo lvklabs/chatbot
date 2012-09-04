@@ -28,5 +28,6 @@
         <file alias="verify_later.png">gnome_theme/avatar_default.png</file>
         <file alias="connect.png"></file>
         <file alias="upload.png">gnome_theme/upload.png</file>
+        <file alias="cancel.png">gnome_theme/cancel.png</file>
     </qresource>
 </RCC>

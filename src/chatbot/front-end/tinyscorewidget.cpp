@@ -33,8 +33,8 @@ void Lvk::FE::TinyScoreWidget::clear()
 
 void Lvk::FE::TinyScoreWidget::setScore(const BE::Score &current, const BE::Score &best)
 {
-    QString text = QString(tr("%1 / %2")).arg(QString::number(current.total),
-                                                                    QString::number(best.total));
+    QString text = QString(tr("Score: %1 / %2")).arg(QString::number(current.total),
+                                                     QString::number(best.total));
 
     ui->scoreLabel->setText(text);
 }

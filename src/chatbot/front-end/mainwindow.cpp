@@ -1265,16 +1265,25 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
 
 void Lvk::FE::MainWindow::onAboutMenuTriggered()
 {
-    QString title = QString(tr("About %1..."))
-            .arg(APP_NAME);
-    QString text = QString(tr("<b>%1 %2</b><br/>"
-                              "Rev: %3<br/><br/>"
-                              "Developed by LVK<br/>%4<br/>%5"))
+    QString title = QString(tr("About %1...")).arg(APP_NAME);
+    QString text = QString(tr(
+        "<p><b>%1 %2</b><br/>Rev: %3</p>"
+        "<p>Developed by LVK in conjuntion with FaMAF - UNC for the Manuel Sadosky Foundation</p>"
+        "<a href=\"http://%4\">www.lvklabs.com</a>"
+        "<br/><a href=\"http://www.famaf.unc.edu.ar/\">www.famaf.unc.edu.ar</a>"
+        "<br/><a href=\"http://www.fundacionsadosky.org.ar\">www.fundacionsadosky.org.ar</a>"
+        "<br/><p>Chatbot is free software: you can redistribute it and/or modify "
+        "it under the terms of the GNU General Public License as published by "
+        "the Free Software Foundation, either version 3 of the License, or "
+        "(at your option) any later version.</p>"
+        "<p>Chatbot is distributed in the hope that it will be useful, "
+        "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+        "GNU General Public License for more details.</p>"))
             .arg(APP_NAME)
             .arg(APP_VERSION_STR)
             .arg(QString(APP_VERSION_REV).mid(0, 30))
-            .arg(APP_URL_CONTACT)
-            .arg(APP_MAIL_CONTACT);
+            .arg(APP_URL_CONTACT);
 
     QMessageBox msg(QMessageBox::NoIcon, title, text);
     msg.setIconPixmap(QPixmap(APP_ICON_FILE));

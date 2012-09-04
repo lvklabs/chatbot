@@ -28,5 +28,6 @@
         <file alias="verify_later.png">chatbot_theme/verify_later.png</file>
         <file alias="connect.png">chatbot_theme/connect.png</file>
         <file alias="upload.png">chatbot_theme/upload.png</file>
+        <file alias="cancel.png">chatbot_theme/cancel.png</file>
     </qresource>
 </RCC>
