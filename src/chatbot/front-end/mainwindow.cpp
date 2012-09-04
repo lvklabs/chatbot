@@ -2331,7 +2331,7 @@ void Lvk::FE::MainWindow::updateScore()
 void Lvk::FE::MainWindow::updateTinyScorePos()
 {
     if (m_tinyScore) {
-        m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, 7);
+        m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, -2);
     }
 }
 
