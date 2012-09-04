@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>230</width>
+    <width>225</width>
     <height>24</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>240</width>
+    <width>230</width>
     <height>16777215</height>
    </size>
   </property>
@@ -48,7 +48,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string notr="true">Score: 13432 / 43223</string>
+      <string notr="true">Score: 909432 / 943223</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
