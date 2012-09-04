@@ -305,7 +305,13 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="QPushButton" name="undoRuleButton">
+                <widget class="QToolButton" name="undoRuleButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Undo changes</string>
                  </property>
@@ -319,10 +325,22 @@
                    <height>24</height>
                   </size>
                  </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="teachRuleButton">
+                <widget class="QToolButton" name="teachRuleButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Teach rule to the chatbot</string>
                  </property>
@@ -335,6 +353,12 @@
                    <width>24</width>
                    <height>24</height>
                   </size>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -585,6 +609,9 @@
                  <property name="toolButtonStyle">
                   <enum>Qt::ToolButtonTextBesideIcon</enum>
                  </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
               </layout>
@@ -649,8 +676,11 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <layout class="QHBoxLayout" name="scoreTimeLayout">
               <property name="leftMargin">
+               <number>9</number>
+              </property>
+              <property name="topMargin">
                <number>9</number>
               </property>
               <property name="rightMargin">
@@ -716,6 +746,9 @@
            </property>
            <widget class="QWidget" name="connectionPage">
             <layout class="QFormLayout" name="formLayout_2">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
              <property name="horizontalSpacing">
               <number>10</number>
              </property>
@@ -723,9 +756,41 @@
               <number>10</number>
              </property>
              <property name="topMargin">
-              <number>5</number>
+              <number>9</number>
              </property>
              <item row="2" column="0">
+              <widget class="QLabel" name="statusLabel">
+               <property name="text">
+                <string>Status:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="connectionStatusLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Disconnected</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
               <widget class="QLabel" name="usernameLabel">
                <property name="font">
                 <font>
@@ -741,7 +806,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="3" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
                 <widget class="QLineEdit" name="curUsernameLabel">
@@ -782,6 +847,35 @@
                 </widget>
                </item>
                <item>
+                <widget class="QToolButton" name="changeAccountButton">
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Change user</string>
+                 </property>
+                 <property name="text">
+                  <string>Change user...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../res/chatbot_theme.qrc">
+                   <normaloff>:/icons/change_account.png</normaloff>:/icons/change_account.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="horizontalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -796,7 +890,7 @@
                </item>
               </layout>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="passwordLabel">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -812,7 +906,7 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QLineEdit" name="passwordText">
                <property name="maximumSize">
                 <size>
@@ -825,7 +919,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="7" column="1">
               <widget class="QProgressBar" name="connectionProgressBar">
                <property name="maximumSize">
                 <size>
@@ -841,14 +935,8 @@
                </property>
               </widget>
              </item>
-             <item row="6" column="1">
-              <widget class="QPushButton" name="connectButton">
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>16777215</height>
-                </size>
-               </property>
+             <item row="8" column="1">
+              <widget class="QToolButton" name="connectButton">
                <property name="text">
                 <string>Connect</string>
                </property>
@@ -862,65 +950,10 @@
                  <height>24</height>
                 </size>
                </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QToolButton" name="changeAccountButton">
-               <property name="maximumSize">
-                <size>
-                 <width>200</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Change user</string>
-               </property>
-               <property name="text">
-                <string>Change user...</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../res/chatbot_theme.qrc">
-                 <normaloff>:/icons/change_account.png</normaloff>:/icons/change_account.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>24</width>
-                 <height>24</height>
-                </size>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonTextBesideIcon</enum>
                </property>
                <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="statusLabel">
-               <property name="text">
-                <string>Status:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="QLabel" name="connectionStatusLabel">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>24</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
-               <property name="text">
-                <string>Disconnected</string>
-               </property>
-               <property name="wordWrap">
                 <bool>true</bool>
                </property>
               </widget>
@@ -1171,7 +1204,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                <item row="6" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <widget class="QPushButton" name="verifyAccountButton">
+                  <widget class="QToolButton" name="verifyAccountButton">
                    <property name="text">
                     <string>Verify account</string>
                    </property>
@@ -1185,10 +1218,16 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                      <height>24</height>
                     </size>
                    </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
+                    <bool>true</bool>
+                   </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="verifyLaterButton">
+                  <widget class="QToolButton" name="verifyLaterButton">
                    <property name="text">
                     <string>Verificar mas tarde</string>
                    </property>
@@ -1201,6 +1240,15 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                      <width>24</width>
                      <height>24</height>
                     </size>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
+                    <bool>true</bool>
+                   </property>
+                   <property name="arrowType">
+                    <enum>Qt::NoArrow</enum>
                    </property>
                   </widget>
                  </item>
@@ -1274,9 +1322,25 @@ Please insert your username and password and press &quot;Verify account&quot; bu
               </layout>
              </item>
              <item row="0" column="1">
-              <widget class="QPushButton" name="cancelChangeAccountButton">
+              <widget class="QToolButton" name="cancelChangeAccountButton">
                <property name="text">
                 <string>Cancel</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/chatbot_theme.qrc">
+                 <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonTextBesideIcon</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1297,7 +1361,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">

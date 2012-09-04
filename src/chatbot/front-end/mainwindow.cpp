@@ -698,12 +698,13 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectButton->setText(tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
         ui->connectionStatusLabel->setText(tr("Disconnected"));
-        ui->connectionStatusLabel->setStyleSheet("");
+        ui->connectionStatusLabel->setStyleSheet("color:gray");
         ui->rosterWidget->clear();
         // If verification was skipped
         ui->connectButton->setEnabled(!m_appFacade->username().isEmpty());
-        ui->chatTypeIcon->setVisible(!m_appFacade->username().isEmpty());
         ui->passwordText->setEnabled(!m_appFacade->username().isEmpty());
+        //ui->chatTypeIcon->setVisible(!m_appFacade->username().isEmpty());
+        ui->chatTypeIcon->setVisible(false);
         break;
 
     case ChatConnectingUiMode:
