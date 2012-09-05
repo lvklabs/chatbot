@@ -399,7 +399,7 @@ private slots:
     void onAccountOk();
     void onAccountError(int err);
 
-    void emitRemainingTime();
+    void onScoreTick();
     void startTicking();
     void stopTicking();
 
@@ -424,6 +424,7 @@ private:
 
     bool setDefaultRules();
 
+    void init();
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
     void refreshEvasives();

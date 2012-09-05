@@ -132,3 +132,10 @@ void Lvk::Stats::StatsManager::clear()
     m_statsFile->clear();
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::newInterval()
+{
+    // TODO
+}
+

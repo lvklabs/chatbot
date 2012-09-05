@@ -24,6 +24,7 @@
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/cipher.h"
 
 #include <QUdpSocket>
 #include <QTcpSocket>
@@ -31,6 +32,9 @@
 #include <QDebug>
 #include <QHostInfo>
 
+#ifndef RLOG_CRYPTO_KEY
+# define RLOG_CRYPTO_KEY    { }
+#endif
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -38,6 +42,10 @@
 
 namespace
 {
+
+const char s_rlogCryptoKey[] = RLOG_CRYPTO_KEY;
+
+//--------------------------------------------------------------------------------------------------
 
 // convert RemoteLogger::FieldList to Gelf::FieldList
 inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::FieldList &fields)
@@ -48,6 +56,8 @@ inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::Fiel
     }
     return gelfFields;
 }
+
+//--------------------------------------------------------------------------------------------------
 
 // convert RemoteLogger::FieldList to QString
 inline QString toString(const Lvk::Cmn::RemoteLogger::FieldList &fields)
@@ -227,9 +237,7 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fiel
     }
 
     if (data.size() > 0 && m_encrypt) {
-        ///////////////////////////
-        //TODO encrypt(data, key);
-        ///////////////////////////
+        Cmn::Cipher().encrypt(data, QByteArray(s_rlogCryptoKey, sizeof(s_rlogCryptoKey)));
     }
 
     switch (m_format) {

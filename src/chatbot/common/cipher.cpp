@@ -19,48 +19,31 @@
  *
  */
 
-#include "back-end/scorealgorithm.h"
-#include "stats/statsmanager.h"
+#include "cipher.h"
 
+#include <QByteArray>
 
 //--------------------------------------------------------------------------------------------------
-// Helpers
+// Cipher
 //--------------------------------------------------------------------------------------------------
 
-namespace
+bool Lvk::Cmn::Cipher::encrypt(QByteArray &/*data*/, const QByteArray &/*key*/)
 {
+    ///////////////////////////////////////////////////
+    // TODO implement!
+    ///////////////////////////////////////////////////
 
-inline unsigned uIntStat(Lvk::Stats::Id id)
-{
-    return Lvk::Stats::StatsManager::manager()->stat(id).toUInt();
+    return true;
 }
 
-} // namespace
-
-
-//--------------------------------------------------------------------------------------------------
-// ScoreAlgorithm
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::ScoreAlgorithm::ScoreAlgorithm()
+bool Lvk::Cmn::Cipher::decrypt(QByteArray &/*data*/, const QByteArray &/*key*/)
 {
-}
+    ///////////////////////////////////////////////////
+    // TODO implement!
+    ///////////////////////////////////////////////////
 
-Lvk::BE::Score Lvk::BE::ScoreAlgorithm::score()
-{
-    const unsigned IMPORTANT_CONTACT_POINTS = 1000;
-
-    unsigned trp  = uIntStat(Stats::TotalRulePoints);
-    unsigned hic  = uIntStat(Stats::HistoryImportantContacts);
-    unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSize);
-    unsigned hcl  = uIntStat(Stats::HistoryChatbotLines);
-
-    BE::Score score;
-    score.conversations = hcls + hcl;
-    score.contacts      = hic*IMPORTANT_CONTACT_POINTS;
-    score.rules         = trp;
-    score.total         = score.conversations + score.contacts + score.rules;
-
-    return score;
+    return true;
 }
 

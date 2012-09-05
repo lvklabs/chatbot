@@ -71,6 +71,10 @@ public:
     void setChatbotId(const QString &id);
 
     /**
+     */
+    void newInterval();
+
+    /**
      * \copydoc StatsFile::setStat()
      */
     void setStat(Stats::Id id, const QVariant &value);

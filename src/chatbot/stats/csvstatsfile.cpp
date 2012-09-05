@@ -22,25 +22,22 @@
 #include "stats/id.h"
 #include "stats/csvstatsfile.h"
 #include "common/csvdocument.h"
+#include "common/cipher.h"
 
 #include <QFile>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QtDebug>
+#include <QDataStream>
 
 #include <cassert>
 
-#define STR_DATE_FORMAT   "yyyy-MM-dd"
+#ifndef STATS_CRYPTO_KEY
+# define STATS_CRYPTO_KEY { }
+#endif
 
-enum
-{
-    DateCol,
-    TotalColumns = 50    // Reserving lot of columns for future usage
-};
+#define STR_DATE_FORMAT     "yyyy-MM-dd"
 
-//--------------------------------------------------------------------------------------------------
-// Helpers
-//--------------------------------------------------------------------------------------------------
 
 // Required for QHash<QDate>
 inline uint qHash(const QDate &d)
@@ -52,12 +49,31 @@ inline uint qHash(const QDate &d)
     }
 }
 
+enum
+{
+    DateCol,
+    TotalColumns = 50    // Reserving lot of columns for future usage
+};
+
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+const char s_statsCryptoKey[] = STATS_CRYPTO_KEY;
+
 //--------------------------------------------------------------------------------------------------
 
 inline bool validId(Lvk::Stats::Id id)
 {
     return id != Lvk::Stats::NullStat && static_cast<int>(id) < TotalColumns;
 }
+
+} // namespace
+
 
 //--------------------------------------------------------------------------------------------------
 // CsvStatsFile
@@ -161,7 +177,6 @@ void Lvk::Stats::CsvStatsFile::combinedHistory(Stats::Id id1, Stats::Id id2, Sta
     }
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Stats::CsvStatsFile::load(const QString &filename)
@@ -180,22 +195,21 @@ void Lvk::Stats::CsvStatsFile::load(const QString &filename)
     QFile file(filename);
 
     if (file.open(QFile::ReadOnly)) {
-        const quint64 BUF_SIZE = 10*1024;
-        char buf[BUF_SIZE];
+        QByteArray data = file.readAll();
 
-        while (!file.atEnd()) {
-            if (file.readLine(buf, BUF_SIZE) > 0) {
-                Cmn::CsvRow row(QString::fromUtf8(buf));
-                if (row.size() >= TotalColumns - 1) { // FIXME -1 bug in CsvRow
-                    QDate date = QDate::fromString(row[DateCol], STR_DATE_FORMAT);
-                    if (date.isValid()) {
-                        m_dailyStats[date] = row;
-                    }
-                } else {
-                    qWarning() << "CsvStatsFile: Invalid row format: " << buf;
+        Cmn::Cipher().decrypt(data, QByteArray(s_statsCryptoKey, sizeof(s_statsCryptoKey)));
+
+        QStringList lines =  QString::fromUtf8(data).split("\n", QString::SkipEmptyParts);
+
+        foreach (const QString &line, lines) {
+            Cmn::CsvRow row(line);
+            if (row.size() >= TotalColumns - 1) { // FIXME -1 bug in CsvRow
+                QDate date = QDate::fromString(row[DateCol], STR_DATE_FORMAT);
+                if (date.isValid()) {
+                    m_dailyStats[date] = row;
                 }
             } else {
-                qCritical() << "CsvStatsFile: Could not read line from" << filename;
+                qWarning() << "CsvStatsFile: Invalid row format: " << line;
             }
         }
     } else if (file.exists()){
@@ -218,17 +232,23 @@ void Lvk::Stats::CsvStatsFile::save()
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
-        file.write(m_colNames.toString().toUtf8());
-        file.write("\n");
+        QByteArray data;
+
+        data.append(m_colNames.toString().toUtf8());
+        data.append("\n");
 
         DailyStats::const_iterator it;
         for (it = m_dailyStats.constBegin(); it != m_dailyStats.constEnd(); ++it) {
             const Cmn::CsvRow &row = *it;
             if (row.size() >= TotalColumns - 1) { // FIXME -1 bug in CsvRow
-                file.write(row.toString().toUtf8());
-                file.write("\n");
+                data.append(row.toString().toUtf8());
+                data.append("\n");
             }
         }
+
+        Cmn::Cipher().encrypt(data, QByteArray(s_statsCryptoKey, sizeof(s_statsCryptoKey)));
+
+        file.write(data);
         file.flush();
     } else {
         qCritical() << "CsvStatsFile: Could not open" << m_filename;

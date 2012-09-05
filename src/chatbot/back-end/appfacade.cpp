@@ -39,12 +39,14 @@
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
 
+#include <QMetaType>
 #include <cmath>
 #include <algorithm>
 
 #define FILE_METADATA_CHAT_TYPE     "chat_type"
 #define FILE_METADATA_USERNAME      "username"
 #define FILE_METADATA_NLP_OPTIONS   "nlp_options"
+#define FILE_METADATA_BEST_SCORE    "best_score"
 
 #define SCORE_INTERVAL_SEC          (5*3600) // In seconds. TODO read from config file
 
@@ -142,9 +144,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
       m_scoreTime(0)
 {
-    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
-
-    setupChatbot();
+    init();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -161,7 +161,17 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
       m_scoreTime(0)
 {
-    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(emitRemainingTime()));
+    init();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::init()
+{
+    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(onScoreTick()));
+
+    qRegisterMetaType<Lvk::BE::Score>("Lvk::BE::Score");
+    qRegisterMetaTypeStreamOperators<Lvk::BE::Score>("Lvk::BE::Score");
 
     setupChatbot();
 }
@@ -292,7 +302,10 @@ void Lvk::BE::AppFacade::close()
     // If chatbot never saved
     if (m_rules.filename().isEmpty()) {
         Stats::StatsManager::manager()->clear();
-        m_chatbot->clearHistory();
+
+        if (m_chatbot) {
+            m_chatbot->clearHistory();
+        }
     } else {
         logScore();
     }
@@ -842,10 +855,21 @@ Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
 
 Lvk::BE::Score Lvk::BE::AppFacade::bestScore()
 {
-    //////////////////////
-    // FIXME
-    return currentScore();
-    //////////////////////
+    Score current = currentScore();
+    Score best;
+
+    QVariant v = m_rules.metadata(FILE_METADATA_BEST_SCORE);
+
+    if (!v.isNull()) {
+        best = v.value<Score>();
+    }
+
+    if (current.total > best.total) {
+        m_rules.setMetadata(FILE_METADATA_BEST_SCORE, QVariant::fromValue(current));
+        best = current;
+    }
+
+    return best;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -883,14 +907,15 @@ void Lvk::BE::AppFacade::stopTicking()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::emitRemainingTime()
+void Lvk::BE::AppFacade::onScoreTick()
 {
     m_scoreTime = (m_scoreTime + 1) % SCORE_INTERVAL_SEC;
 
     emit scoreRemainingTime(SCORE_INTERVAL_SEC - m_scoreTime);
 
+    // If score timeout, start a new stats interval
     if (m_scoreTime == 0) {
-        // TODO Update best score if necessary. Emit newBestScore()
+        Stats::StatsManager::manager()->newInterval();
     }
 }
 
