@@ -10,6 +10,12 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>780</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Chatbot</string>
   </property>
@@ -1382,7 +1388,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>27</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">
