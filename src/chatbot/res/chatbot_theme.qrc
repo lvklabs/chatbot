@@ -13,7 +13,7 @@
         <file alias="gmail.png">chatbot_theme/gmail.png</file>
         <file alias="teach_rule.png">chatbot_theme/teach_rule.png</file>
         <file alias="undo.png">chatbot_theme/undo.png</file>
-        <file alias="app_icon">icon/chatbot_icon_128x228.png</file>
+        <file alias="app_icon">icon/chatbot_icon_128x128.png</file>
         <file alias="users.png">chatbot_theme/users.png</file>
         <file alias="new_chatbot.png">chatbot_theme/new_chatbot.png</file>
         <file alias="open_chatbot.png">chatbot_theme/open_chatbot.png</file>
