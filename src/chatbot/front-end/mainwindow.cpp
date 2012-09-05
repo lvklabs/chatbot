@@ -712,7 +712,7 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(false);
         ui->changeAccountButton->setEnabled(false);
-        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectButton->setText(tr("Cancel connection"));
         ui->connectionProgressBar->setVisible(true);
         ui->connectionStatusLabel->setText(tr("Connecting..."));
         ui->connectionStatusLabel->setStyleSheet("");
@@ -2137,12 +2137,15 @@ void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
 void Lvk::FE::MainWindow::onConnectButtonPressed()
 {
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
-        m_connectionStatus =  ConnectingToChat;
-        setUiMode(ChatConnectingUiMode);
-
         qDebug() << "MainWindow: Connecting chatbot...";
 
+        m_connectionStatus =  ConnectingToChat;
+        setUiMode(ChatConnectingUiMode);
         m_appFacade->connectToChat(ui->passwordText->text());
+
+    } else if (m_connectionStatus == ConnectingToChat) {
+        qDebug() << "MainWindow: Aborting chatbot connection...";
+        onDisconnectButtonPressed();
     }
 }
 
@@ -2151,12 +2154,11 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 void Lvk::FE::MainWindow::onDisconnectButtonPressed()
 {
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
-        m_connectionStatus = DisconnectedFromChat;
-        setUiMode(ChatDisconnectedUiMode);
-
         qDebug() << "MainWindow: Disconnecting chatbot...";
 
         m_appFacade->disconnectFromChat();
+        m_connectionStatus = DisconnectedFromChat;
+        setUiMode(ChatDisconnectedUiMode);
     }
 }
 
@@ -2164,7 +2166,6 @@ void Lvk::FE::MainWindow::onDisconnectButtonPressed()
 
 void Lvk::FE::MainWindow::onConnectionOk()
 {
-
     qDebug() << "MainWindow: Chatbot connection OK";
 
     m_connectionStatus = ConnectedToChat;

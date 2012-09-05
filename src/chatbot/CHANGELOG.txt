@@ -1,8 +1,9 @@
 v0.18
  - Updated Chatbot icon theme
  - Showing score all the time in the top-right corner of the window
- - Minor changes in all tabs like margins, strings, icons, etc.
+ - Minor changes in all tabs like margins, strings, icons, sizes, etc.
  - Updated 'about' dialog
+ - Fixed bug #13, #26
 
 v0.17
  - New icon theme
