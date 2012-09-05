@@ -2191,14 +2191,16 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
 void Lvk::FE::MainWindow::onConnectionError(int err)
 {
-    qDebug() << "MainWindow: Chatbot connection error" << err;
+    if (m_connectionStatus != DisconnectedFromChat) {
+        qDebug() << "MainWindow: Chatbot connection error" << err;
 
-    m_connectionStatus = ConnectionError;
+        m_connectionStatus = ConnectionError;
 
-    if (err != BE::AppFacade::SSLNotSupportedError) {
-        setUiMode(ChatConnectionFailedUiMode);
-    } else {
-        setUiMode(ChatConnectionSSLFailedUiMode);
+        if (err != BE::AppFacade::SSLNotSupportedError) {
+            setUiMode(ChatConnectionFailedUiMode);
+        } else {
+            setUiMode(ChatConnectionSSLFailedUiMode);
+        }
     }
 }
 
