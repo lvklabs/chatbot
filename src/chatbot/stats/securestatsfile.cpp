@@ -68,6 +68,29 @@ inline bool validId(Lvk::Stats::Id id)
 Lvk::Stats::SecureStatsFile::SecureStatsFile()
     : m_mutex(new QMutex(QMutex::Recursive)), m_colNames(TotalColumns), m_curInterv(1)
 {
+    initColNames();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Stats::SecureStatsFile::SecureStatsFile(const QString &filename)
+    : m_mutex(new QMutex(QMutex::Recursive)), m_colNames(TotalColumns), m_curInterv(1)
+{
+    initColNames();
+    load(filename);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Stats::SecureStatsFile::~SecureStatsFile()
+{
+    delete m_mutex;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::initColNames()
+{
     m_colNames[TimeIntervalCol]           = "Time Interval";
     m_colNames[LexiconSize]               = "Lexixon Size";
     m_colNames[TotalWords]                = "Total Words";
@@ -83,20 +106,6 @@ Lvk::Stats::SecureStatsFile::SecureStatsFile()
     m_colNames[HistoryContacts]           = "History Contacts";
     m_colNames[RosterSize]                = "Roster Size";
     m_colNames[EnabledRosterSize]         = "Enabled Roster";
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Stats::SecureStatsFile::~SecureStatsFile()
-{
-    delete m_mutex;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Stats::SecureStatsFile::SecureStatsFile(const QString &filename)
-{
-    load(filename);
 }
 
 //--------------------------------------------------------------------------------------------------
