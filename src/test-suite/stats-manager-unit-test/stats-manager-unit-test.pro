@@ -17,14 +17,14 @@ TEMPLATE = app
 INCLUDEPATH += ../../chatbot/
 
 HEADERS += \
-    ../../chatbot/common/Settings.h \
+    ../../chatbot/common/settings.h \
 
 SOURCES += \
     statsmanagerunittest.cpp\
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/common/cipher.cpp \
-    ../../chatbot/common/Settings.cpp \
+    ../../chatbot/common/settings.cpp \
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
