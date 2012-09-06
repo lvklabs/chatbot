@@ -25,7 +25,6 @@
 #include "stats/id.h"
 #include "stats/statsfile.h"
 #include "stats/timeinterval.h"
-#include "common/csvrow.h"
 
 #include <QString>
 #include <QHash>
@@ -126,7 +125,7 @@ private:
     QMutex *m_mutex;
     QString m_filename;
     IntervalStats m_stats;
-    Cmn::CsvRow m_colNames;
+    QVector<QString> m_colNames;
     TimeInterval m_curInterv;
 
     inline void serialize(QByteArray &data);
