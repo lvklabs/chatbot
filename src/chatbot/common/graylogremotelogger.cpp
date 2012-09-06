@@ -36,16 +36,14 @@
 # define RLOG_CRYPTO_KEY    { }
 #endif
 
+static const char s_rlogCryptoKey[] = RLOG_CRYPTO_KEY;
+
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
 
 namespace
 {
-
-const char s_rlogCryptoKey[] = RLOG_CRYPTO_KEY;
-
-//--------------------------------------------------------------------------------------------------
 
 // convert RemoteLogger::FieldList to Gelf::FieldList
 inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::FieldList &fields)
@@ -144,7 +142,7 @@ public:
         #define SYSLOG_VERSION      "1"
         #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz+03:00" // FIXME timezone
 
-        QByteArray priority = "<165>"; // FIXME
+        QByteArray priority = "<165>"; // FIXME priority
         QByteArray date = QDateTime::currentDateTime().toString(SYSLOG_DATE_FORMAT).toAscii();
         QByteArray host = QHostInfo::localHostName().toAscii();
         QByteArray app = APP_NAME "_" APP_VERSION_STR;

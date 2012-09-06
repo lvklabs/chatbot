@@ -155,9 +155,10 @@ HEADERS += \
     common/cipher.h \
     stats/statsmanager.h \
     stats/statsfile.h \
-    stats/csvstatsfile.h \
     stats/id.h \
     stats/history.h \
+    stats/timeinterval.h \
+    stats/securestatsfile.h
 
 
 SOURCES += \
@@ -208,8 +209,8 @@ SOURCES += \
     common/remoteloggerfactory.cpp \
     common/cipher.cpp \
     stats/statsmanager.cpp \
-    stats/csvstatsfile.cpp \
     stats/history.cpp \
+    stats/securestatsfile.cpp
 
 
 FORMS += \
@@ -274,6 +275,11 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
 
 
 

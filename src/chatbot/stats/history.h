@@ -24,8 +24,9 @@
 
 #include <QList>
 #include <QPair>
-#include <QDate>
 #include <QVariant>
+
+#include "stats/timeinterval.h"
 
 namespace Lvk
 {
@@ -43,7 +44,7 @@ namespace Stats
 /**
  * \brief The History class provides the history of values of a statistic
  */
-class History : public QList< QPair<QDate, QVariant> >
+class History : public QList< QPair<TimeInterval, QVariant> >
 {
 public:
 
@@ -53,11 +54,16 @@ public:
     History() { }
 
     /**
-     * Constructs and appends a pair (date, value)
+     * The Pair class provides a pair (time interval, value)
      */
-    void append(const QDate &date, const QVariant &value)
+    typedef QPair<TimeInterval, QVariant> Pair;
+
+    /**
+     * Constructs and appends a pair (time interval, value)
+     */
+    void append(const TimeInterval &interv, const QVariant &value)
     {
-        QList< QPair<QDate, QVariant> >::append(QPair<QDate, QVariant>(date, value));
+        QList<Pair>::append(Pair(interv, value));
     }
 };
 

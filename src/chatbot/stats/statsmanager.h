@@ -51,10 +51,12 @@ class StatsFile;
  *
  * The StatsManager class defines a method for each statistic we are interested in. Method names
  * starting with \a set store absolut values, whereas those starting with \a add store cumulative
- * values.
+ * values. Before starting to log statistics we must set the chatbot ID with setChatbotId().
  *
- * Statistics are stored per chatbot ID on a daily basis. Before starting to log statistics we must
- * set the chatbot ID with setChatbotId().
+ * Statistics are stored per chatbot ID on time intervals. Time intervals don't represent a fixed
+ * amount of time such us 1 hour, 12 hours or 1 day. Instead, every time newInterval()
+ * is invoked a new time interval starts and all invocations to setStat() or stat() will belong
+ * to that time interval.
  */
 class StatsManager
 {
@@ -71,6 +73,7 @@ public:
     void setChatbotId(const QString &id);
 
     /**
+     * Starts a new time interval where the statistics will be stored
      */
     void newInterval();
 
@@ -92,7 +95,7 @@ public:
     /**
      * \copydoc StatsFile::combinedHistory()
      */
-    void combinedHistory(Id id1, Id id2, History &history);
+    void combinedHistory(Stats::Id id1, Stats::Id id2, History &history);
 
     /**
      * This is an overloaded member function defined for convenience

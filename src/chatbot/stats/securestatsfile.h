@@ -19,16 +19,17 @@
  *
  */
 
-#ifndef LVK_STATS_CSVSTATSFILE_H
-#define LVK_STATS_CSVSTATSFILE_H
+#ifndef LVK_STATS_SECURESTATSFILE_H
+#define LVK_STATS_SECURESTATSFILE_H
 
 #include "stats/id.h"
 #include "stats/statsfile.h"
+#include "stats/timeinterval.h"
 #include "common/csvrow.h"
 
 #include <QString>
-#include <QDate>
 #include <QHash>
+#include <QVector>
 
 class QMutex;
 
@@ -46,28 +47,33 @@ namespace Stats
 /// @{
 
 /**
- * \brief The CsvStatsFile class provides an implementation of the StatsFile interface that
- *        loads/saves statistics from/to CSV files.
+ * \brief The SecureStatsFile class provides an implementation of the StatsFile interface that
+ *        loads/saves statistics from/to encrypted files.
  */
-class CsvStatsFile : public StatsFile
+class SecureStatsFile : public StatsFile
 {
 
 public:
 
     /**
-     * Constructs an empty CsvStatsFile object.
+     * Constructs an empty SecureStatsFile object.
      */
-    CsvStatsFile();
+    SecureStatsFile();
 
     /**
-     * Constructs a CsvStatsFile object and loads statistics from \a filename.
+     * Constructs a SecureStatsFile object and loads statistics from \a filename.
      */
-    CsvStatsFile(const QString &filename);
+    SecureStatsFile(const QString &filename);
 
     /**
      * Destroys the object.
      */
-    ~CsvStatsFile();
+    ~SecureStatsFile();
+
+    /**
+     * \copydoc StatsFile::newInterval()
+     */
+    virtual void newInterval();
 
     /**
      * \copydoc StatsFile::setStat()
@@ -115,13 +121,16 @@ public:
     virtual bool isEmpty();
 
 private:
-    typedef QHash<QDate, Cmn::CsvRow> DailyStats;
+    typedef QHash<TimeInterval, QVector<unsigned> > IntervalStats;
 
     QMutex *m_mutex;
     QString m_filename;
-    DailyStats m_dailyStats;
+    IntervalStats m_stats;
     Cmn::CsvRow m_colNames;
+    TimeInterval m_curInterv;
 
+    inline void serialize(QByteArray &data);
+    inline bool deserialize(const QByteArray &data);
     inline void setStat(int col, unsigned value, bool cumulative = false);
 };
 
@@ -134,5 +143,5 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_STATS_CSVSTATSFILE_H
+#endif // LVK_STATS_SECURESTATSFILE_H
 

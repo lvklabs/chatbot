@@ -46,6 +46,11 @@ namespace Stats
  * The StatsFile defines an abstract method for each statistic we are interested in. Method names
  * starting with \a set store absolut values, whereas those starting with \a add store cumulative
  * values.
+ *
+ * Statistics are stored in time intervals. Time intervals don't represent a fixed amount
+ * of time such us 1 hour, 12 hours or 1 day. Instead, every time newInterval()
+ * is invoked a new time interval starts and all invocations to setStat() or stat() will belong
+ * to that time interval.
  */
 class StatsFile
 {
@@ -55,6 +60,11 @@ public:
      * Destroys the object.
      */
     virtual ~StatsFile() { }
+
+    /**
+     * Starts a new time interval where the statistics will be stored.
+     */
+    virtual void newInterval() = 0;
 
     /**
      * Sets \a value as the value for the statistic with the given \a id in the current date

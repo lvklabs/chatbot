@@ -218,13 +218,13 @@ bool Lvk::BE::ChatbotRulesFile::read(QFile &file)
     quint32 magicNumber;
     istream >> magicNumber;
 
-    quint32 version;
-    istream >> version;
-
     if (magicNumber != CRF_MAGIC_NUMBER) {
         qCritical("Cannot read rules: Invalid magic number");
         return false;
     }
+
+    quint32 version;
+    istream >> version;
 
     if (version > CRF_FILE_FORMAT_VERSION) {
         qCritical("Cannot read rules: Invalid format version");

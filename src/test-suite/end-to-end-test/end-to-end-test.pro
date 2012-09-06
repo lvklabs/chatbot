@@ -109,7 +109,7 @@ HEADERS += \
     ../../chatbot/common/remoteloggerfactory.h \
     ../../chatbot/stats/statsmanager.h \
     ../../chatbot/stats/statsfile.h \
-    ../../chatbot/stats/csvstatsfile.h \
+    ../../chatbot/stats/securestatsfile.h \
     ../../chatbot/stats/id.h \
     ../../chatbot/stats/history.h \
 
@@ -159,8 +159,9 @@ SOURCES += \
     ../../chatbot/common/conversationreader.cpp \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/common/remoteloggerfactory.cpp \
+    ../../chatbot/common/cipher.cpp \
     ../../chatbot/stats/statsmanager.cpp \
-    ../../chatbot/stats/csvstatsfile.cpp \
+    ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/stats/history.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \

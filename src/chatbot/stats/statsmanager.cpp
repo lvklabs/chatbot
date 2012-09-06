@@ -20,7 +20,7 @@
  */
 
 #include "stats/statsmanager.h"
-#include "stats/csvstatsfile.h"
+#include "stats/securestatsfile.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
@@ -60,7 +60,7 @@ QMutex *                   Lvk::Stats::StatsManager::m_mgrMutex = new QMutex();
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Stats::StatsManager::StatsManager()
-    : m_statsFile(new CsvStatsFile())
+    : m_statsFile(new SecureStatsFile())
 {
 }
 
@@ -136,6 +136,6 @@ void Lvk::Stats::StatsManager::clear()
 
 void Lvk::Stats::StatsManager::newInterval()
 {
-    // TODO
+    m_statsFile->newInterval();
 }
 
