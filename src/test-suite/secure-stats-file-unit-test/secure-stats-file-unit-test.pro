@@ -8,7 +8,7 @@ QT       += testlib
 
 QT       -= gui
 
-TARGET = tst_securestatsfiletest
+TARGET = secureStatsFileUnitTest
 CONFIG   += console
 CONFIG   -= app_bundle
 

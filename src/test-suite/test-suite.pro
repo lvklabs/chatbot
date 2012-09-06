@@ -8,7 +8,8 @@ unit_tests {
         aiml-engine-unit-test  \
         simple-aiml-engine-unit-test \
         csv-document-unit-test \
-        conversation-rw-unit-test
+        conversation-rw-unit-test \
+        secure-stats-file-unit-test
 }
 
 end_to_end_tests {

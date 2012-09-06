@@ -37,6 +37,7 @@ if [ "$run_unit" == "yes" ]; then
   ( cd default-sanitizer-unit-test && ./defaultSanitizerUnitTest ) 
   ( cd aiml-engine-unit-test && ./aimlEngineUnitTest )
   ( cd simple-aiml-engine-unit-test && ./simpleAimlEngineUnitTest )
+  ( cd secure-stats-file-unit-test && ./secureStatsFileUnitTest )
 fi
 
 if [ "$run_e2e" == "yes" ]; then
