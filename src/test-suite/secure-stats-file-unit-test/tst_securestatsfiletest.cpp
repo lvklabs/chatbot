@@ -20,7 +20,7 @@ class SecureStatsFileTest : public QObject
     Q_OBJECT
 
 public:
-    SecureStatsFileTest();
+    SecureStatsFileTest() { }
 
 private Q_SLOTS:
     void initTestCase();
@@ -29,20 +29,14 @@ private Q_SLOTS:
     void testIsEmptyAndClose();
     void testIsEmptySaveAndClear();
     void testSetSaveAndLoad();
-    void testCase1();
-    void testCase1_data();
+    void testNewIntervalAndHistory();
 };
-
-//--------------------------------------------------------------------------------------------------
-
-SecureStatsFileTest::SecureStatsFileTest()
-{
-}
 
 //--------------------------------------------------------------------------------------------------
 
 void SecureStatsFileTest::initTestCase()
 {
+    // Nothing to do
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -58,6 +52,7 @@ void SecureStatsFileTest::init()
 
 void SecureStatsFileTest::cleanupTestCase()
 {
+    // Nothing to do
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -161,23 +156,119 @@ void SecureStatsFileTest::testSetSaveAndLoad()
 
 //--------------------------------------------------------------------------------------------------
 
-void SecureStatsFileTest::testCase1()
+void SecureStatsFileTest::testNewIntervalAndHistory()
 {
-    QFETCH(QString, data);
-    QVERIFY2(true, "Failure");
-}
+    const Stats::Id id1 = Stats::LexiconSize;
+    const Stats::Id id4 = Stats::ConnectionTime; // cumulative
+    const Stats::Id id5 = Stats::HistoryTotalLines;
 
-//--------------------------------------------------------------------------------------------------
+    const unsigned value1a = 10;
+    const unsigned value1b = 20;
+    const unsigned value1c = 30;
+    const unsigned value4a = 60;
+    const unsigned value4b = 70;
+    const unsigned value4c = 80;
 
-void SecureStatsFileTest::testCase1_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::newRow("0") << QString();
+    Stats::History h;
+    QVariant v;
+
+    {
+        Stats::SecureStatsFile file;
+
+        file.load(FILENAME_1);
+
+        file.history(id1, h);
+        QVERIFY(h.size() == 0);
+        file.history(id4, h);
+        QVERIFY(h.size() == 0);
+
+        // interval 1 ////////////////////////////////
+
+        file.setStat(id1, QVariant(value1b));
+        file.setStat(id1, QVariant(value1a));
+        file.setStat(id4, QVariant(value4a));
+        file.setStat(id4, QVariant(value4b));
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == value1a);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == value4a + value4b);
+
+        // interval 2 ////////////////////////////////
+        file.newInterval();
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == 0);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == 0);
+
+        file.setStat(id1, QVariant(value1b));
+        file.setStat(id4, QVariant(value4b));
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == value1b);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == value4b);
+
+        // interval 3 ////////////////////////////////
+        file.newInterval();
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == 0);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == 0);
+
+        file.setStat(id1, QVariant(value1c));
+        file.setStat(id4, QVariant(value4c));
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == value1c);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == value4c);
+
+        file.save();
+    }
+
+    {
+        Stats::SecureStatsFile file;
+
+        file.load(FILENAME_1);
+
+        file.stat(id1, v);
+        QVERIFY(v.toUInt() == value1c);
+        file.stat(id4, v);
+        QVERIFY(v.toUInt() == value4c);
+        file.stat(id5, v);
+        QVERIFY(v.toUInt() == 0);
+
+        file.history(id1, h);
+        QVERIFY(h.size() == 3);
+        QVERIFY(h[0].second.toUInt() == value1a);
+        QVERIFY(h[1].second.toUInt() == value1b);
+        QVERIFY(h[2].second.toUInt() == value1c);
+
+        file.history(id4, h);
+        QVERIFY(h.size() == 3);
+        QVERIFY(h[0].second.toUInt() == value4a + value4b);
+        QVERIFY(h[1].second.toUInt() == value4b);
+        QVERIFY(h[2].second.toUInt() == value4c);
+
+        file.combinedHistory(id1, id4, h);
+        QVERIFY(h.size() == 3);
+        QVERIFY(h[0].second.toUInt() == value1a + value4a + value4b);
+        QVERIFY(h[1].second.toUInt() == value1b + value4b);
+        QVERIFY(h[2].second.toUInt() == value1c + value4c);
+
+        file.combinedHistory(id1, id5, h);
+        QVERIFY(h.size() == 3);
+        QVERIFY(h[0].second.toUInt() == value1a);
+        QVERIFY(h[1].second.toUInt() == value1b);
+        QVERIFY(h[2].second.toUInt() == value1c);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 QTEST_APPLESS_MAIN(SecureStatsFileTest)
-
 
 #include "tst_securestatsfiletest.moc"
