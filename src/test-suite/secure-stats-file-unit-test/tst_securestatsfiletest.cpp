@@ -52,7 +52,9 @@ void SecureStatsFileTest::init()
 
 void SecureStatsFileTest::cleanupTestCase()
 {
-    // Nothing to do
+    if (QFile::exists(FILENAME_1)) {
+        QVERIFY(QFile::remove(FILENAME_1));
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
