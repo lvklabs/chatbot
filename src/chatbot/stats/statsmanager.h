@@ -28,6 +28,7 @@
 #include <QString>
 #include <memory>
 
+class StatsManagerUnitTest;
 class QMutex;
 class QDateTime;
 
@@ -60,6 +61,8 @@ class StatsFile;
  */
 class StatsManager
 {
+    friend class ::StatsManagerUnitTest;
+
 public:
 
     /**
