@@ -2389,6 +2389,10 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
     QString text = QString(tr("Remaining time: %1 (%2)")).arg(time.toString("hh:mm:ss"), status);
 
     ui->remainingTimeLabel->setText(text);
+
+    if (secs == 0) {
+        updateScore();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

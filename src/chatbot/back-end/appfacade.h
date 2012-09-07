@@ -419,8 +419,8 @@ private:
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
     ScoreAlgorithm m_scoreAlgo;
-    int m_scoreTime;
     QTimer m_scoreTimer;
+    int m_deltaTime;
 
     bool setDefaultRules();
 
@@ -437,6 +437,7 @@ private:
     bool logScore();
     bool logAccountVerified(const QString &username, const QString &domain);
     bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
+    void updateBestScore();
 };
 
 /// @}

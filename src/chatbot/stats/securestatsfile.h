@@ -125,10 +125,8 @@ private:
     QMutex *m_mutex;
     QString m_filename;
     IntervalStats m_stats;
-    QVector<QString> m_colNames;
     TimeInterval m_curInterv;
 
-    void initColNames();
     inline void serialize(QByteArray &data);
     inline bool deserialize(const QByteArray &data);
     inline void setStat(int col, unsigned value, bool cumulative = false);

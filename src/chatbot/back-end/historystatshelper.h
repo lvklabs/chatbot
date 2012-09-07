@@ -54,8 +54,10 @@ public:
      * Constructs a HistoryStatsHelper and provides statistics for the given conversation
      * \a conv.
      */
-    HistoryStatsHelper(const Lvk::Cmn::Conversation &conv)
-        : m_chatbotLinesTotal(0)
+    HistoryStatsHelper(const Lvk::Cmn::Conversation &conv, const QDateTime &intervalStart,
+                       const QDateTime &intervalEnd)
+        : m_intvlStart(intervalStart), m_intvlEnd(intervalEnd),
+          m_chatbotLinesTotal(0), m_chatbotLinesTotalIntvl(0)
     {
         count(conv);
     }
@@ -77,6 +79,42 @@ public:
     }
 
     /**
+     * Returns the chatbot lexicon size. i.e. the total amount of different words used by
+     * the chatbot.
+     */
+    unsigned chatbotLexiconSize() const
+    {
+        return m_chatbotLexicon.size();
+    }
+
+    /**
+     * Returns the total amount of lines in history produced by the chatbot
+     * within the interval.
+     */
+    unsigned chatbotLinesInterval() const
+    {
+        return m_chatbotLinesTotalIntvl;
+    }
+
+    /**
+     * Returns the total amount of different lines in history produced by the chatbot
+     * within the interval.
+     */
+    unsigned chatbotDiffLinesInterval() const
+    {
+        return m_chatbotLinesIntvl.size();
+    }
+
+    /**
+     * Returns the chatbot lexicon size. i.e. the total amount of different words used by
+     * the chatbot within the interval.
+     */
+    unsigned chatbotLexiconSizeInterval() const
+    {
+        return m_chatbotLexiconIntvl.size();
+    }
+
+    /**
      * Returns how many different contacts contains the history.
      */
     unsigned contacts() const
@@ -85,22 +123,12 @@ public:
     }
 
     /**
-     * Returns how many different contacts with at least \a minChats chat entries contains
-     * the history.
+     * Returns how many different contacts with conversation with at least \a minSize entries
      */
-    unsigned contacts(unsigned minChats) const
+    unsigned contacts(unsigned minSize) const
     {
         return std::count_if(m_contacts.begin(), m_contacts.end(),
-                             std::bind2nd(std::greater_equal<unsigned>(), minChats));
-    }
-
-    /**
-     * Returns the chatbot lexicon size. i.e. the total amount of different words used by
-     * the chatbot.
-     */
-    unsigned chatbotLexiconSize() const
-    {
-        return m_chatbotLexicon.size();
+                             std::bind2nd(std::greater_equal<unsigned>(), minSize));
     }
 
 protected:
@@ -129,16 +157,31 @@ protected:
             m_chatbotLines.insert(entry.response);
             updateLexicon(splitSentence(entry.response), m_chatbotLexicon);
             ++m_chatbotLinesTotal;
+
+            // if within interval
+            if (entry.dateTime >= m_intvlStart && entry.dateTime < m_intvlEnd) {
+                m_chatbotLinesIntvl.insert(entry.response);
+                updateLexicon(splitSentence(entry.response), m_chatbotLexiconIntvl);
+                ++m_chatbotLinesTotalIntvl;
+            }
         }
     }
 
 private:
     typedef QHash<QString, unsigned> ContactsCount;
 
+    QDateTime m_intvlStart;
+    QDateTime m_intvlEnd;
+
     ContactsCount m_contacts;
+    // all the time
     QSet<QString> m_chatbotLines;
     QSet<QString> m_chatbotLexicon;
     unsigned m_chatbotLinesTotal;
+    // within interval
+    QSet<QString> m_chatbotLinesIntvl;
+    QSet<QString> m_chatbotLexiconIntvl;
+    unsigned m_chatbotLinesTotalIntvl;
 
     void countContact(const QString &username)
     {

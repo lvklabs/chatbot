@@ -49,12 +49,15 @@ enum Id
     RosterSize,                 ///< The roster size, i.e. the amounts of chat contacts.
     EnabledRosterSize,          ///< The enabled roster size, i.e. the amounts of chat contacts allowed to chat
     HistoryTotalLines,          ///< The total amount of lines in the chat history.
+    HistoryLexiconSize,         ///< The history lexicon size, i.e. the total amount of different words used
     HistoryChatbotLines,        ///< The total amount of lines in the chat history produced by the chatbot.
     HistoryChatbotDiffLines,    ///< The total amount of different lines in the chat history produced by the chatbot
-    HistoryLexiconSize,         ///< The history lexicon size, i.e. the total amount of different words used
     HistoryChatbotLexiconSize,  ///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot
+    HistoryChatbotLinesInterval,///< The total amount of lines in the chat history produced by the chatbot within interval
+    HistoryChatbotDiffLinesInterval,///< The total amount of different lines in the chat history produced by the chatbot within interval
+    HistoryChatbotLexiconSizeInterval,///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot within interval
     HistoryContacts,            ///< The amount of different contacts found in the history.
-    HistoryImportantContacts    ///< The amount of different contacts found in the history with long converations
+    HistoryScoreContacts        ///< The amount of different contacts found in the history that scores
 };
 
 /// @}

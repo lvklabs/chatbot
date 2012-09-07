@@ -46,18 +46,20 @@ Lvk::BE::ScoreAlgorithm::ScoreAlgorithm()
 {
 }
 
+//--------------------------------------------------------------------------------------------------
+
 Lvk::BE::Score Lvk::BE::ScoreAlgorithm::score()
 {
-    const unsigned IMPORTANT_CONTACT_POINTS = 1000;
+    const unsigned INTERVAL_CONVERSATION_POINTS = 1000;
 
     unsigned trp  = uIntStat(Stats::TotalRulePoints);
-    unsigned hic  = uIntStat(Stats::HistoryImportantContacts);
-    unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSize);
-    unsigned hcl  = uIntStat(Stats::HistoryChatbotLines);
+    unsigned hic  = uIntStat(Stats::HistoryScoreContacts);
+    unsigned hcls = uIntStat(Stats::HistoryChatbotLexiconSizeInterval);
+    unsigned hcl  = uIntStat(Stats::HistoryChatbotLinesInterval);
 
     BE::Score score;
     score.conversations = hcls + hcl;
-    score.contacts      = hic*IMPORTANT_CONTACT_POINTS;
+    score.contacts      = hic*INTERVAL_CONVERSATION_POINTS;
     score.rules         = trp;
     score.total         = score.conversations + score.contacts + score.rules;
 
