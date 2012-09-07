@@ -12,7 +12,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>780</width>
+    <width>800</width>
     <height>0</height>
    </size>
   </property>
@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -1388,7 +1388,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">

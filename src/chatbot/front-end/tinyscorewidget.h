@@ -65,6 +65,12 @@ protected:
 
 private:
     Ui::TinyScoreWidget *ui;
+
+    QString m_strTime;
+    QString m_strCur;
+    QString m_strBest;
+
+    void updateTooltip();
 };
 
 /// @}

@@ -108,22 +108,22 @@
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="231"/>
+        <location filename="../back-end/appfacade.cpp" line="246"/>
         <source>Greetings</source>
         <translation>Saludos</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="237"/>
+        <location filename="../back-end/appfacade.cpp" line="252"/>
         <source>Hello</source>
         <translation>Hola</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="238"/>
+        <location filename="../back-end/appfacade.cpp" line="253"/>
         <source>Hello!</source>
         <translation>Hola!</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="244"/>
+        <location filename="../back-end/appfacade.cpp" line="259"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
     </message>
@@ -727,39 +727,39 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2359"/>
-        <location filename="../front-end/mainwindow.cpp" line="2364"/>
-        <location filename="../front-end/mainwindow.cpp" line="2370"/>
+        <location filename="../front-end/mainwindow.cpp" line="2361"/>
+        <location filename="../front-end/mainwindow.cpp" line="2366"/>
+        <location filename="../front-end/mainwindow.cpp" line="2372"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2360"/>
+        <location filename="../front-end/mainwindow.cpp" line="2362"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2365"/>
+        <location filename="../front-end/mainwindow.cpp" line="2367"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2371"/>
+        <location filename="../front-end/mainwindow.cpp" line="2373"/>
         <source>This version does not support score uploading</source>
         <translation>Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2385"/>
+        <location filename="../front-end/mainwindow.cpp" line="2387"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2385"/>
+        <location filename="../front-end/mainwindow.cpp" line="2387"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2387"/>
+        <location filename="../front-end/mainwindow.cpp" line="2389"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -1000,14 +1000,27 @@ Do you want to teach the changes made to the rule?</source>
         <translation type="obsolete">Tiempo restante: %1</translation>
     </message>
     <message>
-        <location filename="../front-end/tinyscorewidget.cpp" line="38"/>
         <source>Score: %1 / %2</source>
-        <translation>Puntos: %1 / %2</translation>
+        <translation type="obsolete">Puntos: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../front-end/tinyscorewidget.cpp" line="48"/>
+        <location filename="../front-end/tinyscorewidget.cpp" line="47"/>
+        <source>Score: %1 / Record: %2</source>
+        <translation>Puntos: %1 / Record: %2</translation>
+    </message>
+    <message>
+        <location filename="../front-end/tinyscorewidget.cpp" line="60"/>
         <source>%1</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../front-end/tinyscorewidget.cpp" line="81"/>
+        <source>Actual score: %1
+Record score: %2
+Remaining time: %3</source>
+        <translation>Puntos actuales: %1
+Puntaje record: %2
+Tiempo restante: %3</translation>
     </message>
 </context>
 <context>
@@ -1267,7 +1280,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
     <message>
         <location filename="../front-end/mainwindow.ui" line="722"/>
         <source>Best Score</source>
-        <translation>Mejor puntaje</translation>
+        <translation>Puntaje Record</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.ui" line="873"/>
