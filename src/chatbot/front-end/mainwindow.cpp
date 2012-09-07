@@ -26,6 +26,7 @@
 #include "front-end/scorewidget.h"
 #include "front-end/tinyscorewidget.h"
 #include "front-end/sendscoredialog.h"
+#include "front-end/optionswindow.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -289,14 +290,6 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->remainingTimeLabel->clear();
     m_tinyScore->clear();
 
-    // advanced options tab widgets
-    ui->rmDupCheckBox->setChecked(true);
-#ifdef FREELING_SUPPORT
-    ui->lemmatizerCheckBox->setChecked(true);
-#else
-    ui->lemmatizerCheckBox->setChecked(false);
-    ui->lemmatizerCheckBox->setEnabled(false);
-#endif
     setUiMode(WelcomeTabUiMode);
 }
 
@@ -339,6 +332,7 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
     connect(ui->actionImport,      SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
     connect(ui->actionExport,      SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
+    connect(ui->actionOptions,     SIGNAL(triggered()), SLOT(onOptionsMenuTriggered()));
 
     // init tab
 
@@ -388,10 +382,6 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onClearTestConversationButtonPressed()));
 
     connect(ui->showRuleDefButton, SIGNAL(clicked()), SLOT(onTestShowRule()));
-
-    connect(ui->rmDupCheckBox, SIGNAL(stateChanged(int)), SLOT(onRmDupCheckBoxChanged(int)));
-    connect(ui->lemmatizerCheckBox, SIGNAL(stateChanged(int)),
-            SLOT(onLemmatizerCheckBoxChanged(int)));
 
     // Chat connetion tab
 
@@ -884,6 +874,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionSaveAs->setEnabled(false);
             ui->actionImport->setEnabled(false);
             ui->actionExport->setEnabled(false);
+            ui->actionOptions->setEnabled(false);
 
             ui->welcomeTab->setVisible(true);
             ui->teachTab->setVisible(false);
@@ -907,6 +898,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionSaveAs->setEnabled(false);
             ui->actionImport->setEnabled(false);
             ui->actionExport->setEnabled(false);
+            ui->actionOptions->setEnabled(false);
 
             ui->welcomeTab->setVisible(false);
             ui->teachTab->setVisible(false);
@@ -928,6 +920,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->actionSaveAs->setEnabled(true);
             ui->actionImport->setEnabled(true);
             ui->actionExport->setEnabled(true);
+            ui->actionOptions->setEnabled(true);
 
             ui->welcomeTab->setVisible(false);
             ui->teachTab->setVisible(true);
@@ -1171,19 +1164,6 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
         // score
         updateScore();
         onScoreRemainingTime(m_appFacade->scoreRemainingTime());
-
-        // Advanced options
-        unsigned options = m_appFacade->nlpEngineOptions();
-
-        #ifndef FREELING_SUPPORT
-        options &= ~BE::AppFacade::LemmatizeSentence;
-        #endif
-
-        ui->rmDupCheckBox->setCheckState(options & BE::AppFacade::RemoveDupChars ?
-                                             Qt::Checked : Qt::Unchecked);
-        ui->lemmatizerCheckBox->setCheckState(options & BE::AppFacade::LemmatizeSentence ?
-                                                  Qt::Checked : Qt::Unchecked);
-
     } else {
         QMessageBox::critical(this, tr("Open File"), tr("Cannot open ") + m_filename);
     }
@@ -1320,6 +1300,46 @@ void Lvk::FE::MainWindow::onAboutMenuTriggered()
     QMessageBox msg(QMessageBox::NoIcon, title, text);
     msg.setIconPixmap(QPixmap(APP_ICON_FILE));
     msg.exec();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onOptionsMenuTriggered()
+{
+    OptionsWindow::Options curOpt;
+    curOpt.ignoreDupChars = nlpEngineOption(BE::AppFacade::RemoveDupChars);
+    curOpt.lemmatizeSentence = nlpEngineOption(BE::AppFacade::LemmatizeSentence);
+
+    OptionsWindow optWindow(curOpt, this);
+
+    if (optWindow.exec() == QDialog::Accepted) {
+        OptionsWindow::Options newOpt = optWindow.options();
+
+        if (newOpt.ignoreDupChars != curOpt.ignoreDupChars) {
+            setNlpEngineOption(BE::AppFacade::RemoveDupChars, newOpt.ignoreDupChars);
+        }
+        if (newOpt.lemmatizeSentence != curOpt.lemmatizeSentence) {
+            setNlpEngineOption(BE::AppFacade::LemmatizeSentence, newOpt.lemmatizeSentence);
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::MainWindow::nlpEngineOption(BE::AppFacade::NlpEngineOption option)
+{
+    return m_appFacade->nlpEngineOptions() & option;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt, bool enabled)
+{
+    unsigned options = m_appFacade->nlpEngineOptions();
+
+    options = enabled ? options | opt : options & ~opt;
+
+    m_appFacade->setNlpEngineOptions(options);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2329,33 +2349,6 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
 }
 
 //--------------------------------------------------------------------------------------------------
-// Advanced Options
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onRmDupCheckBoxChanged(int state)
-{
-    setNlpEngineOption(BE::AppFacade::RemoveDupChars, state == Qt::Checked);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onLemmatizerCheckBoxChanged(int state)
-{
-    setNlpEngineOption(BE::AppFacade::LemmatizeSentence, state == Qt::Checked);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt, bool enabled)
-{
-    unsigned options = m_appFacade->nlpEngineOptions();
-
-    options = enabled ? options | opt : options & ~opt;
-
-    m_appFacade->setNlpEngineOptions(options);
-}
-
-//--------------------------------------------------------------------------------------------------
 // Score
 //--------------------------------------------------------------------------------------------------
 
@@ -2460,4 +2453,5 @@ void Lvk::FE::MainWindow::getSendScoreDetails(QString &details)
         }
     }
 }
+
 

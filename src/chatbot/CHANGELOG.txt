@@ -1,3 +1,9 @@
+v0.19
+ - Added status icon to the connect tab
+ - Added tooltip to the all-the-time-visible score
+ - Updated several strings
+ - Added the 'Options' window
+
 v0.18
  - Updated Chatbot icon theme
  - Showing score all the time in the top-right corner of the window

@@ -215,6 +215,7 @@ private:
     void setFilename(const QString &filename);
 
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
+    bool nlpEngineOption(BE::AppFacade::NlpEngineOption option);
 
     void updateScore();
     void updateTinyScorePos();
@@ -271,13 +272,11 @@ private slots:
     void onImportMenuTriggered();
     void onExportMenuTriggered();
     void onAboutMenuTriggered();
+    void onOptionsMenuTriggered();
     void onExitMenuTriggered();
 
     void onSplitterMoved(int, int);
     void onCurrentTabChanged(QWidget *tab);
-
-    void onRmDupCheckBoxChanged(int);
-    void onLemmatizerCheckBoxChanged(int);
 
     void onUploadScore();
     void onScoreRemainingTime(int time);
