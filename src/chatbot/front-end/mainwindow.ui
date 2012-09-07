@@ -744,8 +744,12 @@
         </layout>
        </widget>
        <widget class="QWidget" name="connectTab">
+        <attribute name="icon">
+         <iconset resource="../res/chatbot_theme.qrc">
+          <normaloff>:/icons/status_disconnected.png</normaloff>:/icons/status_disconnected.png</iconset>
+        </attribute>
         <attribute name="title">
-         <string>Connect</string>
+         <string>Connection</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_8">
          <item row="0" column="0">

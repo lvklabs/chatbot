@@ -29,5 +29,7 @@
         <file alias="connect.png">chatbot_theme/connect.png</file>
         <file alias="upload.png">chatbot_theme/upload.png</file>
         <file alias="cancel.png">chatbot_theme/cancel.png</file>
+        <file alias="status_connected.png">chatbot_theme/status_connected.png</file>
+        <file alias="status_disconnected.png">chatbot_theme/status_disconnected.png</file>
     </qresource>
 </RCC>

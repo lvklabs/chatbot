@@ -50,12 +50,13 @@
 #include <QtDebug>
 
 #define APP_ICON_FILE               ":/icons/app_icon"
+#define FB_ICON_FILE                ":/icons/facebook.png"
+#define GMAIL_ICON_FILE             ":/icons/gmail.png"
+#define STATUS_DISCONNEC_ICON_FILE  ":/icons/status_disconnected.png"
+#define STATUS_CONNECTED_ICON_FILE  ":/icons/status_connected.png"
 
 #define FILE_EXTENSION              QString(QObject::tr("crf"))
 #define FILE_EXPORT_EXTENSION       QString(QObject::tr("cef"))
-
-#define FB_ICON_FILE                ":/icons/facebook.png"
-#define GMAIL_ICON_FILE             ":/icons/gmail.png"
 
 
 //--------------------------------------------------------------------------------------------------
@@ -607,6 +608,7 @@ void Lvk::FE::MainWindow::saveChatSettings()
 void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 {
     updateTabsLayout(mode);
+    updateTabsIcons(mode);
 
     // Set up tabs ///////////////////////////////////////
 
@@ -824,6 +826,36 @@ void Lvk::FE::MainWindow::setUiMode(UiMode mode)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::updateTabsIcons(UiMode mode)
+{
+    int connectTabIdx = ui->mainTabWidget->indexOf(ui->connectTab);
+
+    switch (mode) {
+    case ChatDisconnectedUiMode:
+    case ChatConnectingUiMode:
+    case ChatConnectionFailedUiMode:
+    case ChatConnectionSSLFailedUiMode:
+    case ChangeAccountUiMode:
+    case ChangeAccountConnectingUiMode:
+    case ChangeAccountFailedUiMode:
+        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_DISCONNEC_ICON_FILE));
+        break;
+    case ChatConnectionOkUiMode:
+        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_CONNECTED_ICON_FILE));
+        break;
+    case VerifyAccountUiMode:
+    case VerifyAccountConnectingUiMode:
+    case VerifyAccountFailedUiMode:
+        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon());
+        break;
+    default:
+        // nothing to do
+        break;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
 {
     UiTabsLayout visibleTabs = NullLayout;
@@ -907,7 +939,7 @@ void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
             ui->mainTabWidget->addTab(ui->testTab, tr("Test your chatbot"));
-            ui->mainTabWidget->addTab(ui->connectTab, tr("Connect"));
+            ui->mainTabWidget->addTab(ui->connectTab, tr("Connection"));
             ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
             ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
             break;

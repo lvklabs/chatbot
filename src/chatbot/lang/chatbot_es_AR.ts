@@ -357,7 +357,6 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <location filename="../front-end/mainwindow.cpp" line="698"/>
         <location filename="../front-end/mainwindow.cpp" line="726"/>
         <location filename="../front-end/mainwindow.cpp" line="738"/>
-        <location filename="../front-end/mainwindow.cpp" line="910"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
@@ -451,6 +450,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../front-end/mainwindow.cpp" line="909"/>
         <source>Test your chatbot</source>
         <translation>Probá tu chatbot</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="910"/>
+        <source>Connection</source>
+        <translation>Conexión</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.cpp" line="911"/>
@@ -1093,11 +1097,10 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="748"/>
         <location filename="../front-end/mainwindow.ui" line="956"/>
         <source>Connect</source>
         <oldsource>Connect with chat</oldsource>
-        <translation>Conectar</translation>
+        <translation>Conexión</translation>
     </message>
     <message>
         <source>Connect with chat:</source>
@@ -1281,6 +1284,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../front-end/mainwindow.ui" line="722"/>
         <source>Best Score</source>
         <translation>Puntaje Record</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="748"/>
+        <source>Connection</source>
+        <translation>Conexión</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.ui" line="873"/>

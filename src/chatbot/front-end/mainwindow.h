@@ -162,6 +162,7 @@ private:
 
     void setUiMode(UiMode mode);
     void updateTabsLayout(UiMode mode);
+    void updateTabsIcons(UiMode mode);
 
     bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
