@@ -912,6 +912,10 @@ void Lvk::BE::AppFacade::onScoreTick()
         updateBestScore();
         //Stats::StatsManager::manager()->newInterval();
     }
+    // Save every minute
+    if (m_deltaTime % 60 == 0) {
+        m_rules.save();
+    }
 
     emit scoreRemainingTime(scoreRemainingTime());
 }
@@ -942,6 +946,7 @@ void Lvk::BE::AppFacade::updateBestScore()
     }
 
     m_rules.setMetadata(FILE_METADATA_BEST_SCORE, QVariant::fromValue(best));
+    m_rules.save();
 }
 
 //--------------------------------------------------------------------------------------------------
