@@ -72,6 +72,24 @@ inline QDataStream &operator>>(QDataStream &stream, Score &score)
     return stream;
 }
 
+/**
+ * Returns true if score \a s1 is equal than score \a s2. Otherwise returns false.
+ */
+inline bool operator==(const Score &s1, const Score &s2)
+{
+    return s1.rules == s2.rules &&
+           s1.contacts == s2.contacts &&
+           s1.conversations == s2.conversations &&
+           s1.total == s2.total;
+}
+
+/**
+ * Returns true if score \a s1 is different than score \a s2. Otherwise returns false.
+ */
+inline bool operator!=(const Score &s1, const Score &s2)
+{
+    return !(s1 == s2);
+}
 
 /// @}
 
