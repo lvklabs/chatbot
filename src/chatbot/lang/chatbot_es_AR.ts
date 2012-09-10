@@ -1491,22 +1491,52 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>Motor de procesamiento de lenguaje natural:</translation>
     </message>
     <message>
-        <location filename="../front-end/optionswindow.ui" line="40"/>
+        <location filename="../front-end/optionswindow.ui" line="47"/>
         <source>Ignore duplicated characters</source>
         <translation>Ignorar caracteres duplicados</translation>
     </message>
     <message>
-        <location filename="../front-end/optionswindow.ui" line="47"/>
+        <location filename="../front-end/optionswindow.ui" line="40"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For instance, &lt;span style=&quot; font-style:italic;&quot;&gt;hello&lt;/span&gt; is equal than &lt;span style=&quot; font-style:italic;&quot;&gt;helloo, hellooooo, heeeelloooo&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Por ejemplo, &lt;span style=&quot; font-style:italic;&quot;&gt;hola&lt;/span&gt; es lo mismo que &lt;span style=&quot; font-style:italic;&quot;&gt;holaa, holaaaa, hooolaaaaaaaaa&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/optionswindow.ui" line="54"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For instance &lt;span style=&quot; font-style:italic;&quot;&gt;write&lt;/span&gt; is equal than &lt;span style=&quot; font-style:italic;&quot;&gt;wrote, written&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Por ejemplo:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;- &lt;span style=&quot; font-style:italic;&quot;&gt;jugué&lt;/span&gt; es lo mismo que &lt;span style=&quot; font-style:italic;&quot;&gt;jugar, jugaba, jugaron &lt;/span&gt;o similares.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;- &lt;span style=&quot; font-style:italic;&quot;&gt;amiguito&lt;/span&gt; es lo mismo que &lt;span style=&quot; font-style:italic;&quot;&gt;amigo, amiga, amigos, amiguitas o similares&lt;/span&gt; &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cuidado:&lt;/span&gt; esta opción no siempre funciona bien. No reconoce argentinismos como lunfardo, voseo y palabras que no estén en el diccionario. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/optionswindow.ui" line="61"/>
         <source>Lemmatize sentences</source>
         <translation>Lematizar oraciones</translation>
     </message>
     <message>
-        <location filename="../front-end/optionswindow.ui" line="86"/>
+        <location filename="../front-end/optionswindow.ui" line="100"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Cancelar</translation>
     </message>
     <message>
-        <location filename="../front-end/optionswindow.ui" line="93"/>
+        <location filename="../front-end/optionswindow.ui" line="107"/>
         <source>&amp;Accept</source>
         <translation>&amp;Aceptar</translation>
     </message>
