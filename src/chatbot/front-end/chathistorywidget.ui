@@ -51,13 +51,13 @@
      <item>
       <widget class="QToolButton" name="showRuleButton">
        <property name="toolTip">
-        <string>Find rule definition</string>
+        <string>Show rule definition</string>
        </property>
        <property name="text">
-        <string>Find rule definition</string>
+        <string>Show rule definition</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset resource="../res/chatbot_theme.qrc">
          <normaloff>:/icons/show_rule.png</normaloff>:/icons/show_rule.png</iconset>
        </property>
        <property name="iconSize">
@@ -83,7 +83,7 @@
         <string>Teach rule</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset resource="../res/chatbot_theme.qrc">
          <normaloff>:/icons/add_rule_history.png</normaloff>:/icons/add_rule_history.png</iconset>
        </property>
        <property name="iconSize">
@@ -109,7 +109,7 @@
         <string>Remove conversation</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset resource="../res/chatbot_theme.qrc">
          <normaloff>:/icons/remove_history.png</normaloff>:/icons/remove_history.png</iconset>
        </property>
        <property name="iconSize">
@@ -178,7 +178,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../res/chatbot_theme.qrc"/>
  </resources>
  <connections/>
 </ui>

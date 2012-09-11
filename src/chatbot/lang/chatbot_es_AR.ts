@@ -4,10 +4,14 @@
 <context>
     <name>ChatHistoryWidget</name>
     <message>
+        <source>Find rule definition</source>
+        <translation type="obsolete">Encontrar definición de la regla</translation>
+    </message>
+    <message>
         <location filename="../front-end/chathistorywidget.ui" line="54"/>
         <location filename="../front-end/chathistorywidget.ui" line="57"/>
-        <source>Find rule definition</source>
-        <translation>Encontrar definición de la regla</translation>
+        <source>Show rule definition</source>
+        <translation>Mostrar definición de la regla</translation>
     </message>
     <message>
         <location filename="../front-end/chathistorywidget.ui" line="80"/>
