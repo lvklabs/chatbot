@@ -1,12 +1,14 @@
 #!/bin/bash
 
-if [ -d doc ]; then
-  cd doc/
+base_dir=`dirname $0`
+doc_dir=$base_dir/../doc
+
+if [ -d $doc_dir ]; then
+  cd $doc_dir
   doxygen Doxyfile
-  cd ..
+  cd -
 else
   echo "Error: Directory doc/ not found!"
-  echo "       Run this script from src/chatbot/ directory."
   exit 1
 fi
 
