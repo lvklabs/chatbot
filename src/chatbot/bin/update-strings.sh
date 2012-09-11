@@ -1,10 +1,12 @@
 #!/bin/bash
 
-main_project_pro="chatbot.pro"
+base_dir=`dirname $0`
+project_dir=$base_dir/..
+
+main_project_pro="$project_dir/chatbot.pro"
 
 if ! [ -f $main_project_pro ]; then
   echo "Error: File $main_project_pro not found!"
-  echo "       Run this script from src/chatbot directory."
   exit 1
 fi
 
@@ -39,8 +41,8 @@ fi
 set -e
 
 `echo $lupdate_bin` $main_project_pro
-`echo $linguist_bin` lang/chatbot_es_AR.ts
-`echo $lrelease_bin` lang/chatbot_es_AR.ts
-rm -f ../chatbot-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__*/qrc_resources.*
+`echo $linguist_bin` $project_dir/lang/chatbot_es_AR.ts
+`echo $lrelease_bin` $project_dir/lang/chatbot_es_AR.ts
+rm -f $project_dir/../chatbot-build-desktop-*/qrc_resources.*
 
 
