@@ -1,5 +1,5 @@
 v0.20
- - Fixed bugs #28, #29
+ - Fixed bugs #28, #29, #30
 
 v0.19
  - Added status icon to the connect tab

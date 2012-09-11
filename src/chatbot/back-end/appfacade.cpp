@@ -51,7 +51,7 @@
 #define FILE_METADATA_SCORE_START_TIME    "score_start_time"
 #define FILE_METADATA_SCORE_DELTA_TIME    "score_delta_time"
 
-#define SCORE_INTERVAL_DUR          40//(5*3600) // In seconds
+#define SCORE_INTERVAL_DUR                (5*3600) // In seconds
 
 
 //--------------------------------------------------------------------------------------------------
