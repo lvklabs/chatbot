@@ -94,7 +94,7 @@ void SecureStatsFileTest::testSetSaveAndLoad()
 {
     const Stats::Id id1 = Stats::LexiconSize;
     const Stats::Id id2 = Stats::HistoryChatbotDiffLines;
-    const Stats::Id id3 = Stats::HistoryImportantContacts;
+    const Stats::Id id3 = Stats::HistoryScoreContacts;
     const Stats::Id id4 = Stats::ConnectionTime; // cumulative
 
     const unsigned value1  = 10;
