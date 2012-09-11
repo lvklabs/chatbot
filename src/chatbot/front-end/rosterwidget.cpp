@@ -54,7 +54,7 @@ void Lvk::FE::RosterWidget::setupWidget()
     setLayout(new QVBoxLayout());
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    m_allUsersCheckBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_allUsersCheckBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_allUsersCheckBox->setCheckState(Qt::Checked);
     m_allUsersCheckBox->setText(tr("All users"));
 
