@@ -39,6 +39,7 @@ if [ "$run_unit" == "yes" ]; then
   ( cd simple-aiml-engine-unit-test && ./simpleAimlEngineUnitTest )
   ( cd secure-stats-file-unit-test && ./secureStatsFileUnitTest )
   ( cd stats-manager-unit-test && ./statsManagerUnitTest )
+  ( cd cipher-unit-test && ./cipherUnitTest )
 fi
 
 if [ "$run_e2e" == "yes" ]; then

@@ -23,12 +23,13 @@ ICON_THEME = chatbot
 # Chatbot config options are:
 # - freeling  : Enable freeling lemmatizer
 # - gelf_stats: Enable Graylog statistics on remote server
+# - crypto    : Enable cryptographic security
 win32 {
     CONFIG  += freeling gelf_stats
 } else:mac {
     CONFIG  +=
 } else {
-    CONFIG  += freeling gelf_stats
+    CONFIG  += freeling gelf_stats crypto
 }
 
 
@@ -258,6 +259,13 @@ gelf_stats {
     LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
 }
 
+crypto {
+    DEFINES += CRYPTO_SUPPORT
+    INCLUDEPATH +=
+    HEADERS +=
+    SOURCES +=
+    LIBS += -lcrypto
+}
 
 ############################################
 # Copy language files
