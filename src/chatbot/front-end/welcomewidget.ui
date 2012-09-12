@@ -65,7 +65,7 @@ background-color: rgba(255, 255, 255, 0);
        <item row="0" column="0">
         <layout class="QGridLayout" name="welcomePageLayout">
          <item row="4" column="0" colspan="5">
-          <spacer name="verticalSpacer_4">
+          <spacer name="spacerBottom">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -130,7 +130,7 @@ background-color: rgba(255, 255, 255, 0);
           </widget>
          </item>
          <item row="0" column="0" colspan="5">
-          <spacer name="verticalSpacer_6">
+          <spacer name="spacerTop">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -146,7 +146,7 @@ background-color: rgba(255, 255, 255, 0);
           </spacer>
          </item>
          <item row="5" column="0" colspan="5">
-          <spacer name="verticalSpacer_7">
+          <spacer name="spacerBottomFixed">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -188,7 +188,7 @@ background-color: rgba(255, 255, 255, 0);
           </widget>
          </item>
          <item row="3" column="4">
-          <spacer name="horizontalSpacer_4">
+          <spacer name="spacerRight">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -201,7 +201,7 @@ background-color: rgba(255, 255, 255, 0);
           </spacer>
          </item>
          <item row="3" column="0">
-          <spacer name="horizontalSpacer_5">
+          <spacer name="spacerLeft">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -217,7 +217,7 @@ background-color: rgba(255, 255, 255, 0);
           </spacer>
          </item>
          <item row="2" column="0" colspan="5">
-          <spacer name="verticalSpacer_5">
+          <spacer name="spacerSep">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>

@@ -30,6 +30,10 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
         ui->openLastChatbotButton->setVisible(false);
     }
 
+#ifdef WIN32
+    ui->spacerTop->changeSize(20, 238);
+#endif
+
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
                                     qApp->desktop()->availableGeometry()));
 }
