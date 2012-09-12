@@ -1,9 +1,11 @@
 v0.20
+ - New welcome window
  - Updated 'Options' window tooltips
+ - Updated status icons in the connection tab
  - Fixed bugs #28, #29, #30
 
 v0.19
- - Added status icon to the connect tab
+ - Added status icons in the connection tab
  - Added tooltip to the all-the-time-visible score
  - Updated several strings
  - Added the 'Options' window
