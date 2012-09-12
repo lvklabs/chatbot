@@ -42,6 +42,7 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
 
 Lvk::FE::WelcomeWidget::~WelcomeWidget()
 {
+    delete m_mw;
     delete ui;
 }
 
