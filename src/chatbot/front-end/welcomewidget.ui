@@ -9,20 +9,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>842</width>
-    <height>533</height>
+    <width>760</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>842</width>
-    <height>533</height>
+    <width>760</width>
+    <height>480</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>842</width>
-    <height>533</height>
+    <width>760</width>
+    <height>480</height>
    </size>
   </property>
   <property name="contextMenuPolicy">
@@ -140,23 +140,7 @@ background-color: rgba(255, 255, 255, 0);
            <property name="sizeHint" stdset="0">
             <size>
              <width>26</width>
-             <height>226</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="5" column="0" colspan="5">
-          <spacer name="spacerBottomFixed">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
+             <height>202</height>
             </size>
            </property>
           </spacer>

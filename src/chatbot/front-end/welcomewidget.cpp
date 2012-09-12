@@ -32,7 +32,7 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
     }
 
 #ifdef WIN32
-    ui->spacerTop->changeSize(20, 238);
+    ui->spacerTop->changeSize(20, 214);
 #endif
 
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
