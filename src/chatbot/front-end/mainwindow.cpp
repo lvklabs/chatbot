@@ -36,6 +36,7 @@
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/globalstrings.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -50,12 +51,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QtDebug>
-
-#define APP_ICON_FILE               ":/icons/app_icon"
-#define FB_ICON_FILE                ":/icons/facebook.png"
-#define GMAIL_ICON_FILE             ":/icons/gmail.png"
-#define STATUS_DISCONNEC_ICON_FILE  ":/icons/status_disconnected.png"
-#define STATUS_CONNECTED_ICON_FILE  ":/icons/status_connected.png"
 
 //--------------------------------------------------------------------------------------------------
 // Non-member helpers

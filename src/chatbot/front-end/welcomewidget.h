@@ -22,9 +22,10 @@ class MainWindow;
 /// \addtogroup FE
 /// @{
 
+// TODO rename to WelcomeWindow
 /**
- * \brief The WelcomeWidget class provides a fancy welcome screen with the options create,
- *        open and open last chatbot. The widget bootstraps the MainWindow.
+ * \brief The WelcomeWidget class provides a welcome screen with the options create,
+ *        open and open last chatbot and a fancy background. The class bootstraps MainWindow.
  */
 class WelcomeWidget : public QWidget
 {

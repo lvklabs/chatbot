@@ -4,6 +4,7 @@
 #include "front-end/mainwindow.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/globalstrings.h"
 
 #include <QtDebug>
 #include <QFileDialog>
@@ -36,6 +37,8 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
 
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
                                     qApp->desktop()->availableGeometry()));
+
+    setWindowIcon(QIcon(APP_ICON_FILE));
 }
 
 //--------------------------------------------------------------------------------------------------

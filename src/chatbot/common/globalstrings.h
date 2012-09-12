@@ -33,4 +33,10 @@
 #define USERNAME_START_TOKEN                    "<"
 #define USERNAME_END_TOKEN                      ">"
 
+#define APP_ICON_FILE                           ":/icons/app_icon"
+#define FB_ICON_FILE                            ":/icons/facebook.png"
+#define GMAIL_ICON_FILE                         ":/icons/gmail.png"
+#define STATUS_DISCONNEC_ICON_FILE              ":/icons/status_disconnected.png"
+#define STATUS_CONNECTED_ICON_FILE              ":/icons/status_connected.png"
+
 #endif // LVK_CMN_GLOBALSTRINGS_H
