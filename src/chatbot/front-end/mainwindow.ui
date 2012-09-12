@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -50,7 +50,7 @@
                <item row="1" column="0" colspan="5">
                 <widget class="QLabel" name="welcomeLabel">
                  <property name="text">
-                  <string>Welcome! What do you want to do?</string>
+                  <string>What do you want to do?</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>

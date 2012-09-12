@@ -90,6 +90,21 @@ public:
      */
     void clear();
 
+    /**
+     * Creates a new a file and sets the window with verification account mode
+     */
+    void newFile();
+
+    /**
+     * Opens the given file and sets the window with edit mode
+     */
+    void openFile(const QString &filename);
+
+    /**
+     * Opens the last opened file (if any) and sets the window with edit mode
+     */
+    void openLastFile();
+
 protected:
 
     virtual bool event(QEvent *event);

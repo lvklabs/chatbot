@@ -106,6 +106,7 @@ HEADERS += \
     front-end/scorewidget.h \
     front-end/tinyscorewidget.h \
     front-end/sendscoredialog.h \
+    front-end/welcomewidget.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -160,7 +161,8 @@ HEADERS += \
     stats/history.h \
     stats/timeinterval.h \
     stats/securestatsfile.h \
-    front-end/optionswindow.h
+    front-end/optionswindow.h \
+    front-end/filefilters.h
 
 
 SOURCES += \
@@ -183,6 +185,7 @@ SOURCES += \
     front-end/tinyscorewidget.cpp \
     front-end/sendscoredialog.cpp \
     front-end/optionswindow.cpp \
+    front-end/welcomewidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -223,7 +226,8 @@ FORMS += \
     front-end/scorewidget.ui \
     front-end/tinyscorewidget.ui \
     front-end/sendscoredialog.ui \
-    front-end/optionswindow.ui
+    front-end/optionswindow.ui \
+    front-end/welcomewidget.ui
 
 RESOURCES += \
     res/$${ICON_THEME}_theme.qrc
@@ -286,6 +290,10 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

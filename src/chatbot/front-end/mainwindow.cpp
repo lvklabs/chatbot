@@ -27,6 +27,7 @@
 #include "front-end/tinyscorewidget.h"
 #include "front-end/sendscoredialog.h"
 #include "front-end/optionswindow.h"
+#include "front-end/filefilters.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -56,10 +57,6 @@
 #define STATUS_DISCONNEC_ICON_FILE  ":/icons/status_disconnected.png"
 #define STATUS_CONNECTED_ICON_FILE  ":/icons/status_connected.png"
 
-#define FILE_EXTENSION              QString(QObject::tr("crf"))
-#define FILE_EXPORT_EXTENSION       QString(QObject::tr("cef"))
-
-
 //--------------------------------------------------------------------------------------------------
 // Non-member helpers
 //--------------------------------------------------------------------------------------------------
@@ -73,24 +70,6 @@ namespace
 inline QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Localized file filters for open/save dialogs
-
-inline QString getFileFilters()
-{
-    return QObject::tr("Chatbot Rule Files") + QString(" (*.") + FILE_EXTENSION + QString(");;")
-            + QObject::tr("All files") + QString(" (*.*)");
-}
-
-//--------------------------------------------------------------------------------------------------
-// Localized export file filters for import/export dialogs
-
-inline QString getFileExportFilters()
-{
-    return QObject::tr("Chatbot Export Files") + QString(" (*.") + FILE_EXPORT_EXTENSION
-            + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -451,6 +430,7 @@ bool Lvk::FE::MainWindow::event(QEvent *event)
     switch (event->type()) {
     case QEvent::WindowStateChange:
     case QEvent::Resize:
+    case QEvent::WindowActivate:
         updateTinyScorePos();
         break;
     default:
@@ -1019,8 +999,7 @@ void Lvk::FE::MainWindow::onNewMenuTriggered()
     }
 
     if (!canceled) {
-        clear();
-        setUiMode(VerifyAccountUiMode);
+        newFile();
     }
 }
 
@@ -1045,15 +1024,9 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
     }
 
     if (!canceled) {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",getFileFilters());
-
-        if (!filename.isEmpty()) {
-            if (load(filename)) {
-                startEditMode();
-            } else {
-                clear();
-            }
-        }
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+                                                        FileFilters::chatbotFilter());
+        openFile(filename);
     }
 }
 
@@ -1061,13 +1034,7 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
 
 void Lvk::FE::MainWindow::onOpenLastFileMenuTriggered()
 {
-    if (!m_lastFilename.isEmpty()) {
-        if (load(m_lastFilename)) {
-            startEditMode();
-        } else {
-            clear();
-        }
-    }
+    openLastFile();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1083,6 +1050,42 @@ void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 {
     saveAsChanges();
 }
+
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::newFile()
+{
+    clear();
+    setUiMode(VerifyAccountUiMode);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::openFile(const QString &filename)
+{
+    if (!filename.isEmpty()) {
+        if (load(filename)) {
+            startEditMode();
+        } else {
+            clear();
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::openLastFile()
+{
+    if (!m_lastFilename.isEmpty()) {
+        if (load(m_lastFilename)) {
+            startEditMode();
+        } else {
+            clear();
+        }
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1112,13 +1115,14 @@ bool Lvk::FE::MainWindow::saveChanges()
 
 bool Lvk::FE::MainWindow::saveAsChanges()
 {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "", getFileFilters());
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "",
+                                                    FileFilters::chatbotFilter());
 
     bool saved = false;
 
     if (!filename.isEmpty()) {
-        if (!filename.endsWith("." + FILE_EXTENSION)) {
-            filename.append("." + FILE_EXTENSION);
+        if (!filename.endsWith("." + FileFilters::chatbotExtension())) {
+            filename.append("." + FileFilters::chatbotExtension());
         }
 
         QString filenameBak = m_filename;
@@ -1214,7 +1218,8 @@ void Lvk::FE::MainWindow::onImportMenuTriggered()
 {
     const QString IMPORT_TITLE = tr("Import Rules");
 
-    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "", getFileExportFilters());
+    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "",
+                                                    FileFilters::exportFilter());
 
     if (!filename.isEmpty()) {
 
@@ -1257,11 +1262,11 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
     if (exportDialog.exec(&container) == QDialog::Accepted) {
 
         QString filename = QFileDialog::getSaveFileName(this, EXPORT_TITLE , "",
-                                                        getFileExportFilters());
+                                                        FileFilters::exportFilter());
 
         if (!filename.isEmpty()) {
-            if (!filename.endsWith("." + FILE_EXPORT_EXTENSION)) {
-                filename.append("." + FILE_EXPORT_EXTENSION);
+            if (!filename.endsWith("." + FileFilters::exportExtension())) {
+                filename.append("." + FileFilters::exportExtension());
             }
 
             if (!m_appFacade->exportRules(&container, filename)) {

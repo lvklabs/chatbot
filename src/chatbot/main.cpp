@@ -24,7 +24,7 @@
 #include <QDir>
 #include <QDebug>
 
-#include "front-end/mainwindow.h"
+#include "front-end/welcomewidget.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
     makeDirStructure();
     setLanguage(app);
 
-    Lvk::FE::MainWindow window;
-    window.show();
+    Lvk::FE::WelcomeWidget ww;
+    ww.show();
 
     return app.exec();
 }
