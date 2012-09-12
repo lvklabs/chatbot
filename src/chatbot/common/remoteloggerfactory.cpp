@@ -34,7 +34,7 @@
 Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createFastLogger()
 {
 #ifdef GELF_STATS_SUPPORT
-    return new GraylogRemoteLogger(GraylogRemoteLogger::GELF, false);
+    return new GraylogRemoteLogger(GraylogRemoteLogger::GELF);
 #else
     return new NullRemoteLogger();
 #endif
@@ -46,7 +46,7 @@ Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createFastLogger()
 Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createSecureLogger()
 {
 #ifdef GELF_STATS_SUPPORT
-    return new GraylogRemoteLogger(GraylogRemoteLogger::SyslogTCP, true);
+    return new GraylogRemoteLogger(GraylogRemoteLogger::EncSyslogTCP);
 #else
     return new NullRemoteLogger();
 #endif

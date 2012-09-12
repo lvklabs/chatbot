@@ -33,7 +33,7 @@
 #include <QHostInfo>
 
 #ifndef RLOG_CRYPTO_KEY
-# define RLOG_CRYPTO_KEY    { }
+#define RLOG_CRYPTO_KEY   { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 #endif
 
 static const char s_rlogCryptoKey[] = RLOG_CRYPTO_KEY;
@@ -185,15 +185,15 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
-    : m_format(GELF), m_encrypt(false), m_udpPort(0), m_tcpPort(0)
+    : m_format(GELF), m_udpPort(0), m_tcpPort(0)
 {
     initHostPort();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format, bool encrypt)
-    : m_format(format), m_encrypt(encrypt), m_udpPort(0), m_tcpPort(0)
+Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
+    : m_format(format), m_udpPort(0), m_tcpPort(0)
 {
     initHostPort();
 }
@@ -220,32 +220,62 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg)
 int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fields)
 {
     QByteArray data;
+    QString encMsg;
+
+    // Build message
 
     switch (m_format) {
     case GELF:
-        data = Gelf(Gelf::Informational, msg, toGelfFields(fields)).data();
+        data = Cmn::Gelf(Gelf::Informational, msg, toGelfFields(fields)).data();
         break;
     case SyslogTCP:
     case SyslogUDP:
         data = Syslog(msg + " " + toString(fields)).data();
+        break;
+    case EncSyslogTCP:
+        if (encrypt(encMsg, msg + " " + toString(fields))) {
+            data = Syslog(encMsg).data();
+        }
         break;
    default:
         qCritical() << "GraylogRemoteLogger: Invalid log format" << m_format;
         break;
     }
 
-    if (data.size() > 0 && m_encrypt) {
-        Cmn::Cipher().encrypt(data, QByteArray(s_rlogCryptoKey, sizeof(s_rlogCryptoKey)));
+    if (data.isNull()) {
+        return 1;
     }
+
+    // Send message with proper protocol
 
     switch (m_format) {
     case GELF:
     case SyslogUDP:
         return sendUdpMessage(data, m_host, m_udpPort);
     case SyslogTCP:
+    case EncSyslogTCP:
         return sendTcpMessage(data, m_host, m_tcpPort);
     default:
         return 1;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Cmn::GraylogRemoteLogger::encrypt(QString &cipherText, const QString &plainText)
+{
+    cipherText.clear();
+
+    QByteArray data = plainText.toUtf8();
+    QByteArray key(s_rlogCryptoKey, sizeof(s_rlogCryptoKey));
+
+    if (Cmn::Cipher().encrypt(data, key)) {
+        cipherText = "::E::"; // prefix for encoded data
+        cipherText += data.toBase64();
+    } else {
+        qCritical() << "GraylogRemoteLogger: Cannot encrypt data";
+    }
+
+    return !cipherText.isEmpty();
 }
 

@@ -55,9 +55,10 @@ public:
      */
     enum LogFomat
     {
-        GELF,       ///< Graylog Extended Log Format (always UDP connection)
-        SyslogTCP,  ///< Syslog over TCP connection
-        SyslogUDP   ///< Syslog over UDP connection
+        GELF,          ///< Graylog Extended Log Format (always UDP connection)
+        SyslogTCP,     ///< Syslog over TCP connection
+        SyslogUDP,     ///< Syslog over UDP connection
+        EncSyslogTCP   ///< Encrypted Syslog over TCP connection
     };
 
     /**
@@ -66,10 +67,9 @@ public:
     GraylogRemoteLogger();
 
     /**
-     * Creates a GraylogRemoteLogger object with \a format. If \a encrypt is true, messages
-     * are encrypted before sending.
+     * Creates a GraylogRemoteLogger object with \a format.
      */
-    GraylogRemoteLogger(LogFomat format, bool encrypt);
+    GraylogRemoteLogger(LogFomat format);
 
     /**
      * \copydoc RemoteLogger::log(const QString&)
@@ -84,12 +84,13 @@ public:
 private:
 
     LogFomat m_format;
-    bool m_encrypt;
     QString m_host;
     unsigned m_udpPort;
     unsigned m_tcpPort;
 
     void initHostPort();
+
+    bool encrypt(QString &cipherText, const QString &plainText);
 };
 
 /// @}
@@ -99,7 +100,6 @@ private:
 /// @}
 
 } // namespace Lvk
-
 
 #endif // LVK_CMN_GRAYLOGREMOTELOGGER_H
 

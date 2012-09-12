@@ -34,8 +34,9 @@
 #define STAT_MAGIC_NUMBER            (('s'<<0) | ('t'<<8) | ('a'<<16) | ('t'<<24))
 #define STAT_FILE_FORMAT_VERSION     1
 
+
 #ifndef STATS_CRYPTO_KEY
-# define STATS_CRYPTO_KEY { }
+#define STATS_CRYPTO_KEY    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 #endif
 
 static const char s_statsCryptoKey[] = STATS_CRYPTO_KEY;

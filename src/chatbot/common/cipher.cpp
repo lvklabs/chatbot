@@ -28,7 +28,7 @@
 # include <openssl/err.h>
 #endif
 
-const unsigned char IV[]  = { 0x2f, 0x32, 0x0a, 0x41, 0xc2, 0x26, 0x77, 0x38 };
+const unsigned char IV[]  = { 0x2f, 0x32, 0x0a, 0x41, 0x2c, 0x26, 0x77, 0x38 };
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
