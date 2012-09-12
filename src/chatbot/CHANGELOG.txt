@@ -2,6 +2,7 @@ v0.20
  - New welcome window
  - Updated 'Options' window tooltips
  - Updated status icons in the connection tab
+ - Added encryption support to send scores to the server
  - Fixed bugs #28, #29, #30
 
 v0.19
