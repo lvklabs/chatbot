@@ -164,6 +164,7 @@ HEADERS += \
     stats/history.h \
     stats/timeinterval.h \
     stats/securestatsfile.h \
+    front-end/mainwindowrefactor.h
 
 
 SOURCES += \
@@ -219,6 +220,7 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/history.cpp \
     stats/securestatsfile.cpp \
+    front-end/mainwindowrefactor.cpp
 
 
 FORMS += \
@@ -292,6 +294,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

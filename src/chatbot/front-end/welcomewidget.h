@@ -51,7 +51,6 @@ private slots:
 private:
     Ui::WelcomeWidget *ui;
     MainWindow *m_mw;
-    QString m_lastFilename;
 };
 
 /// @}

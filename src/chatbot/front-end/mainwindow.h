@@ -27,6 +27,7 @@
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "common/conversation.h"
+#include "front-end/mainwindowrefactor.h"
 
 class TestMainWindow;
 class QModelIndex;
@@ -115,32 +116,6 @@ private:
     MainWindow(MainWindow&);
     MainWindow& operator=(MainWindow&);
 
-    enum UiTabsLayout {
-        NullLayout,
-        WelcomeTabsLayout,
-        VerifyAccountTabsLayout,
-        TeachTabsLayout
-    };
-
-    enum UiMode {
-        WelcomeTabUiMode,
-        VerifyAccountUiMode,
-        VerifyAccountConnectingUiMode,
-        VerifyAccountFailedUiMode,
-        RuleSelectionEmptyUiMode,
-        EditCategoryUiMode,
-        EditRuleUiMode,
-        EditEvasivesUiMode,
-        ChatDisconnectedUiMode,
-        ChatConnectingUiMode,
-        ChatConnectionFailedUiMode,
-        ChatConnectionSSLFailedUiMode,
-        ChatConnectionOkUiMode,
-        ChangeAccountUiMode,
-        ChangeAccountConnectingUiMode,
-        ChangeAccountFailedUiMode
-    };
-
     enum ConnectionStatus {
         DisconnectedFromChat,
         ConnectingToChat,
@@ -150,6 +125,7 @@ private:
 
     Ui::MainWindow          *ui;
     BE::AppFacade           *m_appFacade;
+    MainWindowRefactor       m_refactor;
     RuleTreeModel           *m_ruleTreeModel;
     QItemSelectionModel     *m_ruleTreeSelectionModel;
     bool                     m_ruleEdited;
@@ -157,7 +133,6 @@ private:
     BE::Rule                 m_ruleBackup;
     QString                  m_filename;
     QString                  m_lastFilename;
-    UiTabsLayout             m_tabsLayout;
     ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
 
@@ -176,8 +151,6 @@ private:
     bool removeSelectedRuleWithDialog();
 
     void setUiMode(UiMode mode);
-    void updateTabsLayout(UiMode mode);
-    void updateTabsIcons(UiMode mode);
 
     bool initCoreAndModelsWithFile(const QString &filename);
     void connectSignals();
