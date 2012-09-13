@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -492,7 +492,7 @@
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="testToolbarLayout">
            <item>
-            <widget class="QToolButton" name="clearTestConversationButton">
+            <widget class="QToolButton" name="clearTestConvButton">
              <property name="enabled">
               <bool>true</bool>
              </property>
@@ -738,7 +738,7 @@
             <number>1</number>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="connectionPage">
             <layout class="QFormLayout" name="formLayout_2">
@@ -1330,7 +1330,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
               </layout>
              </item>
              <item row="0" column="1">
-              <widget class="QToolButton" name="cancelChangeAccountButton">
+              <widget class="QToolButton" name="cancelChAccountButton">
                <property name="text">
                 <string>Cancel</string>
                </property>
@@ -1465,7 +1465,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
     <string>Add empty rule</string>
    </property>
   </action>
-  <action name="actionAddConditionalRule">
+  <action name="actionAddCondRule">
    <property name="text">
     <string>Add rule with conditional</string>
    </property>

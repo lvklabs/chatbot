@@ -212,10 +212,10 @@ private slots:
     void onAddRuleButtonClicked();
     void onRemoveButtonClicked();
     void onAddVarRuleAction();
-    void onAddConditionalRuleAction();
+    void onAddCondRuleAction();
 
     BE::Rule *getCategoryFromDialog();
-    void onTeachFromHistoryWidget(const QString &msg);
+    void onTeachFromHistory(const QString &msg);
     void onHistoryShowRule(quint64 ruleId);
     void onRemovedAllHistory();
     void onRemovedHistory(const QDate &date, const QString &username);
@@ -231,22 +231,22 @@ private slots:
     void onTeachButtonPressed();
     void onUndoButtonPressed();
     void onTestInputTextEntered();
-    void onClearTestConversationButtonPressed();
+    void onClearTestConvPressed();
     void onTestShowRule();
 
     void onVerifyAccountButtonPressed();
     void onVerifyAccountOk(const BE::Roster &roster);
     void onVerifyAccountError(int err);
     void onVerifyAccountSkipped();
-    void onChangeAccountButtonPressed();
-    void onCancelChangeAccountButtonPressed();
+    void onChangeAccountPressed();
+    void onCancelChAccountPressed();
 
-    void onConnectButtonPressed();
-    void onDisconnectButtonPressed();
+    void onConnectPressed();
+    void onDisconnectPressed();
     void onConnectionOk();
     void onConnectionError(int err);
     void onDisconnection();
-    void onRosterSelectionChanged();
+    void onRosterSelectChanged();
 
     void onNewChatConversation(const Cmn::Conversation::Entry &entry);
 

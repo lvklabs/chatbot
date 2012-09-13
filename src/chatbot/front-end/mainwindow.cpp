@@ -91,6 +91,8 @@ inline void checkAppExpiration()
     }
 }
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 } // namespace
 
 
@@ -151,7 +153,7 @@ void Lvk::FE::MainWindow::setupUi()
     QMenu *menu = new QMenu(this);
     menu->addAction(ui->actionAddEmptyRule);
     menu->addAction(ui->actionAddVarRule);
-    menu->addAction(ui->actionAddConditionalRule);
+    menu->addAction(ui->actionAddCondRule);
     ui->addRuleButton->setMenu(menu);
 
     setWindowIcon(QIcon(APP_ICON_FILE));
@@ -199,7 +201,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
-    ui->clearTestConversationButton->setEnabled(false);
+    ui->clearTestConvButton->setEnabled(false);
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
     ui->transfView->clear();
@@ -244,105 +246,87 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 void Lvk::FE::MainWindow::connectSignals()
 {
     // Menus
-
-    connect(ui->actionNew,         SIGNAL(triggered()), SLOT(onNewMenuTriggered()));
-    connect(ui->actionOpen,        SIGNAL(triggered()), SLOT(onOpenMenuTriggered()));
-    connect(ui->actionSave,        SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
-    connect(ui->actionSaveAs,      SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
-    connect(ui->actionAbout,       SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
-    connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
-    connect(ui->actionImport,      SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
-    connect(ui->actionExport,      SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
-    connect(ui->actionOptions,     SIGNAL(triggered()), SLOT(onOptionsMenuTriggered()));
+    connect(ui->actionNew,             SIGNAL(triggered()), SLOT(onNewMenuTriggered()));
+    connect(ui->actionOpen,            SIGNAL(triggered()), SLOT(onOpenMenuTriggered()));
+    connect(ui->actionSave,            SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
+    connect(ui->actionSaveAs,          SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
+    connect(ui->actionAbout,           SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
+    connect(ui->actionExit,            SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
+    connect(ui->actionImport,          SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
+    connect(ui->actionExport,          SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
+    connect(ui->actionOptions,         SIGNAL(triggered()), SLOT(onOptionsMenuTriggered()));
 
     // init tab
-
-    connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenMenuTriggered()));
-    connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastFileMenuTriggered()));
-    connect(ui->createChatbotButton,   SIGNAL(clicked()), SLOT(onNewMenuTriggered()));
-    connect(ui->verifyAccountButton,   SIGNAL(clicked()), SLOT(onVerifyAccountButtonPressed()));
-
-    connect(ui->passwordText_v, SIGNAL(returnPressed()), SLOT(onVerifyAccountButtonPressed()));
-
-    connect(m_appFacade, SIGNAL(accountOk(BE::Roster)), SLOT(onVerifyAccountOk(BE::Roster)));
-    connect(m_appFacade, SIGNAL(accountError(int)),     SLOT(onVerifyAccountError(int)));
+    connect(ui->openChatbotButton,     SIGNAL(clicked()),   SLOT(onOpenMenuTriggered()));
+    connect(ui->openLastChatbotButton, SIGNAL(clicked()),   SLOT(onOpenLastFileMenuTriggered()));
+    connect(ui->createChatbotButton,   SIGNAL(clicked()),   SLOT(onNewMenuTriggered()));
+    connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountButtonPressed()));
+    connect(ui->passwordText_v,        SIGNAL(returnPressed()),
+            SLOT(onVerifyAccountButtonPressed()));
+    connect(m_appFacade,               SIGNAL(accountOk(BE::Roster)),
+            SLOT(onVerifyAccountOk(BE::Roster)));
+    connect(m_appFacade,               SIGNAL(accountError(int)),
+            SLOT(onVerifyAccountError(int)));
 
     // Edit rules tabs
-
-    connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(onAddCategoryButtonClicked()));
-    connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(onAddRuleButtonClicked()));
-    connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(onRemoveButtonClicked()));
-    connect(ui->teachRuleButton,   SIGNAL(clicked()), SLOT(onTeachButtonPressed()));
-    connect(ui->undoRuleButton,    SIGNAL(clicked()), SLOT(onUndoButtonPressed()));
-
-    connect(ui->actionAddEmptyRule,      SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
-    connect(ui->actionAddVarRule,        SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
-    connect(ui->actionAddConditionalRule,SIGNAL(triggered()), SLOT(onAddConditionalRuleAction()));
-
-
-    connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()),    SLOT(onRuleEdited()));
-    connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),       SLOT(onRuleEdited()));
-
-    connect(ui->categoryNameTextEdit, SIGNAL(textEdited(QString)),
+    connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
+    connect(ui->addRuleButton,         SIGNAL(clicked()),   SLOT(onAddRuleButtonClicked()));
+    connect(ui->rmItemButton,          SIGNAL(clicked()),   SLOT(onRemoveButtonClicked()));
+    connect(ui->teachRuleButton,       SIGNAL(clicked()),   SLOT(onTeachButtonPressed()));
+    connect(ui->undoRuleButton,        SIGNAL(clicked()),   SLOT(onUndoButtonPressed()));
+    connect(ui->actionAddEmptyRule,    SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
+    connect(ui->actionAddVarRule,      SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
+    connect(ui->actionAddCondRule,     SIGNAL(triggered()), SLOT(onAddCondRuleAction()));
+    connect(ui->ruleInputWidget,       SIGNAL(inputVariantsEdited()),
+            SLOT(onRuleEdited()));
+    connect(ui->ruleOutputWidget,      SIGNAL(outputTextEdited()),
+            SLOT(onRuleEdited()));
+    connect(ui->categoryNameTextEdit,  SIGNAL(textEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
-
-    connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
+    connect(ui->ruleInputWidget,       SIGNAL(inputTextEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
-
-    connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
+    connect(ui->ruleInputWidget,       SIGNAL(targetTextEdited(QString)),
             SLOT(onRuleTargetEdited(QString)));
-
-    connect(ui->centralSplitter,  SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
-    connect(ui->teachTabsplitter, SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
+    connect(ui->centralSplitter,       SIGNAL(splitterMoved(int,int)),
+            SLOT(onSplitterMoved(int,int)));
+    connect(ui->teachTabsplitter,      SIGNAL(splitterMoved(int,int)),
+            SLOT(onSplitterMoved(int,int)));
 
     // Test tab
-
-    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
-
-    connect(ui->clearTestConversationButton, SIGNAL(clicked()),
-            SLOT(onClearTestConversationButtonPressed()));
-
-    connect(ui->showRuleDefButton, SIGNAL(clicked()), SLOT(onTestShowRule()));
+    connect(ui->testInputText,         SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->clearTestConvButton,   SIGNAL(clicked()),       SLOT(onClearTestConvPressed()));
+    connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));
 
     // Chat connetion tab
-
-    connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
-    connect(ui->disconnectButton, SIGNAL(clicked()), SLOT(onDisconnectButtonPressed()));
-
-    connect(m_appFacade, SIGNAL(connected()),          SLOT(onConnectionOk()));
-    connect(m_appFacade, SIGNAL(disconnected()),       SLOT(onDisconnection()));
-    connect(m_appFacade, SIGNAL(connectionError(int)), SLOT(onConnectionError(int)));
-
-    connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
-
-    connect(ui->rosterWidget, SIGNAL(selectionChanged()), SLOT(onRosterSelectionChanged()));
-
-    connect(ui->changeAccountButton,       SIGNAL(clicked()),
-            SLOT(onChangeAccountButtonPressed()));
-    connect(ui->cancelChangeAccountButton, SIGNAL(clicked()),
-            SLOT(onCancelChangeAccountButtonPressed()));
-    connect(ui->verifyLaterButton,         SIGNAL(clicked()),
-            SLOT(onVerifyAccountSkipped()));
+    connect(ui->connectButton,         SIGNAL(clicked()),       SLOT(onConnectPressed()));
+    connect(ui->disconnectButton,      SIGNAL(clicked()),       SLOT(onDisconnectPressed()));
+    connect(m_appFacade,               SIGNAL(connected()),     SLOT(onConnectionOk()));
+    connect(m_appFacade,               SIGNAL(disconnected()),  SLOT(onDisconnection()));
+    connect(m_appFacade,               SIGNAL(connectionError(int)),
+            SLOT(onConnectionError(int)));
+    connect(ui->changeAccountButton,   SIGNAL(clicked()),       SLOT(onChangeAccountPressed()));
+    connect(ui->verifyLaterButton,     SIGNAL(clicked()),       SLOT(onVerifyAccountSkipped()));
+    connect(ui->cancelChAccountButton, SIGNAL(clicked()),       SLOT(onCancelChAccountPressed()));
+    connect(ui->passwordText,          SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
+    connect(ui->rosterWidget,          SIGNAL(selectionChanged()),
+            SLOT(onRosterSelectChanged()));
 
 
     // Conversation history tab
-
-    connect(m_appFacade, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+    connect(ui->chatHistory,          SIGNAL(teachRule(QString)),SLOT(onTeachFromHistory(QString)));
+    connect(ui->chatHistory,          SIGNAL(showRule(quint64)), SLOT(onHistoryShowRule(quint64)));
+    connect(ui->chatHistory,          SIGNAL(removedAll()),      SLOT(onRemovedAllHistory()));
+    connect(ui->chatHistory,          SIGNAL(removed(QDate,QString)),
+            SLOT(onRemovedHistory(QDate,QString)));
+    connect(m_appFacade,              SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
             SLOT(onNewChatConversation(Cmn::Conversation::Entry)));
 
-    connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
-    connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onHistoryShowRule(quint64)));
-    connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
-    connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
-
     // Score tab
-
-    connect(ui->bestScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
-
-    connect(m_appFacade, SIGNAL(scoreRemainingTime(int)), SLOT(onScoreRemainingTime(int)));
+    connect(ui->bestScoreWidget,      SIGNAL(upload()),          SLOT(onUploadScore()));
+    connect(m_appFacade,              SIGNAL(scoreRemainingTime(int)),
+            SLOT(onScoreRemainingTime(int)));
 
     // Misc
-
     connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
             SLOT(onCurrentTabChanged(QWidget*)));
 }
@@ -980,7 +964,7 @@ void Lvk::FE::MainWindow::onAddVarRuleAction()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onAddConditionalRuleAction()
+void Lvk::FE::MainWindow::onAddCondRuleAction()
 {
     addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
                       QStringList() << tr("{if [variable] = value} response 1"
@@ -1236,7 +1220,7 @@ void Lvk::FE::MainWindow::onHistoryShowRule(quint64 ruleId)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
+void Lvk::FE::MainWindow::onTeachFromHistory(const QString &msg)
 {
     setUiMode(FE::EditRuleUiMode);
 
@@ -1591,16 +1575,16 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
-    ui->clearTestConversationButton->setEnabled(true);
+    ui->clearTestConvButton->setEnabled(true);
 
     highlightMatchedRules(matches);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onClearTestConversationButtonPressed()
+void Lvk::FE::MainWindow::onClearTestConvPressed()
 {
-    ui->clearTestConversationButton->setEnabled(false);
+    ui->clearTestConvButton->setEnabled(false);
     ui->testConversationText->clear();
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
@@ -1749,7 +1733,7 @@ void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
+void Lvk::FE::MainWindow::onChangeAccountPressed()
 {
     if (!m_appFacade->username().isEmpty()) {
         QString title = tr("Change Account");
@@ -1768,7 +1752,7 @@ void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
+void Lvk::FE::MainWindow::onCancelChAccountPressed()
 {
     qDebug() << "MainWindow: Verify Account Canceled";
 
@@ -1785,7 +1769,7 @@ void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
 // Chat connection
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onConnectButtonPressed()
+void Lvk::FE::MainWindow::onConnectPressed()
 {
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         qDebug() << "MainWindow: Connecting chatbot...";
@@ -1796,13 +1780,13 @@ void Lvk::FE::MainWindow::onConnectButtonPressed()
 
     } else if (m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Aborting chatbot connection...";
-        onDisconnectButtonPressed();
+        onDisconnectPressed();
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onDisconnectButtonPressed()
+void Lvk::FE::MainWindow::onDisconnectPressed()
 {
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Disconnecting chatbot...";
@@ -1875,7 +1859,7 @@ void Lvk::FE::MainWindow::onNewChatConversation(const Cmn::Conversation::Entry &
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRosterSelectionChanged()
+void Lvk::FE::MainWindow::onRosterSelectChanged()
 {
     updateBlackList();
 }
