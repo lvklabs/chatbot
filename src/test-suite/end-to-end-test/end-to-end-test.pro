@@ -62,6 +62,10 @@ HEADERS += \
     ../../chatbot/front-end/sendscoredialog.h \
     ../../chatbot/front-end/tinyscorewidget.h \
     ../../chatbot/front-end/optionswindow.h \
+    ../../chatbot/front-end/optionswindow.h \
+    ../../chatbot/front-end/filefilters.h \
+    ../../chatbot/front-end/welcomewidget.h \
+    ../../chatbot/front-end/rosterhelper.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/roster.h \
@@ -134,6 +138,8 @@ SOURCES += \
     ../../chatbot/front-end/sendscoredialog.cpp \
     ../../chatbot/front-end/tinyscorewidget.cpp \
     ../../chatbot/front-end/optionswindow.cpp \
+    ../../chatbot/front-end/welcomewidget.cpp \
+    ../../chatbot/front-end/rosterhelper.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
@@ -176,7 +182,8 @@ FORMS += \
     ../../chatbot/front-end/scorewidget.ui \
     ../../chatbot/front-end/tinyscorewidget.ui \
     ../../chatbot/front-end/sendscoredialog.ui \
-    ../../chatbot/front-end/optionswindow.ui
+    ../../chatbot/front-end/optionswindow.ui \
+    ../../chatbot/front-end/welcomewidget.ui
 
 
 

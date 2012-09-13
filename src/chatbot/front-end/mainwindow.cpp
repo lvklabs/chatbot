@@ -28,6 +28,7 @@
 #include "front-end/sendscoredialog.h"
 #include "front-end/optionswindow.h"
 #include "front-end/filefilters.h"
+#include "front-end/rosterhelper.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -65,60 +66,6 @@ namespace
 inline QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Save roster to filename
-
-inline bool saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
-{
-    QFile file(filename);
-    if (file.open(QFile::WriteOnly)) {
-        QDataStream out(&file);
-        out << roster;
-        return out.status() == QDataStream::Ok;
-    } else {
-        qCritical() << "Cannot not save roster in " << filename;
-        return false;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// load roster from filename
-
-inline bool loadRoster(Lvk::BE::Roster &roster, const QString &filename)
-{
-    QFile file(filename);
-    if (file.open(QFile::ReadOnly)) {
-        QDataStream in(&file);
-        in >> roster;
-        return in.status() == QDataStream::Ok;
-    } else {
-        qCritical() << "Cannot not load roster from " << filename;
-        return false;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// get persisted roster filename for the give  cannonic account
-
-inline QString rosterFilename(QString account)
-{
-    Lvk::Cmn::Settings settings;
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-
-    return dataPath + QDir::separator() + "roster_" + account + ".dat";
-}
-
-//--------------------------------------------------------------------------------------------------
-// get persisted black list roster filename for the given cannonic account
-
-inline QString blackRosterFilename(QString account)
-{
-    Lvk::Cmn::Settings settings;
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-
-    return dataPath + QDir::separator() + "black_roster_" + account + ".dat";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1155,8 +1102,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // load persisted roster
         BE::Roster roster;
-        if (QFile::exists(rosterFilename())) {
-            loadRoster(roster, rosterFilename());
+        RosterHelper rh(FullRoster, canonicAccount());
+        if (rh.exists()) {
+            rh.load(roster);
         }
         ui->ruleInputWidget->setRoster(roster);
 
@@ -2095,7 +2043,7 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
     m_appFacade->setUsername(username);
 
     // persist roster
-    saveRoster(roster, ::rosterFilename(::canonicAccount(username, chatType)));
+    RosterHelper(FullRoster, ::canonicAccount(username, chatType)).save(roster);
 
     if (m_tabsLayout == VerifyAccountTabsLayout) {
         startEditMode();
@@ -2225,18 +2173,17 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
     BE::Roster roster = m_appFacade->roster();
 
-    saveRoster(roster, rosterFilename());
+    RosterHelper(FullRoster, canonicAccount()).save(roster);
 
     ui->ruleInputWidget->setRoster(roster);
 
-    BE::Roster blackListRoster;
-
-    if (!loadRoster(blackListRoster, blackRosterFilename())) {
-        blackListRoster = roster; // By default all contacts are in the black list
+    BE::Roster blackRoster;
+    if (!RosterHelper(BlackRoster, canonicAccount()).load(blackRoster)) {
+        blackRoster = roster; // By default all contacts are in the black list
     }
 
-    ui->rosterWidget->setRoster(roster, blackListRoster);
-    m_appFacade->setBlackListRoster(blackListRoster);
+    ui->rosterWidget->setRoster(roster, blackRoster);
+    m_appFacade->setBlackListRoster(blackRoster);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2290,7 +2237,7 @@ void Lvk::FE::MainWindow::updateBlackList()
 
     m_appFacade->setBlackListRoster(blackList);
 
-    saveRoster(blackList, blackRosterFilename());
+    RosterHelper(BlackRoster, canonicAccount()).save(blackList);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2298,20 +2245,6 @@ void Lvk::FE::MainWindow::updateBlackList()
 inline Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
 {
     return ui->gtalkChatRadio_v->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString Lvk::FE::MainWindow::rosterFilename()
-{
-    return ::rosterFilename(canonicAccount());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString Lvk::FE::MainWindow::blackRosterFilename()
-{
-    return ::blackRosterFilename(canonicAccount());
 }
 
 //--------------------------------------------------------------------------------------------------

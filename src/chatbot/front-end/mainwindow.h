@@ -218,8 +218,6 @@ private:
     void updateBlackList();
 
     inline BE::AppFacade::ChatType uiChatSelected();
-    inline QString rosterFilename();
-    inline QString blackRosterFilename();
     inline QString canonicAccount();
 
     bool hasUnsavedChanges();
