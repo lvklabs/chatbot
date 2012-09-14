@@ -24,12 +24,7 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
     connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenChatbot()));
     connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastChatbot()));
 
-    Lvk::Cmn::Settings settings;
-    m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
-
-    if (m_lastFilename.isEmpty()) {
-        ui->openLastChatbotButton->setVisible(false);
-    }
+    ui->openLastChatbotButton->setVisible(Lvk::Cmn::Settings().contains(SETTING_LAST_FILE));
 
 #ifdef WIN32
     ui->spacerTop->changeSize(20, 214);
@@ -75,7 +70,7 @@ void Lvk::FE::WelcomeWidget::onCreateChatbot()
 
 void Lvk::FE::WelcomeWidget::onOpenLastChatbot()
 {
-    m_mw->openFile(m_lastFilename);
+    m_mw->openLastFile();
     m_mw->show();
     close();
 }

@@ -28,6 +28,7 @@
 #include "front-end/sendscoredialog.h"
 #include "front-end/optionswindow.h"
 #include "front-end/filefilters.h"
+#include "front-end/rosterhelper.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -68,60 +69,6 @@ inline QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatT
 }
 
 //--------------------------------------------------------------------------------------------------
-// Save roster to filename
-
-inline bool saveRoster(const Lvk::BE::Roster &roster, const QString &filename)
-{
-    QFile file(filename);
-    if (file.open(QFile::WriteOnly)) {
-        QDataStream out(&file);
-        out << roster;
-        return out.status() == QDataStream::Ok;
-    } else {
-        qCritical() << "Cannot not save roster in " << filename;
-        return false;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// load roster from filename
-
-inline bool loadRoster(Lvk::BE::Roster &roster, const QString &filename)
-{
-    QFile file(filename);
-    if (file.open(QFile::ReadOnly)) {
-        QDataStream in(&file);
-        in >> roster;
-        return in.status() == QDataStream::Ok;
-    } else {
-        qCritical() << "Cannot not load roster from " << filename;
-        return false;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// get persisted roster filename for the give  cannonic account
-
-inline QString rosterFilename(QString account)
-{
-    Lvk::Cmn::Settings settings;
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-
-    return dataPath + QDir::separator() + "roster_" + account + ".dat";
-}
-
-//--------------------------------------------------------------------------------------------------
-// get persisted black list roster filename for the given cannonic account
-
-inline QString blackRosterFilename(QString account)
-{
-    Lvk::Cmn::Settings settings;
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-
-    return dataPath + QDir::separator() + "black_roster_" + account + ".dat";
-}
-
-//--------------------------------------------------------------------------------------------------
 // Check if chatbot has expired
 //
 // TODO remove this for version 1.0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -144,6 +91,8 @@ inline void checkAppExpiration()
     }
 }
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 } // namespace
 
 
@@ -155,10 +104,10 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_appFacade(new BE::AppFacade(this)),
+    m_refactor(ui, m_appFacade),
     m_ruleTreeModel(0),
     m_ruleEdited(false),
     m_ruleAdded(false),
-    m_tabsLayout(NullLayout),
     m_connectionStatus(DisconnectedFromChat),
     m_tinyScore(0)
 {
@@ -204,7 +153,7 @@ void Lvk::FE::MainWindow::setupUi()
     QMenu *menu = new QMenu(this);
     menu->addAction(ui->actionAddEmptyRule);
     menu->addAction(ui->actionAddVarRule);
-    menu->addAction(ui->actionAddConditionalRule);
+    menu->addAction(ui->actionAddCondRule);
     ui->addRuleButton->setMenu(menu);
 
     setWindowIcon(QIcon(APP_ICON_FILE));
@@ -242,7 +191,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     m_connectionStatus = DisconnectedFromChat;
     m_appFacade->disconnectFromChat();
 
-    setUiMode(ChatDisconnectedUiMode);
+    setUiMode(FE::ChatDisconnectedUiMode);
     //ui->usernameText->clear();
     ui->passwordText->clear();
 
@@ -252,7 +201,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
-    ui->clearTestConversationButton->setEnabled(false);
+    ui->clearTestConvButton->setEnabled(false);
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
     ui->transfView->clear();
@@ -264,7 +213,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->remainingTimeLabel->clear();
     m_tinyScore->clear();
 
-    setUiMode(WelcomeTabUiMode);
+    setUiMode(FE::WelcomeTabUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -297,107 +246,96 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 void Lvk::FE::MainWindow::connectSignals()
 {
     // Menus
-
-    connect(ui->actionNew,         SIGNAL(triggered()), SLOT(onNewMenuTriggered()));
-    connect(ui->actionOpen,        SIGNAL(triggered()), SLOT(onOpenMenuTriggered()));
-    connect(ui->actionSave,        SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
-    connect(ui->actionSaveAs,      SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
-    connect(ui->actionAbout,       SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
-    connect(ui->actionExit,        SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
-    connect(ui->actionImport,      SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
-    connect(ui->actionExport,      SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
-    connect(ui->actionOptions,     SIGNAL(triggered()), SLOT(onOptionsMenuTriggered()));
+    connect(ui->actionNew,             SIGNAL(triggered()), SLOT(onNewMenuTriggered()));
+    connect(ui->actionOpen,            SIGNAL(triggered()), SLOT(onOpenMenuTriggered()));
+    connect(ui->actionSave,            SIGNAL(triggered()), SLOT(onSaveMenuTriggered()));
+    connect(ui->actionSaveAs,          SIGNAL(triggered()), SLOT(onSaveAsMenuTriggered()));
+    connect(ui->actionAbout,           SIGNAL(triggered()), SLOT(onAboutMenuTriggered()));
+    connect(ui->actionExit,            SIGNAL(triggered()), SLOT(onExitMenuTriggered()));
+    connect(ui->actionImport,          SIGNAL(triggered()), SLOT(onImportMenuTriggered()));
+    connect(ui->actionExport,          SIGNAL(triggered()), SLOT(onExportMenuTriggered()));
+    connect(ui->actionOptions,         SIGNAL(triggered()), SLOT(onOptionsMenuTriggered()));
 
     // init tab
-
-    connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenMenuTriggered()));
-    connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastFileMenuTriggered()));
-    connect(ui->createChatbotButton,   SIGNAL(clicked()), SLOT(onNewMenuTriggered()));
-    connect(ui->verifyAccountButton,   SIGNAL(clicked()), SLOT(onVerifyAccountButtonPressed()));
-
-    connect(ui->passwordText_v, SIGNAL(returnPressed()), SLOT(onVerifyAccountButtonPressed()));
-
-    connect(m_appFacade, SIGNAL(accountOk(BE::Roster)), SLOT(onVerifyAccountOk(BE::Roster)));
-    connect(m_appFacade, SIGNAL(accountError(int)),     SLOT(onVerifyAccountError(int)));
+    connect(ui->openChatbotButton,     SIGNAL(clicked()),   SLOT(onOpenMenuTriggered()));
+    connect(ui->openLastChatbotButton, SIGNAL(clicked()),   SLOT(onOpenLastFileMenuTriggered()));
+    connect(ui->createChatbotButton,   SIGNAL(clicked()),   SLOT(onNewMenuTriggered()));
+    connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountButtonPressed()));
+    connect(ui->passwordText_v,        SIGNAL(returnPressed()),
+            SLOT(onVerifyAccountButtonPressed()));
+    connect(m_appFacade,               SIGNAL(accountOk(BE::Roster)),
+            SLOT(onVerifyAccountOk(BE::Roster)));
+    connect(m_appFacade,               SIGNAL(accountError(int)),
+            SLOT(onVerifyAccountError(int)));
 
     // Edit rules tabs
-
-    connect(ui->addCategoryButton, SIGNAL(clicked()), SLOT(onAddCategoryButtonClicked()));
-    connect(ui->addRuleButton,     SIGNAL(clicked()), SLOT(onAddRuleButtonClicked()));
-    connect(ui->rmItemButton,      SIGNAL(clicked()), SLOT(onRemoveButtonClicked()));
-    connect(ui->teachRuleButton,   SIGNAL(clicked()), SLOT(onTeachButtonPressed()));
-    connect(ui->undoRuleButton,    SIGNAL(clicked()), SLOT(onUndoButtonPressed()));
-
-    connect(ui->actionAddEmptyRule,      SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
-    connect(ui->actionAddVarRule,        SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
-    connect(ui->actionAddConditionalRule,SIGNAL(triggered()), SLOT(onAddConditionalRuleAction()));
-
-
-    connect(ui->ruleInputWidget,   SIGNAL(inputVariantsEdited()),    SLOT(onRuleEdited()));
-    connect(ui->ruleOutputWidget,  SIGNAL(outputTextEdited()),       SLOT(onRuleEdited()));
-
-    connect(ui->categoryNameTextEdit, SIGNAL(textEdited(QString)),
+    connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
+    connect(ui->addRuleButton,         SIGNAL(clicked()),   SLOT(onAddRuleButtonClicked()));
+    connect(ui->rmItemButton,          SIGNAL(clicked()),   SLOT(onRemoveButtonClicked()));
+    connect(ui->teachRuleButton,       SIGNAL(clicked()),   SLOT(onTeachButtonPressed()));
+    connect(ui->undoRuleButton,        SIGNAL(clicked()),   SLOT(onUndoButtonPressed()));
+    connect(ui->actionAddEmptyRule,    SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
+    connect(ui->actionAddVarRule,      SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
+    connect(ui->actionAddCondRule,     SIGNAL(triggered()), SLOT(onAddCondRuleAction()));
+    connect(ui->ruleInputWidget,       SIGNAL(inputVariantsEdited()),
+            SLOT(onRuleEdited()));
+    connect(ui->ruleOutputWidget,      SIGNAL(outputTextEdited()),
+            SLOT(onRuleEdited()));
+    connect(ui->categoryNameTextEdit,  SIGNAL(textEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
-
-    connect(ui->ruleInputWidget, SIGNAL(inputTextEdited(QString)),
+    connect(ui->ruleInputWidget,       SIGNAL(inputTextEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
-
-    connect(ui->ruleInputWidget, SIGNAL(targetTextEdited(QString)),
+    connect(ui->ruleInputWidget,       SIGNAL(targetTextEdited(QString)),
             SLOT(onRuleTargetEdited(QString)));
-
-    connect(ui->centralSplitter,  SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
-    connect(ui->teachTabsplitter, SIGNAL(splitterMoved(int,int)), SLOT(onSplitterMoved(int,int)));
+    connect(ui->centralSplitter,       SIGNAL(splitterMoved(int,int)),
+            SLOT(onSplitterMoved(int,int)));
+    connect(ui->teachTabsplitter,      SIGNAL(splitterMoved(int,int)),
+            SLOT(onSplitterMoved(int,int)));
 
     // Test tab
-
-    connect(ui->testInputText, SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
-
-    connect(ui->clearTestConversationButton, SIGNAL(clicked()),
-            SLOT(onClearTestConversationButtonPressed()));
-
-    connect(ui->showRuleDefButton, SIGNAL(clicked()), SLOT(onTestShowRule()));
+    connect(ui->testInputText,         SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->clearTestConvButton,   SIGNAL(clicked()),       SLOT(onClearTestConvPressed()));
+    connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));
 
     // Chat connetion tab
-
-    connect(ui->connectButton,    SIGNAL(clicked()), SLOT(onConnectButtonPressed()));
-    connect(ui->disconnectButton, SIGNAL(clicked()), SLOT(onDisconnectButtonPressed()));
-
-    connect(m_appFacade, SIGNAL(connected()),          SLOT(onConnectionOk()));
-    connect(m_appFacade, SIGNAL(disconnected()),       SLOT(onDisconnection()));
-    connect(m_appFacade, SIGNAL(connectionError(int)), SLOT(onConnectionError(int)));
-
-    connect(ui->passwordText, SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
-
-    connect(ui->rosterWidget, SIGNAL(selectionChanged()), SLOT(onRosterSelectionChanged()));
-
-    connect(ui->changeAccountButton,       SIGNAL(clicked()),
-            SLOT(onChangeAccountButtonPressed()));
-    connect(ui->cancelChangeAccountButton, SIGNAL(clicked()),
-            SLOT(onCancelChangeAccountButtonPressed()));
-    connect(ui->verifyLaterButton,         SIGNAL(clicked()),
-            SLOT(onVerifyAccountSkipped()));
+    connect(ui->connectButton,         SIGNAL(clicked()),       SLOT(onConnectPressed()));
+    connect(ui->disconnectButton,      SIGNAL(clicked()),       SLOT(onDisconnectPressed()));
+    connect(m_appFacade,               SIGNAL(connected()),     SLOT(onConnectionOk()));
+    connect(m_appFacade,               SIGNAL(disconnected()),  SLOT(onDisconnection()));
+    connect(m_appFacade,               SIGNAL(connectionError(int)),
+            SLOT(onConnectionError(int)));
+    connect(ui->changeAccountButton,   SIGNAL(clicked()),       SLOT(onChangeAccountPressed()));
+    connect(ui->verifyLaterButton,     SIGNAL(clicked()),       SLOT(onVerifyAccountSkipped()));
+    connect(ui->cancelChAccountButton, SIGNAL(clicked()),       SLOT(onCancelChAccountPressed()));
+    connect(ui->passwordText,          SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
+    connect(ui->rosterWidget,          SIGNAL(selectionChanged()),
+            SLOT(onRosterSelectChanged()));
 
 
     // Conversation history tab
-
-    connect(m_appFacade, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+    connect(ui->chatHistory,          SIGNAL(teachRule(QString)),SLOT(onTeachFromHistory(QString)));
+    connect(ui->chatHistory,          SIGNAL(showRule(quint64)), SLOT(onHistoryShowRule(quint64)));
+    connect(ui->chatHistory,          SIGNAL(removedAll()),      SLOT(onRemovedAllHistory()));
+    connect(ui->chatHistory,          SIGNAL(removed(QDate,QString)),
+            SLOT(onRemovedHistory(QDate,QString)));
+    connect(m_appFacade,              SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
             SLOT(onNewChatConversation(Cmn::Conversation::Entry)));
 
-    connect(ui->chatHistory, SIGNAL(teachRule(QString)), SLOT(onTeachFromHistoryWidget(QString)));
-    connect(ui->chatHistory, SIGNAL(showRule(quint64)),  SLOT(onHistoryShowRule(quint64)));
-    connect(ui->chatHistory, SIGNAL(removed(QDate,QString)), SLOT(onRemovedHistory(QDate,QString)));
-    connect(ui->chatHistory, SIGNAL(removedAll()),       SLOT(onRemovedAllHistory()));
-
     // Score tab
-
-    connect(ui->bestScoreWidget, SIGNAL(upload()), SLOT(onUploadScore()));
-
-    connect(m_appFacade, SIGNAL(scoreRemainingTime(int)), SLOT(onScoreRemainingTime(int)));
+    connect(ui->bestScoreWidget,      SIGNAL(upload()),          SLOT(onUploadScore()));
+    connect(m_appFacade,              SIGNAL(scoreRemainingTime(int)),
+            SLOT(onScoreRemainingTime(int)));
 
     // Misc
-
     connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
             SLOT(onCurrentTabChanged(QWidget*)));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setUiMode(FE::UiMode mode)
+{
+    m_refactor.setUiMode(mode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -516,11 +454,6 @@ void Lvk::FE::MainWindow::loadSplittersSettings()
 {
     Cmn::Settings settings;
 
-//    QList<int> centralSplSizes;
-//    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_MAIN_TAB_W, width()*0.7).toInt();
-//    centralSplSizes << settings.value(SETTING_MAIN_WINDOW_TEST_TAB_W, width()*0.3).toInt();
-//    ui->centralSplitter->setSizes(centralSplSizes);
-
     QList<int> teachSplSizes;
     teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_TREE_W, width()*0.7*0.45).toInt();
     teachSplSizes << settings.value(SETTING_MAIN_WINDOW_RULE_EDIT_W, width()*0.7*0.55).toInt();
@@ -549,11 +482,9 @@ void Lvk::FE::MainWindow::saveMainWindowSettings()
 
 void Lvk::FE::MainWindow::saveSplittersSettings()
 {
-    if (m_tabsLayout == TeachTabsLayout) {
+    if (m_refactor.uiTabsLayout() == TeachTabsLayout) {
         Cmn::Settings settings;
 
-        //settings.setValue(SETTING_MAIN_WINDOW_MAIN_TAB_W, ui->centralSplitter->sizes().at(0));
-        //settings.setValue(SETTING_MAIN_WINDOW_TEST_TAB_W, ui->centralSplitter->sizes().at(1));
         settings.setValue(SETTING_MAIN_WINDOW_RULE_TREE_W, ui->teachTabsplitter->sizes().at(0));
         settings.setValue(SETTING_MAIN_WINDOW_RULE_EDIT_W, ui->teachTabsplitter->sizes().at(1));
     }
@@ -564,355 +495,6 @@ void Lvk::FE::MainWindow::saveSplittersSettings()
 void Lvk::FE::MainWindow::saveChatSettings()
 {
     // Nothing to save
-}
-
-//--------------------------------------------------------------------------------------------------
-// UI Modes
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::setUiMode(UiMode mode)
-{
-    updateTabsLayout(mode);
-    updateTabsIcons(mode);
-
-    // Set up tabs ///////////////////////////////////////
-
-    switch (mode) {
-
-    // init tab //
-
-    case WelcomeTabUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
-        ui->initStackWidget->setCurrentIndex(0);
-        ui->openLastChatbotButton->setVisible(m_lastFilename.size() > 0);
-        break;
-
-    // Edit rules tab //
-    // TODO create widget to displays rules!
-
-    case RuleSelectionEmptyUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        ui->teachRuleButton->setVisible(false);
-        ui->undoRuleButton->setVisible(false);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        break;
-
-    case EditCategoryUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(16777215);
-        ui->categoryNameLabel->setVisible(true);
-        ui->categoryNameTextEdit->setVisible(true);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->teachRuleButton->setText(tr("Change name"));
-        break;
-
-    case EditRuleUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(16777215);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(true);
-        ui->ruleOutputWidget->setVisible(true);
-        ui->chatbotRepliesLabel->setVisible(true);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
-        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
-        break;
-
-    case EditEvasivesUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(150);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(true);
-        ui->chatbotRepliesLabel->setVisible(true);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
-        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
-        break;
-
-    // Chat connection tab //
-    // TODO create a connection widget!
-
-    case ChatDisconnectedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->curUsernameLabel->setText(m_appFacade->username().isEmpty() ?
-                                          tr("(None)") : m_appFacade->username());
-        ui->chatTypeIcon->setPixmap(m_appFacade->chatType() == BE::AppFacade::FbChat ?
-                                        QPixmap(FB_ICON_FILE) : QPixmap(GMAIL_ICON_FILE));
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Disconnected"));
-        ui->connectionStatusLabel->setStyleSheet("color:gray");
-        ui->rosterWidget->clear();
-        // If verification was skipped
-        ui->connectButton->setEnabled(!m_appFacade->username().isEmpty());
-        ui->passwordText->setEnabled(!m_appFacade->username().isEmpty());
-        //ui->chatTypeIcon->setVisible(!m_appFacade->username().isEmpty());
-        ui->chatTypeIcon->setVisible(false);
-        break;
-
-    case ChatConnectingUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(false);
-        ui->changeAccountButton->setEnabled(false);
-        ui->connectButton->setText(tr("Cancel connection"));
-        ui->connectionProgressBar->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Connecting..."));
-        ui->connectionStatusLabel->setStyleSheet("");
-        break;
-
-    case ChatConnectionFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection error. "
-                                              "Please verify your username and password."));
-        ui->connectionStatusLabel->setStyleSheet("color:red");
-        break;
-
-    case ChatConnectionSSLFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection error. "
-                                              "You system does not support secure connections."));
-        ui->connectionStatusLabel->setStyleSheet("color:red");
-        break;
-
-    case ChatConnectionOkUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(1);
-        ui->disconnectButton->setText(tr("Disconnect ") + m_appFacade->username());
-        ui->disconnectButton->setIcon(m_appFacade->chatType() == BE::AppFacade::FbChat ?
-                                          QIcon(FB_ICON_FILE) : QIcon(GMAIL_ICON_FILE));
-        // Not visible anymore:
-        ui->passwordText->setEnabled(false);
-        ui->connectButton->setText(tr("Disconnect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
-        ui->connectionStatusLabel->setStyleSheet("color:green");
-        break;
-
-    case ChangeAccountUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(tr("Please insert your username and password and press "
-                                               "\"Verify account\" button."));
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(false);
-        ui->passwordText->setText("");
-        break;
-
-    case VerifyAccountUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(tr("To create a chatbot you need a Facebook or Gmail "
-                                               "account.\nPlease insert your username and password "
-                                               "and press \"Verify account\" button."));
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(true);
-        ui->passwordText->setText("");
-        break;
-
-    case ChangeAccountConnectingUiMode:
-    case VerifyAccountConnectingUiMode:
-        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountConnectingUiMode ?
-                                                ui->welcomeTab : ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyAccountButton->setEnabled(false);
-        ui->usernameText_v->setEnabled(false);
-        ui->passwordText_v->setEnabled(false);
-        ui->fbChatRadio_v->setEnabled(false);
-        ui->gtalkChatRadio_v->setEnabled(false);
-        ui->verifyLaterButton->setEnabled(false);
-        ui->connectionProgressBar_v->setVisible(true);
-        ui->connectionStatusLabel_v->setVisible(true);
-        break;
-
-    case ChangeAccountFailedUiMode:
-    case VerifyAccountFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountFailedUiMode ?
-                                                ui->welcomeTab : ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        break;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::updateTabsIcons(UiMode mode)
-{
-    int connectTabIdx = ui->mainTabWidget->indexOf(ui->connectTab);
-
-    switch (mode) {
-    case ChatDisconnectedUiMode:
-    case ChatConnectingUiMode:
-    case ChatConnectionFailedUiMode:
-    case ChatConnectionSSLFailedUiMode:
-    case ChangeAccountUiMode:
-    case ChangeAccountConnectingUiMode:
-    case ChangeAccountFailedUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_DISCONNEC_ICON_FILE));
-        break;
-    case ChatConnectionOkUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_CONNECTED_ICON_FILE));
-        break;
-    case VerifyAccountUiMode:
-    case VerifyAccountConnectingUiMode:
-    case VerifyAccountFailedUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon());
-        break;
-    default:
-        // nothing to do
-        break;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::updateTabsLayout(UiMode mode)
-{
-    UiTabsLayout visibleTabs = NullLayout;
-
-    switch (mode) {
-    case WelcomeTabUiMode:
-        visibleTabs = WelcomeTabsLayout;
-        break;
-    case VerifyAccountUiMode:
-    case VerifyAccountConnectingUiMode:
-    case VerifyAccountFailedUiMode:
-        visibleTabs = VerifyAccountTabsLayout;
-        break;
-    default:
-        visibleTabs = TeachTabsLayout;
-        break;
-    }
-
-    if (m_tabsLayout != visibleTabs) {
-        m_tabsLayout = visibleTabs;
-
-        switch (mode) {
-
-        case WelcomeTabUiMode:
-            ui->actionSave->setEnabled(false);
-            ui->actionSaveAs->setEnabled(false);
-            ui->actionImport->setEnabled(false);
-            ui->actionExport->setEnabled(false);
-            ui->actionOptions->setEnabled(false);
-
-            ui->welcomeTab->setVisible(true);
-            ui->teachTab->setVisible(false);
-            ui->testTab->setVisible(false);
-            ui->connectTab->setVisible(false);
-            ui->conversationsTab->setVisible(false);
-            ui->scoreTab->setVisible(false);
-
-            ui->mainTabWidget->addTab(ui->welcomeTab, tr("Init"));
-            ui->mainTabWidget->removePage(ui->teachTab);
-            ui->mainTabWidget->removePage(ui->testTab);
-            ui->mainTabWidget->removePage(ui->connectTab);
-            ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->scoreTab);
-            break;
-
-        case VerifyAccountUiMode:
-        case VerifyAccountConnectingUiMode:
-        case VerifyAccountFailedUiMode:
-            ui->actionSave->setEnabled(false);
-            ui->actionSaveAs->setEnabled(false);
-            ui->actionImport->setEnabled(false);
-            ui->actionExport->setEnabled(false);
-            ui->actionOptions->setEnabled(false);
-
-            ui->welcomeTab->setVisible(false);
-            ui->teachTab->setVisible(false);
-            ui->testTab->setVisible(false);
-            ui->connectTab->setVisible(true);
-            ui->conversationsTab->setVisible(false);
-            ui->scoreTab->setVisible(false);
-
-            ui->mainTabWidget->addTab(ui->connectTab, tr("Verify account"));
-            ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->removePage(ui->testTab);
-            ui->mainTabWidget->removePage(ui->teachTab);
-            ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->scoreTab);
-            break;
-
-        default:
-            ui->actionSave->setEnabled(true);
-            ui->actionSaveAs->setEnabled(true);
-            ui->actionImport->setEnabled(true);
-            ui->actionExport->setEnabled(true);
-            ui->actionOptions->setEnabled(true);
-
-            ui->welcomeTab->setVisible(false);
-            ui->teachTab->setVisible(true);
-            ui->testTab->setVisible(true);
-            ui->connectTab->setVisible(true);
-            ui->conversationsTab->setVisible(true);
-            ui->scoreTab->setVisible(true);
-
-            ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
-            ui->mainTabWidget->addTab(ui->testTab, tr("Test your chatbot"));
-            ui->mainTabWidget->addTab(ui->connectTab, tr("Connection"));
-            ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
-            ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
-            break;
-        }
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1046,13 +628,12 @@ void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
     saveAsChanges();
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::newFile()
 {
     clear();
-    setUiMode(VerifyAccountUiMode);
+    setUiMode(FE::VerifyAccountUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1080,7 +661,6 @@ void Lvk::FE::MainWindow::openLastFile()
         }
     }
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1155,8 +735,9 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
         // load persisted roster
         BE::Roster roster;
-        if (QFile::exists(rosterFilename())) {
-            loadRoster(roster, rosterFilename());
+        RosterHelper rh(FullRoster, canonicAccount());
+        if (rh.exists()) {
+            rh.load(roster);
         }
         ui->ruleInputWidget->setRoster(roster);
 
@@ -1383,7 +964,7 @@ void Lvk::FE::MainWindow::onAddVarRuleAction()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onAddConditionalRuleAction()
+void Lvk::FE::MainWindow::onAddCondRuleAction()
 {
     addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
                       QStringList() << tr("{if [variable] = value} response 1"
@@ -1639,9 +1220,9 @@ void Lvk::FE::MainWindow::onHistoryShowRule(quint64 ruleId)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onTeachFromHistoryWidget(const QString &msg)
+void Lvk::FE::MainWindow::onTeachFromHistory(const QString &msg)
 {
-    setUiMode(EditRuleUiMode);
+    setUiMode(FE::EditRuleUiMode);
 
     BE::Rule *category = getCategoryFromDialog();
 
@@ -1730,28 +1311,28 @@ void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
     //      Define a method setRule(Rule*) that does this job.
 
     if (!rule) {
-        setUiMode(RuleSelectionEmptyUiMode);
+        setUiMode(FE::RuleSelectionEmptyUiMode);
         ui->categoryNameLabel->clear();
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->clear();
     } else if (rule->type() == BE::Rule::OrdinaryRule) {
-        setUiMode(EditRuleUiMode);
+        setUiMode(FE::EditRuleUiMode);
         ui->categoryNameTextEdit->clear();
         ui->ruleInputWidget->setTargets(rule->target());
         ui->ruleInputWidget->setInput(rule->input());
         ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::EvasiveRule) {
-        setUiMode(EditEvasivesUiMode);
+        setUiMode(FE::EditEvasivesUiMode);
         ui->categoryNameTextEdit->clear();
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->setOutput(rule->output());
     } else if (rule->type() == BE::Rule::ContainerRule) {
-        setUiMode(EditCategoryUiMode);
+        setUiMode(FE::EditCategoryUiMode);
         ui->categoryNameTextEdit->setText(rule->name());
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->clear();
     } else {
-        setUiMode(RuleSelectionEmptyUiMode);
+        setUiMode(FE::RuleSelectionEmptyUiMode);
         ui->categoryNameLabel->clear();
         ui->ruleInputWidget->clear();
         ui->ruleOutputWidget->clear();
@@ -1786,8 +1367,8 @@ void Lvk::FE::MainWindow::selectRule(const BE::Rule *rule)
 
 void Lvk::FE::MainWindow::startEditMode()
 {
-    setUiMode(ChatDisconnectedUiMode);
-    setUiMode(EditRuleUiMode);
+    setUiMode(FE::ChatDisconnectedUiMode);
+    setUiMode(FE::EditRuleUiMode);
     selectFirstRule();
     updateScore();
 }
@@ -1994,16 +1575,16 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
 
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
-    ui->clearTestConversationButton->setEnabled(true);
+    ui->clearTestConvButton->setEnabled(true);
 
     highlightMatchedRules(matches);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onClearTestConversationButtonPressed()
+void Lvk::FE::MainWindow::onClearTestConvPressed()
 {
-    ui->clearTestConversationButton->setEnabled(false);
+    ui->clearTestConvButton->setEnabled(false);
     ui->testConversationText->clear();
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
@@ -2063,10 +1644,11 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
     }
 
     if (errMsg.isEmpty()) {
-        if (m_tabsLayout == VerifyAccountTabsLayout) {
-            setUiMode(VerifyAccountConnectingUiMode);
+        //  TODO Define setUiMode(AccountConnectingUiMode) and remove if
+        if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
+            setUiMode(FE::VerifyAccountConnectingUiMode);
         } else {
-            setUiMode(ChangeAccountConnectingUiMode);
+            setUiMode(FE::ChangeAccountConnectingUiMode);
         }
 
         qDebug() << "MainWindow: Verifying Account...";
@@ -2095,12 +1677,12 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
     m_appFacade->setUsername(username);
 
     // persist roster
-    saveRoster(roster, ::rosterFilename(::canonicAccount(username, chatType)));
+    RosterHelper(FullRoster, ::canonicAccount(username, chatType)).save(roster);
 
-    if (m_tabsLayout == VerifyAccountTabsLayout) {
+    if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
         startEditMode();
     } else {
-        setUiMode(ChatDisconnectedUiMode);
+        setUiMode(FE::ChatDisconnectedUiMode);
     }
 
     if (!username.isEmpty()) {
@@ -2114,10 +1696,11 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err)
 {
     qDebug() << "MainWindow: Verify Account Error" << err;
 
-    if (m_tabsLayout == VerifyAccountTabsLayout) {
-        setUiMode(VerifyAccountFailedUiMode);
+    //  TODO Define setUiMode(AccountFailedUiMode) and remove if
+    if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
+        setUiMode(FE::VerifyAccountFailedUiMode);
     } else {
-        setUiMode(ChangeAccountFailedUiMode);
+        setUiMode(FE::ChangeAccountFailedUiMode);
     }
 
     QString title;
@@ -2150,7 +1733,7 @@ void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
+void Lvk::FE::MainWindow::onChangeAccountPressed()
 {
     if (!m_appFacade->username().isEmpty()) {
         QString title = tr("Change Account");
@@ -2160,25 +1743,25 @@ void Lvk::FE::MainWindow::onChangeAccountButtonPressed()
         QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
 
         if (QMessageBox::question(this, title, msg, buttons) == QMessageBox::Yes) {
-            setUiMode(ChangeAccountUiMode);
+            setUiMode(FE::ChangeAccountUiMode);
         }
     } else {
-        setUiMode(ChangeAccountUiMode);
+        setUiMode(FE::ChangeAccountUiMode);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
+void Lvk::FE::MainWindow::onCancelChAccountPressed()
 {
     qDebug() << "MainWindow: Verify Account Canceled";
 
     m_appFacade->cancelVerifyAccount();
 
-    if (m_tabsLayout == VerifyAccountTabsLayout) {
-        setUiMode(WelcomeTabUiMode);
+    if (m_refactor.uiTabsLayout() == VerifyAccountTabsLayout) {
+        setUiMode(FE::WelcomeTabUiMode);
     } else {
-        setUiMode(ChatDisconnectedUiMode);
+        setUiMode(FE::ChatDisconnectedUiMode);
     }
 }
 
@@ -2186,31 +1769,31 @@ void Lvk::FE::MainWindow::onCancelChangeAccountButtonPressed()
 // Chat connection
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onConnectButtonPressed()
+void Lvk::FE::MainWindow::onConnectPressed()
 {
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         qDebug() << "MainWindow: Connecting chatbot...";
 
         m_connectionStatus =  ConnectingToChat;
-        setUiMode(ChatConnectingUiMode);
+        setUiMode(FE::ChatConnectingUiMode);
         m_appFacade->connectToChat(ui->passwordText->text());
 
     } else if (m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Aborting chatbot connection...";
-        onDisconnectButtonPressed();
+        onDisconnectPressed();
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onDisconnectButtonPressed()
+void Lvk::FE::MainWindow::onDisconnectPressed()
 {
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Disconnecting chatbot...";
 
         m_appFacade->disconnectFromChat();
         m_connectionStatus = DisconnectedFromChat;
-        setUiMode(ChatDisconnectedUiMode);
+        setUiMode(FE::ChatDisconnectedUiMode);
     }
 }
 
@@ -2221,22 +1804,21 @@ void Lvk::FE::MainWindow::onConnectionOk()
     qDebug() << "MainWindow: Chatbot connection OK";
 
     m_connectionStatus = ConnectedToChat;
-    setUiMode(ChatConnectionOkUiMode);
+    setUiMode(FE::ChatConnectionOkUiMode);
 
     BE::Roster roster = m_appFacade->roster();
 
-    saveRoster(roster, rosterFilename());
+    RosterHelper(FullRoster, canonicAccount()).save(roster);
 
     ui->ruleInputWidget->setRoster(roster);
 
-    BE::Roster blackListRoster;
-
-    if (!loadRoster(blackListRoster, blackRosterFilename())) {
-        blackListRoster = roster; // By default all contacts are in the black list
+    BE::Roster blackRoster;
+    if (!RosterHelper(BlackRoster, canonicAccount()).load(blackRoster)) {
+        blackRoster = roster; // By default all contacts are in the black list
     }
 
-    ui->rosterWidget->setRoster(roster, blackListRoster);
-    m_appFacade->setBlackListRoster(blackListRoster);
+    ui->rosterWidget->setRoster(roster, blackRoster);
+    m_appFacade->setBlackListRoster(blackRoster);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2249,9 +1831,9 @@ void Lvk::FE::MainWindow::onConnectionError(int err)
         m_connectionStatus = ConnectionError;
 
         if (err != BE::AppFacade::SSLNotSupportedError) {
-            setUiMode(ChatConnectionFailedUiMode);
+            setUiMode(FE::ChatConnectionFailedUiMode);
         } else {
-            setUiMode(ChatConnectionSSLFailedUiMode);
+            setUiMode(FE::ChatConnectionSSLFailedUiMode);
         }
     }
 }
@@ -2263,7 +1845,7 @@ void Lvk::FE::MainWindow::onDisconnection()
     qDebug() << "MainWindow: Chatbot disconnected";
 
     m_connectionStatus = DisconnectedFromChat;
-    setUiMode(ChatDisconnectedUiMode);
+    setUiMode(FE::ChatDisconnectedUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2277,7 +1859,7 @@ void Lvk::FE::MainWindow::onNewChatConversation(const Cmn::Conversation::Entry &
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRosterSelectionChanged()
+void Lvk::FE::MainWindow::onRosterSelectChanged()
 {
     updateBlackList();
 }
@@ -2290,7 +1872,7 @@ void Lvk::FE::MainWindow::updateBlackList()
 
     m_appFacade->setBlackListRoster(blackList);
 
-    saveRoster(blackList, blackRosterFilename());
+    RosterHelper(BlackRoster, canonicAccount()).save(blackList);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2298,20 +1880,6 @@ void Lvk::FE::MainWindow::updateBlackList()
 inline Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
 {
     return ui->gtalkChatRadio_v->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString Lvk::FE::MainWindow::rosterFilename()
-{
-    return ::rosterFilename(canonicAccount());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString Lvk::FE::MainWindow::blackRosterFilename()
-{
-    return ::blackRosterFilename(canonicAccount());
 }
 
 //--------------------------------------------------------------------------------------------------
