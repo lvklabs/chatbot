@@ -28,13 +28,11 @@
 #include <QPair>
 #include <QVariant>
 #include <QSet>
-#include <QTimer>
 
 #include "back-end/chatbotrulesfile.h"
 #include "nlp-engine/rule.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
-#include "back-end/scorealgorithm.h"
 #include "common/remotelogger.h"
 #include "common/conversation.h"
 
@@ -56,12 +54,16 @@ namespace CA
     class Chatbot;
 }
 
+namespace Stats
+{
+    struct Score;
+}
+
 namespace BE
 {
 
 class Rule;
 class AIAdapter;
-struct Score;
 
 /// \ingroup Lvk
 /// \addtogroup BE
@@ -334,12 +336,12 @@ public:
     /**
      * Returns the current score for the chatbot
      */
-    Score currentScore();
+    Stats::Score currentScore();
 
     /**
      * Returns the best score for the chatbot
      */
-    Score bestScore();
+    Stats::Score bestScore();
 
     /**
      * Uploads the current score to the server.
@@ -395,11 +397,8 @@ signals:
     void scoreRemainingTime(int secs);
 
 private slots:
-
     void onAccountOk();
     void onAccountError(int err);
-
-    void onScoreTick();
     void startTicking();
     void stopTicking();
 
@@ -418,9 +417,6 @@ private:
     bool m_statsEnabled;
     Cmn::RemoteLogger *m_fastLogger;
     Cmn::RemoteLogger *m_secureLogger;
-    ScoreAlgorithm m_scoreAlgo;
-    QTimer m_scoreTimer;
-    int m_deltaTime;
 
     bool setDefaultRules();
 
@@ -437,7 +433,6 @@ private:
     bool logScore();
     bool logAccountVerified(const QString &username, const QString &domain);
     bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
-    void updateBestScore();
 };
 
 /// @}

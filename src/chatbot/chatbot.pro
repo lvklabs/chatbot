@@ -120,16 +120,12 @@ HEADERS += \
     front-end/optionswindow.h \
     front-end/filefilters.h \
     front-end/rosterhelper.h \
+    front-end/mainwindowrefactor.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
     back-end/target.h \
     back-end/chatbotrulesfile.h \
-    back-end/rulestatshelper.h \
-    back-end/historystatshelper.h \
-    back-end/statshelper.h \
-    back-end/score.h \
-    back-end/scorealgorithm.h \
     back-end/aiadapter.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
@@ -170,11 +166,14 @@ HEADERS += \
     common/cipher.h \
     stats/statsmanager.h \
     stats/statsfile.h \
-    stats/id.h \
     stats/history.h \
     stats/timeinterval.h \
     stats/securestatsfile.h \
-    front-end/mainwindowrefactor.h
+    stats/score.h \
+    stats/metric.h \
+    stats/rulestatshelper.h \
+    stats/historystatshelper.h \
+    stats/statshelper.h \
 
 
 SOURCES += \
@@ -199,10 +198,10 @@ SOURCES += \
     front-end/optionswindow.cpp \
     front-end/welcomewidget.cpp \
     front-end/rosterhelper.cpp \
+    front-end/mainwindowrefactor.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
-    back-end/scorealgorithm.cpp \
     back-end/aiadapter.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
@@ -230,7 +229,6 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/history.cpp \
     stats/securestatsfile.cpp \
-    front-end/mainwindowrefactor.cpp
 
 
 FORMS += \
@@ -304,5 +302,4 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
-
 

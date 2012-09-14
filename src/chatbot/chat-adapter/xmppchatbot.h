@@ -220,8 +220,6 @@ private:
     Error convertToLocalError(QXmppClient::Error err);
 
     void rebuildLocalRoster() const;
-
-    void updateConnectionStats();
 };
 
 /// @}

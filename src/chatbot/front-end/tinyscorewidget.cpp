@@ -39,7 +39,7 @@ void Lvk::FE::TinyScoreWidget::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::TinyScoreWidget::setScore(const BE::Score &current, const BE::Score &best)
+void Lvk::FE::TinyScoreWidget::setScore(const Stats::Score &current, const Stats::Score &best)
 {
     m_strCur = QString::number(current.total);
     m_strBest = QString::number(best.total);

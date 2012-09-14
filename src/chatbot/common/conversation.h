@@ -22,6 +22,7 @@
 #ifndef LVK_CMN_CONVERSATION_H
 #define LVK_CMN_CONVERSATION_H
 
+#include <QDataStream>
 #include <QDateTime>
 #include <QString>
 #include <QList>
@@ -146,6 +147,41 @@ public:
 private:
     QList<Entry> m_entries;
 };
+
+
+/**
+ * Writes a conversation \a conv to the stream and returns a reference to the stream.
+ */
+inline QDataStream &operator<<(QDataStream &stream, const Conversation::Entry &e)
+{
+    return stream << e.dateTime << e.from << e.to << e.msg << e.response << e.match
+                  << (quint32)e.ruleId;
+}
+
+/**
+ * Reads a conversation from the \a stream into \a conv, and returns a reference to the stream.
+ */
+inline QDataStream &operator>>(QDataStream &stream, Conversation::Entry &e)
+{
+    return stream >> e.dateTime >> e.from >> e.to >> e.msg >> e.response >> e.match
+                  >> (quint32 &)e.ruleId;
+}
+
+/**
+ * Writes a conversation \a conv to the stream and returns a reference to the stream.
+ */
+inline QDataStream &operator<<(QDataStream &stream, const Conversation &conv)
+{
+    return stream << conv.entries();
+}
+
+/**
+ * Reads a conversation from the \a stream into \a conv, and returns a reference to the stream.
+ */
+inline QDataStream &operator>>(QDataStream &stream, Conversation &conv)
+{
+    return stream >> conv.entries();
+}
 
 /// @}
 

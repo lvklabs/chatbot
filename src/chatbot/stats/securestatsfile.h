@@ -22,7 +22,7 @@
 #ifndef LVK_STATS_SECURESTATSFILE_H
 #define LVK_STATS_SECURESTATSFILE_H
 
-#include "stats/id.h"
+#include "stats/metric.h"
 #include "stats/statsfile.h"
 #include "stats/timeinterval.h"
 
@@ -77,22 +77,72 @@ public:
     /**
      * \copydoc StatsFile::setStat()
      */
-    virtual void setStat(Stats::Id id, const QVariant &value);
+    virtual void setMetric(Stats::Metric m, const QVariant &value);
 
     /**
      * \copydoc StatsFile::stat()
      */
-    virtual void stat(Stats::Id id, QVariant &value);
+    virtual void metric(Stats::Metric m, QVariant &value);
 
     /**
-     * \copydoc StatsFile::history()
+     * \copydoc StatsFile::metricHistory()
      */
-    virtual void history(Stats::Id id, Stats::History &h);
+    virtual void metricHistory(Stats::Metric m, Stats::History &h);
 
     /**
-     * \copydoc StatsFile::combinedHistory()
+     * \copydoc StatsFile::scoreRemainingTime()
      */
-    virtual void combinedHistory(Id id1, Id id2, History &h);
+    virtual int scoreElapsedTime() const;
+
+    /**
+     * \copydoc StatsFile::setScoreRemainingTime()
+     */
+    virtual void setScoreElapsedTime(int secs);
+
+    /**
+     * \copydoc StatsFile::scoreStartTime()
+     */
+    virtual QDateTime scoreStartTime() const;
+
+    /**
+     * \copydoc StatsFile::currentScore()
+     */
+    virtual Score currentScore() const;
+
+    /**
+     * \copydoc StatsFile::setCurrentScore()
+     */
+    virtual void setCurrentScore(const Score &s);
+
+    /**
+     * \copydoc StatsFile::bestScore()
+     */
+    virtual Score bestScore() const;
+
+    /**
+     * \copydoc StatsFile::setBestScore()
+     */
+    virtual void setBestScore(const Score &s);
+
+    /**
+     * \copydoc StatsFile::contacts()
+     */
+    virtual QSet<QString> contacts();
+
+    /**
+     * \copydoc StatsFile::appendContact()
+     */
+    virtual void addContact(const QString &username);
+
+    /**
+     * \copydoc StatsFile::chatHistory()
+     */
+    virtual void chatHistory(Cmn::Conversation &h);
+
+    /**
+     * \copydoc StatsFile::appendChatEntry()
+     */
+    virtual void appendChatEntry(const Cmn::Conversation::Entry &entry);
 
     /**
      * \copydoc StatsFile::load()
@@ -126,10 +176,16 @@ private:
     QString m_filename;
     IntervalStats m_stats;
     TimeInterval m_curInterv;
+    Score m_bestScore;
+    Score m_curScore;
+    QDateTime m_scoreStart;
+    int m_elapsedTime;
+    QSet<QString> m_contacts;
+    Cmn::Conversation m_history;
 
     inline void serialize(QByteArray &data);
     inline bool deserialize(const QByteArray &data);
-    inline void setStat(int col, unsigned value, bool cumulative = false);
+    inline void setMetric(int col, unsigned value, bool cumulative = false);
 };
 
 /// @}

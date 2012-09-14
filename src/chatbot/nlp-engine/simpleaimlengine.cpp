@@ -199,16 +199,14 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
 
 bool Lvk::Nlp::SimpleAimlEngine::hasVariable(const QString &input)
 {
-    static QRegExp varNameRegex(VAR_NAME_REGEX);
-    return varNameRegex.indexIn(input) != -1;
+    return m_varNameRegex.indexIn(input) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::Nlp::SimpleAimlEngine::hasKeywordOp(const QString &input)
 {
-    static QRegExp keywordRegex(KEYWORD_REGEX);
-    return keywordRegex.indexIn(input) != -1;
+    return m_keywordRegex.indexIn(input) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -222,9 +220,7 @@ bool Lvk::Nlp::SimpleAimlEngine::hasRegexOp(const QString &input)
 
 bool Lvk::Nlp::SimpleAimlEngine::hasConditional(const QString &output)
 {
-    static QRegExp ifElseRegex(IF_ELSE_REGEX);
-    static QRegExp ifRegex(IF_REGEX);
-    return ifElseRegex.indexIn(output) != -1 || ifRegex.indexIn(output) != -1;
+    return m_ifElseRegex.indexIn(output) != -1 || m_ifRegex.indexIn(output) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------

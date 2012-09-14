@@ -24,7 +24,7 @@
 
 #include <QWidget>
 
-#include "back-end/score.h"
+#include "stats/score.h"
 
 namespace Ui {
     class ScoreWidget;
@@ -65,7 +65,7 @@ public:
     /**
      * Sets the score
      */
-    void setScore(const BE::Score &score);
+    void setScore(const Stats::Score &score);
 
     /**
      * Sets if the upload button is visible or not. By default is visible.

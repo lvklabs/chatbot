@@ -22,10 +22,14 @@
 #ifndef LVK_STATS_STATSFILE_H
 #define LVK_STATS_STATSFILE_H
 
-#include "stats/id.h"
+#include "stats/metric.h"
+#include "stats/score.h"
 #include "stats/history.h"
+#include "common/conversation.h"
 
-class QString;
+#include <QSet>
+#include <QString>
+#include <QDateTime>
 
 namespace Lvk
 {
@@ -67,24 +71,74 @@ public:
     virtual void newInterval() = 0;
 
     /**
-     * Sets \a value as the value for the statistic with the given \a id in the current date
+     * Sets \a value as the value for the metric with the given \a m in the current date
      */
-    virtual void setStat(Id id, const QVariant &value) = 0;
+    virtual void setMetric(Metric m, const QVariant &value) = 0;
 
     /**
-     * Returns the value of the given statistic \a id for current date
+     * Returns the value of the given metric \a m for current date
      */
-    virtual void stat(Id id, QVariant &value) = 0;
+    virtual void metric(Metric m, QVariant &value) = 0;
 
     /**
-     * Returns the history of values of the given statistic \a id
+     * Returns the history of values of the given metric \a m
      */
-    virtual void history(Id id, History &h) = 0;
+    virtual void metricHistory(Metric m, History &h) = 0;
 
     /**
-     * Returns a the history of a new statistic that is the conbination of \a id1 and \a id2
+     *
      */
-    virtual void combinedHistory(Id id1, Id id2, History &h) = 0;
+    virtual int scoreElapsedTime() const = 0;
+
+    /**
+     *
+     */
+    virtual void setScoreElapsedTime(int secs) = 0;
+
+    /**
+     *
+     */
+    virtual QDateTime scoreStartTime() const = 0;
+
+    /**
+     *
+     */
+    virtual Score currentScore() const = 0;
+
+    /**
+     *
+     */
+    virtual void setCurrentScore(const Score &s) = 0;
+
+    /**
+     *
+     */
+    virtual Score bestScore() const = 0;
+
+    /**
+     *
+     */
+    virtual void setBestScore(const Score &s) = 0;
+
+    /**
+     *
+     */
+    virtual QSet<QString> contacts() = 0;
+
+    /**
+     *
+     */
+    virtual void addContact(const QString &username) = 0;
+
+    /**
+     *
+     */
+    virtual void chatHistory(Cmn::Conversation &h) = 0;
+
+    /**
+     *
+     */
+    virtual void appendChatEntry(const Cmn::Conversation::Entry &entry) = 0;
 
     /**
      * Loads statistics from \a filename
@@ -97,7 +151,7 @@ public:
     virtual void save() = 0;
 
     /**
-     * Closes the current statistics file.
+     * Closes the current file.
      */
     virtual void close() = 0;
 

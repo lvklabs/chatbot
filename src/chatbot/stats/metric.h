@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_STATS_ID_H
-#define LVK_STATS_ID_H
+#ifndef LVK_STATS_METRIC_H
+#define LVK_STATS_METRIC_H
 
 namespace Lvk
 {
@@ -36,9 +36,9 @@ namespace Stats
 /// @{
 
 /**
- * \brief The Id enum provides an ID for each statistic
+ * \brief The Metric enum provides an ID for each metric
  */
-enum Id
+enum Metric
 {
     NullStat,                   ///< The null stat
     LexiconSize,                ///< The lexicon size, i.e. the amount of different words used to define rules.
@@ -69,5 +69,5 @@ enum Id
 } // namespace Lvk
 
 
-#endif // LVK_STATS_ID_H
+#endif // LVK_STATS_METRIC_H
 

@@ -21,10 +21,7 @@
 
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
-#include "back-end/historystatshelper.h"
-#include "back-end/rulestatshelper.h"
 #include "back-end/aiadapter.h"
-#include "back-end/score.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
@@ -40,19 +37,12 @@
 #include "stats/statsmanager.h"
 
 #include <QDateTime>
-#include <QMetaType>
 #include <cmath>
 #include <algorithm>
 
 #define FILE_METADATA_CHAT_TYPE           "chat_type"
 #define FILE_METADATA_USERNAME            "username"
 #define FILE_METADATA_NLP_OPTIONS         "nlp_options"
-#define FILE_METADATA_BEST_SCORE          "best_score"
-#define FILE_METADATA_SCORE_START_TIME    "score_start_time"
-#define FILE_METADATA_SCORE_DELTA_TIME    "score_delta_time"
-
-#define SCORE_INTERVAL_DUR                (5*3600) // In seconds
-
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -120,14 +110,6 @@ inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roste
     return infoList;
 }
 
-//--------------------------------------------------------------------------------------------------
-// StatsManager helpers
-
-inline void setStat(Lvk::Stats::Id id, unsigned value)
-{
-    Lvk::Stats::StatsManager::manager()->setStat(id, value);
-}
-
 } // namespace
 
 
@@ -144,8 +126,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_nlpOptions(0),
       m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
-      m_deltaTime(0)
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
 {
     init();
 }
@@ -161,8 +142,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nlpOptions(0), // FIXME value?
       m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
       m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger()),
-      m_deltaTime(0)
+      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
 {
     init();
 }
@@ -171,10 +151,9 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 
 void Lvk::BE::AppFacade::init()
 {
-    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(onScoreTick()));
-
-    qRegisterMetaType<Lvk::BE::Score>("Lvk::BE::Score");
-    qRegisterMetaTypeStreamOperators<Lvk::BE::Score>("Lvk::BE::Score");
+    connect(Stats::StatsManager::manager(),
+            SIGNAL(scoreRemainingTime(int)),
+            SIGNAL(scoreRemainingTime(int)));
 
     setupChatbot();
 }
@@ -219,8 +198,6 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
     if (loaded) {
         Stats::StatsManager::manager()->setChatbotId(m_rules.chatbotId());
-
-        m_deltaTime = m_rules.metadata(FILE_METADATA_SCORE_DELTA_TIME).toUInt();
 
         setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
         setupChatbot();
@@ -330,7 +307,6 @@ void Lvk::BE::AppFacade::close()
     m_targets.clear();
     m_rules.close();
     m_evasivesRule = 0;
-    m_deltaTime = 0;
 
     Stats::StatsManager::manager()->setChatbotId("");
 }
@@ -761,59 +737,9 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 // Stats
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::updateStats()
-{
-
-    {
-        qDebug() << "Updating rule stats...";
-
-        RuleStatsHelper stats(rootRule());
-
-        setStat(Stats::LexiconSize,     stats.lexiconSize());
-        setStat(Stats::TotalWords,      stats.totalWords());
-        setStat(Stats::TotalRules,      stats.totalRules());
-        setStat(Stats::TotalRulePoints, stats.totalRulePoints());
-    }
-
-    {
-        const unsigned SCORE_CONV_MIN_SIZE = 20;
-
-        qDebug() << "Updating history stats...";
-
-        QDateTime intervalStart = m_rules.metadata(FILE_METADATA_SCORE_START_TIME).toDateTime();
-        QDateTime intervalEnd = QDateTime::currentDateTime().addSecs(scoreRemainingTime());
-        HistoryStatsHelper stats(chatHistory(), intervalStart, intervalEnd);
-
-        qDebug() << "Interval time" << intervalStart << "-" << intervalEnd;
-
-        setStat(Stats::HistoryLexiconSize,                stats.lexiconSize());
-        setStat(Stats::HistoryTotalLines,                 stats.lines());
-        setStat(Stats::HistoryChatbotLexiconSize,         stats.chatbotLexiconSize());
-        setStat(Stats::HistoryChatbotLines,               stats.chatbotLines());
-        setStat(Stats::HistoryChatbotDiffLines,           stats.chatbotDiffLines());
-        setStat(Stats::HistoryChatbotLexiconSizeInterval, stats.chatbotLexiconSizeInterval());
-        setStat(Stats::HistoryChatbotLinesInterval,       stats.chatbotLinesInterval());
-        setStat(Stats::HistoryChatbotDiffLinesInterval,   stats.chatbotDiffLinesInterval());
-        setStat(Stats::HistoryContacts,                   stats.contacts());
-        setStat(Stats::HistoryScoreContacts,              stats.contacts(SCORE_CONV_MIN_SIZE));
-    }
-
-    if (m_chatbot) {
-        qDebug() << "Updating Roster stats...";
-
-        unsigned total = m_chatbot->roster().size();
-        unsigned disabled = m_chatbot->blackListRoster().size();
-
-        setStat(Stats::RosterSize,        total);
-        setStat(Stats::EnabledRosterSize, total - disabled);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool Lvk::BE::AppFacade::logScore()
 {
-    Score s = bestScore();
+    Stats::Score s = bestScore();
 
     Cmn::RemoteLogger::FieldList fields;
     fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
@@ -863,97 +789,44 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
 // Score
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Score Lvk::BE::AppFacade::currentScore()
+Lvk::Stats::Score Lvk::BE::AppFacade::currentScore()
 {
-    updateStats();
-
-    return m_scoreAlgo.score();
+    return Stats::StatsManager::manager()->currentScore();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Score Lvk::BE::AppFacade::bestScore()
+Lvk::Stats::Score Lvk::BE::AppFacade::bestScore()
 {
-    updateBestScore();
-
-    return m_rules.metadata(FILE_METADATA_BEST_SCORE).value<Score>();
+    return Stats::StatsManager::manager()->bestScore();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::startTicking()
 {
-    const int TICK_MSEC = 1000;
-
-    m_scoreTimer.start(TICK_MSEC);
+    Stats::StatsManager::manager()->startTicking();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::stopTicking()
 {
-    m_scoreTimer.stop();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::AppFacade::onScoreTick()
-{
-    if (m_deltaTime == 0) {
-        m_rules.setMetadata(FILE_METADATA_SCORE_START_TIME, QDateTime::currentDateTime());
-    }
-
-    m_deltaTime = (m_deltaTime + 1) % SCORE_INTERVAL_DUR;
-
-    m_rules.setMetadata(FILE_METADATA_SCORE_DELTA_TIME, m_deltaTime);
-
-    // If score timeout
-    if (m_deltaTime == 0) {
-        updateBestScore();
-        //Stats::StatsManager::manager()->newInterval();
-    }
-    // Save every minute
-    if (m_deltaTime % 60 == 0) {
-        m_rules.save();
-    }
-
-    emit scoreRemainingTime(scoreRemainingTime());
+    Stats::StatsManager::manager()->stopTicking();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 int Lvk::BE::AppFacade::scoreRemainingTime() const
 {
-    return SCORE_INTERVAL_DUR - m_deltaTime - 1;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::AppFacade::updateBestScore()
-{
-    Score best;
-
-    QVariant v = m_rules.metadata(FILE_METADATA_BEST_SCORE);
-
-    if (!v.isNull()) {
-        best = v.value<Score>();
-    }
-
-    Score current = currentScore();
-
-    if (current.total > best.total) {
-        best = current;
-    }
-
-    m_rules.setMetadata(FILE_METADATA_BEST_SCORE, QVariant::fromValue(best));
-    m_rules.save();
+    return Stats::StatsManager::manager()->scoreRemainingTime();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::BE::AppFacade::uploadScore()
 {
-    Score s = bestScore();
+    Stats::Score s = bestScore();
 
     Cmn::RemoteLogger::FieldList fields;
     fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID,     m_rules.chatbotId()));

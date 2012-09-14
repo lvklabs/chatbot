@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef LVK_BE_HISTORYSTATSHELPER_H
-#define LVK_BE_HISTORYSTATSHELPER_H
+#ifndef LVK_STATS_HISTORYSTATSHELPER_H
+#define LVK_STATS_HISTORYSTATSHELPER_H
 
-#include "back-end/statshelper.h"
+#include "stats/statshelper.h"
 #include "common/conversation.h"
 
 #include <QHash>
@@ -35,11 +35,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Stats
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Stats
 /// @{
 
 /**
@@ -51,13 +51,19 @@ class HistoryStatsHelper : public StatsHelper
 public:
 
     /**
+     * Constructs a emtpy HistoryStatsHelper
+     */
+    HistoryStatsHelper()
+        : m_cbLinesCount(0)
+    {
+    }
+
+    /**
      * Constructs a HistoryStatsHelper and provides statistics for the given conversation
      * \a conv.
      */
-    HistoryStatsHelper(const Lvk::Cmn::Conversation &conv, const QDateTime &intervalStart,
-                       const QDateTime &intervalEnd)
-        : m_intvlStart(intervalStart), m_intvlEnd(intervalEnd),
-          m_chatbotLinesTotal(0), m_chatbotLinesTotalIntvl(0)
+    HistoryStatsHelper(const Lvk::Cmn::Conversation &conv)
+        : m_cbLinesCount(0)
     {
         count(conv);
     }
@@ -67,7 +73,7 @@ public:
      */
     unsigned chatbotLines() const
     {
-        return m_chatbotLinesTotal;
+        return m_cbLinesCount;
     }
 
     /**
@@ -75,7 +81,7 @@ public:
      */
     unsigned chatbotDiffLines() const
     {
-        return m_chatbotLines.size();
+        return m_cbLines.size();
     }
 
     /**
@@ -84,51 +90,43 @@ public:
      */
     unsigned chatbotLexiconSize() const
     {
-        return m_chatbotLexicon.size();
+        return m_cbLexicon.size();
     }
 
     /**
-     * Returns the total amount of lines in history produced by the chatbot
-     * within the interval.
+     * Returns the set of contacts that have a conversation that scores points
      */
-    unsigned chatbotLinesInterval() const
+    const QSet<QString> &scoreContacts() const
     {
-        return m_chatbotLinesTotalIntvl;
+        return m_scoreContacts;
     }
 
     /**
-     * Returns the total amount of different lines in history produced by the chatbot
-     * within the interval.
+     * Updates stats with a new conversation \a conv
      */
-    unsigned chatbotDiffLinesInterval() const
+    void update(const Cmn::Conversation &conv)
     {
-        return m_chatbotLinesIntvl.size();
+        count(conv);
     }
 
     /**
-     * Returns the chatbot lexicon size. i.e. the total amount of different words used by
-     * the chatbot within the interval.
+     * Updates stats with a new \a entry
      */
-    unsigned chatbotLexiconSizeInterval() const
+    void update(const Cmn::Conversation::Entry &entry)
     {
-        return m_chatbotLexiconIntvl.size();
+        count(entry);
     }
 
     /**
-     * Returns how many different contacts contains the history.
+     * Sets all stats to zero.
      */
-    unsigned contacts() const
+    void clear()
     {
-        return m_contacts.size();
-    }
-
-    /**
-     * Returns how many different contacts with conversation with at least \a minSize entries
-     */
-    unsigned contacts(unsigned minSize) const
-    {
-        return std::count_if(m_contacts.begin(), m_contacts.end(),
-                             std::bind2nd(std::greater_equal<unsigned>(), minSize));
+        StatsHelper::clear();
+        m_contacts.clear();
+        m_cbLines.clear();
+        m_cbLexicon.clear();
+        m_cbLinesCount = 0;
     }
 
 protected:
@@ -154,40 +152,30 @@ protected:
 
         if (!entry.response.isEmpty()) {
             countContact(entry.from);
-            m_chatbotLines.insert(entry.response);
-            updateLexicon(splitSentence(entry.response), m_chatbotLexicon);
-            ++m_chatbotLinesTotal;
-
-            // if within interval
-            if (entry.dateTime >= m_intvlStart && entry.dateTime < m_intvlEnd) {
-                m_chatbotLinesIntvl.insert(entry.response);
-                updateLexicon(splitSentence(entry.response), m_chatbotLexiconIntvl);
-                ++m_chatbotLinesTotalIntvl;
-            }
+            m_cbLines.insert(entry.response);
+            updateLexicon(splitSentence(entry.response), m_cbLexicon);
+            ++m_cbLinesCount;
         }
     }
 
 private:
     typedef QHash<QString, unsigned> ContactsCount;
 
-    QDateTime m_intvlStart;
-    QDateTime m_intvlEnd;
-
     ContactsCount m_contacts;
-    // all the time
-    QSet<QString> m_chatbotLines;
-    QSet<QString> m_chatbotLexicon;
-    unsigned m_chatbotLinesTotal;
-    // within interval
-    QSet<QString> m_chatbotLinesIntvl;
-    QSet<QString> m_chatbotLexiconIntvl;
-    unsigned m_chatbotLinesTotalIntvl;
+    QSet<QString> m_scoreContacts;
+    // chatbot stats
+    QSet<QString> m_cbLines;
+    QSet<QString> m_cbLexicon;
+    unsigned m_cbLinesCount;
 
     void countContact(const QString &username)
     {
         ContactsCount::iterator it = m_contacts.find(username);
         if (it != m_contacts.end()) {
-            m_contacts[username] = it.value() + 1;
+            ++it.value();
+            if (it.value() >= 20) {
+                m_scoreContacts.insert(username);
+            }
         } else {
             m_contacts[username] = 1;
         }
@@ -197,12 +185,12 @@ private:
 
 /// @}
 
-} // namespace BE
+} // namespace Stats
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_BE_STATSHELPERS_H
+#endif // LVK_STATS_STATSHELPERS_H
 

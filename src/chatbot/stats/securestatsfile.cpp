@@ -19,7 +19,7 @@
  *
  */
 
-#include "stats/id.h"
+#include "stats/metric.h"
 #include "stats/securestatsfile.h"
 #include "common/cipher.h"
 
@@ -54,9 +54,9 @@ enum
 namespace
 {
 
-inline bool validId(Lvk::Stats::Id id)
+inline bool validMetric(Lvk::Stats::Metric m)
 {
-    return id != Lvk::Stats::NullStat && static_cast<int>(id) < TotalColumns;
+    return m != Lvk::Stats::NullStat && static_cast<int>(m) < TotalColumns;
 }
 
 } // namespace
@@ -67,14 +67,14 @@ inline bool validId(Lvk::Stats::Id id)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Stats::SecureStatsFile::SecureStatsFile()
-    : m_mutex(new QMutex(QMutex::Recursive)), m_curInterv(1)
+    : m_mutex(new QMutex(QMutex::Recursive)), m_curInterv(1), m_elapsedTime(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Stats::SecureStatsFile::SecureStatsFile(const QString &filename)
-    : m_mutex(new QMutex(QMutex::Recursive)), m_curInterv(1)
+    : m_mutex(new QMutex(QMutex::Recursive)), m_curInterv(1), m_elapsedTime(0)
 {
     load(filename);
 }
@@ -90,68 +90,55 @@ Lvk::Stats::SecureStatsFile::~SecureStatsFile()
 
 void Lvk::Stats::SecureStatsFile::newInterval()
 {
+    QMutexLocker locker(m_mutex);
+
     ++m_curInterv;
+    m_history.clear();
+    m_scoreStart = QDateTime::currentDateTime();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::SecureStatsFile::setStat(Stats::Id id, const QVariant &value)
+void Lvk::Stats::SecureStatsFile::setMetric(Stats::Metric m, const QVariant &value)
 {
-    switch (id) {
+    switch (m) {
     case NullStat:
         return;
     case ConnectionTime:
-        return setStat(id, value.toUInt(), true);
+        return setMetric(m, value.toUInt(), true);
     default:
-        return setStat(id, value.toUInt(), false);
+        return setMetric(m, value.toUInt(), false);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::SecureStatsFile::stat(Stats::Id id, QVariant &value)
+void Lvk::Stats::SecureStatsFile::metric(Stats::Metric m, QVariant &value)
 {
     value.clear();
 
-    if (validId(id)) {
+    if (validMetric(m)) {
         QMutexLocker locker(m_mutex);
 
         IntervalStats::const_iterator it = m_stats.find(m_curInterv);
         if (it != m_stats.end()) {
-            value = (*it)[id];
+            value = (*it)[m];
         }
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::SecureStatsFile::history(Stats::Id id, Stats::History &h)
+void Lvk::Stats::SecureStatsFile::metricHistory(Stats::Metric m, Stats::History &h)
 {
     h.clear();
 
-    if (validId(id)) {
+    if (validMetric(m)) {
         QMutexLocker locker(m_mutex);
 
         IntervalStats::const_iterator it;
         for (it = m_stats.begin(); it != m_stats.end(); ++it) {
-            QVariant value = (*it)[id];
-            h.append(it.key(), value);
-        }
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Stats::SecureStatsFile::combinedHistory(Stats::Id id1, Stats::Id id2, Stats::History &h)
-{
-    h.clear();
-
-    if (validId(id1) && validId(id2)) {
-        QMutexLocker locker(m_mutex);
-
-        IntervalStats::const_iterator it;
-        for (it = m_stats.begin(); it != m_stats.end(); ++it) {
-            QVariant value = (*it)[id1] + (*it)[id2];
+            QVariant value = (*it)[m];
             h.append(it.key(), value);
         }
     }
@@ -226,6 +213,12 @@ void Lvk::Stats::SecureStatsFile::close()
     m_filename.clear();
     m_stats.clear();
     m_curInterv = 1;
+    m_bestScore = Score();
+    m_curScore = Score();
+    m_scoreStart = QDateTime();
+    m_elapsedTime = 0;
+    m_contacts.clear();
+    m_history.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -236,6 +229,12 @@ void Lvk::Stats::SecureStatsFile::clear()
 
     m_stats.clear();
     m_curInterv = 1;
+    m_bestScore = Score();
+    m_curScore = Score();
+    m_scoreStart = QDateTime();
+    m_elapsedTime = 0;
+    m_contacts.clear();
+    m_history.clear();
 
     if (m_filename.size() > 0) {
         QFile::remove(m_filename);
@@ -259,8 +258,14 @@ inline void Lvk::Stats::SecureStatsFile::serialize(QByteArray &data)
     ostream.setVersion(QDataStream::Qt_4_7);
     ostream << (quint32)STAT_MAGIC_NUMBER;
     ostream << (quint32)STAT_FILE_FORMAT_VERSION;
-    ostream << (quint32)m_curInterv;
+    ostream << m_curInterv;
     ostream << m_stats;
+    ostream << m_bestScore;
+    ostream << m_curScore;
+    ostream << m_scoreStart;
+    ostream << m_elapsedTime;
+    ostream << m_contacts;
+    ostream << m_history;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -287,6 +292,12 @@ inline bool Lvk::Stats::SecureStatsFile::deserialize(const QByteArray &data)
 
     istream >> m_curInterv;
     istream >> m_stats;
+    istream >> m_bestScore;
+    istream >> m_curScore;
+    istream >> m_scoreStart;
+    istream >> m_elapsedTime;
+    istream >> m_contacts;
+    istream >> m_history;
 
     if (istream.status() != QDataStream::Ok) {
         qCritical("SecureStatsFile: Cannot read stat file: Invalid file format");
@@ -298,7 +309,7 @@ inline bool Lvk::Stats::SecureStatsFile::deserialize(const QByteArray &data)
 
 //--------------------------------------------------------------------------------------------------
 
-inline void Lvk::Stats::SecureStatsFile::setStat(int col, unsigned value, bool cumulative)
+inline void Lvk::Stats::SecureStatsFile::setMetric(int col, unsigned value, bool cumulative)
 {
     assert(col < TotalColumns);
     assert(col != TimeIntervalCol);
@@ -320,6 +331,98 @@ inline void Lvk::Stats::SecureStatsFile::setStat(int col, unsigned value, bool c
     (*it)[col] = cumulative ? oldValue + value : value;
 }
 
+//--------------------------------------------------------------------------------------------------
 
+int Lvk::Stats::SecureStatsFile::scoreElapsedTime() const
+{
+    return m_elapsedTime;
+}
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::setScoreElapsedTime(int secs)
+{
+    m_elapsedTime = secs;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QDateTime Lvk::Stats::SecureStatsFile::scoreStartTime() const
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_scoreStart;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Stats::Score Lvk::Stats::SecureStatsFile::currentScore() const
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_curScore;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::setCurrentScore(const Score &s)
+{
+    QMutexLocker locker(m_mutex);
+
+    m_curScore = s;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Stats::Score Lvk::Stats::SecureStatsFile::bestScore() const
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_bestScore;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::setBestScore(const Score &s)
+{
+    QMutexLocker locker(m_mutex);
+
+    m_bestScore = s;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QSet<QString> Lvk::Stats::SecureStatsFile::contacts()
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_contacts;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::addContact(const QString &username)
+{
+    QMutexLocker locker(m_mutex);
+
+    m_contacts.insert(username);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::chatHistory(Cmn::Conversation &h)
+{
+    QMutexLocker locker(m_mutex);
+
+    h = m_history;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::SecureStatsFile::appendChatEntry(const Cmn::Conversation::Entry &entry)
+{
+    QMutexLocker locker(m_mutex);
+
+    m_history.append(entry);
+}
 

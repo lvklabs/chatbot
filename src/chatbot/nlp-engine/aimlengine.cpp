@@ -399,3 +399,30 @@ void Lvk::Nlp::AimlEngine::setPostSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
     m_dirty = true;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::AimlEngine::hasVariable(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::AimlEngine::hasKeywordOp(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::AimlEngine::hasRegexOp(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::AimlEngine::hasConditional(const QString &/*output*/)
+{
+    return false;
+}

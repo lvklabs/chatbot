@@ -101,6 +101,26 @@ public:
      */
     virtual void setPostSanitizer(Sanitizer *sanitizer);
 
+    /**
+     * ExactMatchEngine does not support variables. This method always returns false.
+     */
+    virtual bool hasVariable(const QString &input);
+
+    /**
+     * ExactMatchEngine does not support keyword operator. This method always returns false.
+     */
+    virtual bool hasKeywordOp(const QString &input);
+
+    /**
+     * ExactMatchEngine does not support regular expressions. This method always returns false.
+     */
+    virtual bool hasRegexOp(const QString &input);
+
+    /**
+     * ExactMatchEngine does not support conditionals. This method always returns false.
+     */
+    virtual bool hasConditional(const QString &output);
+
 private:
 
     RuleList m_rules;

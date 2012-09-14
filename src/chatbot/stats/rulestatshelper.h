@@ -19,13 +19,14 @@
  *
  */
 
-#ifndef LVK_BE_RULESTATSHELPER_H
-#define LVK_BE_RULESTATSHELPER_H
+#ifndef LVK_STATS_RULESTATSHELPER_H
+#define LVK_STATS_RULESTATSHELPER_H
 
-#include "back-end/statshelper.h"
+#include "stats/statshelper.h"
 #include "back-end/rule.h"
-#include "nlp-engine/simpleaimlengine.h" // TODO use factories
+#include "nlp-engine/enginefactory.h"
 
+#include <memory>
 
 namespace Lvk
 {
@@ -33,11 +34,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Stats
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Stats
 /// @{
 
 /**
@@ -49,10 +50,18 @@ class RuleStatsHelper : public StatsHelper
 public:
 
     /**
+     * Constructs an emtpy RuleStatsHelper
+     */
+    RuleStatsHelper()
+        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine())
+    {
+    }
+
+    /**
      * Constructs a RuleStatsHelper and provides statistics for the given \a root rule.
      */
     RuleStatsHelper(const Lvk::BE::Rule *root)
-        : m_rules(0), m_points(0)
+        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine())
     {
         if (root) {
             rcount(root);
@@ -62,7 +71,7 @@ public:
     /**
      * Returns the total amount of rules of type OrdinaryRule or EvasivesRule.
      */
-    unsigned totalRules() const
+    unsigned rulesCount() const
     {
         return m_rules;
     }
@@ -78,9 +87,30 @@ public:
      *   <li>4 points rules with conditionals</li>
      * </ul>
      */
-    unsigned totalRulePoints() const
+    unsigned points() const
     {
         return m_points;
+    }
+
+    /**
+     * Resets stats with the given new \a root
+     */
+    void reset(const Lvk::BE::Rule *root)
+    {
+        clear();
+        if (root) {
+            rcount(root);
+        }
+    }
+
+    /**
+     * Sets all stats to zero.
+     */
+    void clear()
+    {
+        StatsHelper::clear();
+        m_rules = 0;
+        m_points = 0;
     }
 
 protected:
@@ -147,17 +177,17 @@ protected:
     {
         if (input.isEmpty() || output.isEmpty()) {
             return 0;
-        } else if (Nlp::SimpleAimlEngine::hasVariable(input)) {
-            if (Nlp::SimpleAimlEngine::hasConditional(output)) {
+        } else if (m_engine->hasVariable(input)) {
+            if (m_engine->hasConditional(output)) {
                 return 4;
-            } else if (Nlp::SimpleAimlEngine::hasVariable(output)) {
+            } else if (m_engine->hasVariable(output)) {
                 return 3;
             } else {
                 return 1;
             }
-        } else if (Nlp::SimpleAimlEngine::hasKeywordOp(input)) {
+        } else if (m_engine->hasKeywordOp(input)) {
             return 2;
-        } else if (Nlp::SimpleAimlEngine::hasRegexOp(input)) {
+        } else if (m_engine->hasRegexOp(input)) {
             return 2;
         } else {
             return 1;
@@ -167,16 +197,17 @@ protected:
 private:
     unsigned m_rules;
     unsigned m_points;
+    std::auto_ptr<Nlp::Engine> m_engine;
 };
 
 /// @}
 
-} // namespace BE
+} // namespace Stats
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_BE_RULESTATSHELPER_H
+#endif // LVK_STATS_RULESTATSHELPER_H
 

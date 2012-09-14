@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QTime>
 
-#include "back-end/score.h"
+#include "stats/score.h"
 
 namespace Ui {
     class TinyScoreWidget;
@@ -53,7 +53,7 @@ public slots:
     /**
      * Sets the current and best score.
      */
-    void setScore(const BE::Score &current, const BE::Score &best);
+    void setScore(const Stats::Score &current, const Stats::Score &best);
 
     /**
      * Sets \a time as the remaining time.

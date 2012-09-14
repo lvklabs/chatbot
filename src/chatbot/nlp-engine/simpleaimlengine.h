@@ -118,24 +118,24 @@ public:
     class InvalidSyntaxException;
 
     /**
-     * Returns true if \a input contains a variable declaration. Otherwise; returns false.
+     * \copydoc Engine::hasVariable()
      */
-    static bool hasVariable(const QString &input);
+    virtual bool hasVariable(const QString &input);
 
     /**
-     * Returns true if \a input contains a keyword operator. Otherwise; returns false.
+     * \copydoc Engine::hasKeywordOp()
      */
-    static bool hasKeywordOp(const QString &input);
+    virtual bool hasKeywordOp(const QString &input);
 
     /**
-     * Returns true if \a input contains a regex operator. Otherwise; returns false.
+     * \copydoc Engine::hasRegexOp()
      */
-    static bool hasRegexOp(const QString &input);
+    virtual bool hasRegexOp(const QString &input);
 
     /**
-     * Returns true if \a output contains an if-else conditional. Otherwise; returns false.
+     * \copydoc Engine::hasConditional()
      */
-    static bool hasConditional(const QString &output);
+    virtual bool hasConditional(const QString &output);
 
 private:
 

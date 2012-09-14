@@ -32,7 +32,7 @@
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
-#include "back-end/score.h"
+#include "stats/score.h"
 #include "common/conversationwriter.h"
 #include "common/version.h"
 #include "common/settings.h"
@@ -1922,8 +1922,8 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
 
 void Lvk::FE::MainWindow::updateScore()
 {
-    BE::Score cur = m_appFacade->currentScore();
-    BE::Score best = m_appFacade->bestScore();
+    Stats::Score cur = m_appFacade->currentScore();
+    Stats::Score best = m_appFacade->bestScore();
 
     m_tinyScore->setScore(cur, best);
     updateTinyScorePos();
@@ -1995,7 +1995,7 @@ void Lvk::FE::MainWindow::getSendScoreDetails(QString &details)
     details.clear();
 
     // Append best score
-    BE::Score s = m_appFacade->bestScore();
+    Stats::Score s = m_appFacade->bestScore();
     details += QString("%1,%2,%3,%4\n").arg(QString::number(s.contacts),
                                             QString::number(s.conversations),
                                             QString::number(s.rules),

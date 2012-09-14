@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_BE_SCORE_H
-#define LVK_BE_SCORE_H
+#ifndef LVK_STATS_SCORE_H
+#define LVK_STATS_SCORE_H
 
 #include <QDataStream>
 #include <QMetaType>
@@ -31,11 +31,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Stats
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Stats
 /// @{
 
 /**
@@ -65,11 +65,7 @@ inline  QDataStream &operator<<(QDataStream &stream, const Score &score)
  */
 inline QDataStream &operator>>(QDataStream &stream, Score &score)
 {
-    stream >> score.rules;
-    stream >> score.contacts;
-    stream >> score.conversations;
-    stream >> score.total;
-    return stream;
+    return stream >> score.rules >> score.contacts >> score.conversations >> score.total;
 }
 
 /**
@@ -93,15 +89,15 @@ inline bool operator!=(const Score &s1, const Score &s2)
 
 /// @}
 
-} // namespace BE
+} // namespace Stats
 
 /// @}
 
 } // namespace Lvk
 
 
-Q_DECLARE_METATYPE(Lvk::BE::Score)
+Q_DECLARE_METATYPE(Lvk::Stats::Score)
 
 
-#endif // LVK_BE_SCORE_H
+#endif // LVK_STATS_SCORE_H
 

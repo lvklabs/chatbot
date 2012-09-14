@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_BE_STATSHELPER_H
-#define LVK_BE_STATSHELPER_H
+#ifndef LVK_STATS_STATSHELPER_H
+#define LVK_STATS_STATSHELPER_H
 
 #include "nlp-engine/defaultsanitizer.h" // TODO use factories
 
@@ -33,11 +33,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace Stats
 {
 
 /// \ingroup Lvk
-/// \addtogroup BE
+/// \addtogroup Stats
 /// @{
 
 /**
@@ -91,7 +91,7 @@ public:
     /**
      * Returns the total amount of words.
      */
-    unsigned totalWords() const
+    unsigned words() const
     {
         return m_words;
     }
@@ -102,6 +102,32 @@ public:
     unsigned lexiconSize() const
     {
         return m_lexicon.size();
+    }
+
+    /**
+     * Updates statistics with a new string \a s
+     */
+    void update(const QString &s)
+    {
+        count(s);
+    }
+
+    /**
+     * Updates statistics with a list of strings \a l
+     */
+    void update(const QStringList &l)
+    {
+        count(l);
+    }
+
+    /**
+     * Sets all stats to zero.
+     */
+    void clear()
+    {
+        m_lines = 0;
+        m_words = 0;
+        m_lexicon.clear();
     }
 
 protected:
@@ -160,12 +186,12 @@ private:
 
 /// @}
 
-} // namespace BE
+} // namespace Stats
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_BE_STATSHELPER_H
+#endif // LVK_STATS_STATSHELPER_H
 

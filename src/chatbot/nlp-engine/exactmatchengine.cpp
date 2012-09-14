@@ -153,3 +153,31 @@ void Lvk::Nlp::ExactMatchEngine::setLemmatizer(Lvk::Nlp::Lemmatizer */*lemmatize
 void Lvk::Nlp::ExactMatchEngine::setPostSanitizer(Lvk::Nlp::Sanitizer */*sanitizer*/)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::ExactMatchEngine::hasVariable(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::ExactMatchEngine::hasKeywordOp(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::ExactMatchEngine::hasRegexOp(const QString &/*input*/)
+{
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::ExactMatchEngine::hasConditional(const QString &/*output*/)
+{
+    return false;
+}

@@ -128,6 +128,26 @@ public:
      * lemmatization. The instance owns the given pointer.
      */
     virtual void setPostSanitizer(Sanitizer *sanitizer) = 0;
+
+    /**
+     * Returns true if \a input contains a variable declaration. Otherwise; returns false.
+     */
+    virtual bool hasVariable(const QString &input) = 0;
+
+    /**
+     * Returns true if \a input contains a keyword operator. Otherwise; returns false.
+     */
+    virtual bool hasKeywordOp(const QString &input) = 0;
+
+    /**
+     * Returns true if \a input contains a regex operator. Otherwise; returns false.
+     */
+    virtual bool hasRegexOp(const QString &input) = 0;
+
+    /**
+     * Returns true if \a output contains an if-else conditional. Otherwise; returns false.
+     */
+    virtual bool hasConditional(const QString &output) = 0;
 };
 
 /// @}

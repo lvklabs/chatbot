@@ -26,9 +26,12 @@
 
 #include <QMutex>
 #include <QMutexLocker>
+#include <QMetaType>
 
 #define STATS_FILE_PREFIX ""
 #define STATS_FILE_EXT    ".stat"
+
+#define SCORE_INTERVAL_DUR                (5*3600) // In seconds
 
 //--------------------------------------------------------------------------------------------------
 // StatsManager
@@ -60,8 +63,12 @@ QMutex *                   Lvk::Stats::StatsManager::m_mgrMutex = new QMutex();
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Stats::StatsManager::StatsManager()
-    : m_statsFile(new SecureStatsFile())
+    : m_statsFile(new SecureStatsFile()), m_elapsedTime(0)
 {
+    connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(onScoreTick()));
+
+    qRegisterMetaType<Lvk::Stats::Score>("Lvk::Stats::Score");
+    qRegisterMetaTypeStreamOperators<Lvk::Stats::Score>("Lvk::Stats::Score");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -83,6 +90,8 @@ Lvk::Stats::StatsManager * Lvk::Stats::StatsManager::manager()
 
 void Lvk::Stats::StatsManager::setChatbotId(const QString &chatbotId)
 {
+    m_scoreTimer.stop();
+
     if (!m_chatbotId.isEmpty()) {
         if (!m_statsFile->isEmpty()) {
             m_statsFile->save();
@@ -92,37 +101,23 @@ void Lvk::Stats::StatsManager::setChatbotId(const QString &chatbotId)
     }
 
     if (!chatbotId.isEmpty()) {
-        m_statsFile->load(getStatsFilename(chatbotId));
         m_chatbotId = chatbotId;
+        m_statsFile->load(getStatsFilename(chatbotId));
+        m_elapsedTime = m_statsFile->scoreElapsedTime();
+
+        Cmn::Conversation h;
+        m_statsFile->chatHistory(h);
+
+        m_histStats = Stats::HistoryStatsHelper(h);
+        m_ruleStats.clear(); // FIXME init
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::StatsManager::setStat(Stats::Id id, const QVariant &value)
+void Lvk::Stats::StatsManager::metric(Stats::Metric m, QVariant &value)
 {
-    m_statsFile->setStat(id, value);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Stats::StatsManager::stat(Stats::Id id, QVariant &value)
-{
-    return m_statsFile->stat(id, value);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Stats::StatsManager::history(Stats::Id id, Stats::History &h)
-{
-    m_statsFile->history(id, h);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Stats::StatsManager::combinedHistory(Stats::Id id1, Stats::Id id2, Stats::History &h)
-{
-    m_statsFile->combinedHistory(id1, id2, h);
+    return m_statsFile->metric(m, value);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -134,8 +129,115 @@ void Lvk::Stats::StatsManager::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::StatsManager::newInterval()
+Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 {
-    m_statsFile->newInterval();
+    foreach (const QString &contact, m_histStats.scoreContacts()) {
+        m_statsFile->addContact(contact);
+    }
+
+    // FIXME add mutex or make new class thread safe
+    unsigned trp  = m_ruleStats.points();
+    unsigned hic  = m_statsFile->contacts().size();
+    unsigned hcls = m_histStats.chatbotLexiconSize();
+    unsigned hcl  = m_histStats.chatbotLines();
+
+    const unsigned SCORE_CONTACTS_POINTS = 1000;
+
+    Stats::Score score;
+    score.conversations = hcls + hcl;
+    score.contacts      = hic*SCORE_CONTACTS_POINTS;
+    score.rules         = trp;
+    score.total         = score.conversations + score.contacts + score.rules;
+
+    m_statsFile->setCurrentScore(score);
+
+    return score;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Stats::Score Lvk::Stats::StatsManager::bestScore()
+{
+    updateBestScore();
+
+    return m_statsFile->bestScore();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::updateBestScore()
+{
+    Score best = m_statsFile->bestScore();
+    Score current = currentScore();
+
+    if (current.total > best.total) {
+        best = current;
+
+        m_statsFile->setBestScore(best);
+        m_statsFile->save();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::startTicking()
+{
+    const int TICK_MSEC = 1000;
+
+    if (!m_scoreTimer.isActive()) {
+        m_scoreTimer.start(TICK_MSEC);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::stopTicking()
+{
+//    uint duration = QDateTime::currentDateTime().toTime_t() - m_connStartTime;
+//    Stats::StatsManager::manager()->setMetric(Stats::ConnectionTime, duration);
+
+    m_scoreTimer.stop();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::onScoreTick()
+{
+    m_elapsedTime = (m_elapsedTime + 1) % SCORE_INTERVAL_DUR;
+
+    m_statsFile->setScoreElapsedTime(m_elapsedTime);
+
+    // If score timeout
+    if (m_elapsedTime == 0) {
+        updateBestScore();
+        m_statsFile->newInterval();
+        m_histStats.clear();
+    }
+    // Save every minute
+    if (m_elapsedTime % 60 == 0) {
+        m_statsFile->save();
+    }
+
+    emit scoreRemainingTime(scoreRemainingTime());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::Stats::StatsManager::scoreRemainingTime() const
+{
+    return SCORE_INTERVAL_DUR - m_elapsedTime - 1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::updateScoreWith(const BE::Rule *root)
+{
+    m_ruleStats.reset(root);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::updateScoreWith(const Cmn::Conversation::Entry &entry)
+{
+    m_histStats.update(entry);
+}

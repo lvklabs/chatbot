@@ -171,6 +171,26 @@ public:
      */
     virtual void setPostSanitizer(Sanitizer *sanitizer);
 
+    /**
+     * Not implemented. This method always returns false.
+     */
+    virtual bool hasVariable(const QString &input);
+
+    /**
+     * Not implemented. This method always returns false.
+     */
+    virtual bool hasKeywordOp(const QString &input);
+
+    /**
+     * Not implemented. This method always returns false.
+     */
+    virtual bool hasRegexOp(const QString &input);
+
+    /**
+     * Not implemented. This method always returns false.
+     */
+    virtual bool hasConditional(const QString &output);
+
 private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);

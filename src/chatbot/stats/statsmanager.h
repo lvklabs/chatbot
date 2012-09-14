@@ -22,10 +22,16 @@
 #ifndef LVK_STATS_STATSMANAGER_H
 #define LVK_STATS_STATSMANAGER_H
 
-#include "stats/id.h"
+#include "stats/score.h"
+#include "stats/metric.h"
 #include "stats/history.h"
+#include "stats/historystatshelper.h"
+#include "stats/rulestatshelper.h"
+#include "common/conversation.h"
 
+#include <QObject>
 #include <QString>
+#include <QTimer>
 #include <memory>
 
 class StatsManagerUnitTest;
@@ -34,6 +40,11 @@ class QDateTime;
 
 namespace Lvk
 {
+
+namespace BE
+{
+    class Rule;
+}
 
 /// \addtogroup Lvk
 /// @{
@@ -56,11 +67,13 @@ class StatsFile;
  *
  * Statistics are stored per chatbot ID on time intervals. Time intervals don't represent a fixed
  * amount of time such us 1 hour, 12 hours or 1 day. Instead, every time newInterval()
- * is invoked a new time interval starts and all invocations to setStat() or stat() will belong
+ * is invoked a new time interval starts and all invocations to setMetric() or metric() will belong
  * to that time interval.
  */
-class StatsManager
+class StatsManager : public QObject
 {
+    Q_OBJECT
+
     friend class ::StatsManagerUnitTest;
 
 public:
@@ -76,70 +89,69 @@ public:
     void setChatbotId(const QString &id);
 
     /**
-     * Starts a new time interval where the statistics will be stored
+     * \copydoc StatsFile::metric()
      */
-    void newInterval();
-
-    /**
-     * \copydoc StatsFile::setStat()
-     */
-    void setStat(Stats::Id id, const QVariant &value);
-
-    /**
-     * \copydoc StatsFile::stat()
-     */
-    void stat(Stats::Id id, QVariant &value);
-
-    /**
-     * \copydoc StatsFile::history()
-     */
-    void history(Stats::Id id, Stats::History &h);
-
-    /**
-     * \copydoc StatsFile::combinedHistory()
-     */
-    void combinedHistory(Stats::Id id1, Stats::Id id2, History &history);
+    void metric(Stats::Metric m, QVariant &value);
 
     /**
      * This is an overloaded member function defined for convenience
      *
-     * \see stat(Id, QVariant &)
+     * \see stat(Metric, QVariant &)
      */
-    inline QVariant stat(Stats::Id id)
+    inline QVariant metric(Stats::Metric m)
     {
         QVariant value;
-        stat(id, value);
+        metric(m, value);
         return value;
-    }
-
-    /**
-     * This is an overloaded member function defined for convenience
-     *
-     * \see history(Id, History &)
-     */
-    inline Stats::History history(Stats::Id id)
-    {
-        Stats::History h;
-        history(id, h);
-        return h;
-    }
-
-    /**
-     * This is an overloaded member function defined for convenience
-     *
-     * \see combinedHistory(Id, Id, History &)
-     */
-    inline Stats::History combinedHistory(Stats::Id id1, Stats::Id id2)
-    {
-        Stats::History h;
-        combinedHistory(id1, id2, h);
-        return h;
     }
 
     /**
      * Clears stats for the current chatbot ID
      */
     void clear();
+
+    /**
+     *
+     */
+    void startTicking();
+
+    /**
+     *
+     */
+    void stopTicking();
+
+    /**
+     *
+     */
+    int scoreRemainingTime() const;
+
+    /**
+     *
+     */
+    Score currentScore();
+
+    /**
+     *
+     */
+    Score bestScore();
+
+    /**
+     *
+     */
+    void updateScoreWith(const Cmn::Conversation::Entry &entry);
+
+    /**
+     *
+     */
+    void updateScoreWith(const BE::Rule *root);
+
+signals:
+
+    /**
+     * When startTicking() is invoked this signal is emitted every second with the remaining
+     * seconds to the next score interval until stopTicking() is called.
+     */
+    void scoreRemainingTime(int secs);
 
 private:
     StatsManager();
@@ -150,7 +162,17 @@ private:
     static StatsManager *m_manager;
     static QMutex *m_mgrMutex;
 
+    RuleStatsHelper m_ruleStats;
+    HistoryStatsHelper m_histStats;
+
     std::auto_ptr<StatsFile> m_statsFile;
+    QTimer m_scoreTimer;
+    int m_elapsedTime;
+
+    void updateBestScore();
+
+private slots:
+    void onScoreTick();
 };
 
 /// @}

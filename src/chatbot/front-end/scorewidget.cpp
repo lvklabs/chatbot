@@ -29,9 +29,9 @@
 namespace
 {
 
-inline Lvk::BE::Score makeScore(double sr, double sc, double sh, double st)
+inline Lvk::Stats::Score makeScore(double sr, double sc, double sh, double st)
 {
-    Lvk::BE::Score score;
+    Lvk::Stats::Score score;
     score.rules = sr;
     score.contacts = sc;
     score.conversations = sh;
@@ -67,7 +67,7 @@ Lvk::FE::ScoreWidget::~ScoreWidget()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ScoreWidget::setScore(const BE::Score &score)
+void Lvk::FE::ScoreWidget::setScore(const Stats::Score &score)
 {
     ui->convPointsValue->setText(QString::number(score.conversations));
     ui->contactsPointsValue->setText(QString::number(score.contacts));
