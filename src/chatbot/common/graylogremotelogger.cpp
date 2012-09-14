@@ -103,6 +103,8 @@ inline int sendTcpMessage(const QByteArray &data, const QString &host, unsigned 
     try {
         QTcpSocket tcpSocket;
 
+        qDebug() << "sendTcpMessage Host/port:" << host << port;
+
         tcpSocket.connectToHost(QHostAddress(host), port);
 
         if (!tcpSocket.waitForConnected()) {

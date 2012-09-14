@@ -23,7 +23,7 @@
 #include <QByteArray>
 #include <QDebug>
 
-#ifdef CRYPTO_SUPPORT
+#ifdef OPENSSL_SUPPORT
 # include <openssl/evp.h>
 # include <openssl/err.h>
 #endif
@@ -37,7 +37,7 @@ const unsigned char IV[]  = { 0x2f, 0x32, 0x0a, 0x41, 0x2c, 0x26, 0x77, 0x38 };
 namespace
 {
 
-#ifdef CRYPTO_SUPPORT
+#ifdef OPENSSL_SUPPORT
 
 //--------------------------------------------------------------------------------------------------
 // Blowfish CBC encryption
@@ -124,7 +124,7 @@ inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
     return success;
 }
 
-#endif // CRYPTO_SUPPORT
+#endif // OPENSSL_SUPPORT
 
 //--------------------------------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ inline bool null_decrypt(QByteArray &/*data*/, const QByteArray &/*key*/)
 
 bool Lvk::Cmn::Cipher::encrypt(QByteArray &data, const QByteArray &key)
 {
-#ifdef CRYPTO_SUPPORT
+#ifdef OPENSSL_SUPPORT
     return bf_encrypt(data, key);
 #else
     return null_encrypt(data, key);
@@ -159,7 +159,7 @@ bool Lvk::Cmn::Cipher::encrypt(QByteArray &data, const QByteArray &key)
 
 bool Lvk::Cmn::Cipher::decrypt(QByteArray &data, const QByteArray &key)
 {
-#ifdef CRYPTO_SUPPORT
+#ifdef OPENSSL_SUPPORT
     return bf_decrypt(data, key);
 #else
     return null_decrypt(data, key);

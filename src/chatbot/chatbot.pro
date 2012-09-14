@@ -23,13 +23,13 @@ ICON_THEME = chatbot
 # Chatbot config options are:
 # - freeling  : Enable freeling lemmatizer
 # - gelf_stats: Enable Graylog statistics on remote server
-# - crypto    : Enable cryptographic security
+# - openssl   : Enable cryptographic security with openssl
 win32 {
-    CONFIG  += freeling gelf_stats
+    CONFIG  += freeling gelf_stats openssl
 } else:mac {
     CONFIG  +=
 } else {
-    CONFIG  += freeling gelf_stats crypto
+    CONFIG  += freeling gelf_stats openssl
 }
 
 
@@ -53,34 +53,44 @@ ZLIB_BASE_PATH        = $$THIRD_PARTY_PATH/zlib
 ZLIB_INCLUDE_PATH     = $$ZLIB_BASE_PATH/include
 ZLIB_LIB_PATH         = $$ZLIB_BASE_PATH/lib
 
+OPENSSL_BASE_PATH     = $$THIRD_PARTY_PATH/openssl
+OPENSSL_INCLUDE_PATH  = $$OPENSSL_BASE_PATH/include
+OPENSSL_LIB_PATH      = $$OPENSSL_BASE_PATH/lib
+
 
 CONFIG(debug, debug|release) {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32_d
         FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
         ZLIB_LIBS          = -lz_win32
+        OPENSSL_LIBS       = -lcrypto_win32 -lgdi32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac_d
         FREELING_LIBS      = # TODO compile freeling for Mac
         ZLIB_LIBS          = # TODO compile zlib for Mac
+        OPENSSL_LIBS       = # TODO compile openssl for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
         FREELING_LIBS      = -lmorfo -lfries -lomlet
         ZLIB_LIBS          = -lz
+        OPENSSL_LIBS       = -Lc:/mingw/msys/1.0/local/lib -lcrytpo
     }
 } else {
     win32 {
         QXMPP_LIBS         = -lqxmpp_win32
         FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
         ZLIB_LIBS          = -lz_win32
+        OPENSSL_LIBS       = -lcrypto_win32 -lgdi32
     } else:mac {
         QXMPP_LIBS         = -lqxmpp_mac
         FREELING_LIBS      = # TODO compile freeling for Mac
         ZLIB_LIBS          = # TODO compile zlib for Mac
+        OPENSSL_LIBS       = # TODO compile openssl for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp
         FREELING_LIBS      = -lmorfo -lfries -lomlet
         ZLIB_LIBS          = -lz
+        OPENSSL_LIBS       = -lcrytpo
     }
 }
 
@@ -263,12 +273,12 @@ gelf_stats {
     LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
 }
 
-crypto {
-    DEFINES += CRYPTO_SUPPORT
-    INCLUDEPATH +=
+openssl {
+    DEFINES += OPENSSL_SUPPORT
+    INCLUDEPATH += $$OPENSSL_INCLUDE_PATH
     HEADERS +=
     SOURCES +=
-    LIBS += -lcrypto
+    LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
 }
 
 ############################################
@@ -290,107 +300,6 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
