@@ -66,16 +66,13 @@ HEADERS += \
     ../../chatbot/front-end/filefilters.h \
     ../../chatbot/front-end/welcomewidget.h \
     ../../chatbot/front-end/rosterhelper.h \
+    ../../chatbot/front-end/mainwindowrefactor.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/roster.h \
     ../../chatbot/back-end/target.h \
     ../../chatbot/back-end/chatbotrulesfile.h \
-    ../../chatbot/back-end/rulestatshelper.h \
-    ../../chatbot/back-end/historystatshelper.h \
-    ../../chatbot/back-end/statshelper.h \
     ../../chatbot/back-end/score.h \
-    ../../chatbot/back-end/scorealgorithm.h \
     ../../chatbot/back-end/aiadapter.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
@@ -115,8 +112,11 @@ HEADERS += \
     ../../chatbot/stats/statsmanager.h \
     ../../chatbot/stats/statsfile.h \
     ../../chatbot/stats/securestatsfile.h \
-    ../../chatbot/stats/id.h \
+    ../../chatbot/stats/metric.h \
     ../../chatbot/stats/history.h \
+    ../../chatbot/stats/rulestatshelper.h \
+    ../../chatbot/stats/historystatshelper.h \
+    ../../chatbot/stats/statshelper.h \
 
 
 SOURCES += \
@@ -140,10 +140,10 @@ SOURCES += \
     ../../chatbot/front-end/optionswindow.cpp \
     ../../chatbot/front-end/welcomewidget.cpp \
     ../../chatbot/front-end/rosterhelper.cpp \
+    ../../chatbot/front-end/mainwindowrefactor.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
-    ../../chatbot/back-end/scorealgorithm.cpp \
     ../../chatbot/back-end/aiadapter.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \

@@ -18,7 +18,7 @@ public:
 
 private Q_SLOTS:
 
-#ifdef CRYPTO_SUPPORT
+#ifdef OPENSSL_SUPPORT
     void testCipherSimmetry();
     void testCipherSimmetry_data();
 #endif

@@ -4,7 +4,8 @@
 #include <QDir>
 
 #include "stats/statsmanager.h"
-#include "stats/id.h"
+#include "stats/metric.h"
+#include "stats/securestatsfile.h"
 
 #define CHATBOT_ID_1     "bee2c509-3380-4954-9e2e-a39985ed25b1"
 #define CHATBOT_ID_2     "bee2c509-3380-4954-9e2e-a39985ed25b2"
@@ -91,9 +92,9 @@ void StatsManagerUnitTest::testFileCreationAndClear()
     }
 
     manager()->setChatbotId(CHATBOT_ID_1);
-    manager()->setStat(Stats::HistoryChatbotDiffLines, 1);
+    manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 1);
     manager()->setChatbotId(CHATBOT_ID_2);
-    manager()->setStat(Stats::HistoryChatbotDiffLines, 2);
+    manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 2);
 
     resetManager();
 
@@ -113,10 +114,10 @@ void StatsManagerUnitTest::testFileCreationAndClear()
 
 void StatsManagerUnitTest::testSetStatAndIntervals()
 {
-    const Stats::Id id1 = Stats::LexiconSize;
-    const Stats::Id id2 = Stats::HistoryChatbotDiffLines;
-    const Stats::Id id3 = Stats::HistoryScoreContacts;
-    const Stats::Id id4 = Stats::ConnectionTime; // cumulative
+    const Stats::Metric m1 = Stats::LexiconSize;
+    const Stats::Metric m2 = Stats::HistoryChatbotDiffLines;
+    const Stats::Metric m3 = Stats::HistoryScoreContacts;
+    const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
 
     const unsigned value1  = 10;
     const unsigned value2  = 20;
@@ -132,148 +133,112 @@ void StatsManagerUnitTest::testSetStatAndIntervals()
         manager()->setChatbotId((i % 2 == 0) ? CHATBOT_ID_1 : CHATBOT_ID_2);
 
         if (i == 0 || i == 1) {
-            manager()->stat(id1, v);
+            manager()->metric(m1, v);
             QVERIFY(v.toUInt() == 0);
-            manager()->stat(id2, v);
+            manager()->metric(m2, v);
             QVERIFY(v.toUInt() == 0);
-            manager()->stat(id3, v);
+            manager()->metric(m3, v);
             QVERIFY(v.toUInt() == 0);
-            manager()->stat(id4, v);
+            manager()->metric(m4, v);
             QVERIFY(v.toUInt() == 0);
         } else {
-            manager()->stat(id1, v);
+            manager()->metric(m1, v);
             QVERIFY(v.toUInt() == value1 + i - 2);
-            manager()->stat(id2, v);
+            manager()->metric(m2, v);
             QVERIFY(v.toUInt() == value2 + i - 2);
-            manager()->stat(id3, v);
+            manager()->metric(m3, v);
             QVERIFY(v.toUInt() == value3 + i - 2);
-            manager()->stat(id4, v);
+            manager()->metric(m4, v);
             QVERIFY(v.toUInt() == (value4a + value4b)*(i/2));
         }
 
-        manager()->setStat(id1, QVariant(value1 + i));
-        manager()->setStat(id2, QVariant(value2 + i));
-        manager()->setStat(id3, QVariant(value2 + i));
-        manager()->setStat(id3, QVariant(value3 + i));
-        manager()->setStat(id4, QVariant(value4a));
-        manager()->setStat(id4, QVariant(value4b));
+        manager()->m_statsFile->setMetric(m1, QVariant(value1 + i));
+        manager()->m_statsFile->setMetric(m2, QVariant(value2 + i));
+        manager()->m_statsFile->setMetric(m3, QVariant(value2 + i));
+        manager()->m_statsFile->setMetric(m3, QVariant(value3 + i));
+        manager()->m_statsFile->setMetric(m4, QVariant(value4a));
+        manager()->m_statsFile->setMetric(m4, QVariant(value4b));
 
-        manager()->stat(id1, v);
+        manager()->metric(m1, v);
         QVERIFY(v.toUInt() == value1 + i);
-        manager()->stat(id2, v);
+        manager()->metric(m2, v);
         QVERIFY(v.toUInt() == value2 + i);
-        manager()->stat(id3, v);
+        manager()->metric(m3, v);
         QVERIFY(v.toUInt() == value3 + i);
-        manager()->stat(id4, v);
+        manager()->metric(m4, v);
         QVERIFY(v.toUInt() == (value4a + value4b)*((i+2)/2));
     }
 
     // Intervals ///////////////////////////////////////////////////////////////////////////////////
 
-    const unsigned id1_fvalue1  = value1 + ITERATIONS - 2;
-    const unsigned id1_fvalue2  = value2 + ITERATIONS - 2;
-    const unsigned id1_fvalue3  = value3 + ITERATIONS - 2;
-    const unsigned id1_fvalue4  = (value4a + value4b)*(ITERATIONS/2);
+    const unsigned m1_fvalue1  = value1 + ITERATIONS - 2;
+    const unsigned m1_fvalue2  = value2 + ITERATIONS - 2;
+    const unsigned m1_fvalue3  = value3 + ITERATIONS - 2;
+    const unsigned m1_fvalue4  = (value4a + value4b)*(ITERATIONS/2);
 
-    const unsigned id2_fvalue1  = value1 + ITERATIONS - 1;
-    const unsigned id2_fvalue2  = value2 + ITERATIONS - 1;
-    const unsigned id2_fvalue3  = value3 + ITERATIONS - 1;
-    const unsigned id2_fvalue4  = (value4a + value4b)*(ITERATIONS/2);
-
-    resetManager();
-
-    manager()->setChatbotId(CHATBOT_ID_1);
-
-    QVERIFY(manager()->stat(id1).toUInt() == id1_fvalue1);
-    QVERIFY(manager()->stat(id2).toUInt() == id1_fvalue2);
-    QVERIFY(manager()->stat(id3).toUInt() == id1_fvalue3);
-    QVERIFY(manager()->stat(id4).toUInt() == id1_fvalue4);
-
-    manager()->setChatbotId(CHATBOT_ID_2);
-
-    QVERIFY(manager()->stat(id1).toUInt() == id2_fvalue1);
-    QVERIFY(manager()->stat(id2).toUInt() == id2_fvalue2);
-    QVERIFY(manager()->stat(id3).toUInt() == id2_fvalue3);
-    QVERIFY(manager()->stat(id4).toUInt() == id2_fvalue4);
-
-    manager()->newInterval();
-
-    QVERIFY(manager()->stat(id1).toUInt() == 0);
-    QVERIFY(manager()->stat(id2).toUInt() == 0);
-    QVERIFY(manager()->stat(id3).toUInt() == 0);
-    QVERIFY(manager()->stat(id4).toUInt() == 0);
-
-    manager()->setChatbotId(CHATBOT_ID_1);
-
-    QVERIFY(manager()->stat(id1).toUInt() == id1_fvalue1);
-    QVERIFY(manager()->stat(id2).toUInt() == id1_fvalue2);
-    QVERIFY(manager()->stat(id3).toUInt() == id1_fvalue3);
-    QVERIFY(manager()->stat(id4).toUInt() == id1_fvalue4);
-
-    manager()->newInterval();
-
-    QVERIFY(manager()->stat(id1).toUInt() == 0);
-    QVERIFY(manager()->stat(id2).toUInt() == 0);
-    QVERIFY(manager()->stat(id3).toUInt() == 0);
-    QVERIFY(manager()->stat(id4).toUInt() == 0);
-
-    const unsigned id1_fvalue1_i2 = 1000000;
-    const unsigned id1_fvalue2_i2 = 2000000;
-    const unsigned id1_fvalue3_i2 = 3000000;
-    const unsigned id1_fvalue4_i2 = 4000000;
-
-    manager()->setStat(id1, QVariant(id1_fvalue1_i2));
-    manager()->setStat(id2, QVariant(id1_fvalue2_i2));
-    manager()->setStat(id3, QVariant(id1_fvalue3_i2));
-    manager()->setStat(id4, QVariant(id1_fvalue4_i2));
-
-    manager()->newInterval();
-
-    const unsigned id1_fvalue1_i3 = 1000001;
-    const unsigned id1_fvalue2_i3 = 2000001;
-    const unsigned id1_fvalue3_i3 = 3000001;
-    const unsigned id1_fvalue4_i3 = 4000001;
-
-    manager()->setStat(id1, QVariant(id1_fvalue1_i3));
-    manager()->setStat(id2, QVariant(id1_fvalue2_i3));
-    manager()->setStat(id3, QVariant(id1_fvalue3_i3));
-    manager()->setStat(id4, QVariant(id1_fvalue4_i3));
-
-    // History /////////////////////////////////////////////////////////////////////////////////////
-
-    Stats::History h;
+    const unsigned m2_fvalue1  = value1 + ITERATIONS - 1;
+    const unsigned m2_fvalue2  = value2 + ITERATIONS - 1;
+    const unsigned m2_fvalue3  = value3 + ITERATIONS - 1;
+    const unsigned m2_fvalue4  = (value4a + value4b)*(ITERATIONS/2);
 
     resetManager();
 
     manager()->setChatbotId(CHATBOT_ID_1);
 
-    manager()->history(id1, h);
-
-    QVERIFY(h.size() == 3);
-    QVERIFY(h[0].second.toUInt() == id1_fvalue1);
-    QVERIFY(h[1].second.toUInt() == id1_fvalue1_i2);
-    QVERIFY(h[2].second.toUInt() == id1_fvalue1_i3);
-
-    manager()->history(id2, h);
-
-    QVERIFY(h.size() == 3);
-    QVERIFY(h[0].second.toUInt() == id1_fvalue2);
-    QVERIFY(h[1].second.toUInt() == id1_fvalue2_i2);
-    QVERIFY(h[2].second.toUInt() == id1_fvalue2_i3);
-
-    manager()->history(id4, h);
-
-    QVERIFY(h.size() == 3);
-    QVERIFY(h[0].second.toUInt() == id1_fvalue4);
-    QVERIFY(h[1].second.toUInt() == id1_fvalue4_i2);
-    QVERIFY(h[2].second.toUInt() == id1_fvalue4_i3);
+    QVERIFY(manager()->metric(m1).toUInt() == m1_fvalue1);
+    QVERIFY(manager()->metric(m2).toUInt() == m1_fvalue2);
+    QVERIFY(manager()->metric(m3).toUInt() == m1_fvalue3);
+    QVERIFY(manager()->metric(m4).toUInt() == m1_fvalue4);
 
     manager()->setChatbotId(CHATBOT_ID_2);
 
-    manager()->history(id1, h);
+    QVERIFY(manager()->metric(m1).toUInt() == m2_fvalue1);
+    QVERIFY(manager()->metric(m2).toUInt() == m2_fvalue2);
+    QVERIFY(manager()->metric(m3).toUInt() == m2_fvalue3);
+    QVERIFY(manager()->metric(m4).toUInt() == m2_fvalue4);
 
-    QVERIFY(h.size() == 1);
-    QVERIFY(h[0].second.toUInt() == id2_fvalue1);
+    manager()->m_statsFile->newInterval();
+
+    QVERIFY(manager()->metric(m1).toUInt() == 0);
+    QVERIFY(manager()->metric(m2).toUInt() == 0);
+    QVERIFY(manager()->metric(m3).toUInt() == 0);
+    QVERIFY(manager()->metric(m4).toUInt() == 0);
+
+    manager()->setChatbotId(CHATBOT_ID_1);
+
+    QVERIFY(manager()->metric(m1).toUInt() == m1_fvalue1);
+    QVERIFY(manager()->metric(m2).toUInt() == m1_fvalue2);
+    QVERIFY(manager()->metric(m3).toUInt() == m1_fvalue3);
+    QVERIFY(manager()->metric(m4).toUInt() == m1_fvalue4);
+
+    manager()->m_statsFile->newInterval();
+
+    QVERIFY(manager()->metric(m1).toUInt() == 0);
+    QVERIFY(manager()->metric(m2).toUInt() == 0);
+    QVERIFY(manager()->metric(m3).toUInt() == 0);
+    QVERIFY(manager()->metric(m4).toUInt() == 0);
+
+    const unsigned m1_fvalue1_i2 = 1000000;
+    const unsigned m1_fvalue2_i2 = 2000000;
+    const unsigned m1_fvalue3_i2 = 3000000;
+    const unsigned m1_fvalue4_i2 = 4000000;
+
+    manager()->m_statsFile->setMetric(m1, QVariant(m1_fvalue1_i2));
+    manager()->m_statsFile->setMetric(m2, QVariant(m1_fvalue2_i2));
+    manager()->m_statsFile->setMetric(m3, QVariant(m1_fvalue3_i2));
+    manager()->m_statsFile->setMetric(m4, QVariant(m1_fvalue4_i2));
+
+    manager()->m_statsFile->newInterval();
+
+    const unsigned m1_fvalue1_i3 = 1000001;
+    const unsigned m1_fvalue2_i3 = 2000001;
+    const unsigned m1_fvalue3_i3 = 3000001;
+    const unsigned m1_fvalue4_i3 = 4000001;
+
+    manager()->m_statsFile->setMetric(m1, QVariant(m1_fvalue1_i3));
+    manager()->m_statsFile->setMetric(m2, QVariant(m1_fvalue2_i3));
+    manager()->m_statsFile->setMetric(m3, QVariant(m1_fvalue3_i3));
+    manager()->m_statsFile->setMetric(m4, QVariant(m1_fvalue4_i3));
 }
 
 //--------------------------------------------------------------------------------------------------

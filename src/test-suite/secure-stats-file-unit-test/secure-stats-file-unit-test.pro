@@ -20,6 +20,7 @@ SOURCES += \
     tst_securestatsfiletest.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/common/cipher.cpp \
+    ../../chatbot/common/conversation.cpp \
 
 
 

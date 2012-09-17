@@ -301,7 +301,7 @@ void TestMainWindow::UiConnect(const QString &username, const QString &password,
 
     QTest::keyClicks(m_window->ui->passwordText, password);
 
-    m_window->onConnectButtonPressed();
+    m_window->onConnectPressed();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -572,7 +572,7 @@ void TestMainWindow::testChatConnection()
         QVERIFY(chatStatusLabel->text().contains(CHAT_CONNECTION_OK_TOKEN, false));
 
         QTest::qSleep(200);
-        m_window->onDisconnectButtonPressed();
+        m_window->onDisconnectPressed();
 
         QVERIFY(chatStatusLabel->text().contains(CHAT_DISCONNECTION_TOKEN, false));
 

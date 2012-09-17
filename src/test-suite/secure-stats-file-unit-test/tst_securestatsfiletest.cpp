@@ -4,7 +4,7 @@
 #include <QVariant>
 
 #include "stats/securestatsfile.h"
-#include "stats/id.h"
+#include "stats/metric.h"
 
 #define FILENAME_1 "teststatfile1.stat"
 
@@ -64,7 +64,7 @@ void SecureStatsFileTest::testIsEmptyAndClose()
     Stats::SecureStatsFile file(FILENAME_1);
 
     QVERIFY(file.isEmpty());
-    file.setStat(Stats::LexiconSize, QVariant(10));
+    file.setMetric(Stats::LexiconSize, QVariant(10));
     QVERIFY(!file.isEmpty());
     file.close();
     QVERIFY(file.isEmpty());
@@ -78,7 +78,7 @@ void SecureStatsFileTest::testIsEmptySaveAndClear()
     Stats::SecureStatsFile file(FILENAME_1);
 
     QVERIFY(file.isEmpty());
-    file.setStat(Stats::LexiconSize, QVariant(10));
+    file.setMetric(Stats::LexiconSize, QVariant(10));
     QVERIFY(!file.isEmpty());
     file.save();
     QVERIFY(QFile::exists(FILENAME_1));
@@ -92,10 +92,10 @@ void SecureStatsFileTest::testIsEmptySaveAndClear()
 
 void SecureStatsFileTest::testSetSaveAndLoad()
 {
-    const Stats::Id id1 = Stats::LexiconSize;
-    const Stats::Id id2 = Stats::HistoryChatbotDiffLines;
-    const Stats::Id id3 = Stats::HistoryScoreContacts;
-    const Stats::Id id4 = Stats::ConnectionTime; // cumulative
+    const Stats::Metric m1 = Stats::LexiconSize;
+    const Stats::Metric m2 = Stats::HistoryChatbotDiffLines;
+    const Stats::Metric m3 = Stats::HistoryScoreContacts;
+    const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
 
     const unsigned value1  = 10;
     const unsigned value2  = 20;
@@ -116,22 +116,22 @@ void SecureStatsFileTest::testSetSaveAndLoad()
             QVERIFY(!file.isEmpty());
         }
 
-        file.setStat(id1, QVariant(value1));
-        file.setStat(id2, QVariant(value2));
-        file.setStat(id3, QVariant(value2));
-        file.setStat(id3, QVariant(value3));
-        file.setStat(id4, QVariant(value4a));
-        file.setStat(id4, QVariant(value4b));
+        file.setMetric(m1, QVariant(value1));
+        file.setMetric(m2, QVariant(value2));
+        file.setMetric(m3, QVariant(value2));
+        file.setMetric(m3, QVariant(value3));
+        file.setMetric(m4, QVariant(value4a));
+        file.setMetric(m4, QVariant(value4b));
 
         QVERIFY(!file.isEmpty());
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1);
-        file.stat(id2, v);
+        file.metric(m2, v);
         QVERIFY(v.toUInt() == value2);
-        file.stat(id3, v);
+        file.metric(m3, v);
         QVERIFY(v.toUInt() == value3);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == (value4a + value4b)*(i+1));
 
         file.save();
@@ -145,13 +145,13 @@ void SecureStatsFileTest::testSetSaveAndLoad()
 
         QVERIFY(!file.isEmpty());
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1);
-        file.stat(id2, v);
+        file.metric(m2, v);
         QVERIFY(v.toUInt() == value2);
-        file.stat(id3, v);
+        file.metric(m3, v);
         QVERIFY(v.toUInt() == value3);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == (value4a + value4b)*ITERATIONS);
     }
 }
@@ -160,9 +160,9 @@ void SecureStatsFileTest::testSetSaveAndLoad()
 
 void SecureStatsFileTest::testNewIntervalAndHistory()
 {
-    const Stats::Id id1 = Stats::LexiconSize;
-    const Stats::Id id4 = Stats::ConnectionTime; // cumulative
-    const Stats::Id id5 = Stats::HistoryTotalLines;
+    const Stats::Metric m1 = Stats::LexiconSize;
+    const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
+    const Stats::Metric id5 = Stats::HistoryTotalLines;
 
     const unsigned value1a = 10;
     const unsigned value1b = 20;
@@ -179,53 +179,51 @@ void SecureStatsFileTest::testNewIntervalAndHistory()
 
         file.load(FILENAME_1);
 
-        file.history(id1, h);
-        QVERIFY(h.size() == 0);
-        file.history(id4, h);
+        file.metricHistory(m4, h);
         QVERIFY(h.size() == 0);
 
         // interval 1 ////////////////////////////////
 
-        file.setStat(id1, QVariant(value1b));
-        file.setStat(id1, QVariant(value1a));
-        file.setStat(id4, QVariant(value4a));
-        file.setStat(id4, QVariant(value4b));
+        file.setMetric(m1, QVariant(value1b));
+        file.setMetric(m1, QVariant(value1a));
+        file.setMetric(m4, QVariant(value4a));
+        file.setMetric(m4, QVariant(value4b));
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1a);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == value4a + value4b);
 
         // interval 2 ////////////////////////////////
         file.newInterval();
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == 0);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == 0);
 
-        file.setStat(id1, QVariant(value1b));
-        file.setStat(id4, QVariant(value4b));
+        file.setMetric(m1, QVariant(value1b));
+        file.setMetric(m4, QVariant(value4b));
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1b);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == value4b);
 
         // interval 3 ////////////////////////////////
         file.newInterval();
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == 0);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == 0);
 
-        file.setStat(id1, QVariant(value1c));
-        file.setStat(id4, QVariant(value4c));
+        file.setMetric(m1, QVariant(value1c));
+        file.setMetric(m4, QVariant(value4c));
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1c);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == value4c);
 
         file.save();
@@ -236,36 +234,24 @@ void SecureStatsFileTest::testNewIntervalAndHistory()
 
         file.load(FILENAME_1);
 
-        file.stat(id1, v);
+        file.metric(m1, v);
         QVERIFY(v.toUInt() == value1c);
-        file.stat(id4, v);
+        file.metric(m4, v);
         QVERIFY(v.toUInt() == value4c);
-        file.stat(id5, v);
+        file.metric(id5, v);
         QVERIFY(v.toUInt() == 0);
 
-        file.history(id1, h);
+        file.metricHistory(m1, h);
         QVERIFY(h.size() == 3);
         QVERIFY(h[0].second.toUInt() == value1a);
         QVERIFY(h[1].second.toUInt() == value1b);
         QVERIFY(h[2].second.toUInt() == value1c);
 
-        file.history(id4, h);
+        file.metricHistory(m4, h);
         QVERIFY(h.size() == 3);
         QVERIFY(h[0].second.toUInt() == value4a + value4b);
         QVERIFY(h[1].second.toUInt() == value4b);
         QVERIFY(h[2].second.toUInt() == value4c);
-
-        file.combinedHistory(id1, id4, h);
-        QVERIFY(h.size() == 3);
-        QVERIFY(h[0].second.toUInt() == value1a + value4a + value4b);
-        QVERIFY(h[1].second.toUInt() == value1b + value4b);
-        QVERIFY(h[2].second.toUInt() == value1c + value4c);
-
-        file.combinedHistory(id1, id5, h);
-        QVERIFY(h.size() == 3);
-        QVERIFY(h[0].second.toUInt() == value1a);
-        QVERIFY(h[1].second.toUInt() == value1b);
-        QVERIFY(h[2].second.toUInt() == value1c);
     }
 }
 
