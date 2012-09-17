@@ -32,7 +32,6 @@
 #include <QObject>
 #include <QString>
 #include <QTimer>
-#include <memory>
 
 class StatsManagerUnitTest;
 class QMutex;
@@ -159,10 +158,11 @@ private:
     static StatsManager *m_manager;
     static QMutex *m_mgrMutex;
 
+    QMutex *m_scoreMutex;
     RuleStatsHelper m_ruleStats;
     HistoryStatsHelper m_histStats;
 
-    std::auto_ptr<StatsFile> m_statsFile;
+    StatsFile *m_statsFile;
     QTimer m_scoreTimer;
     int m_elapsedTime;
 

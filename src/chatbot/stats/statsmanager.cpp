@@ -64,7 +64,9 @@ QMutex *                   Lvk::Stats::StatsManager::m_mgrMutex = new QMutex();
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Stats::StatsManager::StatsManager()
-    : m_statsFile(new SecureStatsFile()), m_elapsedTime(0)
+    : m_scoreMutex(new QMutex(QMutex::Recursive)),
+      m_statsFile(new SecureStatsFile()),
+      m_elapsedTime(0)
 {
     connect(&m_scoreTimer, SIGNAL(timeout()), SLOT(onScoreTick()));
 
@@ -91,6 +93,8 @@ Lvk::Stats::StatsManager * Lvk::Stats::StatsManager::manager()
 
 void Lvk::Stats::StatsManager::setChatbotId(const QString &chatbotId)
 {
+    QMutexLocker locker(m_scoreMutex);
+
     m_scoreTimer.stop();
 
     if (!m_chatbotId.isEmpty()) {
@@ -125,6 +129,8 @@ void Lvk::Stats::StatsManager::metric(Stats::Metric m, QVariant &value)
 
 void Lvk::Stats::StatsManager::clear()
 {
+    QMutexLocker locker(m_scoreMutex);
+
     m_statsFile->clear();
 }
 
@@ -132,11 +138,12 @@ void Lvk::Stats::StatsManager::clear()
 
 Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 {
+    QMutexLocker locker(m_scoreMutex);
+
     foreach (const QString &contact, m_histStats.scoreContacts()) {
         m_statsFile->addContact(contact);
     }
 
-    // FIXME add mutex or make new class thread safe
     unsigned trp  = m_ruleStats.points();
     unsigned hic  = m_statsFile->contacts().size();
     unsigned hcls = m_histStats.chatbotLexiconSize();
@@ -159,6 +166,8 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 
 Lvk::Stats::Score Lvk::Stats::StatsManager::bestScore()
 {
+    QMutexLocker locker(m_scoreMutex);
+
     updateBestScore();
 
     return m_statsFile->bestScore();
@@ -212,6 +221,8 @@ void Lvk::Stats::StatsManager::onScoreTick()
 
     // If score timeout
     if (m_elapsedTime == 0) {
+        QMutexLocker locker(m_scoreMutex);
+
         updateBestScore();
         m_statsFile->newInterval();
         m_histStats.clear();
@@ -235,6 +246,8 @@ int Lvk::Stats::StatsManager::scoreRemainingTime() const
 
 void Lvk::Stats::StatsManager::updateScoreWith(const BE::Rule *root)
 {
+    QMutexLocker locker(m_scoreMutex);
+
     m_ruleStats.reset(root);
 }
 
@@ -242,6 +255,8 @@ void Lvk::Stats::StatsManager::updateScoreWith(const BE::Rule *root)
 
 void Lvk::Stats::StatsManager::updateScoreWith(const Cmn::Conversation::Entry &entry)
 {
+    QMutexLocker locker(m_scoreMutex);
+
     m_statsFile->appendChatEntry(entry);
 
     m_histStats.update(entry);
