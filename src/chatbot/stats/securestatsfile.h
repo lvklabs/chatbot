@@ -75,12 +75,12 @@ public:
     virtual void newInterval();
 
     /**
-     * \copydoc StatsFile::setStat()
+     * \copydoc StatsFile::setMetric()
      */
     virtual void setMetric(Stats::Metric m, const QVariant &value);
 
     /**
-     * \copydoc StatsFile::stat()
+     * \copydoc StatsFile::metric()
      */
     virtual void metric(Stats::Metric m, QVariant &value);
 
@@ -90,12 +90,12 @@ public:
     virtual void metricHistory(Stats::Metric m, Stats::History &h);
 
     /**
-     * \copydoc StatsFile::scoreRemainingTime()
+     * \copydoc StatsFile::scoreElapsedTime()
      */
     virtual int scoreElapsedTime() const;
 
     /**
-     * \copydoc StatsFile::setScoreRemainingTime()
+     * \copydoc StatsFile::setScoreElapsedTime()
      */
     virtual void setScoreElapsedTime(int secs);
 
@@ -130,7 +130,7 @@ public:
     virtual QSet<QString> contacts();
 
     /**
-     * \copydoc StatsFile::appendContact()
+     * \copydoc StatsFile::addContact()
      */
     virtual void addContact(const QString &username);
 
