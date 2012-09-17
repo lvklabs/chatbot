@@ -123,7 +123,7 @@ public:
     void clear()
     {
         StatsHelper::clear();
-        m_contacts.clear();
+        m_convTracker.clear();
         m_cbLines.clear();
         m_cbLexicon.clear();
         m_cbLinesCount = 0;
@@ -151,33 +151,49 @@ protected:
         StatsHelper::count(entry.response);
 
         if (!entry.response.isEmpty()) {
-            countContact(entry.from);
             m_cbLines.insert(entry.response);
             updateLexicon(splitSentence(entry.response), m_cbLexicon);
             ++m_cbLinesCount;
+            trackConversation(entry);
         }
     }
 
 private:
-    typedef QHash<QString, unsigned> ContactsCount;
+    // (last entry timestamp, #entries)
+    typedef QPair<QDateTime, unsigned> DateCountPair;
+    // username -> (last entry timestamp, #entries)
+    typedef QHash<QString, DateCountPair> ConversationTracker;
 
-    ContactsCount m_contacts;
+    ConversationTracker m_convTracker;
     QSet<QString> m_scoreContacts;
     // chatbot stats
     QSet<QString> m_cbLines;
     QSet<QString> m_cbLexicon;
     unsigned m_cbLinesCount;
 
-    void countContact(const QString &username)
+    // Tracks conversations and if the conversation has at least MIN_CONV_LEN entries,
+    // adds username to the score contacts set
+    void trackConversation(const Lvk::Cmn::Conversation::Entry &entry)
     {
-        ContactsCount::iterator it = m_contacts.find(username);
-        if (it != m_contacts.end()) {
-            ++it.value();
-            if (it.value() >= 20) {
-                m_scoreContacts.insert(username);
+        const unsigned MAX_INACTIVITY = 60*30; // Max period of inactivity allowed. In seconds.
+        const unsigned MIN_CONV_LEN = 20;      // Minimum conversation lenght to add contact
+
+        ConversationTracker::iterator it = m_convTracker.find(entry.from);
+
+        if (it != m_convTracker.end()) {
+            DateCountPair &p =  it.value();
+            if (entry.dateTime.toTime_t() - p.first.toTime_t() < MAX_INACTIVITY
+                    /* TODO && !interfered*/) {
+                p = DateCountPair(entry.dateTime, p.second + 1);
+
+                if (p.second >= MIN_CONV_LEN) {
+                    m_scoreContacts.insert(entry.from);
+                }
+            } else {
+                p = DateCountPair(entry.dateTime, 1);
             }
         } else {
-            m_contacts[username] = 1;
+            m_convTracker[entry.from] = DateCountPair(entry.dateTime, 1);
         }
     }
 };
