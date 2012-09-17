@@ -78,7 +78,7 @@ inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
     }
 
     EVP_CIPHER_CTX_cleanup(&ctx);
-    delete outbuf;
+    delete[] outbuf;
 
     return success;
 }
@@ -121,7 +121,7 @@ inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
     }
 
     EVP_CIPHER_CTX_cleanup(&ctx);
-    delete outbuf;
+    delete[] outbuf;
 
     return success;
 }
