@@ -150,25 +150,23 @@ private:
 
 
 /**
- * Writes a conversation \a conv to the stream and returns a reference to the stream.
+ * Writes a conversation entry \a e to the stream and returns a reference to the stream.
  */
 inline QDataStream &operator<<(QDataStream &stream, const Conversation::Entry &e)
 {
-    return stream << e.dateTime << e.from << e.to << e.msg << e.response << e.match
-                  << (quint32)e.ruleId;
+    return stream << e.dateTime << e.from << e.to << e.msg << e.response << e.match << e.ruleId;
 }
 
 /**
- * Reads a conversation from the \a stream into \a conv, and returns a reference to the stream.
+ * Reads a conversation entry from \a stream into \a e, and returns a reference to the stream.
  */
 inline QDataStream &operator>>(QDataStream &stream, Conversation::Entry &e)
 {
-    return stream >> e.dateTime >> e.from >> e.to >> e.msg >> e.response >> e.match
-                  >> (quint32 &)e.ruleId;
+    return stream >> e.dateTime >> e.from >> e.to >> e.msg >> e.response >> e.match >> e.ruleId;
 }
 
 /**
- * Writes a conversation \a conv to the stream and returns a reference to the stream.
+ * Writes a conversation \a conv to \a stream and returns a reference to the stream.
  */
 inline QDataStream &operator<<(QDataStream &stream, const Conversation &conv)
 {
@@ -176,7 +174,7 @@ inline QDataStream &operator<<(QDataStream &stream, const Conversation &conv)
 }
 
 /**
- * Reads a conversation from the \a stream into \a conv, and returns a reference to the stream.
+ * Reads a conversation from \a stream into \a conv, and returns a reference to the stream.
  */
 inline QDataStream &operator>>(QDataStream &stream, Conversation &conv)
 {
