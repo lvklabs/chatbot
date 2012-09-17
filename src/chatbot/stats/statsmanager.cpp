@@ -33,6 +33,7 @@
 
 #define SCORE_INTERVAL_DUR                (5*3600) // In seconds
 
+
 //--------------------------------------------------------------------------------------------------
 // StatsManager
 //--------------------------------------------------------------------------------------------------
@@ -182,6 +183,8 @@ void Lvk::Stats::StatsManager::updateBestScore()
 
 void Lvk::Stats::StatsManager::startTicking()
 {
+//    m_connStartTime = QDateTime::currentDateTime().toTime_t();
+
     const int TICK_MSEC = 1000;
 
     if (!m_scoreTimer.isActive()) {
@@ -239,5 +242,7 @@ void Lvk::Stats::StatsManager::updateScoreWith(const BE::Rule *root)
 
 void Lvk::Stats::StatsManager::updateScoreWith(const Cmn::Conversation::Entry &entry)
 {
+    m_statsFile->appendChatEntry(entry);
+
     m_histStats.update(entry);
 }

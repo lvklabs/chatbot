@@ -687,6 +687,8 @@ void Lvk::BE::AppFacade::connectChatbotSignals()
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
     connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
             SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
+    connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+            Stats::StatsManager::manager(), SLOT(updateScoreWith(Cmn::Conversation::Entry)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -791,6 +793,9 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
 
 Lvk::Stats::Score Lvk::BE::AppFacade::currentScore()
 {
+    // TODO improve performance, do not update all the time
+    Stats::StatsManager::manager()->updateScoreWith(rootRule());
+
     return Stats::StatsManager::manager()->currentScore();
 }
 

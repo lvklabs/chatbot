@@ -135,6 +135,8 @@ public:
      */
     Score bestScore();
 
+public slots:
+
     /**
      *
      */
