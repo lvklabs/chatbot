@@ -2,42 +2,33 @@
 
 \defgroup Lvk LVK
 
-\brief LVK is the outer namespace where all chatbot modules belong to.
-Chatbot is made-up with the following modules: \ref FE, \ref BE, \ref Nlp, \ref CA,\ref Stats
-and \ref Cmn
+\brief LVK is the outer namespace where all chatbot modules belong to. Chatbot is made-up with the following modules: \ref FE, \ref BE, \ref Nlp, \ref CA, \ref Stats and \ref Cmn
 
 
 \defgroup FE Front-end
 
-\brief The Front-end module contains all the windows, dialogs and widgets used to display the
-graphical user interface (GUI) to the user. The front-end does process any request, instead it
-forwards all requests to the \ref BE::AppFacade class
+\brief The Front-end module contains all the windows, dialogs and widgets used to display the graphical user interface (GUI) to the user. The front-end does process any request, instead it forwards all requests to the \ref BE::AppFacade class
 
 
 \defgroup BE Back-end
 
-\brief  The Back-end module provides all the functionality required by the UI such as, save/open
-files, import/export rules, connect to chat server, chat conversation history, etc. To provide such
-functionality Back-end module depends on different modules;
+\brief  The Back-end module provides all the functionality required by the UI such as, save/open files, import/export rules, connect to chat server, chat conversation history, etc. To provide such functionality Back-end module depends on different modules;
 \ref CA, \ref Nlp and \ref Stats
 
 
 \defgroup Nlp NLP Engine
 
-\brief The NLP engine module provides a collection of Natural Language Processing engines such as
-the ExactMatchEngine, the AimlEngine and the SimpleAimlEngine.
+\brief The NLP engine module provides a collection of Natural Language Processing engines such as the ExactMatchEngine, the AimlEngine and the SimpleAimlEngine.
 
 
 \defgroup CA Chat adapters
 
-\brief The Chat Adapters module provides a collection of chatbots such as the XmppChatbot, the
-GTalkChatbot and the FbChatbot
+\brief The Chat Adapters module provides a collection of chatbots such as the XmppChatbot, the GTalkChatbot and the FbChatbot
 
 
 \defgroup Stats Statistics
 
-\brief The Statistics module provides usage statistics of the application such as rules lexicon size,
-history lines, connection time, among many others.
+\brief The Statistics module provides usage metrics of the chatbot such as rules lexicon size, history lines, connection time, among many others. This module also calculates and provides chatbot scores.
 
 
 \defgroup Cmn Common
