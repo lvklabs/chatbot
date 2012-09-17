@@ -213,11 +213,6 @@ bool Lvk::BE::ChatbotRulesFile::read(QFile &file)
 {
     qDebug() << "Reading rules file" << file.fileName();
 
-    /////////////////////////////////////
-    // TODO
-    //Cmn::Cipher().decrypt(data, key);
-    /////////////////////////////////////
-
     QDataStream istream(&file);
 
     quint32 magicNumber;
@@ -267,11 +262,6 @@ bool Lvk::BE::ChatbotRulesFile::write(QFile &file)
     ostream << *m_rootRule;
     ostream << m_metadata;
     ostream << m_nextRuleId;
-
-    /////////////////////////////////////
-    // TODO
-    //Cmn::Cipher().encrypt(data, key);
-    /////////////////////////////////////
 
     return true;
 }
