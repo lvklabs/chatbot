@@ -45,16 +45,8 @@ namespace Stats
 /// @{
 
 /**
- * \brief The StatsFile class provides the interface for all files that store statistics.
- *
- * The StatsFile defines an abstract method for each statistic we are interested in. Method names
- * starting with \a set store absolut values, whereas those starting with \a add store cumulative
- * values.
- *
- * Statistics are stored in time intervals. Time intervals don't represent a fixed amount
- * of time such us 1 hour, 12 hours or 1 day. Instead, every time newInterval()
- * is invoked a new time interval starts and all invocations to setStat() or stat() will belong
- * to that time interval.
+ * \brief The StatsFile class provides the interface for all files that store metrics, scores and
+ *        other data needed to calculate the chatbot scores.
  */
 class StatsFile
 {
@@ -86,57 +78,61 @@ public:
     virtual void metricHistory(Metric m, History &h) = 0;
 
     /**
-     *
+     * Returns the amount of seconds that have elapsed for the current interval
      */
     virtual int scoreElapsedTime() const = 0;
 
     /**
-     *
+     * Sets the amount of seconds that have elapsed for the current interval
      */
     virtual void setScoreElapsedTime(int secs) = 0;
 
     /**
-     *
+     * This method is deprecated.
      */
     virtual QDateTime scoreStartTime() const = 0;
 
     /**
-     *
+     * Returns the current score.
      */
     virtual Score currentScore() const = 0;
 
     /**
-     *
+     * Sets \a s as the current score
+     * This information is not cleared on new intervals.
      */
     virtual void setCurrentScore(const Score &s) = 0;
 
     /**
-     *
+     * Returns the best score.
      */
     virtual Score bestScore() const = 0;
 
     /**
-     *
+     * Sets \a s as the best score
+     * This information is not cleared on new intervals.
      */
     virtual void setBestScore(const Score &s) = 0;
 
     /**
-     *
+     * Returns the list of contacts that have scored.
      */
     virtual QSet<QString> contacts() = 0;
 
     /**
-     *
+     * Adds \a usernames as a contact that has scored.
+     * This information is not cleared on new intervals.
      */
     virtual void addContact(const QString &username) = 0;
 
     /**
-     *
+     * Returns the chat history for the current interval.
      */
     virtual void chatHistory(Cmn::Conversation &h) = 0;
 
     /**
-     *
+     * Appends \a entry to the chat history.
+     * This information is cleared on new intervals.
      */
     virtual void appendChatEntry(const Cmn::Conversation::Entry &entry) = 0;
 

@@ -59,16 +59,11 @@ class StatsFile;
 /// @{
 
 /**
- * \brief The StatsManager class provides a singleton class used to log all statistics
+ * \brief The StatsManager class provides a singleton class used to get metrics and scores
+ *        for the current chatbot
  *
- * The StatsManager class defines a method for each statistic we are interested in. Method names
- * starting with \a set store absolut values, whereas those starting with \a add store cumulative
- * values. Before starting to log statistics we must set the chatbot ID with setChatbotId().
- *
- * Statistics are stored per chatbot ID on time intervals. Time intervals don't represent a fixed
- * amount of time such us 1 hour, 12 hours or 1 day. Instead, every time newInterval()
- * is invoked a new time interval starts and all invocations to setMetric() or metric() will belong
- * to that time interval.
+ * The StatsManager class provides the current and best scores for the current chatbot as well
+ * as the score timer.
  */
 class StatsManager : public QObject
 {
@@ -111,39 +106,39 @@ public:
     void clear();
 
     /**
-     *
-     */
-    void startTicking();
-
-    /**
-     *
-     */
-    void stopTicking();
-
-    /**
-     *
+     * Returns the remaining time for the current score interval
      */
     int scoreRemainingTime() const;
 
     /**
-     *
+     * Returns the current score for the current chatbot.
      */
     Score currentScore();
 
     /**
-     *
+     * Returns the best score for the current chatbot.
      */
     Score bestScore();
 
 public slots:
 
     /**
-     *
+     * Starts the score timer.
+     */
+    void startTicking();
+
+    /**
+     * Stops the score timer.
+     */
+    void stopTicking();
+
+    /**
+     * Updates the current score with a new conversation \a entry
      */
     void updateScoreWith(const Cmn::Conversation::Entry &entry);
 
     /**
-     *
+     * Updates the current score with a new \a root rule
      */
     void updateScoreWith(const BE::Rule *root);
 
