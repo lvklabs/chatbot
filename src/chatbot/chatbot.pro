@@ -73,7 +73,7 @@ CONFIG(debug, debug|release) {
         QXMPP_LIBS         = -lqxmpp_d
         FREELING_LIBS      = -lmorfo -lfries -lomlet
         ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -Lc:/mingw/msys/1.0/local/lib -lcrytpo
+        OPENSSL_LIBS       = -lcrypto
     }
 } else {
     win32 {
@@ -90,7 +90,7 @@ CONFIG(debug, debug|release) {
         QXMPP_LIBS         = -lqxmpp
         FREELING_LIBS      = -lmorfo -lfries -lomlet
         ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -lcrytpo
+        OPENSSL_LIBS       = -lcrypto
     }
 }
 
