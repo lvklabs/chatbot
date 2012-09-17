@@ -1,3 +1,7 @@
+v0.21
+ - Added 'Dale Aceptar' link in welcome window
+ - Fixed bug #31
+
 v0.20
  - New welcome window
  - Updated 'Options' window tooltips

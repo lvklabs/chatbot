@@ -3,7 +3,7 @@
  <class>WelcomeWidget</class>
  <widget class="QWidget" name="WelcomeWidget">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -64,7 +64,7 @@ background-color: rgba(255, 255, 255, 0);
        </property>
        <item row="0" column="0">
         <layout class="QGridLayout" name="welcomePageLayout">
-         <item row="4" column="0" colspan="5">
+         <item row="6" column="0" colspan="5">
           <spacer name="spacerBottom">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -225,6 +225,38 @@ background-color: rgba(255, 255, 255, 0);
             <set>Qt::AlignCenter</set>
            </property>
           </widget>
+         </item>
+         <item row="5" column="0" colspan="5">
+          <widget class="QLabel" name="linkLabel">
+           <property name="text">
+            <string notr="true">&lt;a href=&quot;http://www.daleaceptar.gob.ar/&quot;&gt;www.daleaceptar.gob.ar&lt;/a&gt;&lt;/p&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="openExternalLinks">
+            <bool>true</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="5">
+          <spacer name="linkSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>59</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
