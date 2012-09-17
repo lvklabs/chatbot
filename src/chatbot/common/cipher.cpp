@@ -74,6 +74,7 @@ inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
 
     if (!success) {
         qCritical() << "bf_encrypt failed!";
+        //ERR_print_errors_fp(stderr);
     }
 
     EVP_CIPHER_CTX_cleanup(&ctx);
@@ -116,6 +117,7 @@ inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
 
     if (!success) {
         qCritical() << "bf_decrypt failed!";
+        //ERR_print_errors_fp(stderr);
     }
 
     EVP_CIPHER_CTX_cleanup(&ctx);

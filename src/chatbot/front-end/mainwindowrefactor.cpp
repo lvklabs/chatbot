@@ -100,7 +100,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
-        ui->teachRuleButton->setText(tr("Change name"));
+        ui->teachRuleButton->setText(QObject::tr("Change name"));
         break;
 
     case EditRuleUiMode:
@@ -115,8 +115,8 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(tr("Chatbot replies:"));
-        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
+        ui->chatbotRepliesLabel->setText(QObject::tr("Chatbot replies:"));
+        ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
         break;
 
     case EditEvasivesUiMode:
@@ -131,8 +131,9 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(tr("If chatbot does not understand, it replies:"));
-        ui->teachRuleButton->setText(tr("Teach rule to the chatbot"));
+        ui->chatbotRepliesLabel->setText(QObject::tr("If chatbot does not understand,"
+                                                     " it replies:"));
+        ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
         break;
 
     // Chat connection tab //
@@ -143,14 +144,14 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
 
     case ChatDisconnectedUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->curUsernameLabel->setText(username().isEmpty() ? tr("(None)") : username());
+        ui->curUsernameLabel->setText(username().isEmpty() ? QObject::tr("(None)") : username());
         ui->chatTypeIcon->setPixmap(chatIcon());
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
         ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
+        ui->connectButton->setText(QObject::tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Disconnected"));
+        ui->connectionStatusLabel->setText(QObject::tr("Disconnected"));
         ui->connectionStatusLabel->setStyleSheet("color:gray");
         ui->rosterWidget->clear();
         // If verification was skipped
@@ -165,9 +166,9 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(false);
         ui->changeAccountButton->setEnabled(false);
-        ui->connectButton->setText(tr("Cancel connection"));
+        ui->connectButton->setText(QObject::tr("Cancel connection"));
         ui->connectionProgressBar->setVisible(true);
-        ui->connectionStatusLabel->setText(tr("Connecting..."));
+        ui->connectionStatusLabel->setText(QObject::tr("Connecting..."));
         ui->connectionStatusLabel->setStyleSheet("");
         break;
 
@@ -176,10 +177,10 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
         ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
+        ui->connectButton->setText(QObject::tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection error. "
-                                              "Please verify your username and password."));
+        ui->connectionStatusLabel->setText(QObject::tr("Connection error. Please verify your"
+                                                       " username and password."));
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
 
@@ -188,31 +189,31 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->connectToChatStackWidget->setCurrentIndex(0);
         ui->passwordText->setEnabled(true);
         ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(tr("Connect"));
+        ui->connectButton->setText(QObject::tr("Connect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection error. "
-                                              "You system does not support secure connections."));
+        ui->connectionStatusLabel->setText(QObject::tr("Connection error. You system does not"
+                                                       " support secure connections."));
         ui->connectionStatusLabel->setStyleSheet("color:red");
         break;
 
     case ChatConnectionOkUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(1);
-        ui->disconnectButton->setText(tr("Disconnect ") + username());
+        ui->disconnectButton->setText(QObject::tr("Disconnect ") + username());
         ui->disconnectButton->setIcon(chatIcon());
         // Not visible anymore:
         ui->passwordText->setEnabled(false);
-        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectButton->setText(QObject::tr("Disconnect"));
         ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(tr("Connection sucessful!"));
+        ui->connectionStatusLabel->setText(QObject::tr("Connection sucessful!"));
         ui->connectionStatusLabel->setStyleSheet("color:green");
         break;
 
     case ChangeAccountUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(tr("Please insert your username and password and press "
-                                               "\"Verify account\" button."));
+        ui->verifyExplanationLabel->setText(QObject::tr("Please insert your username and password"
+                                                        " and press \"Verify account\" button."));
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
@@ -227,9 +228,10 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
     case VerifyAccountUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(tr("To create a chatbot you need a Facebook or Gmail "
-                                               "account.\nPlease insert your username and password "
-                                               "and press \"Verify account\" button."));
+        ui->verifyExplanationLabel->setText(QObject::tr("To create a chatbot you need a Facebook"
+                                                        " or Gmail account.\nPlease insert your"
+                                                        " username and password and press "
+                                                        "\"Verify account\" button."));
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
@@ -352,7 +354,7 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->conversationsTab->setVisible(false);
             ui->scoreTab->setVisible(false);
 
-            ui->mainTabWidget->addTab(ui->welcomeTab, tr("Init"));
+            ui->mainTabWidget->addTab(ui->welcomeTab, QObject::tr("Init"));
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->connectTab);
@@ -376,7 +378,7 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->conversationsTab->setVisible(false);
             ui->scoreTab->setVisible(false);
 
-            ui->mainTabWidget->addTab(ui->connectTab, tr("Verify account"));
+            ui->mainTabWidget->addTab(ui->connectTab, QObject::tr("Verify account"));
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->teachTab);
@@ -399,11 +401,11 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->scoreTab->setVisible(true);
 
             ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->addTab(ui->teachTab, tr("Teach"));
-            ui->mainTabWidget->addTab(ui->testTab, tr("Test your chatbot"));
-            ui->mainTabWidget->addTab(ui->connectTab, tr("Connection"));
-            ui->mainTabWidget->addTab(ui->conversationsTab, tr("Conversations"));
-            ui->mainTabWidget->addTab(ui->scoreTab, tr("Score"));
+            ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("Teach"));
+            ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("Test your chatbot"));
+            ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("Connection"));
+            ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("Conversations"));
+            ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("Score"));
             break;
         }
     }

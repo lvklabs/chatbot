@@ -22,7 +22,6 @@
 #ifndef LVK_FE_MAINWINDOWREFACTOR_H
 #define LVK_FE_MAINWINDOWREFACTOR_H
 
-#include <QObject>
 #include <QPixmap>
 
 namespace Ui
@@ -88,7 +87,7 @@ enum UiTabsLayout
  * The mode must be one of FE::UiMode. The class requires a AppFacade object to know some context
  * information such as username, chatbot type, among others.
  */
-class MainWindowRefactor : public QObject
+class MainWindowRefactor
 {
 public:
     /**
