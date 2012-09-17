@@ -48,9 +48,10 @@ if [ "$run_e2e" == "yes" ]; then
 fi
 
 echo
-echo "SUMMARY:"
-cat $log_file | grep "********* Start\|Totals"
+echo "SUMMARY"
+cat $log_file | grep "********* Start\|Totals" | sed -e 's/Start testing of//g'
 rm -f $log_file
+echo 
 
 cd $project_dir
 
