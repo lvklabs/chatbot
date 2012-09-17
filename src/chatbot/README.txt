@@ -18,6 +18,7 @@ LVK CHATBOT README
         Optional: 
                   Freeling >= 2.2.2 (*2)
                   zlib     >= 1.2.7 (*3)
+                  OpenSSL  >= 1.0.0 (*4)
 
   NOTE: Mac version should compile but is not fully supported. 
 
@@ -71,6 +72,12 @@ LVK CHATBOT README
   sources are available at src/third-party/zlib. Zlib is required
   to send GELF messages to a Graylog server. To disable GELF statistic
   support remove 'CONFIG += gelf_stats' in chatbot.pro
+
+  (*4) Precompiled static library is already provided for linux32 and
+  win32. Other OSes might require to compile Zlib manually. Full
+  sources are available at src/third-party/openssl. OpenSSL is required
+  to encrypt data. To disable encryption support remove 'CONFIG += openssl' 
+  in chatbot.pro
 
 
 
