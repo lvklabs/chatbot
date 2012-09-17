@@ -195,6 +195,9 @@ protected:
     }
 
 private:
+    RuleStatsHelper(RuleStatsHelper&);
+    RuleStatsHelper& operator=(RuleStatsHelper&);
+
     unsigned m_rules;
     unsigned m_points;
     std::auto_ptr<Nlp::Engine> m_engine;

@@ -170,6 +170,9 @@ public:
     virtual bool isEmpty();
 
 private:
+    SecureStatsFile(SecureStatsFile&);
+    SecureStatsFile& operator=(const SecureStatsFile&);
+
     typedef QHash<TimeInterval, QVector<unsigned> > IntervalStats;
 
     QMutex *m_mutex;
