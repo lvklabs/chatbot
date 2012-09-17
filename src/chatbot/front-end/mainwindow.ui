@@ -1237,7 +1237,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
                  <item>
                   <widget class="QToolButton" name="verifyLaterButton">
                    <property name="text">
-                    <string>Verificar mas tarde</string>
+                    <string>Verify later</string>
                    </property>
                    <property name="icon">
                     <iconset resource="../res/chatbot_theme.qrc">

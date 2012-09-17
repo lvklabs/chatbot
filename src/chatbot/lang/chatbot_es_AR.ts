@@ -1345,9 +1345,8 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Transformaciones aplicadas:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1240"/>
         <source>Verificar mas tarde</source>
-        <translation>Verificar más tarde</translation>
+        <translation type="obsolete">Verificar más tarde</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.ui" line="652"/>
@@ -1378,6 +1377,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../front-end/mainwindow.ui" line="854"/>
         <source>Change user</source>
         <translation>Cambiar usuario</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="1240"/>
+        <source>Verify later</source>
+        <translation>Verificar más tarde</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.ui" line="1397"/>
