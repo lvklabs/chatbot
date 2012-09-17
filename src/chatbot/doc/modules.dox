@@ -59,7 +59,7 @@ Module dependencies:
 
 \addtogroup FE
 @{
-\image html FrontendclassDiagram.png
+\image html FrontendClassDiagram.png
 @}
 
 \addtogroup CA
@@ -70,6 +70,11 @@ Module dependencies:
 \addtogroup Nlp
 @{
 \image html NLPEngineClassDiagram.png
+@}
+
+\addtogroup Stats
+@{
+\image html StatsClassDiagram.png
 @}
 
 */
