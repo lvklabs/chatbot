@@ -133,6 +133,16 @@ public:
     void clear();
 
     /**
+     * Returns true if the conversation has no entries. Otherwise; returns false.
+     */
+    bool isEmpty() const;
+
+    /**
+     * Returns the number of entries in the conversation.
+     */
+    int size() const;
+
+    /**
      * Returns true if this conversation is equal to conversation @param other;
      * otherwise returns false.
      */

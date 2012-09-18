@@ -143,6 +143,21 @@ bool Lvk::Cmn::Conversation::operator==(const Lvk::Cmn::Conversation &other) con
     return m_entries == other.m_entries;
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Cmn::Conversation::isEmpty() const
+{
+    return m_entries.isEmpty();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::Cmn::Conversation::size() const
+{
+    return m_entries.size();
+}
+
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::Cmn::Conversation::operator!=(const Lvk::Cmn::Conversation &other) const
