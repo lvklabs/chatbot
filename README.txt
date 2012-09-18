@@ -1,5 +1,5 @@
 
-Chatbot directory structure:
+Directory structure:
 
 |-- src                  # Sources
 |   |-- chatbot          # Chatbot sources
@@ -7,14 +7,10 @@ Chatbot directory structure:
 |   |-- third-party      # Third-party sources
 |   |-- pocs             # Proof of concepts sources
 |-- da_release           # Scripts to release a new version for "Dale Aceptar" contest
-
+|-- doc                  # Doxygen and UML documentation
 
 To compile the Chatbot application see:  
 
  - src/chatbot/README.txt
 
-
-Looking for the documentation? See:
-
- - src/chatbot/doc/README.txt
 

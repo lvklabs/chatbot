@@ -5,7 +5,7 @@
 *.autosave
 versionrev.h
 .test-suite-shadow-build
-src/chatbot/doc/html
+doc/html
 da_release/linux32/chatbot-*
 da_release/linux32/.build
 da_release/win32/chatbot-*
