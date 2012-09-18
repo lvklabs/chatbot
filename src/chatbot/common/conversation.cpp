@@ -29,7 +29,7 @@
 // Conversation::Entry
 //--------------------------------------------------------------------------------------------------
 
-#define DATE_TIME_LOG_FORMAT    "dd-MM-yy hh:mm:ss"
+#define DATE_TIME_LOG_FORMAT    "dd-MM-yyyy hh:mm:ss"
 
 Lvk::Cmn::Conversation::Entry::Entry()
     : match(false), ruleId(0)

@@ -22,7 +22,7 @@
 #ifndef LVK_CMN_GLOBALSTRINGS_H
 #define LVK_CMN_GLOBALSTRINGS_H
 
-#define STR_GLOBAL_DATE_TIME_FORMAT            "dd-MM-yy hh:mm:ss"
+#define STR_GLOBAL_DATE_TIME_FORMAT            "dd-MM-yyyy hh:mm:ss"
 
 #define STR_CSV_CONV_ENTRY_MATCH               "match"
 #define STR_CSV_CONV_ENTRY_NO_MATCH            "no-match"
