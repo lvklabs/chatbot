@@ -31,6 +31,9 @@ Q_DECLARE_METATYPE(Lvk::Cmn::Conversation)
 
 using namespace Lvk;
 
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
 
 inline Cmn::Conversation readConversation(const QString &filename)
 {
@@ -42,6 +45,14 @@ inline Cmn::Conversation readConversation(const QString &filename)
     }
 
     return conv;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline BE::Rule * newOrdinaryRule(const QStringList &input, const QStringList &output,
+                                  BE::Rule *parent)
+{
+    return new BE::Rule("", BE::Rule::OrdinaryRule, input, output, parent);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -279,13 +290,17 @@ void StatsManagerUnitTest::testSetMetricsAndIntervals()
 void StatsManagerUnitTest::testScoreAlgorithm_data()
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Rule Points
+    // Points
 
+    // Rules
     const int COND_P  = 4; // conditional
     const int VAR_P   = 3; // variable
     const int REGEX_P = 2; // regex
     const int KWOP_P  = 2; // keyword op
     const int SIMPL_P = 1; // simple
+
+    // Conversation
+    const int CONV_P = 1000; // Valid conversation points
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rules
@@ -300,42 +315,37 @@ void StatsManagerUnitTest::testScoreAlgorithm_data()
     BE::Rule *root1g = new BE::Rule("", BE::Rule::ContainerRule);
     BE::Rule *root1h = new BE::Rule("", BE::Rule::ContainerRule);
     BE::Rule *root1i = new BE::Rule("", BE::Rule::ContainerRule);
-    BE::Rule *root5a  = new BE::Rule("", BE::Rule::ContainerRule);
-    BE::Rule *root5b  = new BE::Rule("", BE::Rule::ContainerRule);
+    BE::Rule *root5a = new BE::Rule("", BE::Rule::ContainerRule);
+    BE::Rule *root5b = new BE::Rule("", BE::Rule::ContainerRule);
 
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList(),                  QStringList(),              root1a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList(),              root1b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList(),                  QStringList() << "Hello",   root1c);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList() << "Hello",   root1d);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi *",        QStringList() << "Hello",   root1e);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Soccer **",   QStringList() << "Hello",   root1f);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "[hecho]",     QStringList() << "[hecho]", root1g);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root1h);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you play [sth]?", QStringList() << "{if sth = soccer}Yes{else}No", root1i);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList() << "Hello",   root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hey",         QStringList() << "Hello",   root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hello",       QStringList() << "Hello",   root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi *",        QStringList() << "Hello",   root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Soccer **",   QStringList() << "Hello",   root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "[hecho]",     QStringList() << "[hecho]", root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you like [sth]?", QStringList() << "{if [sth] = ice-cream}Yes{else}No", root5a);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList() << "Hello",   root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList() << "Hello",   root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi!",         QStringList() << "Hello",   root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Hi *",        QStringList() << "Hello",   root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Soccer **",   QStringList() << "Hello",   root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "[hecho]",     QStringList() << "[hecho]", root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
-    new BE::Rule("", BE::Rule::OrdinaryRule, QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
+    newOrdinaryRule(QStringList(),                         QStringList(),              root1a);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList(),              root1b);
+    newOrdinaryRule(QStringList(),                         QStringList() << "Hello",   root1c);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root1d);
+    newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root1e);
+    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root1f);
+    newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root1g);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root1h);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if sth = soccer}Yes{else}No", root1i);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "Hey",                QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "Hello",              QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root5a);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5a);
+    newOrdinaryRule(QStringList() << "Do you like [sth]?", QStringList() << "{if [sth] = ice-cream}Yes{else}No", root5a);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root5b);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
 
     int root5a_score = SIMPL_P*3 + KWOP_P + REGEX_P + VAR_P + COND_P*2;
     //int root5b_score = SIMPL_P + KWOP_P + REGEX_P + VAR_P + COND_P;
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Conversations points
-
-    const int CONV_P = 1000; // Valid conversation points
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Conversations
@@ -367,43 +377,26 @@ void StatsManagerUnitTest::testScoreAlgorithm_data()
     QTest::addColumn<Cmn::Conversation>("conv");
     QTest::addColumn<Stats::Score>("s"); // Expected score for root and conv
 
-    // Null root rule / Null conversation
     QTest::newRow("null") << reinterpret_cast<BE::Rule *>(0) << Cmn::Conversation() << Stats::Score();
-    // Root rule without children
-    QTest::newRow("r0")   << root0 << Cmn::Conversation() << Stats::Score();
-    // Root rule with one child but incomplete definition a
-    QTest::newRow("r1a")  << root1a << Cmn::Conversation() << Stats::Score();
-    // Root rule with one child but incomplete definition b
+
+    QTest::newRow("r0")  << root0  << Cmn::Conversation() << Stats::Score();
+    QTest::newRow("r1a") << root1a << Cmn::Conversation() << Stats::Score();
     QTest::newRow("r1b") << root1b << Cmn::Conversation() << Stats::Score();
-    // Root rule with one child with simple rule
     QTest::newRow("r1d") << root1d << Cmn::Conversation() << Stats::Score(SIMPL_P,0,0);
-    // Root rule with one child with rule with regexp
     QTest::newRow("r1e") << root1e << Cmn::Conversation() << Stats::Score(REGEX_P,0,0);
-    // Root rule with one child with rule with keyword op
     QTest::newRow("r1f") << root1f << Cmn::Conversation() << Stats::Score(KWOP_P,0,0);
-    // Root rule with one child with rule with variable
     QTest::newRow("r1g") << root1g << Cmn::Conversation() << Stats::Score(VAR_P,0,0);
-    // Root rule with one child with rule with conditional
     QTest::newRow("r1h") << root1h << Cmn::Conversation() << Stats::Score(COND_P,0,0);
-    // Root rule with one child with rule with conditional with wrong sintax
     QTest::newRow("r1i") << root1i << Cmn::Conversation() << Stats::Score(SIMPL_P,0,0);
-    // Root rule with one child with rule with several rules all differents
     QTest::newRow("r5a") << root5a << Cmn::Conversation() << Stats::Score(root5a_score, 0,0);
-    // Root rule with one child with rule with several rules some equals
     // TODO QTest::newRow("r5b") << root5b << Cmn::Conversation() << Stats::Score(root5b_score, 0,0);
 
-    // Null root rule / Short conversation
-    QTest::newRow("cs")   << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, c_short_cont_score, c_short_conv_score);
-    // Null root rule / Long conversation
-    QTest::newRow("cl")   << reinterpret_cast<BE::Rule *>(0) << c_long << Stats::Score(0, c_long_cont_score, c_long_conv_score);
-    // Null root rule / Long conversation with inactivity
-    QTest::newRow("cli")  << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, c_inact_cont_score, c_inact_conv_score);
-    // Null root rule / Long conversation with interfered
-    // TODO QTest::newRow("clI")  << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, c_inter_cont_score, c_inter_conv_score);
+    QTest::newRow("cs")  << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, c_short_cont_score, c_short_conv_score);
+    QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long << Stats::Score(0, c_long_cont_score, c_long_conv_score);
+    QTest::newRow("cli") << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, c_inact_cont_score, c_inact_conv_score);
 
-    // Mixed 1
+    // TODO QTest::newRow("clI")  << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, c_inter_cont_score, c_inter_conv_score);
     QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, c_long_cont_score, c_long_conv_score);
-    // Mixed 2
     QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, c_inact_cont_score, c_inact_conv_score);
 }
 
