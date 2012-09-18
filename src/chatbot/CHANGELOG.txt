@@ -1,3 +1,7 @@
+v0.22
+ - Improved score algorithm by adding detection of user interference 
+   in chatbot conversations
+
 v0.21
  - Added 'Dale Aceptar' link in welcome window
  - Fixed bug #31
