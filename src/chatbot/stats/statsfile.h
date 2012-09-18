@@ -117,7 +117,7 @@ public:
     /**
      * Returns the list of contacts that have scored.
      */
-    virtual QSet<QString> contacts() = 0;
+    virtual QSet<QString> contacts() const = 0;
 
     /**
      * Adds \a usernames as a contact that has scored.
@@ -128,7 +128,7 @@ public:
     /**
      * Returns the chat history for the current interval.
      */
-    virtual void chatHistory(Cmn::Conversation &h) = 0;
+    virtual void chatHistory(Cmn::Conversation &h) const = 0;
 
     /**
      * Appends \a entry to the chat history.
@@ -159,7 +159,7 @@ public:
     /**
      * Returns true if the file is empty. Otherwise; returns false.
      */
-    virtual bool isEmpty() = 0;
+    virtual bool isEmpty() const = 0;
 };
 
 /// @}

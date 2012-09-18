@@ -95,6 +95,7 @@ void Lvk::Stats::SecureStatsFile::newInterval()
     ++m_curInterv;
     m_history.clear();
     m_scoreStart = QDateTime::currentDateTime();
+    m_elapsedTime = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -243,11 +244,18 @@ void Lvk::Stats::SecureStatsFile::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Stats::SecureStatsFile::isEmpty()
+bool Lvk::Stats::SecureStatsFile::isEmpty() const
 {
     QMutexLocker locker(m_mutex);
 
-    return m_stats.isEmpty();
+    return m_stats.isEmpty() &&
+            m_curInterv == 1 &&
+            m_contacts.isEmpty() &&
+            m_history.isEmpty() &&
+            m_curScore.isNull() &&
+            m_bestScore.isNull() &&
+            m_scoreStart.isNull() &&
+            m_elapsedTime == 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -392,7 +400,7 @@ void Lvk::Stats::SecureStatsFile::setBestScore(const Score &s)
 
 //--------------------------------------------------------------------------------------------------
 
-QSet<QString> Lvk::Stats::SecureStatsFile::contacts()
+QSet<QString> Lvk::Stats::SecureStatsFile::contacts() const
 {
     QMutexLocker locker(m_mutex);
 
@@ -410,7 +418,7 @@ void Lvk::Stats::SecureStatsFile::addContact(const QString &username)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::SecureStatsFile::chatHistory(Cmn::Conversation &h)
+void Lvk::Stats::SecureStatsFile::chatHistory(Cmn::Conversation &h) const
 {
     QMutexLocker locker(m_mutex);
 

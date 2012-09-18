@@ -127,7 +127,7 @@ public:
     /**
      * \copydoc StatsFile::contacts()
      */
-    virtual QSet<QString> contacts();
+    virtual QSet<QString> contacts() const;
 
     /**
      * \copydoc StatsFile::addContact()
@@ -137,7 +137,7 @@ public:
     /**
      * \copydoc StatsFile::chatHistory()
      */
-    virtual void chatHistory(Cmn::Conversation &h);
+    virtual void chatHistory(Cmn::Conversation &h) const;
 
     /**
      * \copydoc StatsFile::appendChatEntry()
@@ -167,7 +167,7 @@ public:
     /**
      * \copydoc StatsFile::isEmpty()
      */
-    virtual bool isEmpty();
+    virtual bool isEmpty() const;
 
 private:
     SecureStatsFile(SecureStatsFile&);
