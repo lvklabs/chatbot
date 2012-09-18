@@ -6,5 +6,8 @@
 versionrev.h
 .test-suite-shadow-build
 src/chatbot/doc/html
-src/chatbot/builds
+da_release/linux32/chatbot-*
+da_release/linux32/.build
+da_release/win32/chatbot-*
+da_release/win32/.build
 .cccc

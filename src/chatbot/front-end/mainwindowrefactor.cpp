@@ -398,14 +398,18 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->testTab->setVisible(true);
             ui->connectTab->setVisible(true);
             ui->conversationsTab->setVisible(true);
+        #ifdef DA_CONTEST
             ui->scoreTab->setVisible(true);
+        #endif
 
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("Teach"));
             ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("Test your chatbot"));
             ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("Connection"));
             ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("Conversations"));
+        #ifdef DA_CONTEST
             ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("Score"));
+        #endif
             break;
         }
     }

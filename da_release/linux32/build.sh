@@ -1,7 +1,7 @@
 #!/bin/bash
 
 shadow_build_dir=.build
-project_file=../../../chatbot.pro
+project_file=../../../src/chatbot/chatbot.pro
 
 if [ -z "$1" ]; then 
   rm -rf $shadow_build_dir
@@ -15,4 +15,6 @@ echo "Building"
 echo "--------"
 
 mkdir -p $shadow_build_dir
-( cd $shadow_build_dir && qmake $project_file "CONFIG+=release" && make )
+( cd $shadow_build_dir && qmake $project_file "CONFIG+=release da_contest" && make )
+
+

@@ -25,11 +25,16 @@ ICON_THEME = chatbot
 # - gelf_stats: Enable Graylog statistics on remote server
 # - openssl   : Enable cryptographic security with openssl
 win32 {
-    CONFIG  += freeling gelf_stats openssl
+    CONFIG  += freeling
 } else:mac {
     CONFIG  +=
 } else {
-    CONFIG  += freeling gelf_stats openssl
+    CONFIG  += freeling
+}
+
+# Config options required for "Dale Aceptar" contest
+da_contest {
+    CONFIG  += gelf_stats openssl
 }
 
 
@@ -282,6 +287,15 @@ openssl {
     SOURCES +=
     LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
 }
+
+da_contest {
+    DEFINES += DA_CONTEST
+    INCLUDEPATH +=
+    HEADERS +=
+    SOURCES +=
+    LIBS +=
+}
+
 
 ############################################
 # Copy language files

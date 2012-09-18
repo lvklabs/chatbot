@@ -146,6 +146,10 @@ void Lvk::FE::MainWindow::setupUi()
 
     m_tinyScore = new TinyScoreWidget(ui->mainTabWidget);
 
+#ifndef DA_CONTEST
+    m_tinyScore->setVisible(false);
+#endif
+
     clear();
 
     connectSignals();

@@ -2,10 +2,11 @@
 Chatbot directory structure:
 
 |-- src                  # Sources
-    |-- chatbot          # Chatbot sources
-    |-- test-suite       # Chatbot test suite sources
-    |-- third-party      # Third-party sources
-    |-- pocs             # Proof of concepts sources
+|   |-- chatbot          # Chatbot sources
+|   |-- test-suite       # Chatbot test suite sources
+|   |-- third-party      # Third-party sources
+|   |-- pocs             # Proof of concepts sources
+|-- da_release           # Scripts to release a new version for "Dale Aceptar" contest
 
 
 To compile the Chatbot application see:  

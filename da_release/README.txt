@@ -1,4 +1,6 @@
-To release a new chatbot version just invoke:
+This folder is only intended to build and release a Chatbot for the "Dale Aceptar" contest
+
+To release a new version just invoke:
 
 ./release.sh
 

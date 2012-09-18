@@ -24,7 +24,12 @@
 #include <QDir>
 #include <QDebug>
 
-#include "front-end/welcomewidget.h"
+#ifdef DA_CONTEST
+# include "front-end/welcomewidget.h"
+#else
+# include "front-end/mainwindow.h"
+#endif
+
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -51,8 +56,13 @@ int main(int argc, char *argv[])
     makeDirStructure();
     setLanguage(app);
 
-    Lvk::FE::WelcomeWidget ww;
-    ww.show();
+#ifdef DA_CONTEST
+    Lvk::FE::WelcomeWidget w;
+#else
+    Lvk::FE::MainWindow w;
+#endif
+
+    w.show();
 
     return app.exec();
 }

@@ -21,8 +21,8 @@ else
 
   cp -vR runtime/* $pkg_dir
   cp -v .build/release/chatbot.exe $pkg_dir
-  cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG.txt
-  cp -vR ../../lang/*.qm $pkg_dir/lang
+  cp -v ../../src/chatbot/CHANGELOG.txt $pkg_dir/CHANGELOG.txt
+  cp -vR ../../src/chatbot/lang/*.qm $pkg_dir/lang
 
   rm -f chatbot-win32-$1.zip
   bin/7z.exe a chatbot-win32-$1.zip $pkg_dir/

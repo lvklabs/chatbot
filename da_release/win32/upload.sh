@@ -12,6 +12,5 @@ echo "----------------------"
 echo "Uploading $1"
 echo "----------------------"
 
-if [ -f passwd ]; then cat.exe passwd | tail -n1; fi
 scp.exe $1 $lvk_user@$lvk_host:$pkg_host_path
 

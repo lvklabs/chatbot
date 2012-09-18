@@ -21,8 +21,8 @@ else
 
   cp -vR runtime/* $pkg_dir
   cp -v .build/chatbot $pkg_dir/chatbot.bin
-  cp -v ../../CHANGELOG.txt $pkg_dir/CHANGELOG
-  cp -vR ../../lang/*.qm $pkg_dir/lang
+  cp -v ../../src/chatbot/CHANGELOG.txt $pkg_dir/CHANGELOG
+  cp -vR ../../src/chatbot/lang/*.qm $pkg_dir/lang
 
   tar -czvf chatbot-linux32-$1.tar.gz $pkg_dir
 fi
