@@ -6,12 +6,6 @@ LVK CHATBOT README
 
   $ qmake && make 
 
-  Or to compile and generate a package with all the resources in 
-  place:
-
-  $ cd builds/<os type>/
-  $ build.sh && package.sh
-
   NOTE: Requires: Qt SDK   >= 4.7.0 
                   QXmpp    >= 0.3.0 (*1)
  
@@ -27,15 +21,6 @@ LVK CHATBOT README
 -- To Run:
 
   $ ./chatbot
-
-
-
- -- To generate Doxygen documentation:
-
-  $ bin/udpate-doc.sh
-
-  NOTE: Requires doxygen package and it is also recommended 
-        the dot package.
 
 
 
