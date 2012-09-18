@@ -6,7 +6,7 @@
 
 QT       += testlib xml qt3support gui
 
-TARGET = statsManagerUnitTest
+TARGET = statsManagerTest
 CONFIG   += console
 CONFIG   -= app_bundle
 

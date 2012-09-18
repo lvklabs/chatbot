@@ -10,7 +10,7 @@ unit_tests {
         csv-document-unit-test \
         conversation-rw-unit-test \
         secure-stats-file-unit-test \
-        stats-manager-unit-test \
+        stats-manager-test \
         cipher-unit-test
 }
 
