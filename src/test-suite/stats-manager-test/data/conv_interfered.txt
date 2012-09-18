@@ -14,7 +14,7 @@
 31-08-2012 10:52:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola8,Hola8!,match,2
 31-08-2012 10:53:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola9,Hola9!,match,2
 31-08-2012 10:59:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holaa,Holaa!,match,2
-31-08-2012 11:10:36,Andres Pagliano <-1575963427@chat.facebook.com>,Me,holab,Holab!,match,2
+31-08-2012 11:10:36,_OWN_MSG_,Andres Pagliano <-1575963427@chat.facebook.com>,Dale segui hablando,holab,no-match,0
 31-08-2012 11:11:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holac,Holac!,match,2
 31-08-2012 11:12:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holad,Holad!,match,2
 31-08-2012 11:14:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holae,Holae!,match,2

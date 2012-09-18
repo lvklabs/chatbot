@@ -124,6 +124,7 @@ public:
     {
         StatsHelper::clear();
         m_convTracker.clear();
+        m_scoreContacts.clear();
         m_cbLines.clear();
         m_cbLexicon.clear();
         m_cbLinesCount = 0;
@@ -151,9 +152,6 @@ protected:
         StatsHelper::count(entry.response);
 
         if (!entry.response.isEmpty()) {
-            m_cbLines.insert(entry.response);
-            updateLexicon(splitSentence(entry.response), m_cbLexicon);
-            ++m_cbLinesCount;
             trackConversation(entry);
         }
     }
@@ -171,31 +169,7 @@ private:
     QSet<QString> m_cbLexicon;
     unsigned m_cbLinesCount;
 
-    // Tracks conversations and if the conversation has at least MIN_CONV_LEN entries,
-    // adds username to the score contacts set
-    void trackConversation(const Lvk::Cmn::Conversation::Entry &entry)
-    {
-        const unsigned MAX_INACTIVITY = 60*30; // Max period of inactivity allowed. In seconds.
-        const unsigned MIN_CONV_LEN = 20;      // Minimum conversation lenght to add contact
-
-        ConversationTracker::iterator it = m_convTracker.find(entry.from);
-
-        if (it != m_convTracker.end()) {
-            DateCountPair &p =  it.value();
-            if (entry.dateTime.toTime_t() - p.first.toTime_t() < MAX_INACTIVITY
-                    /* TODO && !interfered*/) {
-                p = DateCountPair(entry.dateTime, p.second + 1);
-
-                if (p.second >= MIN_CONV_LEN) {
-                    m_scoreContacts.insert(entry.from);
-                }
-            } else {
-                p = DateCountPair(entry.dateTime, 1);
-            }
-        } else {
-            m_convTracker[entry.from] = DateCountPair(entry.dateTime, 1);
-        }
-    }
+    void trackConversation(const Lvk::Cmn::Conversation::Entry &entry);
 };
 
 

@@ -95,6 +95,7 @@ HEADERS += \
     ../../chatbot/chat-adapter/contactinfo.h \
     ../../chatbot/chat-adapter/chatcorpus.h \
     ../../chatbot/chat-adapter/chatbotai.h \
+    ../../chatbot/chat-adapter/fbownmessageextension.h \
     ../../chatbot/common/random.h\
     ../../chatbot/common/version.h \
     ../../chatbot/common/settings.h \
@@ -158,6 +159,7 @@ SOURCES += \
     ../../chatbot/chat-adapter/gtalkchatbot.cpp \
     ../../chatbot/chat-adapter/chatbot.cpp \
     ../../chatbot/chat-adapter/chatcorpus.cpp \
+    ../../chatbot/chat-adapter/fbownmessageextension.cpp \
     ../../chatbot/common/random.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/csvdocument.cpp \
@@ -171,6 +173,7 @@ SOURCES += \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/stats/history.cpp \
+    ../../chatbot/stats/historystatshelper.cpp \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     testxmppclient.cpp \
     main.cpp

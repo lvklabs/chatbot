@@ -98,7 +98,7 @@ public:
     void setConversation(const Lvk::Cmn::Conversation &conv);
 
     /**
-     * Adds a single conversation entry \a conv.
+     * Adds a single conversation \a entry
      */
     void addConversationEntry(const Lvk::Cmn::Conversation::Entry &entry);
 

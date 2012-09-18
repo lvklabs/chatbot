@@ -255,6 +255,11 @@ void Lvk::FE::ChatHistoryWidget::clearConversations()
 
 void Lvk::FE::ChatHistoryWidget::addConversationEntry(const Lvk::Cmn::Conversation::Entry &entry)
 {
+    // Do not display Facebook's own messages
+    if (entry.from.startsWith(OWN_MESSAGE_TOKEN)) {
+        return;
+    }
+
     QString key = hashKey(entry);
 
     if (!m_entries.contains(key)) {

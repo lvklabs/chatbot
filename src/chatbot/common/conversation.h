@@ -41,7 +41,7 @@ namespace Cmn
 /// @{
 
 /**
- * \brief The Conversation class provides a chat conversation between a user and the chatbot
+ * \brief The Conversation class provides a chat conversation between two or more entities
  */
 
 class Conversation
@@ -54,11 +54,11 @@ public:
     Conversation();
 
     /**
-     * \brief The Entry class provides a single conversation entry between a user and the chatbot
+     * \brief The Entry class provides a single conversation entry between two entities
      *
-     * A conversation entry is an object that provides information about a mesage-response
-     * between the user and the chatbot such as date-time, "from" user, "to" user, message,
-     * response and if there were a match in the chatbot rules.
+     * A conversation entry is an object that provides the following information:
+     * date-time, "from" entity, "to" entity, message, response and if there were a
+     * match in the chatbot rules.
      *
      * @see Conversation class
      */

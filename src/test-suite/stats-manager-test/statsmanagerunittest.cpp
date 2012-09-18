@@ -360,15 +360,15 @@ void StatsManagerUnitTest::testScoreAlgorithm_data()
     int c_long_conv_score = 27 + 29; // #lines + #lexicon
     int c_long_cont_score = 1*CONV_P;
 
-    Cmn::Conversation c_inter = readConversation(CONV_INTER_FILENAME);
-    QVERIFY(!c_inter.isEmpty());
-    //int c_inter_conv_score = 0; // #lines + #lexicon
-    //int c_inter_cont_score = 0;
-
     Cmn::Conversation c_inact = readConversation(CONV_INACT_FILENAME);
     QVERIFY(!c_inact.isEmpty());
     int c_inact_conv_score = 27 + 29; // #lines + #lexicon
     int c_inact_cont_score = 0;
+
+    Cmn::Conversation c_inter = readConversation(CONV_INTER_FILENAME);
+    QVERIFY(!c_inter.isEmpty());
+    int c_inter_conv_score = 24 + 25; // #lines + #lexicon
+    int c_inter_cont_score = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Cols & Rows
@@ -394,10 +394,11 @@ void StatsManagerUnitTest::testScoreAlgorithm_data()
     QTest::newRow("cs")  << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, c_short_cont_score, c_short_conv_score);
     QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long << Stats::Score(0, c_long_cont_score, c_long_conv_score);
     QTest::newRow("cli") << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, c_inact_cont_score, c_inact_conv_score);
+    QTest::newRow("clI") << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, c_inter_cont_score, c_inter_conv_score);
 
-    // TODO QTest::newRow("clI")  << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, c_inter_cont_score, c_inter_conv_score);
     QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, c_long_cont_score, c_long_conv_score);
     QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, c_inact_cont_score, c_inact_conv_score);
+    // TODO QTest::newRow("m4") << root5b << c_inter << Stats::Score(root5b_score, c_inter_cont_score, c_inter_conv_score);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -421,10 +422,16 @@ void StatsManagerUnitTest::testScoreAlgorithm()
         manager()->updateScoreWith(e);
     }
 
-//    qDebug() << manager()->currentScore().rules;
-//    qDebug() << manager()->currentScore().contacts;
-//    qDebug() << manager()->currentScore().conversations;
-//    qDebug() << manager()->currentScore().total;
+    if (manager()->currentScore() != s) {
+        qDebug() << " - Got:";
+        qDebug() << manager()->currentScore().rules;
+        qDebug() << manager()->currentScore().contacts;
+        qDebug() << manager()->currentScore().conversations;
+        qDebug() << " - Expected:";
+        qDebug() << s.rules;
+        qDebug() << s.contacts;
+        qDebug() << s.conversations;
+    }
 
     QVERIFY(manager()->currentScore() == s);
 }

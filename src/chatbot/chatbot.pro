@@ -153,6 +153,7 @@ HEADERS += \
     chat-adapter/contactinfo.h \
     chat-adapter/chatcorpus.h \
     chat-adapter/chatbotai.h \
+    chat-adapter/fbownmessageextension.h \
     common/random.h\
     common/version.h \
     common/settings.h \
@@ -221,6 +222,7 @@ SOURCES += \
     chat-adapter/gtalkchatbot.cpp \
     chat-adapter/chatbot.cpp \
     chat-adapter/chatcorpus.cpp \
+    chat-adapter/fbownmessageextension.cpp \
     common/random.cpp \
     common/settings.cpp \
     common/csvdocument.cpp \
@@ -234,6 +236,7 @@ SOURCES += \
     stats/statsmanager.cpp \
     stats/history.cpp \
     stats/securestatsfile.cpp \
+    stats/historystatshelper.cpp \
 
 
 FORMS += \
@@ -316,4 +319,7 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 

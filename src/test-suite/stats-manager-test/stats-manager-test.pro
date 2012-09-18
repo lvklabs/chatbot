@@ -27,6 +27,7 @@ SOURCES += \
     statsmanagerunittest.cpp\
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
+    ../../chatbot/stats/historystatshelper.cpp \
     ../../chatbot/common/cipher.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/conversation.cpp \
@@ -50,7 +51,7 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 ############################################
 # Copy other files
 win32:copyfiles.commands = copy /y $$PROJECT_PATH/data/*.txt .
-else:copyfiles.commands = cp $$PROJECT_PATH/data/*.txt .
+else:copyfiles.commands = cp -f $$PROJECT_PATH/data/*.txt .
 
 QMAKE_EXTRA_TARGETS += copyfiles
 POST_TARGETDEPS += copyfiles

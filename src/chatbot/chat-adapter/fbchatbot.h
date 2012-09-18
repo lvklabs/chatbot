@@ -25,11 +25,11 @@
 #include "chat-adapter/xmppchatbot.h"
 #include "chat-adapter/chatcorpus.h"
 
+#include <QObject>
 #include <QHash>
 #include <QList>
 
 class QXmppMessage;
-class QXmppClientExtension;
 
 namespace Lvk
 {
@@ -39,6 +39,8 @@ namespace Lvk
 
 namespace CA
 {
+
+class FbOwnMessageExtension;
 
 /// \ingroup Lvk
 /// \addtogroup CA
@@ -52,6 +54,8 @@ namespace CA
 
 class FbChatbot : public XmppChatbot
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -72,12 +76,13 @@ public:
     virtual void connectToServer(const QString &user, const QString &passwd);
 
 protected slots:
-    virtual void onMessageReceived(const QXmppMessage &);
+    virtual void onMessageReceived(const QXmppMessage &msg);
+    virtual void onOwnMessageReceived(const QXmppMessage &msg);
 
 private:
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 
-    QXmppClientExtension    *m_ownMsgExtension;
+    FbOwnMessageExtension    *m_ownMsgExtension;
 };
 
 /// @}

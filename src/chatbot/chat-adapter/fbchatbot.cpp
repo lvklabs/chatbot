@@ -21,11 +21,14 @@
 
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/chatcorpus.h"
+#include "chat-adapter/fbownmessageextension.h"
+#include "common/conversation.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
 
 #include <QDomElement>
+#include <QtDebug>
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -41,7 +44,7 @@
 namespace
 {
 
-inline Lvk::CA::ChatCorpus::CorpusEntry makeEntry(const QString &user, const QString &msg)
+inline Lvk::CA::ChatCorpus::CorpusEntry makeCorpusEntry(const QString &user, const QString &msg)
 {
     Lvk::CA::ChatCorpus::CorpusEntry entry;
 
@@ -52,74 +55,34 @@ inline Lvk::CA::ChatCorpus::CorpusEntry makeEntry(const QString &user, const QSt
     return entry;
 }
 
-} // namespace
-
-
-namespace
-{
-
 //--------------------------------------------------------------------------------------------------
-// FbOwnMessageExtension
-//--------------------------------------------------------------------------------------------------
-//
-// FbOwnMessageExtension class is a QXmpp Client extension used to handle a non-standard stanza
-// used by Facebook.
-// Whenever someone sends a message from Facebook’s web interface while at the same time being
-// logged in another client, facebook sends the following non-standard IQ:
-//
-// <iq from="chat.facebook.com"
-//         to="andres.pagliano@chat.facebook.com/QXmpp_xxx"
-//         id="fbiq4C053818B6905"
-//         type="set">
-//     <own-message
-//             xmlns="http://www.facebook.com/xmpp/messages"
-//             to="-100003507576703@chat.facebook.com"
-//             self="false">
-//         <body>hola</body>
-//     </own-message>
-// </iq>
 
-class FbOwnMessageExtension : public QXmppClientExtension
+inline Lvk::Cmn::Conversation::Entry makeEntry(const QString &from, const QString &to,
+                                               const QString &msg)
 {
-public:
+    Lvk::Cmn::Conversation::Entry entry;
 
-    virtual bool handleStanza(const QDomElement &nodeRecv)
-    {
-        bool handled = false;
+    entry.dateTime = QDateTime::currentDateTime();
+    entry.from = from;
+    entry.msg = msg;
+    entry.to = to;
 
-        if (nodeRecv.tagName() == "iq") {
-            QDomElement child = nodeRecv.firstChildElement();
-
-            if (child.tagName() == "own-message") {
-                QXmppMessage msg;
-                msg.parse(child);
-
-                handleOwnMessage(msg);
-
-                handled = true;
-            }
-        }
-
-        return handled;
-    }
-
-    void handleOwnMessage(const QXmppMessage &msg)
-    {
-        Lvk::CA::ChatCorpus corpus;
-        corpus.add(makeEntry("Me", msg.body()));
-    }
-};
+    return entry;
+}
 
 } // namespace
-
 
 //--------------------------------------------------------------------------------------------------
 // FbChatbot
 //--------------------------------------------------------------------------------------------------
 
 Lvk::CA::FbChatbot::FbChatbot(const QString &chatbotId, QObject *parent)
-    : XmppChatbot(chatbotId, parent), m_ownMsgExtension(new FbOwnMessageExtension())
+    : XmppChatbot(chatbotId, parent), m_ownMsgExtension(new CA::FbOwnMessageExtension())
 {
+    connect(m_ownMsgExtension,
+            SIGNAL(ownMessage(QXmppMessage)),
+            SLOT(onOwnMessageReceived(QXmppMessage)));
+
     m_xmppClient->addExtension(m_ownMsgExtension);
 }
 
@@ -151,10 +114,20 @@ void Lvk::CA::FbChatbot::onMessageReceived(const QXmppMessage &msg)
 {
     if (msg.type() == QXmppMessage::Chat || msg.type() == QXmppMessage::GroupChat) {
         if (msg.body().size() > 0) {
-            ChatCorpus corpus;
-            corpus.add(makeEntry(msg.from(), msg.body()));
+            CA::ChatCorpus().add(makeCorpusEntry(msg.from(), msg.body()));
         }
     }
 
     XmppChatbot::onMessageReceived(msg);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::FbChatbot::onOwnMessageReceived(const QXmppMessage &msg)
+{
+    qDebug() << "FbChatbot OwnMessageReceived" << msg.body() << "to" << msg.to();
+
+    CA::ChatCorpus().add(makeCorpusEntry(OWN_MESSAGE_TOKEN, msg.body()));
+
+    emit newConversationEntry(makeEntry(OWN_MESSAGE_TOKEN, msg.to(), msg.body()));
 }
