@@ -43,12 +43,24 @@ namespace Stats
  */
 struct Score
 {
-    Score() : rules(0), contacts(0), conversations(0), total(0) { }
+    Score()
+        : rules(0), contacts(0), conversations(0), total(0) { }
+
+    Score(double rules, double conts, double convs)
+        : rules(rules), contacts(conts), conversations(convs), total(rules + conts + convs) { }
 
     double rules;         ///< Score obteined by rule definitions
     double contacts;      ///< Score obteined by chat contacts
     double conversations; ///< Score obteined by chat conversations
     double total;         ///< Total score
+
+    /**
+     * Returns true if all values are zero. Otherwise; returns false.
+     */
+    bool isNull() const
+    {
+        return !rules && !contacts && !conversations && !total;
+    }
 };
 
 
