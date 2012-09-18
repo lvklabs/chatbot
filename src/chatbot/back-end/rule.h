@@ -133,9 +133,15 @@ public:
     Rule(const QString &name, Type type, Rule *parent = 0);
 
     /**
-     * Constructs a new rule with the given \a name, \a input \a output and \a parent
+     * Constructs a new rule with the given \a name, \a input, \a output and \a parent
      */
     Rule(const QString &name, const QStringList &input, const QStringList &output,
+         Rule *parent = 0);
+
+    /**
+     * Constructs a new rule with the given \a name, \a type, \a input, \a output and \a parent
+     */
+    Rule(const QString &name, Type type, const QStringList &input, const QStringList &output,
          Rule *parent = 0);
 
     /**
