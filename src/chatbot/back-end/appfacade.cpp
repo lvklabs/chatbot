@@ -302,7 +302,7 @@ void Lvk::BE::AppFacade::close()
         deleteCurrentChatbot();
     }
 
-    stopTicking();
+    Stats::StatsManager::manager()->stopTicking();
 
     m_targets.clear();
     m_rules.close();
@@ -681,12 +681,17 @@ void Lvk::BE::AppFacade::connectChatbotSignals()
 {
     connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
     connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
-    connect(m_chatbot, SIGNAL(connected()),    SLOT(startTicking()));
-    connect(m_chatbot, SIGNAL(disconnected()), SLOT(stopTicking()));
+
     // FIXME add method to remap Chatbot error codes to AppFacade error codes
     connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+
     connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
             SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
+
+    connect(m_chatbot, SIGNAL(connected()),
+            Stats::StatsManager::manager(), SLOT(startTicking()));
+    connect(m_chatbot, SIGNAL(disconnected()),
+            Stats::StatsManager::manager(), SLOT(stopTicking()));
     connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
             Stats::StatsManager::manager(), SLOT(updateScoreWith(Cmn::Conversation::Entry)));
 }
@@ -778,8 +783,8 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
     Cmn::RemoteLogger::FieldList fullFields = fields;
     fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
     fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
+    // TODO append app version
 
-    // If secure conection use Syslog TCP, otherwise use GELF UDP
     if (secure) {
         return m_secureLogger->log(msg, fullFields) == 0;
     } else {
@@ -808,20 +813,6 @@ Lvk::Stats::Score Lvk::BE::AppFacade::bestScore()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::startTicking()
-{
-    Stats::StatsManager::manager()->startTicking();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::BE::AppFacade::stopTicking()
-{
-    Stats::StatsManager::manager()->stopTicking();
-}
-
-//--------------------------------------------------------------------------------------------------
-
 int Lvk::BE::AppFacade::scoreRemainingTime() const
 {
     return Stats::StatsManager::manager()->scoreRemainingTime();
@@ -840,6 +831,7 @@ bool Lvk::BE::AppFacade::uploadScore()
     fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
     fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
     fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
+    // TODO append app version
 
     return m_secureLogger->log("Manually uploaded score", fields) == 0;
 }

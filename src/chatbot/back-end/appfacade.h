@@ -399,8 +399,6 @@ signals:
 private slots:
     void onAccountOk();
     void onAccountError(int err);
-    void startTicking();
-    void stopTicking();
 
 private:
     AppFacade(AppFacade&);
