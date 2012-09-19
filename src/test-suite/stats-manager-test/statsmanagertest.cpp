@@ -345,7 +345,7 @@ void StatsManagerTest::testScoreAlgorithm_data()
     newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
 
     int root5a_score = SIMPL_P*3 + KWOP_P + REGEX_P + VAR_P + COND_P*2;
-    //int root5b_score = SIMPL_P + KWOP_P + REGEX_P + VAR_P + COND_P;
+    int root5b_score = SIMPL_P + KWOP_P + REGEX_P + VAR_P + COND_P;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Conversations
@@ -389,7 +389,7 @@ void StatsManagerTest::testScoreAlgorithm_data()
     QTest::newRow("r1h") << root1h << Cmn::Conversation() << Stats::Score(COND_P,0,0);
     QTest::newRow("r1i") << root1i << Cmn::Conversation() << Stats::Score(SIMPL_P,0,0);
     QTest::newRow("r5a") << root5a << Cmn::Conversation() << Stats::Score(root5a_score, 0,0);
-    // TODO QTest::newRow("r5b") << root5b << Cmn::Conversation() << Stats::Score(root5b_score, 0,0);
+    QTest::newRow("r5b") << root5b << Cmn::Conversation() << Stats::Score(root5b_score, 0,0);
 
     QTest::newRow("cs")  << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, c_short_cont_score, c_short_conv_score);
     QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long << Stats::Score(0, c_long_cont_score, c_long_conv_score);
@@ -398,7 +398,7 @@ void StatsManagerTest::testScoreAlgorithm_data()
 
     QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, c_long_cont_score, c_long_conv_score);
     QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, c_inact_cont_score, c_inact_conv_score);
-    // TODO QTest::newRow("m4") << root5b << c_inter << Stats::Score(root5b_score, c_inter_cont_score, c_inter_conv_score);
+    QTest::newRow("m3") << root5b << c_inter << Stats::Score(root5b_score, c_inter_cont_score, c_inter_conv_score);
 }
 
 //--------------------------------------------------------------------------------------------------

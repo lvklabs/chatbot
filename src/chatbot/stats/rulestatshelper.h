@@ -26,6 +26,8 @@
 #include "back-end/rule.h"
 #include "nlp-engine/enginefactory.h"
 
+#include <QSet>
+#include <QPair>
 #include <memory>
 
 namespace Lvk
@@ -109,6 +111,7 @@ public:
     void clear()
     {
         StatsHelper::clear();
+        m_ioPairs.clear();
         m_rules = 0;
         m_points = 0;
     }
@@ -144,7 +147,7 @@ protected:
     /**
      * Returns the points of the given \a rule
      */
-    unsigned points(const Lvk::BE::Rule *rule) const
+    unsigned points(const Lvk::BE::Rule *rule)
     {
         unsigned p = 0;
 
@@ -158,7 +161,12 @@ protected:
             }
         }
         foreach (const QString &input, rule->input()) {
-            p += points(input, output);
+            // Count only unique pairs (input, output)
+            IOPair pair(input, output);
+            if (!m_ioPairs.contains(pair)) {
+                m_ioPairs.insert(pair);
+                p += points(input, output);
+            }
         }
 
         return p;
@@ -197,6 +205,9 @@ protected:
 private:
     RuleStatsHelper(RuleStatsHelper&);
     RuleStatsHelper& operator=(RuleStatsHelper&);
+
+    typedef QPair<QString, QString> IOPair;
+    QSet<IOPair> m_ioPairs;
 
     unsigned m_rules;
     unsigned m_points;
