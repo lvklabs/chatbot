@@ -12,7 +12,5 @@ else
   echo "Uploading $1"
   echo "----------------------"
 
-  cp ../../src/chatbot/CHANGELOG.txt CHANGELOG
-  scp CHANGELOG $1 $lvk_user@$lvk_host:$pkg_host_path
-  rm -f CHANGELOG
+  scp ../../src/chatbot/CHANGELOG $1 $lvk_user@$lvk_host:$pkg_host_path
 fi
