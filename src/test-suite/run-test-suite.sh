@@ -4,23 +4,17 @@ shadow_build_dir=.test-suite-shadow-build
 project_dir=..
 log_file=run.log
 
-run_unit=no
-run_e2e=no
-run_single=no
+unit_tests="cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test aiml-engine-unit-test simple-aiml-engine-unit-test secure-stats-file-unit-test stats-manager-test"
+e2e_tests="end-to-end-test"
 
 if [ "$1" == "-u" ]; then
-  run_unit=yes
-  config="CONFIG+=unit_tests"
+  tests="$unit_tests"
 elif [ "$1" == "-e" ]; then
-  run_e2e=yes
-  config="CONFIG+=end_to_end_tests"
+  tests="$e2e_tests"
 elif [ "$1" == "-a" ]; then
-  run_unit=yes
-  run_e2e=yes
-  config="CONFIG+=unit_tests end_to_end_tests"
+  tests="$unit_tests $e2e_tests"
 elif [ -d "$1" ]; then
-  run_single=yes
-  config="SUBDIRS+=$1"
+  tests="$1"
 else
   echo "Syntax:"
   echo "   $0 -u        # Run unit and system tests"
@@ -35,27 +29,12 @@ set -e
 rm -f $log_file
 mkdir -p $shadow_build_dir
 cd $shadow_build_dir
-qmake $project_dir "$config"
+qmake $project_dir "SUBDIRS=$tests"
 make
 
-if [ "$run_unit" == "yes" ]; then
-  ( cd csv-document-unit-test && ./csvDocumentUnitTest | tee -a ../$log_file )
-  ( cd conversation-rw-unit-test && ./conversationRwTest | tee -a ../$log_file )
-  ( cd default-sanitizer-unit-test && ./defaultSanitizerUnitTest | tee -a ../$log_file ) 
-  ( cd aiml-engine-unit-test && ./aimlEngineUnitTest | tee -a ../$log_file )
-  ( cd simple-aiml-engine-unit-test && ./simpleAimlEngineUnitTest | tee -a ../$log_file )
-  ( cd secure-stats-file-unit-test && ./secureStatsFileUnitTest | tee -a ../$log_file )
-  ( cd stats-manager-test && ./statsManagerTest | tee -a ../$log_file )
-  ( cd cipher-unit-test && ./cipherUnitTest | tee -a ../$log_file )
-fi
-
-if [ "$run_e2e" == "yes" ]; then
-  ( cd end-to-end-test && ./endToEndTest | tee -a ../$log_file )
-fi
-
-if [ "$run_single" == "yes" ]; then
-  ( cd $1 && find . -name "*Test" -executable -exec ./{} \; | tee -a ../$log_file )
-fi
+for t in $tests; do
+  ( cd $t && find . -name "*Test" -executable -exec ./{} \; | tee -a ../$log_file )
+done
 
 
 echo
