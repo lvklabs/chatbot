@@ -52,7 +52,10 @@ inline Cmn::Conversation readConversation(const QString &filename)
 inline BE::Rule * newOrdinaryRule(const QStringList &input, const QStringList &output,
                                   BE::Rule *parent)
 {
-    return new BE::Rule("", BE::Rule::OrdinaryRule, input, output, parent);
+    BE::Rule *rule = new BE::Rule("", BE::Rule::OrdinaryRule, input, output);
+    parent->appendChild(rule);
+
+    return rule;
 }
 
 //--------------------------------------------------------------------------------------------------

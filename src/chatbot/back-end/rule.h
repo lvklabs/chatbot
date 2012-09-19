@@ -118,31 +118,29 @@ public:
     };
 
     /**
-     * Constructs a new rule with the given \a parent
+     * Constructs an empty rule
      */
-    Rule(Rule *parent = 0);
+    Rule();
 
     /**
-     * Constructs a new rule with the given \a name and \a parent
+     * Constructs a new rule with the given \a name
      */
-    Rule(const QString &name, Rule *parent = 0);
+    Rule(const QString &name);
 
     /**
-     * Constructs a new rule with the given \a name, \a type and \a parent
+     * Constructs a new rule with the given \a name and \a type
      */
-    Rule(const QString &name, Type type, Rule *parent = 0);
+    Rule(const QString &name, Type type);
 
     /**
-     * Constructs a new rule with the given \a name, \a input, \a output and \a parent
+     * Constructs a new rule with the given \a name, \a input and \a output
      */
-    Rule(const QString &name, const QStringList &input, const QStringList &output,
-         Rule *parent = 0);
+    Rule(const QString &name, const QStringList &input, const QStringList &output);
 
     /**
-     * Constructs a new rule with the given \a name, \a type, \a input, \a output and \a parent
+     * Constructs a new rule with the given \a name, \a type, \a input and \a output
      */
-    Rule(const QString &name, Type type, const QStringList &input, const QStringList &output,
-         Rule *parent = 0);
+    Rule(const QString &name, Type type, const QStringList &input, const QStringList &output);
 
     /**
      * Constructs a new rule from \a other. If \a deepCopy is false, children are not copied.

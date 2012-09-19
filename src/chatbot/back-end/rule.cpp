@@ -28,59 +28,43 @@
 #define LVK_BE_RULE_VERSION     3
 
 
-Lvk::BE::Rule::Rule(Rule *parent /*= 0*/)
-    : m_name(""), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
+Lvk::BE::Rule::Rule()
+    : m_name(""), m_input(), m_output(), m_parentItem(0), m_type(OrdinaryRule),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
-    if (parent) {
-        parent->appendChild(this);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Rule(const QString &name, Rule *parent /*= 0*/)
-    : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(OrdinaryRule),
+Lvk::BE::Rule::Rule(const QString &name)
+    : m_name(name), m_input(), m_output(), m_parentItem(0), m_type(OrdinaryRule),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
-    if (parent) {
-        parent->appendChild(this);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Rule(const QString &name, Type type, Rule *parent /*= 0*/)
-    : m_name(name), m_input(), m_output(), m_parentItem(parent), m_type(type),
+Lvk::BE::Rule::Rule(const QString &name, Type type)
+    : m_name(name), m_input(), m_output(), m_parentItem(0), m_type(type),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
-    if (parent) {
-        parent->appendChild(this);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QStringList &ouput,
-                    Rule *parent /*= 0*/)
-    : m_name(name), m_input(input), m_output(ouput), m_parentItem(parent), m_type(OrdinaryRule),
+Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QStringList &ouput)
+    : m_name(name), m_input(input), m_output(ouput), m_parentItem(0), m_type(OrdinaryRule),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
-    if (parent) {
-        parent->appendChild(this);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::BE::Rule::Rule(const QString &name, Type type, const QStringList &input,
-                    const QStringList &ouput, Rule *parent /*= 0*/)
-    : m_name(name), m_input(input), m_output(ouput), m_parentItem(parent), m_type(type),
+                    const QStringList &ouput)
+    : m_name(name), m_input(input), m_output(ouput), m_parentItem(0), m_type(type),
       m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
 {
-    if (parent) {
-        parent->appendChild(this);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -194,7 +178,8 @@ bool Lvk::BE::Rule::insertChildren(int position, int count)
     }
 
     for (int i = 0; i < count; ++i) {
-        Rule *rule = new Rule(this);
+        Rule *rule = new Rule();
+        rule->m_parentItem = this;
         m_childItems.insert(position, rule);
     }
 
