@@ -27,6 +27,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QMetaType>
+#include <QtDebug>
 
 #define STATS_FILE_PREFIX ""
 #define STATS_FILE_EXT    ".stat"
@@ -221,12 +222,19 @@ void Lvk::Stats::StatsManager::onScoreTick()
 
     // If score timeout
     if (m_elapsedTime == 0) {
+        qDebug() << "Score timeout!";
+
         QMutexLocker locker(m_scoreMutex);
 
         updateBestScore();
         m_statsFile->newInterval();
         m_histStats.clear();
+
+        Score s = m_statsFile->currentScore();
+        s.conversations = 0; // reset conversation points
+        m_statsFile->setCurrentScore(s);
     }
+
     // Save every minute
     if (m_elapsedTime % 60 == 0) {
         m_statsFile->save();

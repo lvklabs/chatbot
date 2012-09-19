@@ -9,6 +9,11 @@
 #include "stats/securestatsfile.h"
 #include "common/conversationreader.h"
 
+Q_DECLARE_METATYPE(Lvk::BE::Rule *)
+Q_DECLARE_METATYPE(Lvk::Cmn::Conversation::Entry)
+Q_DECLARE_METATYPE(Lvk::Cmn::Conversation)
+
+
 #define CHATBOT_ID_1     "bee2c509-3380-4954-9e2e-a39985ed25b1"
 #define CHATBOT_ID_2     "bee2c509-3380-4954-9e2e-a39985ed25b2"
 
@@ -18,16 +23,29 @@
 #define STAT_FILENAME_1  STAT_DIR CHATBOT_ID_1 STAT_EXT
 #define STAT_FILENAME_2  STAT_DIR CHATBOT_ID_2 STAT_EXT
 
+// Rules Points
+const int COND_P  = 4; // conditional
+const int VAR_P   = 3; // variable
+const int REGEX_P = 2; // regex
+const int KWOP_P  = 2; // keyword op
+const int SIMPL_P = 1; // simple
+
+// Conversation Points
+const int CONV_P = 1000; // Valid conversation points
+
 #define CONV_SHORT_FILENAME     "conv_short.txt"
 #define CONV_LONG_FILENAME      "conv_long.txt"
 #define CONV_INACT_FILENAME     "conv_inactive.txt"
 #define CONV_INTER_FILENAME     "conv_interfered.txt"
 
-
-Q_DECLARE_METATYPE(Lvk::BE::Rule *)
-Q_DECLARE_METATYPE(Lvk::Cmn::Conversation::Entry)
-Q_DECLARE_METATYPE(Lvk::Cmn::Conversation)
-
+const int CONV_SHORT_CONV_SCORE = 4 + 7;   // #lines + #lexicon
+const int CONV_SHORT_CONT_SCORE = 0;
+const int CONV_LONG_CONV_SCORE = 27 + 29;  // #lines + #lexicon
+const int CONV_LONG_CONT_SCORE = 1*CONV_P;
+const int CONV_INACT_CONV_SCORE = 27 + 29; // #lines + #lexicon
+const int CONV_INACT_CONT_SCORE = 0;
+const int CONV_INTER_CONV_SCORE = 24 + 25; // #lines + #lexicon
+const int CONV_INTER_CONT_SCORE = 0;
 
 using namespace Lvk;
 
@@ -59,6 +77,44 @@ inline BE::Rule * newOrdinaryRule(const QStringList &input, const QStringList &o
 }
 
 //--------------------------------------------------------------------------------------------------
+
+inline BE::Rule * newRuleTree1()
+{
+    BE::Rule *root = new BE::Rule("", BE::Rule::ContainerRule);
+    newOrdinaryRule(QStringList() << "Hi *",QStringList() << "Hello",   root);
+
+    return root;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline int ruleTree1Score()
+{
+    return REGEX_P;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline BE::Rule * newRuleTree2()
+{
+    BE::Rule *root = new BE::Rule("", BE::Rule::ContainerRule);
+    newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root);
+    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root);
+    newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?",
+                    QStringList() << "{if [sth] = soccer}Yes{else}No", root);
+
+    return root;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline int ruleTree2Score()
+{
+    return REGEX_P + KWOP_P + VAR_P + COND_P;
+}
+
+//--------------------------------------------------------------------------------------------------
 // StatsManagerUnitTest
 //--------------------------------------------------------------------------------------------------
 
@@ -85,6 +141,11 @@ private:
         return Stats::StatsManager::manager();
     }
 
+    void simulateScoreTimeout()
+    {
+        manager()->m_elapsedTime = manager()->scoreRemainingTime();
+        manager()->onScoreTick();
+    }
 
 private Q_SLOTS:
     void initTestCase();
@@ -94,6 +155,7 @@ private Q_SLOTS:
     void testSetMetricsAndIntervals();
     void testScoreAlgorithm_data();
     void testScoreAlgorithm();
+    void testBestScoreAndIntervals();
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -293,19 +355,6 @@ void StatsManagerTest::testSetMetricsAndIntervals()
 void StatsManagerTest::testScoreAlgorithm_data()
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Points
-
-    // Rules
-    const int COND_P  = 4; // conditional
-    const int VAR_P   = 3; // variable
-    const int REGEX_P = 2; // regex
-    const int KWOP_P  = 2; // keyword op
-    const int SIMPL_P = 1; // simple
-
-    // Conversation
-    const int CONV_P = 1000; // Valid conversation points
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rules
 
     BE::Rule *root0  = new BE::Rule("", BE::Rule::ContainerRule);
@@ -355,23 +404,15 @@ void StatsManagerTest::testScoreAlgorithm_data()
 
     Cmn::Conversation c_short = readConversation(CONV_SHORT_FILENAME);
     QVERIFY(!c_short.isEmpty());
-    int c_short_conv_score = 4 + 7; // #lines + #lexicon
-    int c_short_cont_score = 0;
 
     Cmn::Conversation c_long  = readConversation(CONV_LONG_FILENAME);
     QVERIFY(!c_long.isEmpty());
-    int c_long_conv_score = 27 + 29; // #lines + #lexicon
-    int c_long_cont_score = 1*CONV_P;
 
     Cmn::Conversation c_inact = readConversation(CONV_INACT_FILENAME);
     QVERIFY(!c_inact.isEmpty());
-    int c_inact_conv_score = 27 + 29; // #lines + #lexicon
-    int c_inact_cont_score = 0;
 
     Cmn::Conversation c_inter = readConversation(CONV_INTER_FILENAME);
     QVERIFY(!c_inter.isEmpty());
-    int c_inter_conv_score = 24 + 25; // #lines + #lexicon
-    int c_inter_cont_score = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Cols & Rows
@@ -394,14 +435,14 @@ void StatsManagerTest::testScoreAlgorithm_data()
     QTest::newRow("r5a") << root5a << Cmn::Conversation() << Stats::Score(root5a_score, 0,0);
     QTest::newRow("r5b") << root5b << Cmn::Conversation() << Stats::Score(root5b_score, 0,0);
 
-    QTest::newRow("cs")  << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, c_short_cont_score, c_short_conv_score);
-    QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long << Stats::Score(0, c_long_cont_score, c_long_conv_score);
-    QTest::newRow("cli") << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, c_inact_cont_score, c_inact_conv_score);
-    QTest::newRow("clI") << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, c_inter_cont_score, c_inter_conv_score);
+    QTest::newRow("cs")  << reinterpret_cast<BE::Rule *>(0) << c_short << Stats::Score(0, CONV_SHORT_CONT_SCORE, CONV_SHORT_CONV_SCORE);
+    QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long  << Stats::Score(0, CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
+    QTest::newRow("cli") << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, CONV_INACT_CONT_SCORE, CONV_INACT_CONV_SCORE);
+    QTest::newRow("clI") << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, CONV_INTER_CONT_SCORE, CONV_INTER_CONV_SCORE);
 
-    QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, c_long_cont_score, c_long_conv_score);
-    QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, c_inact_cont_score, c_inact_conv_score);
-    QTest::newRow("m3") << root5b << c_inter << Stats::Score(root5b_score, c_inter_cont_score, c_inter_conv_score);
+    QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
+    QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, CONV_INACT_CONT_SCORE, CONV_INACT_CONV_SCORE);
+    QTest::newRow("m3") << root5b << c_inter << Stats::Score(root5b_score, CONV_INTER_CONT_SCORE, CONV_INTER_CONV_SCORE);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -441,6 +482,100 @@ void StatsManagerTest::testScoreAlgorithm()
 
 //--------------------------------------------------------------------------------------------------
 
+void StatsManagerTest::testBestScoreAndIntervals()
+{
+    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->clear();
+
+    BE::Rule *root1 = newRuleTree1();
+    BE::Rule *root2 = newRuleTree2();
+
+    Cmn::Conversation conv1 = readConversation(CONV_SHORT_FILENAME);
+    Cmn::Conversation conv2 = readConversation(CONV_LONG_FILENAME);
+
+
+    QVERIFY(manager()->bestScore().isNull());
+    QVERIFY(manager()->currentScore().isNull());
+    QVERIFY(manager()->m_elapsedTime == 0);
+
+    // Score 1 -----------------------
+
+    manager()->updateScoreWith(root1);
+
+    foreach (const Cmn::Conversation::Entry &e, conv1.entries()) {
+        manager()->updateScoreWith(e);
+    }
+
+    Stats::Score s1(ruleTree1Score(), CONV_SHORT_CONT_SCORE, CONV_SHORT_CONV_SCORE);
+
+    QVERIFY(manager()->currentScore() == s1);
+    QVERIFY(manager()->bestScore() == s1);
+
+    // Interval 2 -----------------------
+
+    simulateScoreTimeout();
+
+    QVERIFY(manager()->currentScore().rules == s1.rules);
+    QVERIFY(manager()->currentScore().contacts == s1.contacts);
+    QVERIFY(manager()->currentScore().conversations == 0);
+    QVERIFY(manager()->bestScore() == s1);
+
+    manager()->updateScoreWith(root2);
+
+    foreach (const Cmn::Conversation::Entry &e, conv2.entries()) {
+        manager()->updateScoreWith(e);
+    }
+
+    Stats::Score s2(ruleTree2Score(), CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
+
+    QVERIFY(manager()->currentScore() == s2);
+    QVERIFY(manager()->bestScore() == s2);
+
+    // Interval 3 -----------------------
+
+    simulateScoreTimeout();
+
+    QVERIFY(manager()->currentScore().rules == s2.rules);
+    QVERIFY(manager()->currentScore().contacts == s2.contacts);
+    QVERIFY(manager()->currentScore().conversations == 0);
+    QVERIFY(manager()->bestScore() == s2);
+
+    manager()->updateScoreWith(root1);
+
+    foreach (const Cmn::Conversation::Entry &e, conv2.entries()) {
+        manager()->updateScoreWith(e);
+    }
+
+    Stats::Score s3(ruleTree1Score(), CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
+
+    QVERIFY(manager()->currentScore() == s3);
+    QVERIFY(manager()->bestScore() == s2);
+
+    // Interval 4 -----------------------
+
+    simulateScoreTimeout();
+
+    QVERIFY(manager()->currentScore().rules == s3.rules);
+    QVERIFY(manager()->currentScore().contacts == s3.contacts);
+    QVERIFY(manager()->currentScore().conversations == 0);
+    QVERIFY(manager()->bestScore() == s2);
+
+    resetManager();
+    manager()->setChatbotId(CHATBOT_ID_1);
+
+    manager()->updateScoreWith(root2);
+
+    foreach (const Cmn::Conversation::Entry &e, conv1.entries()) {
+        manager()->updateScoreWith(e);
+    }
+
+    Stats::Score s4(ruleTree2Score(), CONV_LONG_CONT_SCORE, CONV_SHORT_CONV_SCORE);
+
+    QVERIFY(manager()->currentScore() == s4);
+    QVERIFY(manager()->bestScore() == s2);
+}
+
+//--------------------------------------------------------------------------------------------------
 
 QTEST_APPLESS_MAIN(StatsManagerTest)
 
