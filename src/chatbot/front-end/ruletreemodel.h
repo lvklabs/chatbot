@@ -184,11 +184,11 @@ public:
     QModelIndex indexFromItem(const BE::Rule *item);
 
     /**
-     * Appends the given \a item in the model. The parent of the item will be \a item->parent().
+     * Appends the given \a item in the model with the given \a parent
      * If the item has no parent, the item is not inserted.
      * Returns true if the item is appended. Otherwise; false.
      */
-    bool appendItem(BE::Rule *item);
+    bool appendItem(BE::Rule *item, BE::Rule *parent);
 
     /**
      * Removes all rows in the given \a parent.

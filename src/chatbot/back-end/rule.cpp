@@ -172,7 +172,9 @@ const QList<Lvk::BE::Rule *> & Lvk::BE::Rule::children() const
 
 bool Lvk::BE::Rule::appendChild(Rule *item)
 {
+    // TODO review this! we should not append an item that already has a parent
     //assert(item->m_parentItem == 0 || item->m_parentItem == this);
+    assert(!m_childItems.contains(item));
 
     item->m_parentItem = this;
 

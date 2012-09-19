@@ -277,16 +277,14 @@ QModelIndex Lvk::FE::RuleTreeModel::indexFromItem(const BE::Rule *item)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item)
+bool Lvk::FE::RuleTreeModel::appendItem(BE::Rule *item, BE::Rule *parent)
 {
-    BE::Rule *parentItem = item->parent();
-
     bool appended = false;
 
-    if (parentItem) {
-        int row = parentItem->childCount();
-        beginInsertRows(indexFromItem(parentItem), row, row);
-        appended = parentItem->appendChild(item);
+    if (parent) {
+        int row = parent->childCount();
+        beginInsertRows(indexFromItem(parent), row, row);
+        appended = parent->appendChild(item);
         endInsertRows();
     }
 

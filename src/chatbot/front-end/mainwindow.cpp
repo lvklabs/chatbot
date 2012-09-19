@@ -1150,9 +1150,9 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 
 Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *category)
 {
-    BE::Rule *rule = new BE::Rule(name, category);
+    BE::Rule *rule = new BE::Rule(name);
 
-    bool appended = m_ruleTreeModel->appendItem(rule);
+    bool appended = m_ruleTreeModel->appendItem(rule, category);
 
     if (appended) {
         return rule;
@@ -1231,9 +1231,9 @@ void Lvk::FE::MainWindow::onTeachFromHistory(const QString &msg)
     BE::Rule *category = getCategoryFromDialog();
 
     if (category) {
-        BE::Rule *rule = new BE::Rule("", QStringList() << msg, QStringList(), category);
+        BE::Rule *rule = new BE::Rule("", QStringList() << msg, QStringList());
 
-        bool appended = m_ruleTreeModel->appendItem(rule);
+        bool appended = m_ruleTreeModel->appendItem(rule, category);
 
         if (appended) {
             selectRule(rule);
