@@ -33,7 +33,7 @@
 #include <QString>
 #include <QTimer>
 
-class StatsManagerUnitTest;
+class StatsManagerTest;
 class QMutex;
 class QDateTime;
 
@@ -68,7 +68,7 @@ class StatsManager : public QObject
 {
     Q_OBJECT
 
-    friend class ::StatsManagerUnitTest;
+    friend class ::StatsManagerTest;
 
 public:
 

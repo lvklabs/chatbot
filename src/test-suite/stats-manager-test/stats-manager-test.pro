@@ -24,7 +24,6 @@ HEADERS += \
     ../../chatbot/stats/rulestatshelper.h \
 
 SOURCES += \
-    statsmanagerunittest.cpp\
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/stats/historystatshelper.cpp \
@@ -41,6 +40,7 @@ SOURCES += \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp \
+    statsmanagertest.cpp
 
 
 OTHER_FILES += data/*.txt
@@ -56,3 +56,5 @@ else:copyfiles.commands = cp -f $$PROJECT_PATH/data/*.txt .
 QMAKE_EXTRA_TARGETS += copyfiles
 POST_TARGETDEPS += copyfiles
 ############################################
+
+

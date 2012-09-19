@@ -59,12 +59,12 @@ inline BE::Rule * newOrdinaryRule(const QStringList &input, const QStringList &o
 // StatsManagerUnitTest
 //--------------------------------------------------------------------------------------------------
 
-class StatsManagerUnitTest : public QObject
+class StatsManagerTest : public QObject
 {
     Q_OBJECT
 
 public:
-    StatsManagerUnitTest() {}
+    StatsManagerTest() {}
 
 private:
 
@@ -95,14 +95,14 @@ private Q_SLOTS:
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::initTestCase()
+void StatsManagerTest::initTestCase()
 {
     QVERIFY(QDir().mkpath(STAT_DIR));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::init()
+void StatsManagerTest::init()
 {
     resetManager();
 
@@ -121,7 +121,7 @@ void StatsManagerUnitTest::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::cleanupTestCase()
+void StatsManagerTest::cleanupTestCase()
 {
     QFile::remove(STAT_FILENAME_1);
     QFile::remove(STAT_FILENAME_2);
@@ -129,7 +129,7 @@ void StatsManagerUnitTest::cleanupTestCase()
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::testFileCreationAndClear()
+void StatsManagerTest::testFileCreationAndClear()
 {
     if (QFile::exists(STAT_FILENAME_1)) {
         QVERIFY(QFile::remove(STAT_FILENAME_1));
@@ -156,7 +156,7 @@ void StatsManagerUnitTest::testFileCreationAndClear()
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::testSetMetricsAndIntervals()
+void StatsManagerTest::testSetMetricsAndIntervals()
 {
     const Stats::Metric m1 = Stats::LexiconSize;
     const Stats::Metric m2 = Stats::HistoryChatbotDiffLines;
@@ -287,7 +287,7 @@ void StatsManagerUnitTest::testSetMetricsAndIntervals()
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::testScoreAlgorithm_data()
+void StatsManagerTest::testScoreAlgorithm_data()
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Points
@@ -403,7 +403,7 @@ void StatsManagerUnitTest::testScoreAlgorithm_data()
 
 //--------------------------------------------------------------------------------------------------
 
-void StatsManagerUnitTest::testScoreAlgorithm()
+void StatsManagerTest::testScoreAlgorithm()
 {
     QFETCH(BE::Rule *, root);
     QFETCH(Cmn::Conversation, conv);
@@ -439,6 +439,6 @@ void StatsManagerUnitTest::testScoreAlgorithm()
 //--------------------------------------------------------------------------------------------------
 
 
-QTEST_APPLESS_MAIN(StatsManagerUnitTest)
+QTEST_APPLESS_MAIN(StatsManagerTest)
 
-#include "statsmanagerunittest.moc"
+#include "statsmanagertest.moc"
