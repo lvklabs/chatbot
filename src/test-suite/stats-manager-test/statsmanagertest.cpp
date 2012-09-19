@@ -35,6 +35,7 @@ const int CONV_P = 1000; // Valid conversation points
 
 #define CONV_SHORT_FILENAME     "conv_short.txt"
 #define CONV_LONG_FILENAME      "conv_long.txt"
+#define CONV_LONG2_FILENAME     "conv_long2.txt"
 #define CONV_INACT_FILENAME     "conv_inactive.txt"
 #define CONV_INTER_FILENAME     "conv_interfered.txt"
 
@@ -42,6 +43,8 @@ const int CONV_SHORT_CONV_SCORE = 4 + 7;   // #lines + #lexicon
 const int CONV_SHORT_CONT_SCORE = 0;
 const int CONV_LONG_CONV_SCORE = 27 + 29;  // #lines + #lexicon
 const int CONV_LONG_CONT_SCORE = 1*CONV_P;
+const int CONV_LONG2_CONV_SCORE = 24 + 26; // #lines + #lexicon
+const int CONV_LONG2_CONT_SCORE = 1*CONV_P;
 const int CONV_INACT_CONV_SCORE = 27 + 29; // #lines + #lexicon
 const int CONV_INACT_CONT_SCORE = 0;
 const int CONV_INTER_CONV_SCORE = 24 + 25; // #lines + #lexicon
@@ -492,6 +495,7 @@ void StatsManagerTest::testBestScoreAndIntervals()
 
     Cmn::Conversation conv1 = readConversation(CONV_SHORT_FILENAME);
     Cmn::Conversation conv2 = readConversation(CONV_LONG_FILENAME);
+    Cmn::Conversation conv3 = readConversation(CONV_LONG2_FILENAME);
 
 
     QVERIFY(manager()->bestScore().isNull());
@@ -573,6 +577,26 @@ void StatsManagerTest::testBestScoreAndIntervals()
 
     QVERIFY(manager()->currentScore() == s4);
     QVERIFY(manager()->bestScore() == s2);
+
+    // Interval 5 -----------------------
+
+    simulateScoreTimeout();
+
+    QVERIFY(manager()->currentScore().rules == s4.rules);
+    QVERIFY(manager()->currentScore().contacts == s4.contacts);
+    QVERIFY(manager()->currentScore().conversations == 0);
+    QVERIFY(manager()->bestScore() == s2);
+
+    manager()->updateScoreWith(root2);
+
+    foreach (const Cmn::Conversation::Entry &e, conv3.entries()) {
+        manager()->updateScoreWith(e);
+    }
+
+    Stats::Score s5(ruleTree2Score(), CONV_LONG_CONT_SCORE + CONV_LONG2_CONT_SCORE, CONV_LONG2_CONV_SCORE);
+
+    QVERIFY(manager()->currentScore() == s5);
+    QVERIFY(manager()->bestScore() == s5);
 }
 
 //--------------------------------------------------------------------------------------------------

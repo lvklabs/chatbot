@@ -141,12 +141,8 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 {
     QMutexLocker locker(m_scoreMutex);
 
-    foreach (const QString &contact, m_histStats.scoreContacts()) {
-        m_statsFile->addContact(contact);
-    }
-
-    unsigned trp  = m_ruleStats.points();
     unsigned hic  = m_statsFile->contacts().size();
+    unsigned trp  = m_ruleStats.points();
     unsigned hcls = m_histStats.chatbotLexiconSize();
     unsigned hcl  = m_histStats.chatbotLines();
 
@@ -265,7 +261,16 @@ void Lvk::Stats::StatsManager::updateScoreWith(const Cmn::Conversation::Entry &e
 {
     QMutexLocker locker(m_scoreMutex);
 
-    m_statsFile->appendChatEntry(entry);
+    int size = m_histStats.scoreContacts().size();
 
     m_histStats.update(entry);
+    m_statsFile->appendChatEntry(entry);
+
+    // If there is a new contact
+    if (size < m_histStats.scoreContacts().size()) {
+        foreach (const QString &contact, m_histStats.scoreContacts()) {
+            m_statsFile->addContact(contact);
+        }
+    }
+
 }

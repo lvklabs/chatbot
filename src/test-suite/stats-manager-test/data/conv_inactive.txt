@@ -1,9 +1,9 @@
 31-08-2012 10:48:20,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola,Hola!,match,2
 31-08-2012 10:48:23,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,fsdfafdsa,,no-match,0
 31-08-2012 10:48:24,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,fasd,,no-match,0
-31-08-2012 10:48:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola,Hola!,match,2
-31-08-2012 10:48:39,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,que contas?,la verdad que no mucho,match,0
-31-08-2012 10:49:20,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,que aburrido,aburrido serás vos!,match,0
+31-08-2012 10:48:30,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola,Hola!,match,2
+31-08-2012 10:48:31,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,que contas?,la verdad que no mucho,match,0
+31-08-2012 10:48:32,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,que aburrido,aburrido serás vos!,match,0
 31-08-2012 10:48:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola1,Hola1!,match,2
 31-08-2012 10:48:38,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola2,Hola2!,match,2
 31-08-2012 10:48:39,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,hola3,Hola3!,match,2
