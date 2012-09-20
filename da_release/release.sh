@@ -21,6 +21,13 @@ if [ -z "$target_os" ] || ! [ -d "$target_os" ]; then
   exit 1
 fi
 
+if [ -f export_crypto_keys ]; then
+  . export_crypto_keys
+else
+  echo "Error: Cryptographic keys not found."
+  read -p "Press Enter to continue or Ctrl-C to abort"
+fi
+
 . common/release-config
 
 if [ -z "$pkg_version" ]; then
@@ -47,10 +54,6 @@ if ssh $lvk_user@$lvk_host "test -f $pkg_host_path/$pkg_filename"; then
   else
     echo "$pkg_filename already exists but overwriting"
   fi
-fi
-
-if [ -f export_crypto_keys ]; then
-  . export_crypto_keys
 fi
 
 pushd $target_os
