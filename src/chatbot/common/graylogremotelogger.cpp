@@ -142,7 +142,7 @@ public:
         #define NILVALUE            "-"
         #define SP                  " "
         #define SYSLOG_VERSION      "1"
-        #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz+03:00" // FIXME timezone
+        #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz-03:00"
 
         QByteArray priority = "<165>"; // FIXME priority
         QByteArray date = QDateTime::currentDateTime().toString(SYSLOG_DATE_FORMAT).toAscii();
@@ -166,7 +166,7 @@ public:
         m_data.append(SP);                    // SP
         m_data.append(msg.toUtf8());          // MSG
 
-        qDebug() << "Syslog message:" << m_data;
+        //qDebug() << "Syslog message:" << m_data;
     }
 
     const QByteArray& data() const
