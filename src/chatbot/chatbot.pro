@@ -298,14 +298,19 @@ da_contest {
     SOURCES +=
     LIBS +=
 
-    # Read crypto keys from system enviroment
-    Q_EXTERN_RLOG_CRYPTO_KEY=$$(EXTERN_RLOG_CRYPTO_KEY)
-    Q_EXTERN_STATS_CRYPTO_KEY=$$(EXTERN_STATS_CRYPTO_KEY)
-    !isEmpty(Q_EXTERN_RLOG_CRYPTO_KEY) {
-        DEFINES += RLOG_CRYPTO_KEY=$$Q_EXTERN_RLOG_CRYPTO_KEY
+    # Read IV and keys from system enviroment variables
+    _EXTERN_BF_IV=$$(EXTERN_BF_IV)
+    _EXTERN_RLOG_CRYPTO_KEY=$$(EXTERN_RLOG_CRYPTO_KEY)
+    _EXTERN_STATS_CRYPTO_KEY=$$(EXTERN_STATS_CRYPTO_KEY)
+    # Create macros
+    !isEmpty(_EXTERN_BF_IV) {
+        DEFINES += BF_IV=$$_EXTERN_BF_IV
     }
-    !isEmpty(Q_EXTERN_RLOG_CRYPTO_KEY) {
-        DEFINES += STATS_CRYPTO_KEY=$$Q_EXTERN_STATS_CRYPTO_KEY
+    !isEmpty(_EXTERN_RLOG_CRYPTO_KEY) {
+        DEFINES += RLOG_CRYPTO_KEY=$$_EXTERN_RLOG_CRYPTO_KEY
+    }
+    !isEmpty(_EXTERN_RLOG_CRYPTO_KEY) {
+        DEFINES += STATS_CRYPTO_KEY=$$_EXTERN_STATS_CRYPTO_KEY
     }
 }
 

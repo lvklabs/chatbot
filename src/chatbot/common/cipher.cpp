@@ -28,7 +28,9 @@
 # include <openssl/err.h>
 #endif
 
-const unsigned char IV[]  = { 0x2f, 0x32, 0x0a, 0x41, 0x2c, 0x26, 0x77, 0x38 };
+#ifndef BF_IV
+#define BF_IV { 0, 0, 0, 0, 0, 0, 0, 0 }
+#endif
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -49,6 +51,7 @@ inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
         return false;
     }
 
+    const unsigned char iv[] = BF_IV;
     const unsigned char *key = reinterpret_cast<const unsigned char*>(key_.constData());
     const unsigned char *inbuf = reinterpret_cast<const unsigned char*>(data.constData());
     int inlen = data.size();
@@ -56,7 +59,7 @@ inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
     // TODO initialize context only once
     EVP_CIPHER_CTX ctx;
     EVP_CIPHER_CTX_init(&ctx);
-    EVP_EncryptInit_ex(&ctx, EVP_bf_cbc(), NULL, key, IV);
+    EVP_EncryptInit_ex(&ctx, EVP_bf_cbc(), NULL, key, iv);
 
     bool success = false;
     unsigned char *outbuf = new unsigned char[inlen + EVP_CIPHER_CTX_block_size(&ctx)];
@@ -92,6 +95,7 @@ inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
         return false;
     }
 
+    const unsigned char iv[] = BF_IV;
     const unsigned char *key = reinterpret_cast<const unsigned char*>(key_.constData());
     const unsigned char *inbuf = reinterpret_cast<const unsigned char*>(data.constData());
     int inlen = data.size();
@@ -99,7 +103,7 @@ inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
     // TODO initialize context only once
     EVP_CIPHER_CTX ctx;
     EVP_CIPHER_CTX_init(&ctx);
-    EVP_DecryptInit_ex(&ctx, EVP_bf_cbc(), NULL, key, IV);
+    EVP_DecryptInit_ex(&ctx, EVP_bf_cbc(), NULL, key, iv);
 
     bool success = false;
     unsigned char *outbuf = new unsigned char[inlen];
