@@ -1,3 +1,16 @@
+CHATBOT
+=======
+
+Chatbot is an open source platform for high-school students. With this application 
+they can create Facebook or Gtalk/Gmail chatbots. It was developed by LVK (lvklabs.com)
+ in conjunction with FaMAF (Facultad de Matemática, Astronomía y Física), for 
+Fundación Sadosky. This foundation is a non-profit organization whose goal is to 
+promote stronger and closer interaction between industrial, scientific and technological
+spheres.
+
+To compile the application see:  
+
+ - src/chatbot/README
 
 Directory structure:
 
@@ -8,9 +21,5 @@ Directory structure:
 |   |-- pocs             # Proof of concepts sources
 |-- da_release           # Scripts to release a new version for "Dale Aceptar" contest
 |-- doc                  # Doxygen and UML documentation
-
-To compile the Chatbot application see:  
-
- - src/chatbot/README
 
 
