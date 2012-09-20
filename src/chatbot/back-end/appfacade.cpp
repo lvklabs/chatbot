@@ -27,6 +27,7 @@
 #include "nlp-engine/sanitizerfactory.h"
 #include "nlp-engine/lemmatizerfactory.h"
 #include "common/random.h"
+#include "common/version.h"
 #include "common/globalstrings.h"
 #include "common/remoteloggerfactory.h"
 #include "common/settings.h"
@@ -781,9 +782,9 @@ bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::
     }
 
     Cmn::RemoteLogger::FieldList fullFields = fields;
+    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_APP_VERSION, APP_VERSION_STR));
     fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
     fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
-    // TODO append app version
 
     if (secure) {
         return m_secureLogger->log(msg, fullFields) == 0;

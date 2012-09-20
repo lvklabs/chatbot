@@ -22,6 +22,7 @@
 #ifndef LVK_CMN_REMOTELOGGERKEYS_H
 #define LVK_CMN_REMOTELOGGERKEYS_H
 
+#define RLOG_KEY_APP_VERSION        "app_version"
 #define RLOG_KEY_CHATBOT_ID         "chatbot_id"
 #define RLOG_KEY_USER_ID            "user_id"
 #define RLOG_KEY_RULES_SCORE        "rules_score"
