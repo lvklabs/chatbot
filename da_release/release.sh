@@ -49,6 +49,10 @@ if ssh $lvk_user@$lvk_host "test -f $pkg_host_path/$pkg_filename"; then
   fi
 fi
 
+if [ -f export_crypto_keys ]; then
+  . export_crypto_keys
+fi
+
 pushd $target_os
 
 ./build.sh && \

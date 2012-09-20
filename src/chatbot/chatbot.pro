@@ -13,7 +13,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    DRAG_AND_DROP_DISABLED # Drag and drop not working
+    DRAG_AND_DROP_DISABLED  # Drag and drop not working
 
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
@@ -37,7 +37,7 @@ da_contest {
     CONFIG  += gelf_stats openssl
 }
 
-
+# Paths
 PROJECT_PATH          = $$PWD
 
 THIRD_PARTY_PATH      = $$PWD/../third-party
@@ -297,6 +297,16 @@ da_contest {
     HEADERS +=
     SOURCES +=
     LIBS +=
+
+    # Read crypto keys from system enviroment
+    Q_EXTERN_RLOG_CRYPTO_KEY=$$(EXTERN_RLOG_CRYPTO_KEY)
+    Q_EXTERN_STATS_CRYPTO_KEY=$$(EXTERN_STATS_CRYPTO_KEY)
+    !isEmpty(Q_EXTERN_RLOG_CRYPTO_KEY) {
+        DEFINES += RLOG_CRYPTO_KEY=$$Q_EXTERN_RLOG_CRYPTO_KEY
+    }
+    !isEmpty(Q_EXTERN_RLOG_CRYPTO_KEY) {
+        DEFINES += STATS_CRYPTO_KEY=$$Q_EXTERN_STATS_CRYPTO_KEY
+    }
 }
 
 
