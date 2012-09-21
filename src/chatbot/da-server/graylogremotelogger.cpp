@@ -36,8 +36,6 @@
 #define RLOG_CRYPTO_KEY   { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 #endif
 
-static const char s_rlogCryptoKey[] = RLOG_CRYPTO_KEY;
-
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
@@ -220,8 +218,9 @@ bool Lvk::DAS::GraylogRemoteLogger::encrypt(QString &cipherText, const QString &
 {
     cipherText.clear();
 
+    const char KEY[] = RLOG_CRYPTO_KEY;
+    QByteArray key(KEY, sizeof(KEY));
     QByteArray data = plainText.toUtf8();
-    QByteArray key(s_rlogCryptoKey, sizeof(s_rlogCryptoKey));
 
     if (Cmn::Cipher().encrypt(data, key)) {
         cipherText = "::E::"; // prefix for encoded data

@@ -39,8 +39,6 @@
 #define STATS_CRYPTO_KEY    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 #endif
 
-static const char s_statsCryptoKey[] = STATS_CRYPTO_KEY;
-
 enum
 {
     TimeIntervalCol,
@@ -164,9 +162,11 @@ void Lvk::Stats::SecureStatsFile::load(const QString &filename)
     QFile file(filename);
 
     if (file.open(QFile::ReadOnly)) {
+        const char KEY[] = STATS_CRYPTO_KEY;
+        QByteArray key(KEY, sizeof(KEY));
         QByteArray data = file.readAll();
 
-        Cmn::Cipher().decrypt(data, QByteArray(s_statsCryptoKey, sizeof(s_statsCryptoKey)));
+        Cmn::Cipher().decrypt(data, key);
 
         if (!deserialize(data)) {
             close();
@@ -191,11 +191,13 @@ void Lvk::Stats::SecureStatsFile::save()
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
+        const char KEY[] = STATS_CRYPTO_KEY;
+        QByteArray key(KEY, sizeof(KEY));
         QByteArray data;
 
         serialize(data);
 
-        Cmn::Cipher().encrypt(data, QByteArray(s_statsCryptoKey, sizeof(s_statsCryptoKey)));
+        Cmn::Cipher().encrypt(data, key);
 
         file.write(data);
         file.flush();
