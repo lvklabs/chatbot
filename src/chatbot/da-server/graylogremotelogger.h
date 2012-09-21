@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef LVK_CMN_GRAYLOGREMOTELOGGER_H
-#define LVK_CMN_GRAYLOGREMOTELOGGER_H
+#ifndef LVK_DAS_GRAYLOGREMOTELOGGER_H
+#define LVK_DAS_GRAYLOGREMOTELOGGER_H
 
-#include "common/remotelogger.h"
+#include "da-server/remotelogger.h"
 
 namespace Lvk
 {
@@ -30,11 +30,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Cmn
+namespace DAS
 {
 
 /// \ingroup Lvk
-/// \addtogroup Cmn
+/// \addtogroup DAS
 /// @{
 
 /**
@@ -95,11 +95,11 @@ private:
 
 /// @}
 
-} // namespace Cmn
+} // namespace DAS
 
 /// @}
 
 } // namespace Lvk
 
-#endif // LVK_CMN_GRAYLOGREMOTELOGGER_H
+#endif // LVK_DAS_GRAYLOGREMOTELOGGER_H
 

@@ -19,18 +19,52 @@
  *
  */
 
-#ifndef LVK_CMN_REMOTELOGGERKEYS_H
-#define LVK_CMN_REMOTELOGGERKEYS_H
+#ifndef LVK_DAS_REMOTELOGGERFACTORY_H
+#define LVK_DAS_REMOTELOGGERFACTORY_H
 
-#define RLOG_KEY_APP_VERSION        "app_version"
-#define RLOG_KEY_CHATBOT_ID         "chatbot_id"
-#define RLOG_KEY_USER_ID            "user_id"
-#define RLOG_KEY_RULES_SCORE        "rules_score"
-#define RLOG_KEY_CONTACTS_SCORE     "contacts_score"
-#define RLOG_KEY_CONV_SCORE         "conv_score"
-#define RLOG_KEY_TOTAL_SCORE        "total_score"
-#define RLOG_KEY_TIMESTAMP          "timestamp"
-#define RLOG_KEY_USERNAME           "username"
-#define RLOG_KEY_DOMAIN             "domain"
+#include "da-server/remotelogger.h"
 
-#endif // LVK_CMN_REMOTELOGGERKEYS_H
+namespace Lvk
+{
+
+/// \addtogroup Lvk
+/// @{
+
+namespace DAS
+{
+
+/// \ingroup Lvk
+/// \addtogroup DAS
+/// @{
+
+/**
+ * \brief The RemoteLoggerFactory class provides a factory of remote loggers.
+ */
+class RemoteLoggerFactory
+{
+public:
+
+    /**
+     * Constructs a remote logger that provides fast logging by using an unreliable channel.
+     * There is no guarantee of delivery.
+     */
+    RemoteLogger *createFastLogger();
+
+    /**
+     * Constructs a remote logger that provides secure logging by using a reliable and
+     * encrypted channel.
+     */
+    RemoteLogger *createSecureLogger();
+};
+
+/// @}
+
+} // namespace DAS
+
+/// @}
+
+} // namespace Lvk
+
+
+#endif // LVK_DAS_REMOTELOGGERFACTORY_H
+

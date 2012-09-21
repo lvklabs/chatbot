@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_CMN_REMOTELOGGER_H
-#define LVK_CMN_REMOTELOGGER_H
+#ifndef LVK_DAS_REMOTELOGGER_H
+#define LVK_DAS_REMOTELOGGER_H
 
 #include <QString>
 #include <QPair>
@@ -32,11 +32,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Cmn
+namespace DAS
 {
 
 /// \ingroup Lvk
-/// \addtogroup Cmn
+/// \addtogroup DAS
 /// @{
 
 /**
@@ -79,12 +79,12 @@ public:
 
 /// @}
 
-} // namespace Cmn
+} // namespace DAS
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CMN_REMOTELOGGER_H
+#endif // LVK_DAS_REMOTELOGGER_H
 

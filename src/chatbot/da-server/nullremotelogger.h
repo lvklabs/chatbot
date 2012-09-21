@@ -19,11 +19,10 @@
  *
  */
 
-#ifndef LVK_CMN_ZLIBHELPER_H
-#define LVK_CMN_ZLIBHELPER_H
+#ifndef LVK_DAS_NULLREMOTELOGGER_H
+#define LVK_DAS_NULLREMOTELOGGER_H
 
-#include <zlib.h>
-#include <QByteArray>
+#include "da-server/remotelogger.h"
 
 namespace Lvk
 {
@@ -31,41 +30,45 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Cmn
+namespace DAS
 {
 
 /// \ingroup Lvk
-/// \addtogroup Cmn
+/// \addtogroup DAS
 /// @{
 
 /**
- * \brief The ZLibHelper class provides a wrapper to the Zlib library to compress
- *        data easily
+ * \brief The NullRemoteLogger class provides a remote logger that does nothing
  */
-class ZLibHelper
+
+class NullRemoteLogger : public RemoteLogger
 {
 public:
-    /**
-     * Compress (deflates) \a source and stores the result in \a dest.
-     * Returns Z_OK on success, Z_MEM_ERROR if memory could not be allocated for processing,
-     * Z_STREAM_ERROR if an invalid compression level is supplied, Z_VERSION_ERROR if the version
-     * of zlib.h and the version of the library linked do not match, or Z_ERRNO if there is
-     * an error reading or writing the files.
-    */
-    static int deflate(const QByteArray &source, QByteArray &dest);
 
-private:
-    ZLibHelper();
+    /**
+     * Creates a NullRemoteLogger object.
+     */
+    NullRemoteLogger() { }
+
+    /**
+     * \copydoc RemoteLogger::log(const QString&)
+     */
+    virtual int log(const QString &/*msg*/) { return 0; }
+
+    /**
+     * \copydoc RemoteLogger::log(const QString &, const FieldList&)
+     */
+    virtual int log(const QString &/*msg*/, const FieldList &/*fields*/) { return 0; }
 };
 
 /// @}
 
-} // namespace Cmn
+} // namespace DAS
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CMN_ZLIBHELPER_H
+#endif // LVK_DAS_NULLREMOTELOGGER_H
 

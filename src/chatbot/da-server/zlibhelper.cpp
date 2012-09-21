@@ -100,13 +100,13 @@ int zlib_deflate(const char *source, long ssize, char *dest, long *dsize, int le
 // ZLibHelper
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::ZLibHelper::ZLibHelper()
+Lvk::DAS::ZLibHelper::ZLibHelper()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Cmn::ZLibHelper::deflate(const QByteArray &in, QByteArray &out)
+int Lvk::DAS::ZLibHelper::deflate(const QByteArray &in, QByteArray &out)
 {
     char *dest = new char[in.size()*2];
     long dsize = in.size()*2;

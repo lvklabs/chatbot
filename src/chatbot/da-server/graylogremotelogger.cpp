@@ -19,8 +19,9 @@
  *
  */
 
-#include "common/graylogremotelogger.h"
-#include "common/gelf.h"
+#include "da-server/graylogremotelogger.h"
+#include "da-server/gelf.h"
+#include "da-server/syslog.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -30,7 +31,6 @@
 #include <QTcpSocket>
 #include <QDateTime>
 #include <QDebug>
-#include <QHostInfo>
 
 #ifndef RLOG_CRYPTO_KEY
 #define RLOG_CRYPTO_KEY   { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
@@ -46,11 +46,11 @@ namespace
 {
 
 // convert RemoteLogger::FieldList to Gelf::FieldList
-inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::FieldList &fields)
+inline Lvk::DAS::Gelf::FieldList toGelfFields(const Lvk::DAS::RemoteLogger::FieldList &fields)
 {
-    Lvk::Cmn::Gelf::FieldList gelfFields;
-    foreach (const Lvk::Cmn::RemoteLogger::Field &f, fields) {
-        gelfFields.append(Lvk::Cmn::Gelf::Field(f));
+    Lvk::DAS::Gelf::FieldList gelfFields;
+    foreach (const Lvk::DAS::RemoteLogger::Field &f, fields) {
+        gelfFields.append(Lvk::DAS::Gelf::Field(f));
     }
     return gelfFields;
 }
@@ -58,10 +58,10 @@ inline Lvk::Cmn::Gelf::FieldList toGelfFields(const Lvk::Cmn::RemoteLogger::Fiel
 //--------------------------------------------------------------------------------------------------
 
 // convert RemoteLogger::FieldList to QString
-inline QString toString(const Lvk::Cmn::RemoteLogger::FieldList &fields)
+inline QString toString(const Lvk::DAS::RemoteLogger::FieldList &fields)
 {
     QString s;
-    foreach (const Lvk::Cmn::RemoteLogger::Field &f, fields) {
+    foreach (const Lvk::DAS::RemoteLogger::Field &f, fields) {
         if (s.isEmpty()) {
             s += "{";
         } else {
@@ -131,54 +131,6 @@ inline int sendTcpMessage(const QByteArray &data, const QString &host, unsigned 
     return bytes != -1 ? 0 : 1;
 }
 
-//--------------------------------------------------------------------------------------------------
-
-class Syslog
-{
-public:
-
-    Syslog(const QString &msg)
-    {
-        #define NILVALUE            "-"
-        #define SP                  " "
-        #define SYSLOG_VERSION      "1"
-        #define SYSLOG_DATE_FORMAT  "yyyy-MM-ddThh:mm:ss.zzz-03:00"
-
-        QByteArray priority = "<165>"; // FIXME priority
-        QByteArray date = QDateTime::currentDateTime().toString(SYSLOG_DATE_FORMAT).toAscii();
-        QByteArray host = QHostInfo::localHostName().toAscii();
-        QByteArray app = APP_NAME "_" APP_VERSION_STR;
-
-        m_data.append(priority);              // PRI
-        m_data.append(SYSLOG_VERSION);        // VERSION
-        m_data.append(SP);                    // SP
-        m_data.append(date);                  // DATETIME
-        m_data.append(SP);                    // SP
-        m_data.append(host);                  // HOSTNAME
-        m_data.append(SP);                    // SP
-        m_data.append(app);                   // APP-NAME
-        m_data.append(SP);                    // SP
-        m_data.append(NILVALUE);              // PROCID
-        //data.append(SP);                    // SP
-        //data.append(NILVALUE);              // MSGID
-        //data.append(SP);                    // SP
-        //data.append(NILVALUE);              // STRUCTURED-DATA
-        m_data.append(SP);                    // SP
-        m_data.append(msg.toUtf8());          // MSG
-
-        //qDebug() << "Syslog message:" << m_data;
-    }
-
-    const QByteArray& data() const
-    {
-        return m_data;
-    }
-
-private:
-    QByteArray m_data;
-};
-
-
 } // namespace
 
 
@@ -186,7 +138,7 @@ private:
 // GraylogRemoteLogger
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
+Lvk::DAS::GraylogRemoteLogger::GraylogRemoteLogger()
     : m_format(GELF), m_udpPort(0), m_tcpPort(0)
 {
     initHostPort();
@@ -194,7 +146,7 @@ Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
+Lvk::DAS::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
     : m_format(format), m_udpPort(0), m_tcpPort(0)
 {
     initHostPort();
@@ -202,7 +154,7 @@ Lvk::Cmn::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Cmn::GraylogRemoteLogger::initHostPort()
+void Lvk::DAS::GraylogRemoteLogger::initHostPort()
 {
     Cmn::Settings settings;
     m_host    = settings.value(SETTING_LOG_SERVER_HOST).toString();
@@ -212,14 +164,14 @@ void Lvk::Cmn::GraylogRemoteLogger::initHostPort()
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg)
+int Lvk::DAS::GraylogRemoteLogger::log(const QString &msg)
 {
     return log(msg, FieldList());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fields)
+int Lvk::DAS::GraylogRemoteLogger::log(const QString &msg, const FieldList &fields)
 {
     QByteArray data;
     QString encMsg;
@@ -228,7 +180,7 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fiel
 
     switch (m_format) {
     case GELF:
-        data = Cmn::Gelf(Gelf::Informational, msg, toGelfFields(fields)).data();
+        data = DAS::Gelf(Gelf::Informational, msg, toGelfFields(fields)).data();
         break;
     case SyslogTCP:
     case SyslogUDP:
@@ -264,7 +216,7 @@ int Lvk::Cmn::GraylogRemoteLogger::log(const QString &msg, const FieldList &fiel
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Cmn::GraylogRemoteLogger::encrypt(QString &cipherText, const QString &plainText)
+bool Lvk::DAS::GraylogRemoteLogger::encrypt(QString &cipherText, const QString &plainText)
 {
     cipherText.clear();
 

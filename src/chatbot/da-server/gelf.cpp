@@ -19,8 +19,8 @@
  *
  */
 
-#include "common/gelf.h"
-#include "common/zlibhelper.h"
+#include "da-server/gelf.h"
+#include "da-server/zlibhelper.h"
 #include "common/version.h"
 
 #include <QString>
@@ -40,35 +40,35 @@
 // Gelf
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Gelf::Gelf()
+Lvk::DAS::Gelf::Gelf()
 {
     buildGelf(Critical, "", FieldList());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Gelf::Gelf(Level level, const QString &msg)
+Lvk::DAS::Gelf::Gelf(Level level, const QString &msg)
 {
     buildGelf(level, msg, FieldList());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Gelf::Gelf(Level level, const QString &msg, const FieldList &fields)
+Lvk::DAS::Gelf::Gelf(Level level, const QString &msg, const FieldList &fields)
 {
     buildGelf(level, msg, fields);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Cmn::Gelf::isValid()
+bool Lvk::DAS::Gelf::isValid()
 {
     return !m_data.isEmpty();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Cmn::Gelf::buildGelf(Level level, const QString &msg, const FieldList &fields)
+void Lvk::DAS::Gelf::buildGelf(Level level, const QString &msg, const FieldList &fields)
 {
     QString gelfMsg = QString(GELF_MSG_TEMPLATE).arg(QString(APP_NAME "_" APP_VERSION_STR),
                                                      QHostInfo::localHostName(),
@@ -85,20 +85,20 @@ void Lvk::Cmn::Gelf::buildGelf(Level level, const QString &msg, const FieldList 
 // Gelf::Field
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Gelf::Field::Field()
+Lvk::DAS::Gelf::Field::Field()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::Gelf::Field::Field(const QPair<QString, QString> &p)
+Lvk::DAS::Gelf::Field::Field(const QPair<QString, QString> &p)
     : QPair<QString, QString>(p)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Cmn::Gelf::Field::toString() const
+QString Lvk::DAS::Gelf::Field::toString() const
 {
     if (first.startsWith("_")) {
         return QString("\"%1\" : \"%2\"").arg(first, second);
@@ -111,7 +111,7 @@ QString Lvk::Cmn::Gelf::Field::toString() const
 // Gelf::FieldList
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Cmn::Gelf::FieldList::toString() const
+QString Lvk::DAS::Gelf::FieldList::toString() const
 {
     QString str;
     for (int i = 0; i < size(); ++i) {

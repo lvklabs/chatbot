@@ -31,6 +31,11 @@
 \brief The Statistics module provides usage metrics of the chatbot such as rules lexicon size, history lines, connection time, among many others. This module also calculates and provides chatbot scores.
 
 
+\defgroup DAS DA Server
+
+\brief The DA Server module provides interfaces to connect and send information to the 'Dale Aceptar' server.
+
+
 \defgroup Cmn Common
 
 \brief The Common module provides classes, macros, strings and other declarations that are common
@@ -66,6 +71,11 @@ Module dependencies:
 \addtogroup Stats
 @{
 \image html StatsClassDiagram.png
+@}
+
+\addtogroup DAS
+@{
+\image html DAServerClassDiagram.png
 @}
 
 */

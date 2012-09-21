@@ -33,7 +33,7 @@
 #include "nlp-engine/rule.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
-#include "common/remotelogger.h"
+#include "da-server/remotelogger.h"
 #include "common/conversation.h"
 
 class QFile;
@@ -413,8 +413,8 @@ private:
     QSet<QString> m_targets;
     unsigned m_nlpOptions;
     bool m_statsEnabled;
-    Cmn::RemoteLogger *m_fastLogger;
-    Cmn::RemoteLogger *m_secureLogger;
+    DAS::RemoteLogger *m_fastLogger;
+    DAS::RemoteLogger *m_secureLogger;
 
     bool setDefaultRules();
 
@@ -430,7 +430,7 @@ private:
     void updateStats();
     bool logScore();
     bool logAccountVerified(const QString &username, const QString &domain);
-    bool remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields, bool secure);
+    bool remoteLog(const QString &msg, const DAS::RemoteLogger::FieldList &fields, bool secure);
 };
 
 /// @}

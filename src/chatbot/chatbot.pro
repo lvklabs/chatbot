@@ -165,8 +165,6 @@ HEADERS += \
     common/conversationwriter.h \
     common/conversationreader.h \
     common/logger.h \
-    common/remotelogger.h \
-    common/nullremotelogger.h \
     common/remoteloggerfactory.h \
     common/remoteloggerkeys.h \
     common/cipher.h \
@@ -180,6 +178,8 @@ HEADERS += \
     stats/rulestatshelper.h \
     stats/historystatshelper.h \
     stats/statshelper.h \
+    da-server/remotelogger.h \
+    da-server/nullremotelogger.h \
 
 
 SOURCES += \
@@ -231,12 +231,13 @@ SOURCES += \
     common/conversationwriter.cpp \
     common/conversationreader.cpp \
     common/logger.cpp \
-    common/remoteloggerfactory.cpp \
     common/cipher.cpp \
     stats/statsmanager.cpp \
     stats/history.cpp \
     stats/securestatsfile.cpp \
     stats/historystatshelper.cpp \
+    da-server/remoteloggerfactory.cpp \
+
 
 
 FORMS += \
@@ -259,8 +260,6 @@ TRANSLATIONS = \
     lang/chatbot_es_AR.ts
 
 OTHER_FILES += \
-    doc/mainpage.dox \
-    doc/modules.dox \
     res/chatbot.rc
 
 LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
@@ -278,8 +277,14 @@ freeling {
 gelf_stats {
     DEFINES += GELF_STATS_SUPPORT
     INCLUDEPATH += $$ZLIB_INCLUDE_PATH
-    HEADERS += common/zlibhelper.h common/graylogremotelogger.h common/gelf.h
-    SOURCES += common/zlibhelper.cpp common/graylogremotelogger.cpp common/gelf.cpp
+    HEADERS += da-server/zlibhelper.h \
+        da-server/graylogremotelogger.h \
+        da-server/gelf.h \
+        da-server/syslog.h
+    SOURCES += da-server/zlibhelper.cpp \
+        da-server/graylogremotelogger.cpp \
+        da-server/gelf.cpp \
+        da-server/syslog.cpp
     LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
 }
 
@@ -302,6 +307,7 @@ da_contest {
     _EXTERN_BF_IV=$$(EXTERN_BF_IV)
     _EXTERN_RLOG_CRYPTO_KEY=$$(EXTERN_RLOG_CRYPTO_KEY)
     _EXTERN_STATS_CRYPTO_KEY=$$(EXTERN_STATS_CRYPTO_KEY)
+
     # Create macros
     !isEmpty(_EXTERN_BF_IV) {
         DEFINES += BF_IV=$$_EXTERN_BF_IV
@@ -334,6 +340,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

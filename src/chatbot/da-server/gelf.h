@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_CMN_GELF_H
-#define LVK_CMN_GELF_H
+#ifndef LVK_DAS_GELF_H
+#define LVK_DAS_GELF_H
 
 #include <QByteArray>
 #include <QList>
@@ -33,11 +33,11 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Cmn
+namespace DAS
 {
 
 /// \ingroup Lvk
-/// \addtogroup Cmn
+/// \addtogroup DAS
 /// @{
 
 /**
@@ -156,12 +156,12 @@ private:
 
 /// @}
 
-} // namespace Cmn
+} // namespace DAS
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CMN_GELF_H
+#endif // LVK_DAS_GELF_H
 

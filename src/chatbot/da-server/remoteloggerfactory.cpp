@@ -22,16 +22,16 @@
 #include "remoteloggerfactory.h"
 
 #ifdef GELF_STATS_SUPPORT
-# include "common/graylogremotelogger.h"
+# include "da-server/graylogremotelogger.h"
 #else
-# include "common/nullremotelogger.h"
+# include "da-server/nullremotelogger.h"
 #endif
 
 //--------------------------------------------------------------------------------------------------
 // RemoteLoggerFactory
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createFastLogger()
+Lvk::DAS::RemoteLogger * Lvk::DAS::RemoteLoggerFactory::createFastLogger()
 {
 #ifdef GELF_STATS_SUPPORT
     return new GraylogRemoteLogger(GraylogRemoteLogger::GELF);
@@ -43,7 +43,7 @@ Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createFastLogger()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Cmn::RemoteLogger * Lvk::Cmn::RemoteLoggerFactory::createSecureLogger()
+Lvk::DAS::RemoteLogger * Lvk::DAS::RemoteLoggerFactory::createSecureLogger()
 {
 #ifdef GELF_STATS_SUPPORT
     return new GraylogRemoteLogger(GraylogRemoteLogger::EncSyslogTCP);

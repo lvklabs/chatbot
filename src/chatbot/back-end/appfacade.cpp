@@ -29,10 +29,10 @@
 #include "common/random.h"
 #include "common/version.h"
 #include "common/globalstrings.h"
-#include "common/remoteloggerfactory.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
-#include "common/remoteloggerkeys.h"
+#include "da-server/remoteloggerfactory.h"
+#include "da-server/remoteloggerkeys.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
@@ -126,8 +126,8 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_tmpChatbot(0),
       m_nlpOptions(0),
       m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
-      m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
+      m_fastLogger(DAS::RemoteLoggerFactory().createFastLogger()),
+      m_secureLogger(DAS::RemoteLoggerFactory().createSecureLogger())
 {
     init();
 }
@@ -142,8 +142,8 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_tmpChatbot(0),
       m_nlpOptions(0), // FIXME value?
       m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
-      m_fastLogger(Cmn::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(Cmn::RemoteLoggerFactory().createSecureLogger())
+      m_fastLogger(DAS::RemoteLoggerFactory().createFastLogger()),
+      m_secureLogger(DAS::RemoteLoggerFactory().createSecureLogger())
 {
     init();
 }
@@ -749,11 +749,11 @@ bool Lvk::BE::AppFacade::logScore()
 {
     Stats::Score s = bestScore();
 
-    Cmn::RemoteLogger::FieldList fields;
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
 
     return remoteLog("Score", fields, false);
 }
@@ -764,27 +764,27 @@ bool Lvk::BE::AppFacade::logAccountVerified(const QString &username, const QStri
 {
     QString timestamp = QDateTime::currentDateTime().toString(STR_GLOBAL_DATE_TIME_FORMAT);
 
-    Cmn::RemoteLogger::FieldList fields;
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TIMESTAMP, timestamp));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_USERNAME,  username));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_DOMAIN,    domain));
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TIMESTAMP, timestamp));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_USERNAME,  username));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_DOMAIN,    domain));
 
     return remoteLog("Account Verified", fields, false);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const Cmn::RemoteLogger::FieldList &fields,
+bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const DAS::RemoteLogger::FieldList &fields,
                                    bool secure)
 {
     if (!m_statsEnabled) {
         return true;
     }
 
-    Cmn::RemoteLogger::FieldList fullFields = fields;
-    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_APP_VERSION, APP_VERSION_STR));
-    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
-    fullFields.prepend(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
+    DAS::RemoteLogger::FieldList fullFields = fields;
+    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_APP_VERSION, APP_VERSION_STR));
+    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
+    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
 
     if (secure) {
         return m_secureLogger->log(msg, fullFields) == 0;
@@ -825,13 +825,13 @@ bool Lvk::BE::AppFacade::uploadScore()
 {
     Stats::Score s = bestScore();
 
-    Cmn::RemoteLogger::FieldList fields;
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID,     m_rules.chatbotId()));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_USER_ID,        username()));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
-    fields.append(Cmn::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID,     m_rules.chatbotId()));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_USER_ID,        username()));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
+    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
     // TODO append app version
 
     return m_secureLogger->log("Manually uploaded score", fields) == 0;
