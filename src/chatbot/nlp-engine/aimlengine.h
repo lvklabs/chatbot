@@ -214,6 +214,7 @@ private:
     void refreshAiml();
     void buildAiml(QString &aiml, const QString &target);
     void buildAiml(QString &aiml, const Rule &rule);
+    void buildAimlRandOutput(QString &aiml,const QStringList &output) const;
     void normalize(QString &input);
     void normalize(QStringList &inputList);
 };

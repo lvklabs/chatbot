@@ -131,12 +131,28 @@ public:
      */
     void setTarget(const QStringList &target) { m_target = target; }
 
+    /**
+     * Returns a const reference to the topic of the rule
+     */
+    const QString &topic() const { return m_topic; }
+
+    /**
+     * Returns a reference to the topic of the rule
+     */
+    QString &topic() { return m_topic; }
+
+    /**
+     * Sets the topic of the rule
+     */
+    void setTopic(const QString &topic) { m_topic = topic; }
+
 private:
 
     RuleId m_id;
     QStringList m_input;
     QStringList m_output;
     QStringList m_target;
+    QString m_topic;
 };
 
 

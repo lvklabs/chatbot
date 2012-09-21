@@ -322,30 +322,49 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const QString &target)
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 {
     QStringList input = rule.input();
-    const QStringList &output = rule.output();
 
     normalize(input);
 
     for (int i = 0; i < input.size(); ++i) {
-        // id is not part of AIML standar. It's an LVK extension to know which
-        // rule has matched
-        QString categoryId = QString::number(getCategoryId(rule.id(), i));
+        // id is not part of AIML standar. It's an LVK extension to know which rule has matched
+        QString catId = QString::number(getCategoryId(rule.id(), i));
 
-        aiml += "<category>";
-        aiml += "<id>" + categoryId + "</id>";
-        aiml += "<pattern>" + input[i] + "</pattern>";
+        QString randOuput;
+        buildAimlRandOutput(randOuput, rule.output());
 
-        if (output.size() == 1) {
-            aiml += "<template>" + output[0] + "</template>";
-        } else if (output.size() > 1) {
-            aiml += "<template><random>";
-            for (int j = 0; j < output.size(); ++j) {
-                aiml += "<li>" + output[j] + "</li>";
-            }
-            aiml += "</random></template>";
+        // build category AIML string
+        QString cat = QString("<category>"
+                              "<id>%1</id>"
+                              "<pattern>%2</pattern>"
+                              "<template>"
+                              "<think><set name=\"topic\">%3</set></think>"
+                              "%4"
+                              "</template>"
+                              "</category>")
+                              .arg(catId, input[i], rule.topic(), randOuput);;
+
+        // Add category with topic
+        aiml += "<topic name=\"" + rule.topic() + "\">" + cat + "</topic>";
+
+        // Add category also with default topic as fallback mechanism
+        aiml += "<topic name=\"\">" + cat + "</topic>";
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::buildAimlRandOutput(QString &aiml, const QStringList &output) const
+{
+    aiml.clear();
+
+    if (output.size() == 1) {
+        aiml += output[0];
+    } else if (output.size() > 1) {
+        aiml += "<random>";
+        for (int j = 0; j < output.size(); ++j) {
+            aiml += "<li>" + output[j] + "</li>";
         }
-
-        aiml += "</category>";
+        aiml += "</random>";
     }
 }
 

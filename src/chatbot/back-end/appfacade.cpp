@@ -52,6 +52,10 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 {
     Lvk::Nlp::Rule nlpRule(rule->id(), rule->input(), rule->output());
 
+    if (rule->parent()) {
+        nlpRule.setTopic(rule->parent()->name());
+    }
+
     QStringList targets;
     foreach (const Lvk::BE::Target &t, rule->target()) {
         targets.append(t.username);

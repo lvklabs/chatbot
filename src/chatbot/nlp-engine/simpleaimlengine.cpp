@@ -163,6 +163,7 @@ void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::Rule &newRule, const Nlp
     ctx.rule = rule;
 
     newRule.setId(rule.id());
+    newRule.setTopic(rule.topic());
     newRule.setTarget(rule.target());
     convertInputList(newRule.input(), ctx);
     convertOutputList(newRule.output(), ctx);
