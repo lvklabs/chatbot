@@ -219,49 +219,46 @@ void TestMainWindow::UiSetRuleHierarchy1()
 
     Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
 
-    Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule,rootRule);
-    Lvk::BE::Rule *cat2 = new Lvk::BE::Rule(CATEGORY_2_NAME, Lvk::BE::Rule::ContainerRule,rootRule);
+    Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule);
+    Lvk::BE::Rule *cat2 = new Lvk::BE::Rule(CATEGORY_2_NAME, Lvk::BE::Rule::ContainerRule);
 
     Lvk::BE::Rule *rule1 = new Lvk::BE::Rule("",
                              QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                             QStringList() << RULE_1_OUTPUT_1,
-                             cat1);
+                             QStringList() << RULE_1_OUTPUT_1);
 
     Lvk::BE::Rule *rule2 = new Lvk::BE::Rule("",
                              QStringList() << RULE_2_INPUT_1,
-                             QStringList() << RULE_2_OUTPUT_1,
-                             cat1);
+                             QStringList() << RULE_2_OUTPUT_1);
 
     Lvk::BE::Rule *rule3 = new Lvk::BE::Rule("",
                              QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3
                                            << RULE_3_INPUT_4,
-                             QStringList() << RULE_3_OUTPUT_1,
-                             cat2);
+                             QStringList() << RULE_3_OUTPUT_1);
 
     Lvk::BE::Rule *rule4 = new Lvk::BE::Rule("",
                              QStringList() << RULE_4_INPUT_1,
-                             QStringList() << RULE_4_OUTPUT_1,
-                             cat2);
+                             QStringList() << RULE_4_OUTPUT_1);
 
     Lvk::BE::Rule *rule5 = new Lvk::BE::Rule("",
                              QStringList() << RULE_5_INPUT_1,
-                             QStringList() << RULE_5_OUTPUT_1,
-                             cat2);
+                             QStringList() << RULE_5_OUTPUT_1);
 
-    Lvk::BE::Rule *evasives = new Lvk::BE::Rule("", Lvk::BE::Rule::EvasiveRule, rootRule);
+    Lvk::BE::Rule *evasives = new Lvk::BE::Rule("", Lvk::BE::Rule::EvasiveRule);
+
+    rootRule->appendChild(evasives);
 
     evasives->setOutput(QStringList() << RULE_EVASIVE_1);
 
-    m_window->m_ruleTreeModel->appendItem(cat1);
-    m_window->m_ruleTreeModel->appendItem(cat2);
+    m_window->m_ruleTreeModel->appendItem(cat1, rootRule);
+    m_window->m_ruleTreeModel->appendItem(cat2, rootRule);
 
-    m_window->m_ruleTreeModel->appendItem(rule1);
-    m_window->m_ruleTreeModel->appendItem(rule2);
-    m_window->m_ruleTreeModel->appendItem(rule3);
-    m_window->m_ruleTreeModel->appendItem(rule4);
-    m_window->m_ruleTreeModel->appendItem(rule5);
+    m_window->m_ruleTreeModel->appendItem(rule1, cat1);
+    m_window->m_ruleTreeModel->appendItem(rule2, cat1);
+    m_window->m_ruleTreeModel->appendItem(rule3, cat2);
+    m_window->m_ruleTreeModel->appendItem(rule4 ,cat2);
+    m_window->m_ruleTreeModel->appendItem(rule5, cat2);
 
-    m_window->m_ruleTreeModel->appendItem(evasives);
+    m_window->m_ruleTreeModel->appendItem(evasives, rootRule);
 
     m_window->m_appFacade->refreshNlpEngine();
 }
@@ -274,20 +271,19 @@ void TestMainWindow::UiSetRuleHierarchy2()
 
     Lvk::BE::Rule *rootRule = m_window->m_appFacade->rootRule();
 
-    Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule, rootRule);
+    Lvk::BE::Rule *cat1 = new Lvk::BE::Rule(CATEGORY_1_NAME, Lvk::BE::Rule::ContainerRule);
 
     Lvk::BE::Rule *rule1 = new Lvk::BE::Rule("",
-                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                             QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3,
-                             cat1);
+                           QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                           QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
 
-    Lvk::BE::Rule *evasives = new Lvk::BE::Rule("", Lvk::BE::Rule::EvasiveRule, rootRule);
+    Lvk::BE::Rule *evasives = new Lvk::BE::Rule("", Lvk::BE::Rule::EvasiveRule);
 
     evasives->setOutput(QStringList() << RULE_EVASIVE_1 << RULE_EVASIVE_2);
 
-    m_window->m_ruleTreeModel->appendItem(cat1);
-    m_window->m_ruleTreeModel->appendItem(rule1);
-    m_window->m_ruleTreeModel->appendItem(evasives);
+    m_window->m_ruleTreeModel->appendItem(cat1, rootRule);
+    m_window->m_ruleTreeModel->appendItem(rule1, cat1);
+    m_window->m_ruleTreeModel->appendItem(evasives, rootRule);
 
     m_window->m_appFacade->refreshNlpEngine();
 }

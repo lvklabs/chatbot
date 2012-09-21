@@ -107,9 +107,9 @@ HEADERS += \
     ../../chatbot/common/conversationwriter.h \
     ../../chatbot/common/conversationreader.h \
     ../../chatbot/common/logger.h \
-    ../../chatbot/common/remotelogger.h \
-    ../../chatbot/common/nullremotelogger.h \
-    ../../chatbot/common/remoteloggerfactory.h \
+    ../../chatbot/da-server/remotelogger.h \
+    ../../chatbot/da-server/nullremotelogger.h \
+    ../../chatbot/da-server/remoteloggerfactory.h \
     ../../chatbot/stats/statsmanager.h \
     ../../chatbot/stats/statsfile.h \
     ../../chatbot/stats/securestatsfile.h \
@@ -168,7 +168,7 @@ SOURCES += \
     ../../chatbot/common/conversationwriter.cpp \
     ../../chatbot/common/conversationreader.cpp \
     ../../chatbot/common/logger.cpp \
-    ../../chatbot/common/remoteloggerfactory.cpp \
+    ../../chatbot/da-server/remoteloggerfactory.cpp \
     ../../chatbot/common/cipher.cpp \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
