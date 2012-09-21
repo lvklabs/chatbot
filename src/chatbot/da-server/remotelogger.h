@@ -58,7 +58,26 @@ public:
     /**
      * The FieldList class provides a list of fields
      */
-    typedef QList<Field> FieldList;
+    class FieldList : public QList<Field>
+    {
+    public:
+
+        /**
+         * Inserts the field (\a key, \a value) at the end of the list.
+         */
+        void append(const QString &key, const QString &value)
+        {
+            QList::append(Field(key, value));
+        }
+
+        /**
+         * Inserts the field (\a key, \a value) at the beggining of the list.
+         */
+        void prepend(const QString &key, const QString &value)
+        {
+            QList::prepend(Field(key, value));
+        }
+    };
 
     /**
      * Destroys the object.

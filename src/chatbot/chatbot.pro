@@ -132,6 +132,7 @@ HEADERS += \
     back-end/target.h \
     back-end/chatbotrulesfile.h \
     back-end/aiadapter.h \
+    back-end/rloghelper.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/simpleaimlengine.h \
@@ -209,6 +210,7 @@ SOURCES += \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
     back-end/aiadapter.cpp \
+    back-end/rloghelper.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/simpleaimlengine.cpp \
@@ -340,6 +342,8 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

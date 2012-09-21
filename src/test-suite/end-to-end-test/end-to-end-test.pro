@@ -74,6 +74,7 @@ HEADERS += \
     ../../chatbot/back-end/chatbotrulesfile.h \
     ../../chatbot/back-end/score.h \
     ../../chatbot/back-end/aiadapter.h \
+    ../../chatbot/back-end/rloghelper.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/simpleaimlengine.h \
@@ -146,6 +147,7 @@ SOURCES += \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
     ../../chatbot/back-end/aiadapter.cpp \
+    ../../chatbot/back-end/rloghelper.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \

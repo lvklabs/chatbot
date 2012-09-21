@@ -1954,7 +1954,7 @@ void Lvk::FE::MainWindow::onUploadScore()
     getSendScoreDetails(details);
 
     if (FE::SendScoreDialog(details, this).exec() == QDialog::Accepted) {
-        if (!m_appFacade->uploadScore()) {
+        if (!m_appFacade->uploadBestScore()) {
             QString title = tr("Upload score");
             QString message = tr("Could not upload score. Please, check your internet connection "
                                  "and try again");

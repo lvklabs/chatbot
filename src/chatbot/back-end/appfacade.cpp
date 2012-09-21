@@ -22,24 +22,18 @@
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/aiadapter.h"
+#include "back-end/rloghelper.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
 #include "nlp-engine/lemmatizerfactory.h"
 #include "common/random.h"
-#include "common/version.h"
 #include "common/globalstrings.h"
-#include "common/settings.h"
-#include "common/settingskeys.h"
-#include "da-server/remoteloggerfactory.h"
-#include "da-server/remoteloggerkeys.h"
 #include "chat-adapter/fbchatbot.h"
 #include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
 
 #include <QDateTime>
-#include <cmath>
-#include <algorithm>
 
 #define FILE_METADATA_CHAT_TYPE           "chat_type"
 #define FILE_METADATA_USERNAME            "username"
@@ -124,10 +118,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_nlpEngine(Nlp::EngineFactory().createEngine()),
       m_chatbot(0),
       m_tmpChatbot(0),
-      m_nlpOptions(0),
-      m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
-      m_fastLogger(DAS::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(DAS::RemoteLoggerFactory().createSecureLogger())
+      m_nlpOptions(0)
 {
     init();
 }
@@ -140,10 +131,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_nlpEngine(nlpEngine),
       m_chatbot(0),
       m_tmpChatbot(0),
-      m_nlpOptions(0), // FIXME value?
-      m_statsEnabled(Cmn::Settings().value(SETTING_APP_SEND_STATS).toBool()),
-      m_fastLogger(DAS::RemoteLoggerFactory().createFastLogger()),
-      m_secureLogger(DAS::RemoteLoggerFactory().createSecureLogger())
+      m_nlpOptions(0) // FIXME value?
 {
     init();
 }
@@ -165,8 +153,6 @@ Lvk::BE::AppFacade::~AppFacade()
 {
     close();
 
-    delete m_secureLogger;
-    delete m_fastLogger;
     delete m_tmpChatbot;
     delete m_chatbot;
     delete m_nlpEngine;
@@ -187,9 +173,9 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
         unsigned defaultNlpOptions = RemoveDupChars | SanitizePostLemma;
 
-        #ifdef FREELING_SUPPORT
+    #ifdef FREELING_SUPPORT
         defaultNlpOptions |= BE::AppFacade::LemmatizeSentence;
-        #endif
+    #endif
 
         m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
         m_rules.setAsSaved();
@@ -199,7 +185,8 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
     if (loaded) {
         Stats::StatsManager::manager()->setChatbotId(m_rules.chatbotId());
-
+        m_rlogh.setChatbotId(m_rules.chatbotId());
+        m_rlogh.setUsername(m_rules.metadata(FILE_METADATA_USERNAME).toString());
         setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
         setupChatbot();
         refreshNlpEngine();
@@ -263,9 +250,10 @@ bool Lvk::BE::AppFacade::saveAs(const QString &filename)
     bool saved = m_rules.saveAs(filename);
 
     if (saved) {
-        // New chat chatbot id, we need to reset the chatbot
+        // New chat chatbot id, we need to reset the chatbot and RLogHelper
         deleteCurrentChatbot();
         setupChatbot();
+        m_rlogh.setChatbotId(m_rules.chatbotId());
     }
 
     return saved;
@@ -290,7 +278,7 @@ void Lvk::BE::AppFacade::close()
             m_chatbot->clearHistory();
         }
     } else {
-        logScore();
+        m_rlogh.logAutoScore(bestScore());
     }
 
     if (m_nlpEngine) {
@@ -305,6 +293,7 @@ void Lvk::BE::AppFacade::close()
 
     Stats::StatsManager::manager()->stopTicking();
 
+    m_rlogh.clear();
     m_targets.clear();
     m_rules.close();
     m_evasivesRule = 0;
@@ -549,6 +538,8 @@ QString Lvk::BE::AppFacade::username() const
 void Lvk::BE::AppFacade::setUsername(const QString &username)
 {
     m_rules.setMetadata(FILE_METADATA_USERNAME, username);
+
+    m_rlogh.setUsername(username);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -587,7 +578,7 @@ void Lvk::BE::AppFacade::cancelVerifyAccount()
 
 void Lvk::BE::AppFacade::onAccountOk()
 {
-    logAccountVerified(m_tmpChatbot->username(), m_tmpChatbot->domain());
+    m_rlogh.logAccountVerified(m_tmpChatbot->username(), m_tmpChatbot->domain());
 
     Roster roster = toBERoster(m_tmpChatbot->roster());
 
@@ -742,58 +733,6 @@ void Lvk::BE::AppFacade::clearChatHistory(const QDate &date, const QString &user
 }
 
 //--------------------------------------------------------------------------------------------------
-// Stats
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::logScore()
-{
-    Stats::Score s = bestScore();
-
-    DAS::RemoteLogger::FieldList fields;
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
-
-    return remoteLog("Score", fields, false);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::logAccountVerified(const QString &username, const QString &domain)
-{
-    QString timestamp = QDateTime::currentDateTime().toString(STR_GLOBAL_DATE_TIME_FORMAT);
-
-    DAS::RemoteLogger::FieldList fields;
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TIMESTAMP, timestamp));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_USERNAME,  username));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_DOMAIN,    domain));
-
-    return remoteLog("Account Verified", fields, false);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::remoteLog(const QString &msg, const DAS::RemoteLogger::FieldList &fields,
-                                   bool secure)
-{
-    if (!m_statsEnabled) {
-        return true;
-    }
-
-    DAS::RemoteLogger::FieldList fullFields = fields;
-    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_APP_VERSION, APP_VERSION_STR));
-    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID, m_rules.chatbotId()));
-    fullFields.prepend(DAS::RemoteLogger::Field(RLOG_KEY_USER_ID,    username()));
-
-    if (secure) {
-        return m_secureLogger->log(msg, fullFields) == 0;
-    } else {
-        return m_fastLogger->log(msg, fullFields) == 0;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
 // Score
 //--------------------------------------------------------------------------------------------------
 
@@ -821,19 +760,13 @@ int Lvk::BE::AppFacade::scoreRemainingTime() const
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::AppFacade::uploadScore()
+bool Lvk::BE::AppFacade::uploadBestScore()
 {
-    Stats::Score s = bestScore();
-
-    DAS::RemoteLogger::FieldList fields;
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CHATBOT_ID,     m_rules.chatbotId()));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_USER_ID,        username()));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_RULES_SCORE,    QString::number(s.rules)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONV_SCORE,  QString::number(s.conversations)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts)));
-    fields.append(DAS::RemoteLogger::Field(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total)));
-    // TODO append app version
-
-    return m_secureLogger->log("Manually uploaded score", fields) == 0;
+    if (!username().isEmpty()) {
+        return m_rlogh.logManualScore(bestScore());
+    } else {
+        qCritical() << "Cannot upload score without username";
+        return false;
+    }
 }
 

@@ -33,6 +33,7 @@
 #include "nlp-engine/rule.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
+#include "back-end/rloghelper.h"
 #include "da-server/remotelogger.h"
 #include "common/conversation.h"
 
@@ -344,9 +345,9 @@ public:
     Stats::Score bestScore();
 
     /**
-     * Uploads the current score to the server.
+     * Uploads the best score to the server.
      */
-    bool uploadScore();
+    bool uploadBestScore();
 
     /**
      * Returns the number of remaining seconds to start a new score interval.
@@ -412,9 +413,7 @@ private:
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
     unsigned m_nlpOptions;
-    bool m_statsEnabled;
-    DAS::RemoteLogger *m_fastLogger;
-    DAS::RemoteLogger *m_secureLogger;
+    RlogHelper m_rlogh;
 
     bool setDefaultRules();
 
@@ -428,9 +427,6 @@ private:
     void deleteCurrentChatbot();
     void connectChatbotSignals();
     void updateStats();
-    bool logScore();
-    bool logAccountVerified(const QString &username, const QString &domain);
-    bool remoteLog(const QString &msg, const DAS::RemoteLogger::FieldList &fields, bool secure);
 };
 
 /// @}

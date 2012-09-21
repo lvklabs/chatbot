@@ -29,7 +29,6 @@
 #define RLOG_KEY_CONTACTS_SCORE     "contacts_score"
 #define RLOG_KEY_CONV_SCORE         "conv_score"
 #define RLOG_KEY_TOTAL_SCORE        "total_score"
-#define RLOG_KEY_TIMESTAMP          "timestamp"
 #define RLOG_KEY_USERNAME           "username"
 #define RLOG_KEY_DOMAIN             "domain"
 
