@@ -8,7 +8,7 @@ QT       += testlib xml qt3support
 
 QT       -= gui
 
-TARGET = simpleAimlEngineUnitTest
+TARGET = hybridEngineUnitTest
 CONFIG   += console
 CONFIG   -= app_bundle
 
@@ -21,7 +21,7 @@ INCLUDEPATH += \
 HEADERS += \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
-    ../../chatbot/nlp-engine/simpleaimlengine.h \
+    ../../chatbot/nlp-engine/hybridengine.h \
     ../../chatbot/nlp-engine/nullsanitizer.h \
     ../../chatbot/nlp-engine/defaultsanitizer.h \
     ../../chatbot/common/settings.h \
@@ -30,10 +30,10 @@ HEADERS += \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
-    simpleaimlengineunittest.cpp \
+    hybridengineunittest.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
-    ../../chatbot/nlp-engine/simpleaimlengine.cpp \
+    ../../chatbot/nlp-engine/hybridengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/logger.cpp \

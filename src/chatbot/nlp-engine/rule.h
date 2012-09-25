@@ -53,7 +53,7 @@ typedef quint64 RuleId;
  * implementation.
  * Optionally, it can contain a list of targets to which the rule is intended to apply.
  *
- * @see ExactMatchEngine, AimlEngine, SimpleAimlEngine
+ * @see ExactMatchEngine, AimlEngine, HybridEngine
  */
 class Rule
 {

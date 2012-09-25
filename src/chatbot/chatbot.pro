@@ -135,7 +135,7 @@ HEADERS += \
     back-end/rloghelper.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
-    nlp-engine/simpleaimlengine.h \
+    nlp-engine/hybridengine.h \
     nlp-engine/sanitizer.h \
     nlp-engine/defaultsanitizer.h \
     nlp-engine/nullsanitizer.h \
@@ -213,7 +213,7 @@ SOURCES += \
     back-end/rloghelper.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
-    nlp-engine/simpleaimlengine.cpp \
+    nlp-engine/hybridengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
     nlp-engine/lemmatizerfactory.cpp \
     nlp-engine/sanitizerfactory.cpp \

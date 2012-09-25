@@ -39,7 +39,7 @@ SOURCES += \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/nlp-engine/enginefactory.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
-    ../../chatbot/nlp-engine/simpleaimlengine.cpp \
+    ../../chatbot/nlp-engine/hybridengine.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp \
     statsmanagertest.cpp

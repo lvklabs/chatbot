@@ -20,7 +20,7 @@
  */
 
 #include "nlp-engine/enginefactory.h"
-#include "nlp-engine/simpleaimlengine.h"
+#include "nlp-engine/hybridengine.h"
 
 //--------------------------------------------------------------------------------------------------
 // EngineFactory
@@ -28,6 +28,6 @@
 
 Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
 {
-    return new Nlp::SimpleAimlEngine();
+    return new Nlp::HybridEngine();
 }
 

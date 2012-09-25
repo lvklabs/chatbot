@@ -6,7 +6,7 @@ unit_tests {
     SUBDIRS += \
         default-sanitizer-unit-test \
         aiml-engine-unit-test  \
-        simple-aiml-engine-unit-test \
+        hybrid-engine-unit-test \
         csv-document-unit-test \
         conversation-rw-unit-test \
         secure-stats-file-unit-test \
