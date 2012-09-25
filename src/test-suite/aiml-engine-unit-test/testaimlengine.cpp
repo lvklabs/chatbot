@@ -32,6 +32,8 @@
 #include "nlp-engine/rule.h"
 #include "nlp-engine/defaultsanitizer.h"
 #include "nlp-engine/nullsanitizer.h"
+#include "nlp-engine/nulllemmatizer.h"
+#include "nlp-engine/sanitizerfactory.h"
 
 //--------------------------------------------------------------------------------------------------
 // TestAimlEngine declaration
@@ -73,14 +75,16 @@ private:
     Lvk::Nlp::AimlEngine *m_engine;
     Lvk::Nlp::AimlEngine *m_engineWithDefSanitizer;
 
-    void testMatch(void (TestAimlEngine::*setRulesMemb)());
+    void testMatch(void (TestAimlEngine::*setRulesMemb)(Lvk::Nlp::AimlEngine *engine),
+                   Lvk::Nlp::AimlEngine *engine);
 
-    void setRules1();
-    void setRules2();
-    void setRules3();
-    void setRules4();
-    void setRules5();
-    void setRules6();
+    void setRules1(Lvk::Nlp::AimlEngine *engine);
+    void setRules2(Lvk::Nlp::AimlEngine *engine);
+    void setRules3(Lvk::Nlp::AimlEngine *engine);
+    void setRules4(Lvk::Nlp::AimlEngine *engine);
+    void setRules5(Lvk::Nlp::AimlEngine *engine);
+    void setRules6(Lvk::Nlp::AimlEngine *engine);
+    void setRules7(Lvk::Nlp::AimlEngine *engine);
 };
 
 TestAimlEngine::TestAimlEngine()
@@ -174,11 +178,22 @@ TestAimlEngine::TestAimlEngine()
 #define RULE_14_INPUT_1                     "Do you like *?"
 #define RULE_14_OUTPUT_1                    "Depends on..."
 
+#define RULE_15_ID                          15
+#define RULE_15_INPUT_1                     "\":)\""
+#define RULE_15_INPUT_2                     "\":D\""
+#define RULE_15_INPUT_3                     "\"Great! :-)\""
+#define RULE_15_OUTPUT_1                    ":)"
+
+#define RULE_16_ID                          16
+#define RULE_16_INPUT_1                     "\"Hello\""
+#define RULE_16_OUTPUT_1                    "Hi!"
+
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
 #define USER_INPUT_1d                       "HELLO,"
 #define USER_INPUT_1e                       "HELLO;!?"
+#define USER_INPUT_1f                       "Hellooooooo"
 #define USER_INPUT_2                        "Hi"
 #define USER_INPUT_3                        "Hey there!"
 #define USER_INPUT_4a                       "What is your name?"
@@ -196,6 +211,218 @@ TestAimlEngine::TestAimlEngine()
 #define USER_INPUT_9b                       "Cu" a_ACUTE "l es tu barrio?"
 #define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO????"
 #define USER_INPUT_9d                       "como    se   llama, tu barrio"
+#define USER_INPUT_10a                      ":)"
+#define USER_INPUT_10b                      ":D"
+#define USER_INPUT_10c                      "Great! :-)"
+#define USER_INPUT_10d                      "Great :-)"
+#define USER_INPUT_10e                      "Great"
+
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules1(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_1_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_2_ID,
+                            QStringList() << RULE_2_INPUT_1,
+                            QStringList() << RULE_2_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3
+                                          << RULE_3_INPUT_4,
+                            QStringList() << RULE_3_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_4_ID,
+                            QStringList() << RULE_4_INPUT_1,
+                            QStringList() << RULE_4_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_5_ID,
+                            QStringList() << RULE_5_INPUT_1,
+                            QStringList() << RULE_5_OUTPUT_1);
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules2(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_1_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules3(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_1_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
+
+    rules << Lvk::Nlp::Rule(RULE_6_ID,
+                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
+                                          << QString::fromUtf8(RULE_6_INPUT_2),
+                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules4(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_1_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1,
+                            QStringList() << TARGET_USER_1);
+
+    rules << Lvk::Nlp::Rule(RULE_2_ID,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_OUTPUT_1,
+                            QStringList() << TARGET_USER_2);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1,
+                            QStringList() << RULE_3_OUTPUT_1,
+                            QStringList() << TARGET_USER_2 << QString::fromUtf8(TARGET_USER_4));
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_6_ID,
+                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
+                                          << QString::fromUtf8(RULE_6_INPUT_2),
+                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1),
+                            QStringList() << TARGET_USER_1 << TARGET_USER_2 << TARGET_USER_3);
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules5(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_11_ID,
+                            QStringList() << RULE_11_INPUT_1,
+                            QStringList() << RULE_11_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_13_ID,
+                            QStringList() << RULE_13_INPUT_1,
+                            QStringList() << RULE_13_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_8_ID,
+                            QStringList() << RULE_8_INPUT_1,
+                            QStringList() << RULE_8_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_9_ID,
+                            QStringList() << RULE_9_INPUT_1,
+                            QStringList() << RULE_9_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_10_ID,
+                            QStringList() << RULE_10_INPUT_1,
+                            QStringList() << RULE_10_OUTPUT_1,
+                            QStringList() << TARGET_USER_1);
+
+    rules << Lvk::Nlp::Rule(RULE_12_ID,
+                            QStringList() << RULE_12_INPUT_1,
+                            QStringList() << RULE_12_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_14_ID,
+                            QStringList() << RULE_14_INPUT_1,
+                            QStringList() << RULE_14_OUTPUT_1,
+                            QStringList() << TARGET_USER_1);
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules6(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    // TOPIC 1 --------------------
+
+    QString topicSoccer = "soccer";
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules[0].setTopic(topicSoccer);
+
+    rules << Lvk::Nlp::Rule(RULE_11_ID,
+                            QStringList() << RULE_11_INPUT_1,
+                            QStringList() << RULE_11_OUTPUT_1);
+
+    rules[1].setTopic(topicSoccer);
+
+
+    // TOPIC 2 --------------------
+
+    QString topicCars = "\"cars\"";
+
+    rules << Lvk::Nlp::Rule(RULE_12_ID,
+                            QStringList() << RULE_12_INPUT_1,
+                            QStringList() << RULE_12_OUTPUT_1);
+
+    rules[2].setTopic(topicCars);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3,
+                            QStringList() << RULE_3_OUTPUT_1);
+
+    rules[3].setTopic(topicCars);
+
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules7(Lvk::Nlp::AimlEngine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_15_ID,
+                            QStringList() << RULE_15_INPUT_1 << RULE_15_INPUT_2 << RULE_15_INPUT_3,
+                            QStringList() << RULE_15_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_16_ID,
+                            QStringList() << RULE_16_INPUT_1,
+                            QStringList() << RULE_16_OUTPUT_1,
+                            QStringList());
+
+    engine->setRules(rules);
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -298,10 +525,11 @@ void TestAimlEngine::testAimlParserRegression()
 
     QCOMPARE(failed, 0);
 }
+
 //--------------------------------------------------------------------------------------------------
 
-
-void TestAimlEngine::testMatch(void (TestAimlEngine::*setRulesMemb)())
+void TestAimlEngine::testMatch(void (TestAimlEngine::*setRulesMemb)(Lvk::Nlp::AimlEngine *engine),
+                               Lvk::Nlp::AimlEngine *engine)
 {
     QFETCH(QString, targetUser);
     QFETCH(QString, userInput);
@@ -309,12 +537,12 @@ void TestAimlEngine::testMatch(void (TestAimlEngine::*setRulesMemb)())
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
 
-    (this->*setRulesMemb)();
+    (this->*setRulesMemb)(engine);
 
     Lvk::Nlp::Engine::MatchList matches;
     QString output;
 
-    output = m_engine->getResponse(userInput, targetUser, matches);
+    output = engine->getResponse(userInput, targetUser, matches);
 
     if (!expectedOutput.isNull()) {
         QCOMPARE(output, expectedOutput);
@@ -325,36 +553,6 @@ void TestAimlEngine::testMatch(void (TestAimlEngine::*setRulesMemb)())
         QVERIFY(output.isEmpty());
         QCOMPARE(matches.size(), 0);
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules1()
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_2_ID,
-                            QStringList() << RULE_2_INPUT_1,
-                            QStringList() << RULE_2_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3
-                                          << RULE_3_INPUT_4,
-                            QStringList() << RULE_3_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_4_ID,
-                            QStringList() << RULE_4_INPUT_1,
-                            QStringList() << RULE_4_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_5_ID,
-                            QStringList() << RULE_5_INPUT_1,
-                            QStringList() << RULE_5_OUTPUT_1);
-
-    m_engine->setRules(rules);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -393,7 +591,7 @@ void TestAimlEngine::testMatchWithSingleOutput()
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
 
-    setRules1();
+    setRules1(m_engine);
 
     Lvk::Nlp::Engine::MatchList matches;
 
@@ -408,20 +606,6 @@ void TestAimlEngine::testMatchWithSingleOutput()
         QVERIFY(output.isEmpty());
         QCOMPARE(matches.size(), 0);
     }
-}
-
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules2()
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
-
-    m_engine->setRules(rules);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -451,7 +635,7 @@ void TestAimlEngine::testMatchWithRandomOutput()
 
     QHash<QString, int> outputUseCount;
 
-    setRules2();
+    setRules2(m_engine);
 
     for (int i = 0; i < 50; ++i) {
 
@@ -466,25 +650,6 @@ void TestAimlEngine::testMatchWithRandomOutput()
     }
 
     QCOMPARE(outputUseCount.size(), expectedOutput.size());
-}
-
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules3()
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
-
-    rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
-                                          << QString::fromUtf8(RULE_6_INPUT_2),
-                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
-
-    m_engineWithDefSanitizer->setRules(rules);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -519,7 +684,7 @@ void TestAimlEngine::testMatchWithDefaultSanitizer()
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
 
-    setRules3();
+    setRules3(m_engineWithDefSanitizer);
 
     Lvk::Nlp::Engine::MatchList matches;
 
@@ -534,40 +699,6 @@ void TestAimlEngine::testMatchWithDefaultSanitizer()
         QVERIFY(output.isEmpty());
         QCOMPARE(matches.size(), 0);
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules4()
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    rules << Lvk::Nlp::Rule(RULE_2_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1,
-                            QStringList() << TARGET_USER_2);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1,
-                            QStringList() << RULE_3_OUTPUT_1,
-                            QStringList() << TARGET_USER_2 << QString::fromUtf8(TARGET_USER_4));
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
-                                          << QString::fromUtf8(RULE_6_INPUT_2),
-                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1),
-                            QStringList() << TARGET_USER_1 << TARGET_USER_2 << TARGET_USER_3);
-
-    m_engine->setRules(rules);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -604,56 +735,7 @@ void TestAimlEngine::testMatchWithTarget_data()
 
 void TestAimlEngine::testMatchWithTarget()
 {
-    testMatch(&TestAimlEngine::setRules4);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules5()
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_11_ID,
-                            QStringList() << RULE_11_INPUT_1,
-                            QStringList() << RULE_11_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_13_ID,
-                            QStringList() << RULE_13_INPUT_1,
-                            QStringList() << RULE_13_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_8_ID,
-                            QStringList() << RULE_8_INPUT_1,
-                            QStringList() << RULE_8_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_9_ID,
-                            QStringList() << RULE_9_INPUT_1,
-                            QStringList() << RULE_9_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_10_ID,
-                            QStringList() << RULE_10_INPUT_1,
-                            QStringList() << RULE_10_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    rules << Lvk::Nlp::Rule(RULE_12_ID,
-                            QStringList() << RULE_12_INPUT_1,
-                            QStringList() << RULE_12_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_14_ID,
-                            QStringList() << RULE_14_INPUT_1,
-                            QStringList() << RULE_14_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    m_engine->setRules(rules);
+    testMatch(&TestAimlEngine::setRules4, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -686,57 +768,14 @@ void TestAimlEngine::testMatchPriority_data()
 
 void TestAimlEngine::testMatchPriority()
 {
-    testMatch(&TestAimlEngine::setRules5);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestAimlEngine::setRules6()
-{
-    Lvk::Nlp::RuleList rules;
-
-    // TOPIC 1 --------------------
-
-    QString topicSoccer = "soccer";
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1);
-
-    rules[0].setTopic(topicSoccer);
-
-    rules << Lvk::Nlp::Rule(RULE_11_ID,
-                            QStringList() << RULE_11_INPUT_1,
-                            QStringList() << RULE_11_OUTPUT_1);
-
-    rules[1].setTopic(topicSoccer);
-
-
-    // TOPIC 2 --------------------
-
-    QString topicCars = "\"cars\"";
-
-    rules << Lvk::Nlp::Rule(RULE_12_ID,
-                            QStringList() << RULE_12_INPUT_1,
-                            QStringList() << RULE_12_OUTPUT_1);
-
-    rules[2].setTopic(topicCars);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3,
-                            QStringList() << RULE_3_OUTPUT_1);
-
-    rules[3].setTopic(topicCars);
-
-
-    m_engine->setRules(rules);
+    testMatch(&TestAimlEngine::setRules5, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void TestAimlEngine::testMatchWithTopic()
 {
-    setRules6();
+    setRules6(m_engine);
 
     Lvk::Nlp::Engine::MatchList matches;
     QString response;

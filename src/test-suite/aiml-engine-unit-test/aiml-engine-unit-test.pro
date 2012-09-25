@@ -30,6 +30,7 @@ SOURCES += \
     testaimlengine.cpp\
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
+    ../../chatbot/nlp-engine/sanitizerfactory.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/logger.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
