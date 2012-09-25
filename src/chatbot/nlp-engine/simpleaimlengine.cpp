@@ -22,6 +22,7 @@
 #include "nlp-engine/simpleaimlengine.h"
 #include "nlp-engine/rule.h"
 
+#include <QtDebug>
 #include <cmath>
 #include <exception>
 
@@ -120,6 +121,8 @@ Lvk::Nlp::SimpleAimlEngine::SimpleAimlEngine(Sanitizer *preSanitizer, Lemmatizer
 
 void Lvk::Nlp::SimpleAimlEngine::initRegexs()
 {
+    qDebug() << "SimpleAimlEngine: Initilizing regexs...";
+
     QString localizedIfRegex = QString(IF_REGEX)
             .replace("if", QObject::tr("if"));
 
@@ -152,22 +155,32 @@ void Lvk::Nlp::SimpleAimlEngine::setRules(const Nlp::RuleList &rules)
     m_rules = rules;
     m_indexRemap.clear();
 
-    RuleList newRules;
-    convertToPureAiml(newRules);
+    {
+        qDebug() << "SimpleAimlEngine: Converting rules to AIML format...";
+        RuleList aimlRules;
+        convert(aimlRules, rules, &SimpleAimlEngine::convertToAiml);
+        AimlEngine::setRules(aimlRules);
+    }
 
-    AimlEngine::setRules(newRules);
+    {
+        qDebug() << "SimpleAimlEngine: Converting rules to Exact Match format...";
+        RuleList emRules;
+        convert(emRules, rules, &SimpleAimlEngine::convertToExactMatch);
+        m_emEngine.setRules(emRules);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::RuleList &newRules)
+void Lvk::Nlp::SimpleAimlEngine::convert(Nlp::RuleList &newRules, const Nlp::RuleList &rules,
+                                         ConvertionMemb convertion)
 {
     newRules.clear();
 
-    foreach (const Nlp::Rule &rule, m_rules) {
+    foreach (const Nlp::Rule &rule, rules) {
         try {
             Lvk::Nlp::Rule newRule;
-            convertToPureAiml(newRule, rule);
+            (this->*convertion)(newRule, rule);
             newRules.append(newRule);
         } catch (std::exception &) {
             // Nothing to to. If the rule is invalid, we just skip it
@@ -178,7 +191,7 @@ void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::RuleList &newRules)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::Rule &newRule, const Nlp::Rule &rule)
+void Lvk::Nlp::SimpleAimlEngine::convertToAiml(Nlp::Rule &newRule, const Nlp::Rule &rule)
 {
     ConvertionContext ctx;
     ctx.inputIdx = 0;
@@ -193,6 +206,21 @@ void Lvk::Nlp::SimpleAimlEngine::convertToPureAiml(Nlp::Rule &newRule, const Nlp
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Nlp::SimpleAimlEngine::convertToExactMatch(Nlp::Rule &newRule, const Nlp::Rule &rule)
+{
+    ConvertionContext ctx;
+    ctx.inputIdx = 0;
+    ctx.rule = rule;
+
+    newRule.setId(rule.id());
+    newRule.setTopic(rule.topic());
+    newRule.setTarget(rule.target());
+    convertLiterals(newRule.input(), ctx);
+    newRule.setOuput(rule.output());
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, ConvertionContext &ctx)
 {
     /*
@@ -201,8 +229,12 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
      */
 
     for (int i = 0; i < ctx.rule.input().size(); ++i) {
-        ctx.input = ctx.rule.input().at(i);
+        ctx.input = ctx.rule.input().at(i).trimmed();
         ctx.inputIdx = i;
+
+        if (isLiteral(ctx.input)) {
+            continue;
+        }
 
         sanitize(ctx.input);
 
@@ -224,21 +256,21 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
 
 bool Lvk::Nlp::SimpleAimlEngine::hasVariable(const QString &input)
 {
-    return m_varNameRegex.indexIn(input) != -1;
+    return !isLiteral(input) && m_varNameRegex.indexIn(input) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::Nlp::SimpleAimlEngine::hasKeywordOp(const QString &input)
 {
-    return m_keywordRegex.indexIn(input) != -1;
+    return !isLiteral(input) && m_keywordRegex.indexIn(input) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Lvk::Nlp::SimpleAimlEngine::hasRegexOp(const QString &input)
 {
-    return input.contains(QRegExp(REGEX_REGEX));
+    return !isLiteral(input) && input.contains(QRegExp(REGEX_REGEX));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -246,6 +278,13 @@ bool Lvk::Nlp::SimpleAimlEngine::hasRegexOp(const QString &input)
 bool Lvk::Nlp::SimpleAimlEngine::hasConditional(const QString &output)
 {
     return m_ifElseRegex.indexIn(output) != -1 || m_ifRegex.indexIn(output) != -1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Nlp::SimpleAimlEngine::isLiteral(const QString &input)
+{
+    return input.size() >= 2 && input[0] == '"' && input[input.size() - 1] == '"';
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -450,12 +489,40 @@ void Lvk::Nlp::SimpleAimlEngine::convertOutputList(QStringList &outputList, Conv
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Nlp::SimpleAimlEngine::convertLiterals(QStringList &inputList, ConvertionContext &ctx)
+{
+    /*
+     * For each input, transform literal strings. (i.e. strings surroanded by "...")
+     */
+
+    for (int i = 0; i < ctx.rule.input().size(); ++i) {
+        QString input = ctx.rule.input().at(i).trimmed();
+
+        if (isLiteral(input)) {
+            qDebug() << "SimpleAimlEngine: Found exact match input:" << input;
+            inputList.append(input.mid(1, input.size() - 2));
+        } else {
+            inputList.append(QString());
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 QStringList Lvk::Nlp::SimpleAimlEngine::getAllResponses(const QString &input, const QString &target,
                                                         Engine::MatchList &matches)
 {
-    QStringList responses = AimlEngine::getAllResponses(input, target, matches);
+    qDebug() << "SimpleAimlEngine: Getting response for input" << input << "and" << target;
+    QStringList responses = m_emEngine.getAllResponses(input, target, matches);
 
-    remap(matches);
+    if (responses.size() > 0) {
+        qDebug() << "SimpleAimlEngine: Found response" << responses;
+    } else {
+        qDebug() << "SimpleAimlEngine: No exact match found. Fallback to AimlEngine.";
+        responses = AimlEngine::getAllResponses(input, target, matches);
+        remap(matches);
+    }
+
 
     return responses;
 }

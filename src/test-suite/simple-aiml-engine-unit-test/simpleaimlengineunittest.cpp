@@ -43,6 +43,9 @@ private Q_SLOTS:
     void testEngineSyntaticSugar2_data();
     void testEngineSyntaticSugar2();
 
+    void testExactMatch_data();
+    void testExactMatch();
+
     //TODO void testLocalizedConditionals();
 
 private:
@@ -50,6 +53,7 @@ private:
 
     void setRules1();
     void setRules2();
+    void setRules3();
 
     int m_ruleSet;
 };
@@ -103,7 +107,7 @@ private:
 #define USER_INPUT_5                        "Have you seen Pulp Fiction"
 #define FRMD_OUTPUT_5                       "Pulp Fiction? Nop"
 
-#define RULE_6_ID                           4
+#define RULE_6_ID                           6
 #define RULE_6_INPUT_1                      "Basket *"
 #define RULE_6_INPUT_2                      "Football +"
 #define RULE_6_INPUT_3                      "* tennis"
@@ -145,6 +149,37 @@ private:
 
 #define USER_INPUT_6_7a                     "What I hate most is box and karate"
 #define USER_INPUT_6_7b                     "box and karate"
+
+#define RULE_7_ID                           7
+#define RULE_7_INPUT_1                      "\":)\""
+#define RULE_7_INPUT_2                      "\":-)\""
+#define RULE_7_INPUT_3                      "\":D\""
+#define RULE_7_INPUT_4                      "\"Great! :D\""
+#define RULE_7_OUTPUT_1                     ":)"
+
+#define USER_INPUT_7a                       ":)"
+#define USER_INPUT_7b                       ":-)"
+#define USER_INPUT_7c                       ":D"
+#define USER_INPUT_7d                       ":("
+#define USER_INPUT_7e                       "=)"
+#define USER_INPUT_7f                       "Great! :D"
+#define USER_INPUT_7g                       "Great :D"
+#define USER_INPUT_7h                       "Great D"
+
+#define RULE_8_ID                           8
+#define RULE_8_INPUT_1                      "\"Hey!\""
+#define RULE_8_INPUT_2                      "Hello!!!"
+#define RULE_8_INPUT_3                      "\"Hiii!\""
+#define RULE_8_INPUT_4                      "Whats up"
+#define RULE_8_OUTPUT_1                     "Hi!"
+
+#define USER_INPUT_8a                       "HEY!"
+#define USER_INPUT_8b                       "Hey!!!"
+#define USER_INPUT_8c                       "Hey"
+#define USER_INPUT_8d                       "Hello!"
+#define USER_INPUT_8e                       "HELLO..."
+#define USER_INPUT_8f                       "Hi!"
+#define USER_INPUT_8g                       "whats up..."
 
 
 TestSimpleAimlEngine::TestSimpleAimlEngine()
@@ -205,6 +240,25 @@ void TestSimpleAimlEngine::setRules2()
     m_ruleSet = 2;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void TestSimpleAimlEngine::setRules3()
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1 << RULE_7_INPUT_2 << RULE_7_INPUT_3
+                                          << RULE_7_INPUT_4,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_8_ID,
+                            QStringList() << RULE_8_INPUT_1 << RULE_8_INPUT_2 << RULE_8_INPUT_3
+                                          << RULE_8_INPUT_4,
+                            QStringList() << RULE_8_OUTPUT_1);
+
+    m_engine->setRules(rules);
+    m_ruleSet = 3;
+}
 //--------------------------------------------------------------------------------------------------
 
 void TestSimpleAimlEngine::testEngineSyntaticSugar_data()
@@ -351,6 +405,63 @@ void TestSimpleAimlEngine::testEngineSyntaticSugar2()
         QCOMPARE(matches.size(), 0);
     }
 }
+
+
+//--------------------------------------------------------------------------------------------------
+
+void TestSimpleAimlEngine::testExactMatch_data()
+{
+    QTest::addColumn<QString>("userInput");
+    QTest::addColumn<QString>("expectedOutput");
+    QTest::addColumn<int>("ruleId");
+    QTest::addColumn<int>("ruleInputNumber");
+
+    QTest::newRow(" 1")  << USER_INPUT_7a << RULE_7_OUTPUT_1 << RULE_7_ID << 0;
+    QTest::newRow(" 2")  << USER_INPUT_7b << RULE_7_OUTPUT_1 << RULE_7_ID << 1;
+    QTest::newRow(" 3")  << USER_INPUT_7c << RULE_7_OUTPUT_1 << RULE_7_ID << 2;
+    QTest::newRow(" 4")  << USER_INPUT_7d << QString()       << 0         << 0;
+    QTest::newRow(" 5")  << USER_INPUT_7e << QString()       << 0         << 0;
+    QTest::newRow(" 6")  << USER_INPUT_7f << RULE_7_OUTPUT_1 << RULE_7_ID << 3;
+    QTest::newRow(" 7")  << USER_INPUT_7g << QString()       << 0         << 0;
+    QTest::newRow(" 8")  << USER_INPUT_7h << QString()       << 0         << 0;
+
+    QTest::newRow(" 9")  << USER_INPUT_8a << RULE_8_OUTPUT_1 << RULE_8_ID << 0;
+    QTest::newRow("10")  << USER_INPUT_8b << QString()       << 0         << 0;
+    QTest::newRow("11")  << USER_INPUT_8c << QString()       << 0         << 0;
+    QTest::newRow("12")  << USER_INPUT_8d << RULE_8_OUTPUT_1 << RULE_8_ID << 1;
+    QTest::newRow("13")  << USER_INPUT_8e << RULE_8_OUTPUT_1 << RULE_8_ID << 1;
+    QTest::newRow("14")  << USER_INPUT_8f << QString()       << 0         << 0;
+    QTest::newRow("15")  << USER_INPUT_8g << RULE_8_OUTPUT_1 << RULE_8_ID << 3;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestSimpleAimlEngine::testExactMatch()
+{
+    QFETCH(QString, userInput);
+    QFETCH(QString, expectedOutput);
+    QFETCH(int, ruleId);
+    QFETCH(int, ruleInputNumber);
+
+    if (m_ruleSet != 3) {
+        setRules3();
+    }
+
+    Lvk::Nlp::Engine::MatchList matches;
+
+    QString output = m_engine->getResponse(userInput, matches);
+
+    if (!expectedOutput.isNull()) {
+        QCOMPARE(output, expectedOutput);
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
+        QCOMPARE(matches[0].second, ruleInputNumber);
+    } else {
+        QVERIFY(output.isEmpty());
+        QCOMPARE(matches.size(), 0);
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // Test entry point

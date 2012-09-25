@@ -19,21 +19,25 @@ INCLUDEPATH += \
     ../../third-party
 
 HEADERS += \
+    ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/simpleaimlengine.h \
     ../../chatbot/nlp-engine/nullsanitizer.h \
     ../../chatbot/nlp-engine/defaultsanitizer.h \
     ../../chatbot/common/settings.h \
     ../../chatbot/common/logger.h \
+    ../../chatbot/common/random.h \
     ../../third-party/ProgramQ/aimlparser.h
 
 SOURCES += \
     simpleaimlengineunittest.cpp \
+    ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/simpleaimlengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/logger.cpp \
+    ../../chatbot/common/random.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

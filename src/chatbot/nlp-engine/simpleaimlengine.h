@@ -23,6 +23,7 @@
 #define LVK_NLP_SIMPLEAIMLENGINE_H
 
 #include "nlp-engine/aimlengine.h"
+#include "nlp-engine/exactmatchengine.h"
 
 #include <QHash>
 
@@ -137,6 +138,12 @@ public:
      */
     virtual bool hasConditional(const QString &output);
 
+    /**
+     * Returns true if \a input is a literal string. Otherwise; returns false.
+     * Literals are declared by surrounding the string with double quotes.
+     */
+    virtual bool isLiteral(const QString &input);
+
 private:
 
     struct ConvertionContext
@@ -152,6 +159,7 @@ private:
     typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
 
     RuleList m_rules;
+    ExactMatchEngine m_emEngine;
 
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
@@ -162,14 +170,19 @@ private:
 
     void initRegexs();
 
-    void convertToPureAiml(RuleList &rules);
-    void convertToPureAiml(Lvk::Nlp::Rule &newRules, const Lvk::Nlp::Rule &rule);
+    typedef void (SimpleAimlEngine::*ConvertionMemb)(Nlp::Rule &, const Nlp::Rule &);
+
+    void convert(RuleList &newRules, const RuleList &rules, ConvertionMemb convertion);
+
+    void convertToAiml(Nlp::Rule &newRules, const Nlp::Rule &rule);
+    void convertToExactMatch(Nlp::Rule &newRules, const Nlp::Rule &rule);
 
     void convertInputList(QStringList &inputList, ConvertionContext &ctx);
     void convertVariables(QStringList &inputList, ConvertionContext &ctx);
     void convertKeywordOp(QStringList &inputList, ConvertionContext &ctx);
     void convertRegexOp(QStringList &inputList, ConvertionContext &ctx);
     void convertOutputList(QStringList &outputList, ConvertionContext &ctx);
+    void convertLiterals(QStringList &inputList, ConvertionContext &ctx);
 
     void remap(Engine::MatchList &matches);
 };

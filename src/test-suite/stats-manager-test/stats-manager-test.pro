@@ -34,6 +34,8 @@ SOURCES += \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/common/csvrow.cpp \
     ../../chatbot/common/csvdocument.cpp \
+    ../../chatbot/common/random.cpp \
+    ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/nlp-engine/enginefactory.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \

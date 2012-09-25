@@ -38,7 +38,7 @@ namespace
 int indexOf(const QString &value, const QStringList &list)
 {
     for (int i = 0; i < list.size(); ++i) {
-        if (QString::compare(value, list[i], Qt::CaseInsensitive)) {
+        if (QString::compare(value, list[i], Qt::CaseInsensitive) == 0) {
             return i;
         }
     }
@@ -116,6 +116,10 @@ QStringList Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, co
                                                         MatchList &matches)
 {
     QStringList responses;
+
+    if (input.isNull()) {
+        return responses;
+    }
 
     for (int i = 0; i < m_rules.size(); ++i) {
         const QStringList &ruleInput = m_rules[i].input();
