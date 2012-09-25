@@ -321,16 +321,20 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const QString &target)
 
 void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 {
-    QStringList input = rule.input();
+    const QStringList &inputs = rule.input();
 
-    normalize(input);
-
-    for (int i = 0; i < input.size(); ++i) {
+    for (int i = 0; i < inputs.size(); ++i) {
         // id is not part of AIML standar. It's an LVK extension to know which rule has matched
         QString catId = QString::number(getCategoryId(rule.id(), i));
 
+        QString input = inputs[i].trimmed();
+        normalize(input);
+
         QString randOuput;
         buildAimlRandOutput(randOuput, rule.output());
+
+        QString topic = rule.topic();
+        topic.remove('"');
 
         // build category AIML string
         QString cat = QString("<category>"
@@ -341,10 +345,10 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
                               "%4"
                               "</template>"
                               "</category>")
-                              .arg(catId, input[i], rule.topic(), randOuput);;
+                              .arg(catId, input, topic, randOuput);;
 
         // Add category with topic
-        aiml += "<topic name=\"" + rule.topic() + "\">" + cat + "</topic>";
+        aiml += "<topic name=\"" + topic + "\">" + cat + "</topic>";
 
         // Add category also with default topic as fallback mechanism
         aiml += "<topic name=\"\">" + cat + "</topic>";

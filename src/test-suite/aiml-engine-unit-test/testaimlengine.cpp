@@ -714,7 +714,7 @@ void TestAimlEngine::setRules6()
 
     // TOPIC 2 --------------------
 
-    QString topicCars = "cars";
+    QString topicCars = "\"cars\"";
 
     rules << Lvk::Nlp::Rule(RULE_12_ID,
                             QStringList() << RULE_12_INPUT_1,
