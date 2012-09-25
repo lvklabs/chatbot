@@ -53,6 +53,28 @@ private:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+// Sanitize harmful characters that may break the engine
+
+void sanitize(QString &s)
+{
+    int j = 0;
+    for (int i = 0; i < s.size(); ++i) {
+        if (s[i] != '<' && s[i] != '>') {
+            s[j++] = s[i];
+        }
+    }
+    s.resize(j);
+}
+
+} // namespace
+
+//--------------------------------------------------------------------------------------------------
 // SimpleAimlEngine
 //--------------------------------------------------------------------------------------------------
 //
@@ -181,6 +203,8 @@ void Lvk::Nlp::SimpleAimlEngine::convertInputList(QStringList &inputList, Conver
     for (int i = 0; i < ctx.rule.input().size(); ++i) {
         ctx.input = ctx.rule.input().at(i);
         ctx.inputIdx = i;
+
+        sanitize(ctx.input);
 
         if (hasVariable(ctx.input)) {
             convertVariables(inputList, ctx);
@@ -361,6 +385,9 @@ void Lvk::Nlp::SimpleAimlEngine::convertOutputList(QStringList &outputList, Conv
         // TODO refactor!
 
         QString output = ctx.rule.output().at(i);
+
+        sanitize(output);
+
         QString newOutput = output;
         int pos;
 

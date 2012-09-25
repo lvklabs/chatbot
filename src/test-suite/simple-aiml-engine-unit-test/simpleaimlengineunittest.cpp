@@ -181,9 +181,9 @@ void TestSimpleAimlEngine::setRules1()
                             QStringList() << RULE_4_INPUT_1 << RULE_4_INPUT_2 << RULE_4_INPUT_3,
                             QStringList() << RULE_4_OUTPUT_1);
 
-    rules << Lvk::Nlp::Rule(RULE_5_ID,
-                            QStringList() << RULE_5_INPUT_1,
-                            QStringList() << RULE_5_OUTPUT_1);
+    rules << Lvk::Nlp::Rule(RULE_5_ID, // Test with harmful chars
+                            QStringList() << RULE_5_INPUT_1 ">><",
+                            QStringList() << RULE_5_OUTPUT_1 "<>>");
 
     m_engine->setRules(rules);
     m_ruleSet = 1;
