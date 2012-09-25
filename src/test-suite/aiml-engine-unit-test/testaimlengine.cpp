@@ -64,6 +64,8 @@ private Q_SLOTS:
     void testMatchPriority_data();
     void testMatchPriority();
 
+    void testMatchWithTopic();
+
     void cleanupTestCase();
 
 private:
@@ -78,6 +80,7 @@ private:
     void setRules3();
     void setRules4();
     void setRules5();
+    void setRules6();
 };
 
 TestAimlEngine::TestAimlEngine()
@@ -684,6 +687,83 @@ void TestAimlEngine::testMatchPriority_data()
 void TestAimlEngine::testMatchPriority()
 {
     testMatch(&TestAimlEngine::setRules5);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::setRules6()
+{
+    Lvk::Nlp::RuleList rules;
+
+    // TOPIC 1 --------------------
+
+    QString topicSoccer = "soccer";
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules[0].setTopic(topicSoccer);
+
+    rules << Lvk::Nlp::Rule(RULE_11_ID,
+                            QStringList() << RULE_11_INPUT_1,
+                            QStringList() << RULE_11_OUTPUT_1);
+
+    rules[1].setTopic(topicSoccer);
+
+
+    // TOPIC 2 --------------------
+
+    QString topicCars = "cars";
+
+    rules << Lvk::Nlp::Rule(RULE_12_ID,
+                            QStringList() << RULE_12_INPUT_1,
+                            QStringList() << RULE_12_OUTPUT_1);
+
+    rules[2].setTopic(topicCars);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3,
+                            QStringList() << RULE_3_OUTPUT_1);
+
+    rules[3].setTopic(topicCars);
+
+
+    m_engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestAimlEngine::testMatchWithTopic()
+{
+    setRules6();
+
+    Lvk::Nlp::Engine::MatchList matches;
+    QString response;
+
+    // Verify that we prefer rules with the current topic
+
+    for (int i = 0; i < 2; ++i) {
+        response = m_engine->getResponse(USER_INPUT_8c, matches);
+        QCOMPARE(response, QString(RULE_7_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_7_ID);
+
+        response = m_engine->getResponse(USER_INPUT_3, matches);
+        QCOMPARE(response, QString(RULE_11_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_11_ID);
+
+        response = m_engine->getResponse(USER_INPUT_7b, matches);
+        QCOMPARE(response, QString(RULE_3_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_3_ID);
+
+        response = m_engine->getResponse(USER_INPUT_3, matches);
+        QCOMPARE(response, QString(RULE_12_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_12_ID);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
