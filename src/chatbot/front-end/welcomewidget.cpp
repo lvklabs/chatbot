@@ -1,6 +1,6 @@
 #include "welcomewidget.h"
 #include "ui_welcomewidget.h"
-#include "front-end/filefilters.h"
+#include "front-end/filedialog.h"
 #include "front-end/mainwindow.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -48,7 +48,7 @@ Lvk::FE::WelcomeWidget::~WelcomeWidget()
 
 void Lvk::FE::WelcomeWidget::onOpenChatbot()
 {
-    QString filename = FileFilters::openChatbotFileDialog(this);
+    QString filename = FileDialog::openChatbot(this);
 
     if (!filename.isEmpty()) {
         m_mw->openFile(filename);
@@ -61,7 +61,7 @@ void Lvk::FE::WelcomeWidget::onOpenChatbot()
 
 void Lvk::FE::WelcomeWidget::onCreateChatbot()
 {
-    QString filename = FileFilters::newChatbotFileDialog(this);
+    QString filename = FileDialog::newChatbotFileDialog(this);
 
     if (!filename.isEmpty()) {
         m_mw->newFile(filename);

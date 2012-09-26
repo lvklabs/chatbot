@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_FE_FILEFILTERS_H
-#define LVK_FE_FILEFILTERS_H
+#ifndef LVK_FE_FILEDIALOG_H
+#define LVK_FE_FILEDIALOG_H
 
 #include <QString>
 #include <QObject>
@@ -40,11 +40,11 @@ namespace FE
 /// @{
 
 /**
- * \brief The FileFilters class provides localized strings for file extensions
+ * \brief The FileDialog class provides localized strings for file extensions
  *        and common dialogs to open and save chatbots
  */
 // TODO rename to FileDialog
-class FileFilters
+class FileDialog
 {
 public:
 
@@ -68,7 +68,7 @@ public:
      * Shows the "New chatbot file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
-    static QString newChatbotFileDialog(QWidget *parent = 0)
+    static QString newChatbot(QWidget *parent = 0)
     {
         QString filename = QFileDialog::getSaveFileName(parent,
                                                         QObject::tr("New file"), "",
@@ -83,7 +83,7 @@ public:
      * Shows the "Save chatbot file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
-    static QString saveChatbotFileDialog(QWidget *parent = 0)
+    static QString saveChatbot(QWidget *parent = 0)
     {
         QString filename = QFileDialog::getSaveFileName(parent,
                                                         QObject::tr("Save File"), "",
@@ -98,7 +98,7 @@ public:
      * Shows the "Open chatbot file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
-    static QString openChatbotFileDialog(QWidget *parent = 0)
+    static QString openChatbot(QWidget *parent = 0)
     {
         return QFileDialog::getOpenFileName(parent,
                                             QObject::tr("Open File"), "",
@@ -110,7 +110,7 @@ public:
      * Shows the "Save export file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
-    static QString saveExportFileDialog(QWidget *parent = 0)
+    static QString saveExport(QWidget *parent = 0)
     {
         QString filename = QFileDialog::getSaveFileName(parent,
                                                         QObject::tr("Export Rules"), "",
@@ -125,7 +125,7 @@ public:
      * Shows the "Open export file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
-    static QString openExportFileDialog(QWidget *parent = 0)
+    static QString openExport(QWidget *parent = 0)
     {
         return QFileDialog::getOpenFileName(parent,
                                             QObject::tr("Import Rules"), "",
@@ -133,7 +133,7 @@ public:
     }
 
 private:
-    FileFilters();
+    FileDialog();
 
     static void appendExtension(QString &filename, const QString &ext)
     {
@@ -164,5 +164,5 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_FE_FILEFILTERS_H
+#endif // LVK_FE_FILEDIALOG_H
 

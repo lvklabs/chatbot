@@ -63,7 +63,7 @@ HEADERS += \
     ../../chatbot/front-end/tinyscorewidget.h \
     ../../chatbot/front-end/optionswindow.h \
     ../../chatbot/front-end/optionswindow.h \
-    ../../chatbot/front-end/filefilters.h \
+    ../../chatbot/front-end/filedialog.h \
     ../../chatbot/front-end/welcomewidget.h \
     ../../chatbot/front-end/rosterhelper.h \
     ../../chatbot/front-end/mainwindowrefactor.h \

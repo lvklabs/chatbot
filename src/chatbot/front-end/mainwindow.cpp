@@ -27,7 +27,7 @@
 #include "front-end/tinyscorewidget.h"
 #include "front-end/sendscoredialog.h"
 #include "front-end/optionswindow.h"
-#include "front-end/filefilters.h"
+#include "front-end/filedialog.h"
 #include "front-end/rosterhelper.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
@@ -604,7 +604,7 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
     }
 
     if (!canceled) {
-        QString filename = FileFilters::openChatbotFileDialog();
+        QString filename = FileDialog::openChatbot(this);
 
         openFile(filename);
     }
@@ -640,7 +640,7 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
     QString filename = filename_;
 
     if (filename.isEmpty()) {
-        filename = FileFilters::newChatbotFileDialog(this);
+        filename = FileDialog::newChatbotFileDialog(this);
     }
 
     if (!filename.isEmpty()) {
@@ -706,7 +706,7 @@ bool Lvk::FE::MainWindow::saveChanges()
 
 bool Lvk::FE::MainWindow::saveAsChanges()
 {
-    QString filename = FileFilters::saveChatbotFileDialog(this);
+    QString filename = FileDialog::saveChatbot(this);
 
     bool saved = false;
 
@@ -804,7 +804,7 @@ int Lvk::FE::MainWindow::showSaveChangesDialog()
 
 void Lvk::FE::MainWindow::onImportMenuTriggered()
 {
-    QString filename = FileFilters::openExportFileDialog(this);
+    QString filename = FileDialog::openExport(this);
 
     if (!filename.isEmpty()) {
         const QString IMPORT_TITLE = tr("Import Rules");
@@ -847,7 +847,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
     BE::Rule container;
     if (exportDialog.exec(&container) == QDialog::Accepted) {
 
-        QString filename = FileFilters::saveExportFileDialog(this);
+        QString filename = FileDialog::saveExport(this);
 
         if (!filename.isEmpty()) {
             if (!m_appFacade->exportRules(&container, filename)) {

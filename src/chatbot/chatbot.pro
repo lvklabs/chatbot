@@ -123,7 +123,7 @@ HEADERS += \
     front-end/sendscoredialog.h \
     front-end/welcomewidget.h \
     front-end/optionswindow.h \
-    front-end/filefilters.h \
+    front-end/filedialog.h \
     front-end/rosterhelper.h \
     front-end/mainwindowrefactor.h \
     back-end/appfacade.h \
