@@ -61,7 +61,7 @@ void Lvk::FE::WelcomeWidget::onOpenChatbot()
 
 void Lvk::FE::WelcomeWidget::onCreateChatbot()
 {
-    QString filename = FileDialog::newChatbotFileDialog(this);
+    QString filename = FileDialog::newChatbot(this);
 
     if (!filename.isEmpty()) {
         m_mw->newFile(filename);

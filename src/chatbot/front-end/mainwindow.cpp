@@ -640,7 +640,7 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
     QString filename = filename_;
 
     if (filename.isEmpty()) {
-        filename = FileDialog::newChatbotFileDialog(this);
+        filename = FileDialog::newChatbot(this);
     }
 
     if (!filename.isEmpty()) {

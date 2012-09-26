@@ -331,15 +331,15 @@ void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &cur
                                                           const QModelIndex &/*previous*/)
 {
     if (!current.isValid()) {
-        return;
-    }
-
-    if (rowHasMatchStatus(current.row())) {
         ui->teachRuleButton->setEnabled(false);
-        ui->showRuleButton->setEnabled(true);
     } else {
         ui->teachRuleButton->setEnabled(true);
-        ui->showRuleButton->setEnabled(false);
+
+        if (rowHasMatchStatus(current.row())) {
+            ui->showRuleButton->setEnabled(true);
+        } else {
+            ui->showRuleButton->setEnabled(false);
+        }
     }
 }
 
