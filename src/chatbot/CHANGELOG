@@ -1,7 +1,8 @@
 v0.23
  - Improved NLP engine: 
     - Added higher priority to those rules that match the current 'topic' 
-    - Added support for literal strings
+    - Added support for literal strings (Exact match support)
+ - When creating a new chatbot, added file dialog to ask filename
  - Fixed bug #33
 
 v0.22
