@@ -23,6 +23,7 @@
 #include <QtTest/QtTest>
 
 #include "nlp-engine/hybridengine.h"
+#include "nlp-engine/nlpproperties.h"
 
 //--------------------------------------------------------------------------------------------------
 // TestHybridEngine declaration
@@ -449,6 +450,7 @@ void TestHybridEngine::testExactMatch()
 
     Lvk::Nlp::Engine::MatchList matches;
 
+    m_engine->setProperty(NLP_PROP_EXACT_MATCH, true);
     QString output = m_engine->getResponse(userInput, matches);
 
     if (!expectedOutput.isNull()) {
