@@ -167,8 +167,6 @@ HEADERS += \
     common/conversationwriter.h \
     common/conversationreader.h \
     common/logger.h \
-    common/remoteloggerfactory.h \
-    common/remoteloggerkeys.h \
     common/cipher.h \
     stats/statsmanager.h \
     stats/statsfile.h \
@@ -180,6 +178,8 @@ HEADERS += \
     stats/rulestatshelper.h \
     stats/historystatshelper.h \
     stats/statshelper.h \
+    da-server/remoteloggerfactory.h \
+    da-server/remoteloggerkeys.h \
     da-server/remotelogger.h \
     da-server/nullremotelogger.h \
 
