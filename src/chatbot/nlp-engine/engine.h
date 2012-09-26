@@ -23,6 +23,7 @@
 #define LVK_NLP_NLPENGINE_H
 
 #include <QString>
+#include <QVariant>
 #include <QPair>
 
 #include "nlp-engine/rule.h"
@@ -148,6 +149,16 @@ public:
      * Returns true if \a output contains an if-else conditional. Otherwise; returns false.
      */
     virtual bool hasConditional(const QString &output) = 0;
+
+    /**
+     * Returns the value of the given property \a name
+     */
+    virtual QVariant property(const QString &name) = 0;
+
+    /**
+     * Sets \a value to property \a name
+     */
+    virtual void setProperty(const QString &name, const QVariant &value) = 0;
 };
 
 /// @}

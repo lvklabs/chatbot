@@ -27,6 +27,7 @@
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
 #include "nlp-engine/lemmatizerfactory.h"
+#include "nlp-engine/nlpproperties.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
 #include "chat-adapter/fbchatbot.h"
@@ -175,13 +176,7 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
     if (filename.isEmpty()) {
         loaded = setDefaultRules();
 
-        unsigned defaultNlpOptions = RemoveDupChars | SanitizePostLemma;
-
-    #ifdef FREELING_SUPPORT
-        defaultNlpOptions |= BE::AppFacade::LemmatizeSentence;
-    #endif
-
-        m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions);
+        m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, getDefaultNlpOptions());
         m_rules.setAsSaved();
     } else {
         loaded = m_rules.load(filename);
@@ -200,6 +195,19 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
     }
 
     return loaded;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+unsigned Lvk::BE::AppFacade::getDefaultNlpOptions()
+{
+    unsigned options = RemoveDupChars | SanitizePostLemma;
+
+#ifdef FREELING_SUPPORT
+    options |= BE::AppFacade::LemmatizeSentence;
+#endif
+
+    return options;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -497,6 +505,13 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
     }
     if (!(options & SanitizePostLemma) && (m_nlpOptions & SanitizePostLemma)) {
         m_nlpEngine->setPostSanitizer(0);
+    }
+
+    if ((options & ExactMatchSupport) && !(m_nlpOptions & ExactMatchSupport)) {
+        m_nlpEngine->setProperty(NLP_PROP_EXACT_MATCH, true);
+    }
+    if (!(options & ExactMatchSupport) && (m_nlpOptions & ExactMatchSupport)) {
+        m_nlpEngine->setProperty(NLP_PROP_EXACT_MATCH, false);
     }
 
     m_nlpOptions = options;

@@ -23,9 +23,10 @@
 #define LVK_NLP_HYBRIDENGINE_H
 
 #include "nlp-engine/aimlengine.h"
-#include "nlp-engine/exactmatchengine.h"
 
 #include <QHash>
+
+class QMutex;
 
 namespace Lvk
 {
@@ -106,6 +107,11 @@ public:
     HybridEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer, Sanitizer *postSanitizer);
 
     /**
+     * Destroys the object
+     */
+    ~HybridEngine();
+
+    /**
      * \copydoc AimlEngine::rules() const
      */
     virtual RuleList rules() const;
@@ -152,6 +158,21 @@ public:
      */
     virtual bool isLiteral(const QString &input);
 
+    /**
+     * \copydoc Engine::property()
+     *
+     * HybridEngine only supports the property NLP_PROP_EXACT_MATCH with values \a true or \a false
+     * to enable or disable exact match support.
+     */
+    virtual QVariant property(const QString &name);
+
+    /**
+     * \copydoc Engine::setProperty()
+     *
+     * HybridEngine only supports the property NLP_PROP_EXACT_MATCH with values \a true or \a false
+     * to enabled or disable exact match support.
+     */
+    virtual void setProperty(const QString &name, const QVariant &value);
 private:
 
     struct ConvertionContext
@@ -167,7 +188,8 @@ private:
     typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
 
     RuleList m_rules;
-    ExactMatchEngine m_emEngine;
+    QMutex *m_engineMutex;
+    Engine *m_emEngine;
 
     QRegExp m_varNameRegex;
     QRegExp m_ifElseRegex;
@@ -177,6 +199,7 @@ private:
     RuleIndexRemap m_indexRemap;
 
     void initRegexs();
+    void refreshEngine();
 
     typedef void (HybridEngine::*ConvertionMemb)(Nlp::Rule &, const Nlp::Rule &);
 

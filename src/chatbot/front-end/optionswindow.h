@@ -38,10 +38,11 @@ public:
      */
     struct Options
     {
-        Options() : lemmatizeSentence(false), ignoreDupChars(false) { }
+        Options() : lemmatizeSentence(false), ignoreDupChars(false), exactMatchSupport(false) { }
 
         bool lemmatizeSentence; ///< NLP engine lemmatizes sentences
         bool ignoreDupChars;    ///< NLP engine ignores duplicated characters
+        bool exactMatchSupport; ///< NLP engine exact match support enabled
     };
 
     /**

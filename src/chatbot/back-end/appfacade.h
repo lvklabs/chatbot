@@ -204,7 +204,8 @@ public:
     enum NlpEngineOption {
         RemoveDupChars    = 0x01,    ///< Remove duplicated characters
         LemmatizeSentence = 0x02,    ///< Lemmatize sentences
-        SanitizePostLemma = 0x04     ///< Sanitize post lemmatization
+        SanitizePostLemma = 0x04,    ///< Sanitize post lemmatization
+        ExactMatchSupport = 0x08     ///< Enable exact match support
     };
 
     /**
@@ -415,9 +416,9 @@ private:
     unsigned m_nlpOptions;
     RlogHelper m_rlogh;
 
-    bool setDefaultRules();
-
     void init();
+    unsigned getDefaultNlpOptions();
+    bool setDefaultRules();
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
     void refreshEvasives();

@@ -124,12 +124,12 @@ QStringList Lvk::Nlp::ExactMatchEngine::getAllResponses(const QString &input, co
     for (int i = 0; i < m_rules.size(); ++i) {
         const QStringList &ruleInput = m_rules[i].input();
         const QStringList &ruleOuput = m_rules[i].output();
-        const QStringList &ruleTarget = m_rules[i].output();
+        const QStringList &ruleTarget = m_rules[i].target();
 
         int inputIndex = indexOf(input, ruleInput);
 
         if (inputIndex != -1) {
-            if (target.isEmpty() || indexOf(target, ruleTarget) != -1) {
+            if (target.isEmpty() || ruleTarget.isEmpty() || indexOf(target, ruleTarget) != -1) {
                 int randomOutput = Cmn::Random::getInt(0, ruleOuput.size() - 1);
                 responses.append(ruleOuput[randomOutput]);
                 matches.append(qMakePair(m_rules[i].id(), inputIndex));
@@ -185,3 +185,18 @@ bool Lvk::Nlp::ExactMatchEngine::hasConditional(const QString &/*output*/)
 {
     return false;
 }
+
+//--------------------------------------------------------------------------------------------------
+
+QVariant Lvk::Nlp::ExactMatchEngine::property(const QString &/*name*/)
+{
+    return QVariant();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ExactMatchEngine::setProperty(const QString &/*name*/, const QVariant &/*value*/)
+{
+    // Nothing to do
+}
+

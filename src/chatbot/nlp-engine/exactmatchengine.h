@@ -121,6 +121,16 @@ public:
      */
     virtual bool hasConditional(const QString &output);
 
+    /**
+     * ExactMatchEngine does not support properties. This method always a null QVariant.
+     */
+    virtual QVariant property(const QString &name);
+
+    /**
+     * ExactMatchEngine does not support properties. This method does nothing.
+     */
+    virtual void setProperty(const QString &name, const QVariant &value);
+
 private:
 
     RuleList m_rules;

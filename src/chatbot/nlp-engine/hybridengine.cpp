@@ -21,8 +21,12 @@
 
 #include "nlp-engine/hybridengine.h"
 #include "nlp-engine/rule.h"
+#include "nlp-engine/exactmatchengine.h"
+#include "nlp-engine/nlpproperties.h"
 
 #include <QtDebug>
+#include <QMutex>
+#include <QMutexLocker>
 #include <cmath>
 #include <exception>
 
@@ -95,7 +99,7 @@ void sanitize(QString &s)
 
 
 Lvk::Nlp::HybridEngine::HybridEngine()
-    : AimlEngine()
+    : AimlEngine(), m_engineMutex(new QMutex()), m_emEngine(0)
 {
     initRegexs();
 }
@@ -103,7 +107,7 @@ Lvk::Nlp::HybridEngine::HybridEngine()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::HybridEngine::HybridEngine(Sanitizer *sanitizer)
-    : AimlEngine(sanitizer)
+    : AimlEngine(sanitizer), m_engineMutex(new QMutex()), m_emEngine(0)
 {
     initRegexs();
 }
@@ -111,10 +115,19 @@ Lvk::Nlp::HybridEngine::HybridEngine(Sanitizer *sanitizer)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::HybridEngine::HybridEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
-                                             Sanitizer *postSanitizer)
-    : AimlEngine(preSanitizer, lemmatizer, postSanitizer)
+                                     Sanitizer *postSanitizer)
+    : AimlEngine(preSanitizer, lemmatizer, postSanitizer), m_engineMutex(new QMutex()),
+      m_emEngine(0)
 {
     initRegexs();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::HybridEngine::~HybridEngine()
+{
+    delete m_emEngine;
+    delete m_engineMutex;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -145,6 +158,8 @@ void Lvk::Nlp::HybridEngine::initRegexs()
 
 Lvk::Nlp::RuleList Lvk::Nlp::HybridEngine::rules() const
 {
+    QMutexLocker locker(m_engineMutex);
+
     return m_rules;
 }
 
@@ -152,21 +167,30 @@ Lvk::Nlp::RuleList Lvk::Nlp::HybridEngine::rules() const
 
 void Lvk::Nlp::HybridEngine::setRules(const Nlp::RuleList &rules)
 {
+    QMutexLocker locker(m_engineMutex);
+
     m_rules = rules;
     m_indexRemap.clear();
 
+    refreshEngine();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::HybridEngine::refreshEngine()
+{
     {
         qDebug() << "HybridEngine: Converting rules to AIML format...";
         RuleList aimlRules;
-        convert(aimlRules, rules, &HybridEngine::convertToAiml);
+        convert(aimlRules, m_rules, &HybridEngine::convertToAiml);
         AimlEngine::setRules(aimlRules);
     }
 
-    {
+    if (m_emEngine) {
         qDebug() << "HybridEngine: Converting rules to Exact Match format...";
         RuleList emRules;
-        convert(emRules, rules, &HybridEngine::convertToExactMatch);
-        m_emEngine.setRules(emRules);
+        convert(emRules, m_rules, &HybridEngine::convertToExactMatch);
+        m_emEngine->setRules(emRules);
     }
 }
 
@@ -499,7 +523,7 @@ void Lvk::Nlp::HybridEngine::convertLiterals(QStringList &inputList, ConvertionC
         QString input = ctx.rule.input().at(i).trimmed();
 
         if (isLiteral(input)) {
-            qDebug() << "HybridEngine: Found exact match input:" << input;
+            qDebug() << "HybridEngine: Parsing exact match input:" << input;
             inputList.append(input.mid(1, input.size() - 2));
         } else {
             inputList.append(QString());
@@ -513,16 +537,27 @@ QStringList Lvk::Nlp::HybridEngine::getAllResponses(const QString &input, const 
                                                         Engine::MatchList &matches)
 {
     qDebug() << "HybridEngine: Getting response for input" << input << "and" << target;
-    QStringList responses = m_emEngine.getAllResponses(input, target, matches);
 
-    if (responses.size() > 0) {
-        qDebug() << "HybridEngine: Found response" << responses;
-    } else {
-        qDebug() << "HybridEngine: No exact match found. Fallback to AimlEngine.";
+    QMutexLocker locker(m_engineMutex);
+
+    QStringList responses;
+
+    // If exact match is enabled, try first exact match. If no responses fallback AIML engine
+
+    if (m_emEngine) {
+        responses = m_emEngine->getAllResponses(input, target, matches);
+
+        if (responses.size() > 0) {
+            qDebug() << "HybridEngine: Found exact match response" << responses;
+        } else {
+            qDebug() << "HybridEngine: No exact match found. Fallback to AimlEngine.";
+        }
+    }
+
+    if (responses.isEmpty()) {
         responses = AimlEngine::getAllResponses(input, target, matches);
         remap(matches);
     }
-
 
     return responses;
 }
@@ -541,6 +576,40 @@ void Lvk::Nlp::HybridEngine::remap(Engine::MatchList &matches)
             if (itt != it->end()) {
                 matches[i].second = itt.value();
             }
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+QVariant Lvk::Nlp::HybridEngine::property(const QString &name)
+{
+    if (name == NLP_PROP_EXACT_MATCH) {
+        QMutexLocker locker(m_engineMutex);
+
+        return m_emEngine ? QVariant(true) : QVariant(false);
+    } else {
+        return QVariant();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::HybridEngine::setProperty(const QString &name, const QVariant &value)
+{
+    if (name == NLP_PROP_EXACT_MATCH) {
+        QMutexLocker locker(m_engineMutex);
+
+        if (value.toBool() == true && !m_emEngine) {
+            qDebug() << "HybridEngine: Enabled exact match support";
+            m_emEngine = new ExactMatchEngine();
+            refreshEngine();
+        }
+        if (value.toBool() == false && m_emEngine) {
+            qDebug() << "HybridEngine: Disabled exact match support";
+            delete m_emEngine;
+            m_emEngine = 0;
         }
     }
 }

@@ -146,6 +146,7 @@ HEADERS += \
     nlp-engine/lemmatizerfactory.h \
     nlp-engine/sanitizerfactory.h \
     nlp-engine/enginefactory.h \
+    nlp-engine/nlpproperties.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \
@@ -342,6 +343,7 @@ else:versionrev.commands = $$PWD/bin/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
 
 
 

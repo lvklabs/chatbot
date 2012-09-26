@@ -449,3 +449,17 @@ bool Lvk::Nlp::AimlEngine::hasConditional(const QString &/*output*/)
 {
     return false;
 }
+
+//--------------------------------------------------------------------------------------------------
+
+QVariant Lvk::Nlp::AimlEngine::property(const QString &/*name*/)
+{
+    return QVariant();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::setProperty(const QString &/*name*/, const QVariant &/*value*/)
+{
+    // nothing to do
+}

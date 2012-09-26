@@ -191,6 +191,16 @@ public:
      */
     virtual bool hasConditional(const QString &output);
 
+    /**
+     * AimlEngine does not support properties. This method always a null QVariant.
+     */
+    virtual QVariant property(const QString &name);
+
+    /**
+     * AimlEngine does not support properties. This method does nothing.
+     */
+    virtual void setProperty(const QString &name, const QVariant &value);
+
 private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);
