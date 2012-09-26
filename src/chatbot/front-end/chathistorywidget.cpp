@@ -332,6 +332,7 @@ void Lvk::FE::ChatHistoryWidget::onConversationRowChanged(const QModelIndex &cur
 {
     if (!current.isValid()) {
         ui->teachRuleButton->setEnabled(false);
+        ui->showRuleButton->setEnabled(false);
     } else {
         ui->teachRuleButton->setEnabled(true);
 
