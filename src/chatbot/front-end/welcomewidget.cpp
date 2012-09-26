@@ -48,8 +48,8 @@ Lvk::FE::WelcomeWidget::~WelcomeWidget()
 
 void Lvk::FE::WelcomeWidget::onOpenChatbot()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-                                                    FileFilters::chatbotFilter());
+    QString filename = FileFilters::openChatbotFileDialog(this);
+
     if (!filename.isEmpty()) {
         m_mw->openFile(filename);
         m_mw->show();
@@ -61,9 +61,13 @@ void Lvk::FE::WelcomeWidget::onOpenChatbot()
 
 void Lvk::FE::WelcomeWidget::onCreateChatbot()
 {
-    m_mw->newFile();
-    m_mw->show();
-    close();
+    QString filename = FileFilters::newChatbotFileDialog(this);
+
+    if (!filename.isEmpty()) {
+        m_mw->newFile(filename);
+        m_mw->show();
+        close();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -48,7 +48,6 @@
 #include <QIcon>
 #include <QFile>
 #include <QDir>
-#include <QFileDialog>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -580,7 +579,7 @@ void Lvk::FE::MainWindow::onNewMenuTriggered()
     }
 
     if (!canceled) {
-        newFile();
+        newFile("");
     }
 }
 
@@ -605,8 +604,8 @@ void Lvk::FE::MainWindow::onOpenMenuTriggered()
     }
 
     if (!canceled) {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-                                                        FileFilters::chatbotFilter());
+        QString filename = FileFilters::openChatbotFileDialog();
+
         openFile(filename);
     }
 }
@@ -634,10 +633,23 @@ void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::newFile()
+void Lvk::FE::MainWindow::newFile(const QString &filename_)
 {
     clear();
-    setUiMode(FE::VerifyAccountUiMode);
+
+    QString filename = filename_;
+
+    if (filename.isEmpty()) {
+        filename = FileFilters::newChatbotFileDialog(this);
+    }
+
+    if (!filename.isEmpty()) {
+        setFilename(filename);
+        m_appFacade->saveAs(m_filename);
+        setUiMode(FE::VerifyAccountUiMode);
+    } else {
+        setUiMode(FE::WelcomeTabUiMode);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -694,15 +706,11 @@ bool Lvk::FE::MainWindow::saveChanges()
 
 bool Lvk::FE::MainWindow::saveAsChanges()
 {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), "",
-                                                    FileFilters::chatbotFilter());
+    QString filename = FileFilters::saveChatbotFileDialog(this);
 
     bool saved = false;
 
     if (!filename.isEmpty()) {
-        if (!filename.endsWith("." + FileFilters::chatbotExtension())) {
-            filename.append("." + FileFilters::chatbotExtension());
-        }
 
         QString filenameBak = m_filename;
 
@@ -796,12 +804,10 @@ int Lvk::FE::MainWindow::showSaveChangesDialog()
 
 void Lvk::FE::MainWindow::onImportMenuTriggered()
 {
-    const QString IMPORT_TITLE = tr("Import Rules");
-
-    QString filename = QFileDialog::getOpenFileName(this, IMPORT_TITLE, "",
-                                                    FileFilters::exportFilter());
+    QString filename = FileFilters::openExportFileDialog(this);
 
     if (!filename.isEmpty()) {
+        const QString IMPORT_TITLE = tr("Import Rules");
 
         BE::Rule container;
         if (m_appFacade->importRules(&container, filename)) {
@@ -841,14 +847,9 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
     BE::Rule container;
     if (exportDialog.exec(&container) == QDialog::Accepted) {
 
-        QString filename = QFileDialog::getSaveFileName(this, EXPORT_TITLE , "",
-                                                        FileFilters::exportFilter());
+        QString filename = FileFilters::saveExportFileDialog(this);
 
         if (!filename.isEmpty()) {
-            if (!filename.endsWith("." + FileFilters::exportExtension())) {
-                filename.append("." + FileFilters::exportExtension());
-            }
-
             if (!m_appFacade->exportRules(&container, filename)) {
                 QMessageBox::critical(this, EXPORT_TITLE, tr("Cannot export file ") + filename);
             }

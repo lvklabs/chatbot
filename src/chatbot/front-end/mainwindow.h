@@ -92,9 +92,11 @@ public:
     void clear();
 
     /**
-     * Creates a new a file and sets the window with verification account mode
+     * Creates a new a chatbot with the given \filename and sets the window with
+     * verification account mode.\a filename can be empty in which case the save dialog
+     * will be opened.
      */
-    void newFile();
+    void newFile(const QString &filename);
 
     /**
      * Opens the given file and sets the window with edit mode

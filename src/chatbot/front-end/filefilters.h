@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QFileDialog>
 
 namespace Lvk
 {
@@ -39,29 +40,13 @@ namespace FE
 /// @{
 
 /**
- * \brief The FileFilters class provides localized strings for common file filters and extensions
+ * \brief The FileFilters class provides localized strings for file extensions
+ *        and common dialogs to open and save chatbots
  */
+// TODO rename to FileDialog
 class FileFilters
 {
 public:
-
-    /**
-     * Localized file filters for open/save dialogs
-     */
-    static QString chatbotFilter()
-    {
-        return QObject::tr("Chatbot Rule Files") + QString(" (*.") + chatbotExtension()
-                + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
-    }
-
-    /**
-     * Localized export file filters for import/export dialogs
-     */
-    static QString exportFilter()
-    {
-        return QObject::tr("Chatbot Export Files") + QString(" (*.") + exportExtension()
-                + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
-    }
 
     /**
      * Localized chatbot rules file extension
@@ -79,9 +64,95 @@ public:
         return QString(QObject::tr("cef"));
     }
 
+    /**
+     * Shows the "New chatbot file" dialog. Returns the selected filename or
+     * an empty string if the dialog was canceled
+     */
+    static QString newChatbotFileDialog(QWidget *parent = 0)
+    {
+        QString filename = QFileDialog::getSaveFileName(parent,
+                                                        QObject::tr("New file"), "",
+                                                        chatbotFilter());
+
+        appendExtension(filename, chatbotExtension());
+
+        return filename;
+    }
+
+    /**
+     * Shows the "Save chatbot file" dialog. Returns the selected filename or
+     * an empty string if the dialog was canceled
+     */
+    static QString saveChatbotFileDialog(QWidget *parent = 0)
+    {
+        QString filename = QFileDialog::getSaveFileName(parent,
+                                                        QObject::tr("Save File"), "",
+                                                        chatbotFilter());
+
+        appendExtension(filename, chatbotExtension());
+
+        return filename;
+    }
+
+    /**
+     * Shows the "Open chatbot file" dialog. Returns the selected filename or
+     * an empty string if the dialog was canceled
+     */
+    static QString openChatbotFileDialog(QWidget *parent = 0)
+    {
+        return QFileDialog::getOpenFileName(parent,
+                                            QObject::tr("Open File"), "",
+                                            chatbotFilter());
+    }
+
+
+    /**
+     * Shows the "Save export file" dialog. Returns the selected filename or
+     * an empty string if the dialog was canceled
+     */
+    static QString saveExportFileDialog(QWidget *parent = 0)
+    {
+        QString filename = QFileDialog::getSaveFileName(parent,
+                                                        QObject::tr("Export Rules"), "",
+                                                        exportFilter());
+
+        appendExtension(filename, exportExtension());
+
+        return filename;
+    }
+
+    /**
+     * Shows the "Open export file" dialog. Returns the selected filename or
+     * an empty string if the dialog was canceled
+     */
+    static QString openExportFileDialog(QWidget *parent = 0)
+    {
+        return QFileDialog::getOpenFileName(parent,
+                                            QObject::tr("Import Rules"), "",
+                                            exportFilter());
+    }
+
 private:
     FileFilters();
 
+    static void appendExtension(QString &filename, const QString &ext)
+    {
+        if (!filename.isEmpty() && !filename.endsWith("." + ext)) {
+            filename.append("." + ext);
+        }
+    }
+
+    static QString chatbotFilter()
+    {
+        return QObject::tr("Chatbot Rule Files") + QString(" (*.") + chatbotExtension()
+                + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
+    }
+
+    static QString exportFilter()
+    {
+        return QObject::tr("Chatbot Export Files") + QString(" (*.") + exportExtension()
+                + QString(");;") + QObject::tr("All files") + QString(" (*.*)");
+    }
 };
 
 /// @}
