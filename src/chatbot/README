@@ -26,7 +26,7 @@ LVK CHATBOT README
 
  -- To update strings localized in Spanish:
 
-  $ bin/update-strings.sh
+  $ sh/update-strings.sh
 
   NOTE: Requires Qt SDK >= 4.7.0
 

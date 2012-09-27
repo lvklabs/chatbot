@@ -337,8 +337,8 @@ POST_TARGETDEPS += copylang
 ############################################
 # Update git revision in versionrev.h
 versionrev.target = common/versionrev.h
-win32:versionrev.commands = $$PWD/bin/update-revision.bat $$PWD
-else:versionrev.commands = $$PWD/bin/update-revision.sh
+win32:versionrev.commands = $$PWD/sh/update-revision.bat $$PWD
+else:versionrev.commands = $$PWD/sh/update-revision.sh
 
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
