@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef LVK_CMN_CIPHER_H
-#define LVK_CMN_CIPHER_H
+#ifndef LVK_CRYPTO_DEFAULTKEYMANAGER_H
+#define LVK_CRYPTO_DEFAULTKEYMANAGER_H
 
-class QByteArray;
+#include "crypto/keymanager.h"
 
 namespace Lvk
 {
@@ -30,39 +30,47 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Cmn
+namespace Crypto
 {
 
 /// \ingroup Lvk
-/// \addtogroup Cmn
+/// \addtogroup Crypto
 /// @{
 
 /**
- * \brief The Cipher class provides a symmetric block cipher to encrypt or decrypt data.
+ * \brief The DefaultKeyManager class provides the default implementation of the KeyManager
+ *        interface
  */
-class Cipher
+
+class DefaultKeyManager : public KeyManager
 {
 public:
 
     /**
-     * Encrypts \a data using the given \a key. Returns true on success; Otherwise false.
+     * \copydoc KeyManager::getKey()
      */
-    bool encrypt(QByteArray &data, const QByteArray &key);
+    virtual QByteArray getKey(Role /*role*/)
+    {
+        return QByteArray(16, '\0');
+    }
 
     /**
-     * Decrypts \a data using the given \a key. Returns true on success; Otherwise false.
+     * \copydoc KeyManager::getIV()
      */
-    bool decrypt(QByteArray &data, const QByteArray &key);
+    virtual QByteArray getIV(Role /*role*/)
+    {
+        return QByteArray(8, '\0');
+    }
 };
 
 /// @}
 
-} // namespace Cmn
+} // namespace Crypto
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CMN_CIPHER_H
+#endif // LVK_CRYPTO_DEFAULTKEYMANAGER_H
 

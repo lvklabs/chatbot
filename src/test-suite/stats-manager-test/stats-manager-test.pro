@@ -27,7 +27,8 @@ SOURCES += \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/stats/historystatshelper.cpp \
-    ../../chatbot/common/cipher.cpp \
+    ../../chatbot/crypto/cipher.cpp \
+    ../../chatbot/crypto/keymanagerfactory.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/conversation.cpp \
     ../../chatbot/common/conversationreader.cpp \

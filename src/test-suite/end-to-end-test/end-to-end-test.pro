@@ -171,7 +171,8 @@ SOURCES += \
     ../../chatbot/common/conversationreader.cpp \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/da-server/remoteloggerfactory.cpp \
-    ../../chatbot/common/cipher.cpp \
+    ../../chatbot/crypto/cipher.cpp \
+    ../../chatbot/crypto/keymanagerfactory.cpp \
     ../../chatbot/stats/statsmanager.cpp \
     ../../chatbot/stats/securestatsfile.cpp \
     ../../chatbot/stats/history.cpp \

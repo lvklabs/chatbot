@@ -2,7 +2,7 @@
 
 \defgroup Lvk LVK
 
-\brief LVK is the outer namespace where all chatbot modules belong to. Chatbot is made-up with the following modules: \ref FE, \ref BE, \ref Nlp, \ref CA, \ref Stats and \ref Cmn
+\brief LVK is the outer namespace where all chatbot modules belong to. Chatbot is made-up with the following modules: \ref FE, \ref BE, \ref Nlp, \ref CA, \ref Stats, \ref DAS, \ref Crypto and \ref Cmn
 
 
 \defgroup FE Front-end
@@ -34,6 +34,11 @@
 \defgroup DAS DA Server
 
 \brief The DA Server module provides interfaces to connect and send information to the 'Dale Aceptar' server.
+
+
+\defgroup Crypto Crypto
+
+\brief The Crypto module provides a cryptographic utilities such as a symmetric block cipher and a key manager
 
 
 \defgroup Cmn Common

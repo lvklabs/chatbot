@@ -25,16 +25,14 @@
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
-#include "common/cipher.h"
+#include "crypto/cipher.h"
+#include "crypto/keymanagerfactory.h"
 
 #include <QUdpSocket>
 #include <QTcpSocket>
 #include <QDateTime>
 #include <QDebug>
-
-#ifndef RLOG_CRYPTO_KEY
-#define RLOG_CRYPTO_KEY   { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-#endif
+#include <memory>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -218,11 +216,13 @@ bool Lvk::DAS::GraylogRemoteLogger::encrypt(QString &cipherText, const QString &
 {
     cipherText.clear();
 
-    const char KEY[] = RLOG_CRYPTO_KEY;
-    QByteArray key(KEY, sizeof(KEY));
+    std::auto_ptr<Crypto::KeyManager> keyMgr(Crypto::KeyManagerFactory().create());
+
+    QByteArray iv = keyMgr->getIV(Crypto::KeyManager::RemoteLoggerRole);
+    QByteArray key = keyMgr->getKey(Crypto::KeyManager::RemoteLoggerRole);
     QByteArray data = plainText.toUtf8();
 
-    if (Cmn::Cipher().encrypt(data, key)) {
+    if (Crypto::Cipher(iv, key).encrypt(data)) {
         cipherText = "::E::"; // prefix for encoded data
         cipherText += data.toBase64();
     } else {

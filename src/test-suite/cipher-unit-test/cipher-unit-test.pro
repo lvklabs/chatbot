@@ -18,7 +18,8 @@ INCLUDEPATH += ../../chatbot/
 
 SOURCES += \
     cipherunittest.cpp \
-    ../../chatbot/common/cipher.cpp
+    ../../chatbot/crypto/cipher.cpp \
+    ../../chatbot/crypto/keymanagerfactory.cpp \
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

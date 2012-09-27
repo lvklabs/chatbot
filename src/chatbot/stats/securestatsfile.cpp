@@ -21,7 +21,8 @@
 
 #include "stats/metric.h"
 #include "stats/securestatsfile.h"
-#include "common/cipher.h"
+#include "crypto/cipher.h"
+#include "crypto/keymanagerfactory.h"
 
 #include <QFile>
 #include <QMutex>
@@ -29,15 +30,12 @@
 #include <QtDebug>
 #include <QDataStream>
 
+#include <memory>
 #include <cassert>
 
 #define STAT_MAGIC_NUMBER            (('s'<<0) | ('t'<<8) | ('a'<<16) | ('t'<<24))
 #define STAT_FILE_FORMAT_VERSION     1
 
-
-#ifndef STATS_CRYPTO_KEY
-#define STATS_CRYPTO_KEY    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-#endif
 
 enum
 {
@@ -162,11 +160,13 @@ void Lvk::Stats::SecureStatsFile::load(const QString &filename)
     QFile file(filename);
 
     if (file.open(QFile::ReadOnly)) {
-        const char KEY[] = STATS_CRYPTO_KEY;
-        QByteArray key(KEY, sizeof(KEY));
+        std::auto_ptr<Crypto::KeyManager> keyMgr(Crypto::KeyManagerFactory().create());
+
+        QByteArray iv = keyMgr->getIV(Crypto::KeyManager::LocalStatsRole);
+        QByteArray key = keyMgr->getKey(Crypto::KeyManager::LocalStatsRole);
         QByteArray data = file.readAll();
 
-        Cmn::Cipher().decrypt(data, key);
+        Crypto::Cipher(iv, key).decrypt(data);
 
         if (!deserialize(data)) {
             close();
@@ -191,13 +191,15 @@ void Lvk::Stats::SecureStatsFile::save()
     QFile file(m_filename);
 
     if (file.open(QFile::WriteOnly)) {
-        const char KEY[] = STATS_CRYPTO_KEY;
-        QByteArray key(KEY, sizeof(KEY));
+        std::auto_ptr<Crypto::KeyManager> keyMgr(Crypto::KeyManagerFactory().create());
+
+        QByteArray iv = keyMgr->getIV(Crypto::KeyManager::LocalStatsRole);
+        QByteArray key = keyMgr->getKey(Crypto::KeyManager::LocalStatsRole);
         QByteArray data;
 
         serialize(data);
 
-        Cmn::Cipher().encrypt(data, key);
+        Crypto::Cipher(iv, key).encrypt(data);
 
         file.write(data);
         file.flush();

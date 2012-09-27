@@ -28,9 +28,6 @@
 # include <openssl/err.h>
 #endif
 
-#ifndef BF_IV
-#define BF_IV { 0, 0, 0, 0, 0, 0, 0, 0 }
-#endif
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -44,14 +41,14 @@ namespace
 //--------------------------------------------------------------------------------------------------
 // Blowfish CBC encryption
 
-inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
+inline bool bf_encrypt(QByteArray &data, const QByteArray &iv_, const QByteArray &key_)
 {
     if (key_.size() != EVP_CIPHER_key_length(EVP_bf_cbc())) {
         qCritical() << "bf_encrypt invalid key size";
         return false;
     }
 
-    const unsigned char iv[] = BF_IV;
+    const unsigned char *iv = reinterpret_cast<const unsigned char*>(iv_.constData());
     const unsigned char *key = reinterpret_cast<const unsigned char*>(key_.constData());
     const unsigned char *inbuf = reinterpret_cast<const unsigned char*>(data.constData());
     int inlen = data.size();
@@ -88,14 +85,14 @@ inline bool bf_encrypt(QByteArray &data, const QByteArray &key_)
 
 //--------------------------------------------------------------------------------------------------
 // Blowfish CBC decryption
-inline bool bf_decrypt(QByteArray &data, const QByteArray &key_)
+inline bool bf_decrypt(QByteArray &data, const QByteArray &iv_, const QByteArray &key_)
 {
     if (key_.size() != EVP_CIPHER_key_length(EVP_bf_cbc())) {
         qCritical() << "bf_decrypt invalid key size";
         return false;
     }
 
-    const unsigned char iv[] = BF_IV;
+    const unsigned char *iv = reinterpret_cast<const unsigned char*>(iv_.constData());
     const unsigned char *key = reinterpret_cast<const unsigned char*>(key_.constData());
     const unsigned char *inbuf = reinterpret_cast<const unsigned char*>(data.constData());
     int inlen = data.size();
@@ -152,23 +149,31 @@ inline bool null_decrypt(QByteArray &/*data*/, const QByteArray &/*key*/)
 // Cipher
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Cmn::Cipher::encrypt(QByteArray &data, const QByteArray &key)
+Lvk::Crypto::Cipher::Cipher(const QByteArray &iv, const QByteArray &key)
+    : m_iv(iv), m_key(key)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Crypto::Cipher::encrypt(QByteArray &data)
 {
 #ifdef OPENSSL_SUPPORT
-    return bf_encrypt(data, key);
+    return bf_encrypt(data, m_iv, m_key);
 #else
-    return null_encrypt(data, key);
+    return null_encrypt(data, m_key);
 #endif
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Cmn::Cipher::decrypt(QByteArray &data, const QByteArray &key)
+bool Lvk::Crypto::Cipher::decrypt(QByteArray &data)
 {
 #ifdef OPENSSL_SUPPORT
-    return bf_decrypt(data, key);
+    return bf_decrypt(data, m_iv, m_key);
 #else
-    return null_decrypt(data, key);
+    return null_decrypt(data, m_key);
 #endif
 }
+
 

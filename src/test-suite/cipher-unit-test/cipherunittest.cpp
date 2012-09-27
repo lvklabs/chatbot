@@ -1,7 +1,7 @@
 #include <QtCore/QByteArray>
 #include <QtTest/QtTest>
 
-#include "common/cipher.h"
+#include "crypto/cipher.h"
 
 using namespace Lvk;
 
@@ -36,12 +36,13 @@ void CipherUnitTest::testCipherSimmetry()
     QByteArray invalidkey = QByteArray(key);
     invalidkey[3] = '-';
 
-    Cmn::Cipher cipher;
+    QByteArray iv(8, 0x0c);
+    Crypto::Cipher cipher(iv, key);
 
-    QVERIFY(cipher.encrypt(cdata, key));
+    QVERIFY(cipher.encrypt(cdata));
     QVERIFY(data != cdata);
-    QVERIFY(!cipher.decrypt(cdata, invalidkey));
-    QVERIFY(cipher.decrypt(cdata, key));
+    QVERIFY(!Crypto::Cipher(iv,invalidkey).decrypt(cdata));
+    QVERIFY(cipher.decrypt(cdata));
     QVERIFY(data == cdata);
 }
 

@@ -167,7 +167,10 @@ HEADERS += \
     common/conversationwriter.h \
     common/conversationreader.h \
     common/logger.h \
-    common/cipher.h \
+    crypto/cipher.h \
+    crypto/keymanager.h \
+    crypto/defaultkeymanager.h \
+    crypto/keymanagerfactory.h \
     stats/statsmanager.h \
     stats/statsfile.h \
     stats/history.h \
@@ -234,7 +237,8 @@ SOURCES += \
     common/conversationwriter.cpp \
     common/conversationreader.cpp \
     common/logger.cpp \
-    common/cipher.cpp \
+    crypto/cipher.cpp \
+    crypto/keymanagerfactory.cpp \
     stats/statsmanager.cpp \
     stats/history.cpp \
     stats/securestatsfile.cpp \
@@ -302,25 +306,9 @@ openssl {
 da_contest {
     DEFINES += DA_CONTEST
     INCLUDEPATH +=
-    HEADERS +=
-    SOURCES +=
+    HEADERS += crypto/dakeymanager.h
+    SOURCES += crypto/dakeymanager.cpp
     LIBS +=
-
-    # Read IV and keys from system enviroment variables
-    _EXTERN_BF_IV=$$(EXTERN_BF_IV)
-    _EXTERN_RLOG_CRYPTO_KEY=$$(EXTERN_RLOG_CRYPTO_KEY)
-    _EXTERN_STATS_CRYPTO_KEY=$$(EXTERN_STATS_CRYPTO_KEY)
-
-    # Create macros
-    !isEmpty(_EXTERN_BF_IV) {
-        DEFINES += BF_IV=$$_EXTERN_BF_IV
-    }
-    !isEmpty(_EXTERN_RLOG_CRYPTO_KEY) {
-        DEFINES += RLOG_CRYPTO_KEY=$$_EXTERN_RLOG_CRYPTO_KEY
-    }
-    !isEmpty(_EXTERN_RLOG_CRYPTO_KEY) {
-        DEFINES += STATS_CRYPTO_KEY=$$_EXTERN_STATS_CRYPTO_KEY
-    }
 }
 
 
@@ -343,6 +331,11 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
 
 
 
