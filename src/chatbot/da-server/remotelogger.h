@@ -67,7 +67,7 @@ public:
          */
         void append(const QString &key, const QString &value)
         {
-            QList::append(Field(key, value));
+            QList<Field>::append(Field(key, value));
         }
 
         /**
@@ -75,7 +75,7 @@ public:
          */
         void prepend(const QString &key, const QString &value)
         {
-            QList::prepend(Field(key, value));
+            QList<Field>::prepend(Field(key, value));
         }
     };
 
