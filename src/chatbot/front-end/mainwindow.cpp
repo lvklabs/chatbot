@@ -187,6 +187,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     // TODO clear ui->categoriesTree
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
+    ui->ruleInputWidget->clearRoster();
 
     // chat tab widgets
     //ui->fbChatRadio->setChecked(true);

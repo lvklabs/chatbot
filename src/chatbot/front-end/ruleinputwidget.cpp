@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QSpacerItem>
+#include <QtDebug>
 
 #define TARGET_SPLIT_TOKEN  ","
 
@@ -139,7 +140,7 @@ void Lvk::FE::RuleInputWidget::clear()
 {
     m_input->clear();
     m_targetTextEdit->clear();
-    m_reverseRoster.clear();
+    //m_reverseRoster.clear(); -- Do not clear m_reverseRoster here! It's cleared by clearRoster()
 
     // QTBUG-8449: Signal textEdited() is missing in QTextEdit and QPlainTextEdit
     disconnectTextChangedSignal();
@@ -204,6 +205,7 @@ Lvk::BE::TargetList Lvk::FE::RuleInputWidget::targets()
         if (it != m_reverseRoster.end()) {
             targets.append(*it);
         } else {
+            qWarning() << "RuleInputWidget:" << dispText << "not found in roster";
             targets.append(Lvk::BE::Target(dispText, dispText));
         }
     }
@@ -213,7 +215,7 @@ Lvk::BE::TargetList Lvk::FE::RuleInputWidget::targets()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
+void Lvk::FE::RuleInputWidget::setTargets(const BE::TargetList &targets)
 {
     QString targetText;
 
@@ -237,7 +239,7 @@ void Lvk::FE::RuleInputWidget::setTargets(const Lvk::BE::TargetList &targets)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
+void Lvk::FE::RuleInputWidget::setRoster(const BE::Roster &roster)
 {
     m_reverseRoster.clear();
 
@@ -249,6 +251,13 @@ void Lvk::FE::RuleInputWidget::setRoster(const Lvk::BE::Roster &roster)
     }
 
     m_targetTextEdit->setVocabulary(strList);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleInputWidget::clearRoster()
+{
+    setRoster(BE::Roster());
 }
 
 //--------------------------------------------------------------------------------------------------

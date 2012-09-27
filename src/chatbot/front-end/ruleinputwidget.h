@@ -74,6 +74,8 @@ public:
 
     void setRoster(const Lvk::BE::Roster &roster);
 
+    void clearRoster();
+
     void setFocusOnInput();
 
     void setFocusOnInputVariants();
