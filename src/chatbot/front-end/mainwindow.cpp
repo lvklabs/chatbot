@@ -636,7 +636,6 @@ void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 
 void Lvk::FE::MainWindow::newFile(const QString &filename_)
 {
-    clear();
 
     QString filename = filename_;
 
@@ -645,11 +644,10 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
     }
 
     if (!filename.isEmpty()) {
+        clear();
         setFilename(filename);
         m_appFacade->saveAs(m_filename);
         setUiMode(FE::VerifyAccountUiMode);
-    } else {
-        setUiMode(FE::WelcomeTabUiMode);
     }
 }
 
