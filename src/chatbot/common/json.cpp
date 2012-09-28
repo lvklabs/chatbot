@@ -137,7 +137,7 @@ bool Lvk::Cmn::Json::parseKeyValues(const QString &keyvalues, Json::Object &obj)
 
         case ParsingStringValue:
             if (cc == '"' && pc != '\\') {
-                obj.append(KeyValue(key, value));
+                obj[key] = value;
                 key.clear();
                 value.clear();
                 stage = SearchingComma;
@@ -152,7 +152,7 @@ bool Lvk::Cmn::Json::parseKeyValues(const QString &keyvalues, Json::Object &obj)
             }
             if (cc.isSpace() || i == keyvalues.size() - 1) {
                 bool ok = true;
-                obj.append(KeyValue(key, value.toDouble(&ok)));
+                obj[key] = value.toDouble(&ok);
                 err = !ok;
                 key.clear();
                 value.clear();

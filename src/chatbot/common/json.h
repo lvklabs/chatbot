@@ -50,15 +50,9 @@ class Json
 public:
 
     /**
-     * The KeyValue class provides a JSON key-value object
+     * The Object class provides a JSON object. A JSON object is a key-value map
      */
-    typedef QPair<QString, QVariant> KeyValue;
-
-    /**
-     * The Object class provides a JSON object. A JSON object is a sequence of zero or more
-     * KeyValue objects.
-     */
-    typedef QList<KeyValue> Object;
+    typedef QHash<QString, QVariant> Object;
 
     /**
      * Parses the given \a json string into \a obj. Returns true on success. Otherwise, returns
@@ -80,7 +74,6 @@ private:
 
 } // namespace Lvk
 
-Q_DECLARE_METATYPE(Lvk::Cmn::Json::KeyValue)
 Q_DECLARE_METATYPE(Lvk::Cmn::Json::Object)
 
 #endif // LVK_CMN_JSON_H

@@ -40,15 +40,15 @@ void JsonUnitTest::testParser_data()
     Json::Object objErr;
     Json::Object objErr2;
 
-    objOk.append(Json::KeyValue(QString("username"), QString("andres.test")));
-    objOk.append(Json::KeyValue(QString("email"),    QString("test@gmail.com")));
-    objOk.append(Json::KeyValue(QString("uid"),      QString("1575963427")));
+    objOk[QString("username")] = QString("andres.test");
+    objOk[QString("email")]    = QString("test@gmail.com");
+    objOk[QString("uid")]      = QString("1575963427");
 
-    objErr.append(Json::KeyValue(QString("error_message"), QString("No pudimos encontrar tu usuario en la base de datos! Estas registrado en DaleAceptar?")));
-    objErr.append(Json::KeyValue(QString("error_code"),    double(1)));
+    objErr[QString("error_message")] = QString("No pudimos encontrar tu usuario en la base de datos! Estas registrado en DaleAceptar?");
+    objErr[QString("error_code")]    = double(1);
 
-    objErr2.append(Json::KeyValue(QString("error_message"), QString("No pudimos encontrar tu usuario en la base de datos! Estas \\\"registrado\\\" en DaleAceptar?")));
-    objErr2.append(Json::KeyValue(QString("error_code"),   double(1.3)));
+    objErr2[QString("error_message")] = QString("No pudimos encontrar tu usuario en la base de datos! Estas \\\"registrado\\\" en DaleAceptar?");
+    objErr2[QString("error_code")]    = double(1.3);
 
     QTest::addColumn<QString>("jsonStr");
     QTest::addColumn<Json::Object>("expObj");
