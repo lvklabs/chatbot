@@ -17,7 +17,8 @@ unit_tests {
 
 end_to_end_tests {
     SUBDIRS += \
-        end-to-end-test \
+        main-window-test \
+        user-auth-test \
 }
 
 

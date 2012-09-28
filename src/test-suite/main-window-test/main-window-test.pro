@@ -6,7 +6,7 @@
 
 QT       += testlib ui xml qt3support network
 
-TARGET = endToEndTest
+TARGET = mainWindowTest
 CONFIG   += console
 CONFIG   -= app_bundle
 
