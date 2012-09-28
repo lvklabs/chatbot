@@ -4,6 +4,7 @@ CONFIG += ordered
 
 unit_tests {
     SUBDIRS += \
+        json-unit-test \
         default-sanitizer-unit-test \
         aiml-engine-unit-test  \
         hybrid-engine-unit-test \
