@@ -167,6 +167,7 @@ HEADERS += \
     common/conversationwriter.h \
     common/conversationreader.h \
     common/logger.h \
+    common/json.h \
     crypto/cipher.h \
     crypto/keymanager.h \
     crypto/defaultkeymanager.h \
@@ -185,6 +186,8 @@ HEADERS += \
     da-server/remoteloggerkeys.h \
     da-server/remotelogger.h \
     da-server/nullremotelogger.h \
+    da-server/rest.h \
+    da-server/userauth.h \
 
 
 SOURCES += \
@@ -237,6 +240,7 @@ SOURCES += \
     common/conversationwriter.cpp \
     common/conversationreader.cpp \
     common/logger.cpp \
+    common/json.cpp \
     crypto/cipher.cpp \
     crypto/keymanagerfactory.cpp \
     stats/statsmanager.cpp \
@@ -244,7 +248,8 @@ SOURCES += \
     stats/securestatsfile.cpp \
     stats/historystatshelper.cpp \
     da-server/remoteloggerfactory.cpp \
-
+    da-server/rest.cpp \
+    da-server/userauth.cpp \
 
 
 FORMS += \
@@ -331,6 +336,12 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
+
 
 
 

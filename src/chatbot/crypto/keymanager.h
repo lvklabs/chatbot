@@ -52,7 +52,8 @@ public:
     {
         DefaultRole,
         LocalStatsRole,
-        RemoteLoggerRole
+        RemoteLoggerRole,
+        AuthServerRole
     };
 
     /**
