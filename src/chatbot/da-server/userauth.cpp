@@ -26,8 +26,8 @@
 #include <memory>
 #include <QtDebug>
 
-#define HOST "pruebas.daleaceptar.gob.ar"
-#define REST_API_USER_TRANSLATE "http://%1@" HOST "/facebook_user_translation/?email=%2"
+// TODO read from config file
+#define REST_USER_TRANSL "http://%1pruebas.daleaceptar.gob.ar/facebook_user_translation/?email=%2"
 
 #define KEY_UID         "uid"
 #define KEY_USERNAME    "username"
@@ -58,7 +58,11 @@ void Lvk::DAS::UserAuth::authenticate(const QString &email)
 
     QString passwd = QString::fromUtf8(keyMgr->getKey(Crypto::KeyManager::AuthServerRole));
 
-    QString req = QString(REST_API_USER_TRANSLATE).arg(passwd, email);
+    if (passwd.size() > 0) {
+        passwd.append("@");
+    }
+
+    QString req = QString(REST_USER_TRANSL).arg(passwd, email);
 
     if (!m_rest.request(req)) {
         emit error(ConnectionError, tr("Cannot connect to the server. Please try later."));

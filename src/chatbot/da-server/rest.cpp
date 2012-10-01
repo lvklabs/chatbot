@@ -114,6 +114,7 @@ void Lvk::DAS::Rest::onSslErrors(const QList<QSslError> &/*errs*/)
 
 void Lvk::DAS::Rest::unescape(QString &resp)
 {
+    // unescape UTF-16 chars
     QRegExp regex("(\\\\u[0-9a-fA-F]{4})");
     int pos = 0;
     while ((pos = regex.indexIn(resp, pos)) != -1) {
