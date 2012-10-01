@@ -75,6 +75,8 @@ HEADERS += \
     ../../chatbot/back-end/score.h \
     ../../chatbot/back-end/aiadapter.h \
     ../../chatbot/back-end/rloghelper.h \
+    ../../chatbot/back-end/accountverifier.h \
+    ../../chatbot/back-end/chatbotfactory.h \
     ../../chatbot/nlp-engine/exactmatchengine.h \
     ../../chatbot/nlp-engine/aimlengine.h \
     ../../chatbot/nlp-engine/hybridengine.h \
@@ -110,6 +112,8 @@ HEADERS += \
     ../../chatbot/common/logger.h \
     ../../chatbot/da-server/remotelogger.h \
     ../../chatbot/da-server/nullremotelogger.h \
+    ../../chatbot/da-server/rest.h \
+    ../../chatbot/da-server/userauth.h \
     ../../chatbot/da-server/remoteloggerfactory.h \
     ../../chatbot/stats/statsmanager.h \
     ../../chatbot/stats/statsfile.h \
@@ -148,6 +152,8 @@ SOURCES += \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
     ../../chatbot/back-end/aiadapter.cpp \
     ../../chatbot/back-end/rloghelper.cpp \
+    ../../chatbot/back-end/accountverifier.cpp \
+    ../../chatbot/back-end/chatbotfactory.cpp \
     ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/aimlengine.cpp \
     ../../chatbot/nlp-engine/hybridengine.cpp \
@@ -169,8 +175,11 @@ SOURCES += \
     ../../chatbot/common/conversation.cpp \
     ../../chatbot/common/conversationwriter.cpp \
     ../../chatbot/common/conversationreader.cpp \
+    ../../chatbot/common/json.cpp \
     ../../chatbot/common/logger.cpp \
     ../../chatbot/da-server/remoteloggerfactory.cpp \
+    ../../chatbot/da-server/userauth.cpp \
+    ../../chatbot/da-server/rest.cpp \
     ../../chatbot/crypto/cipher.cpp \
     ../../chatbot/crypto/keymanagerfactory.cpp \
     ../../chatbot/stats/statsmanager.cpp \

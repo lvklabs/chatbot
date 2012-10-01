@@ -133,6 +133,9 @@ HEADERS += \
     back-end/chatbotrulesfile.h \
     back-end/aiadapter.h \
     back-end/rloghelper.h \
+    back-end/accountverifier.h \
+    back-end/chattype.h \
+    back-end/chatbotfactory.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/hybridengine.h \
@@ -218,6 +221,8 @@ SOURCES += \
     back-end/chatbotrulesfile.cpp \
     back-end/aiadapter.cpp \
     back-end/rloghelper.cpp \
+    back-end/accountverifier.cpp \
+    back-end/chatbotfactory.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/hybridengine.cpp \
@@ -336,6 +341,11 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
+
 
 
 

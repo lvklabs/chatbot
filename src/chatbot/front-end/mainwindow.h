@@ -192,7 +192,7 @@ private:
 
     void updateBlackList();
 
-    inline BE::AppFacade::ChatType uiChatSelected();
+    inline BE::ChatType uiChatSelected();
     inline QString canonicAccount();
 
     bool hasUnsavedChanges();
@@ -238,7 +238,7 @@ private slots:
 
     void onVerifyAccountButtonPressed();
     void onVerifyAccountOk(const BE::Roster &roster);
-    void onVerifyAccountError(int err);
+    void onVerifyAccountError(int err, const QString &msg);
     void onVerifyAccountSkipped();
     void onChangeAccountPressed();
     void onCancelChAccountPressed();

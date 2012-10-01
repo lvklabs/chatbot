@@ -62,7 +62,7 @@ namespace
 //--------------------------------------------------------------------------------------------------
 // Cannonic representation for chat accounts used to persist some settings
 
-inline QString canonicAccount(const QString &username, Lvk::BE::AppFacade::ChatType type)
+inline QString canonicAccount(const QString &username, Lvk::BE::ChatType type)
 {
     return username.trimmed().split("@").at(0) + "@" + QString::number(type);
 }
@@ -269,8 +269,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onVerifyAccountButtonPressed()));
     connect(m_appFacade,               SIGNAL(accountOk(BE::Roster)),
             SLOT(onVerifyAccountOk(BE::Roster)));
-    connect(m_appFacade,               SIGNAL(accountError(int)),
-            SLOT(onVerifyAccountError(int)));
+    connect(m_appFacade,               SIGNAL(accountError(int, QString)),
+            SLOT(onVerifyAccountError(int, QString)));
 
     // Edit rules tabs
     connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
@@ -1643,13 +1643,20 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
     if (username.isEmpty()) {
         title = tr("Invalid username");
         errMsg = tr("Please provide a username");
-    } else if (uiChatSelected() == BE::AppFacade::FbChat && username.contains("@") &&
+    }
+
+    // To connect to a facebook chat we need the facebook username. We cannot connect using the
+    // user's email. The 'Dale Aceptar' verification mechanism provide us of the facebook
+    // username so this check only makes sense for non-'Dale Aceptar' versions because
+    #ifndef DA_CONTEST
+    if (uiChatSelected() == BE::FbChat && username.contains("@") &&
                !username.contains("@facebook.com")) {
         title = tr("Invalid username");
         errMsg = tr("To connect you need to provide your Facebook username instead of your "
                     "email.<br/><br/>You don't have or remember your username? "
                     "<a href=\"http://www.facebook.com/username\">Click here</a>");
     }
+    #endif
 
     if (errMsg.isEmpty()) {
         //  TODO Define setUiMode(AccountConnectingUiMode) and remove if
@@ -1678,11 +1685,8 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 
     ui->ruleInputWidget->setRoster(roster);
 
-    BE::AppFacade::ChatType chatType = uiChatSelected();
+    BE::ChatType chatType = uiChatSelected();
     QString username = ui->usernameText_v->text();
-
-    m_appFacade->setChatType(chatType);
-    m_appFacade->setUsername(username);
 
     // persist roster
     RosterHelper(FullRoster, ::canonicAccount(username, chatType)).save(roster);
@@ -1700,7 +1704,7 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountError(int err)
+void Lvk::FE::MainWindow::onVerifyAccountError(int err, const QString &msg_)
 {
     qDebug() << "MainWindow: Verify Account Error" << err;
 
@@ -1712,16 +1716,18 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err)
     }
 
     QString title;
-    QString msg;
+    QString msg = msg_;
 
-    if (err != BE::AppFacade::SSLNotSupportedError) {
-        title = tr("Account error");
-        msg   = tr("The account could not be verified. "
-                   "Please check your username and password and internet connection.");
-    } else {
-        title = tr("SSL error");
-        msg   = tr("The account could not be verified. "
-                   "Your system does not support secure connections.");
+    if (msg.isEmpty()) {
+        if (err != BE::AppFacade::SSLNotSupportedError) {
+            title = tr("Account error");
+            msg   = tr("The account could not be verified. "
+                       "Please check your username and password and internet connection.");
+        } else {
+            title = tr("SSL error");
+            msg   = tr("The account could not be verified. "
+                       "Your system does not support secure connections.");
+        }
     }
 
     QMessageBox::critical(this, title, msg);
@@ -1885,9 +1891,9 @@ void Lvk::FE::MainWindow::updateBlackList()
 
 //--------------------------------------------------------------------------------------------------
 
-inline Lvk::BE::AppFacade::ChatType Lvk::FE::MainWindow::uiChatSelected()
+inline Lvk::BE::ChatType Lvk::FE::MainWindow::uiChatSelected()
 {
-    return ui->gtalkChatRadio_v->isChecked() ? BE::AppFacade::GTalkChat : BE::AppFacade::FbChat;
+    return ui->gtalkChatRadio_v->isChecked() ? BE::GTalkChat : BE::FbChat;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -426,7 +426,7 @@ inline bool Lvk::FE::MainWindowRefactor::hasLastFile()
 
 inline QPixmap Lvk::FE::MainWindowRefactor::chatIcon()
 {
-    return m_appFacade->chatType() == BE::AppFacade::FbChat ? m_fbIcon : m_gIcon;
+    return m_appFacade->chatType() == BE::FbChat ? m_fbIcon : m_gIcon;
 }
 
 //--------------------------------------------------------------------------------------------------

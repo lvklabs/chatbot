@@ -31,9 +31,11 @@
 
 #include "back-end/chatbotrulesfile.h"
 #include "nlp-engine/rule.h"
+#include "back-end/chattype.h"
 #include "back-end/roster.h"
 #include "back-end/target.h"
 #include "back-end/rloghelper.h"
+#include "back-end/accountverifier.h"
 #include "da-server/remotelogger.h"
 #include "common/conversation.h"
 
@@ -223,14 +225,6 @@ public:
     unsigned nlpEngineOptions() const;
 
     /**
-     * Chat server type
-     */
-    enum ChatType {
-        FbChat,     ///< Facebook chat
-        GTalkChat   ///< Gtalk or Gmail chat
-    };
-
-    /**
      * Returns the chat type. By default returns FbChat.
      */
     ChatType chatType() const;
@@ -245,10 +239,22 @@ public:
     /**
      * Returns the username used to connect to chat.
      */
-    QString username() const;
+    QString chatUsername() const;
 
     /**
      * Sets the username to connect to chat.
+     *
+     * This information is persisted in the Chatbot Rules file when save() is invoked.
+     */
+    void setChatUsername(const QString &username);
+
+    /**
+     * Returns the chatbot username. In most cases this is equal than chatUsername().
+     */
+    QString username() const;
+
+    /**
+     * Sets the username of the chatbot.
      *
      * This information is persisted in the Chatbot Rules file when save() is invoked.
      */
@@ -365,9 +371,9 @@ signals:
 
     /**
      * This signal is emitted after invoking verifyAccount() if there was an error while trying
-     * to verify the account. \a err is one of \a ConnectionError.
+     * to verify the account.
      */
-    void accountError(int err);
+    void accountError(int err, const QString &msg);
 
     /**
      * This signal is emitted after invoking verifyAccount() if the connection was successful.
@@ -399,8 +405,8 @@ signals:
     void scoreRemainingTime(int secs);
 
 private slots:
-    void onAccountOk();
-    void onAccountError(int err);
+    void onAccountOk(const AccountVerifier::AccountInfo &info);
+    void onAccountError(int err, const QString &msg);
 
 private:
     AppFacade(AppFacade&);
@@ -410,11 +416,11 @@ private:
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
     CA::Chatbot *m_chatbot;
-    CA::Chatbot *m_tmpChatbot;
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;
     unsigned m_nlpOptions;
     RlogHelper m_rlogh;
+    AccountVerifier m_account;
 
     void init();
     unsigned getDefaultNlpOptions();

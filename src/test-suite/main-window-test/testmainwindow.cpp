@@ -292,7 +292,7 @@ void TestMainWindow::UiSetRuleHierarchy2()
 
 void TestMainWindow::UiConnect(const QString &username, const QString &password, int chatType)
 {
-    m_window->m_appFacade->setChatType(static_cast<Lvk::BE::AppFacade::ChatType>(chatType));
+    m_window->m_appFacade->setChatType(static_cast<Lvk::BE::ChatType>(chatType));
     m_window->m_appFacade->setUsername(username);
 
     QTest::keyClicks(m_window->ui->passwordText, password);

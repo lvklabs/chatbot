@@ -23,6 +23,7 @@
 #include "back-end/rule.h"
 #include "back-end/aiadapter.h"
 #include "back-end/rloghelper.h"
+#include "back-end/chatbotfactory.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
@@ -30,14 +31,14 @@
 #include "nlp-engine/nlpproperties.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
-#include "chat-adapter/fbchatbot.h"
-#include "chat-adapter/gtalkchatbot.h"
 #include "stats/statsmanager.h"
 
 #include <QDateTime>
+#include <QtDebug>
 
 #define FILE_METADATA_CHAT_TYPE           "chat_type"
 #define FILE_METADATA_USERNAME            "username"
+#define FILE_METADATA_CHAT_USERNAME       "chat_username"
 #define FILE_METADATA_NLP_OPTIONS         "nlp_options"
 
 //--------------------------------------------------------------------------------------------------
@@ -48,7 +49,6 @@ namespace
 {
 
 // Make Nlp::Rule from BE::Rule
-
 inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 {
     Lvk::Nlp::Rule nlpRule(rule->id(), rule->input(), rule->output());
@@ -67,49 +67,6 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
     return nlpRule;
 }
 
-//--------------------------------------------------------------------------------------------------
-
-inline Lvk::CA::Chatbot *createChatbot(const QString &id, Lvk::BE::AppFacade::ChatType type)
-{
-    switch (type) {
-    case Lvk::BE::AppFacade::FbChat:
-        return new Lvk::CA::FbChatbot(id);
-    case Lvk::BE::AppFacade::GTalkChat:
-        return new Lvk::CA::GTalkChatbot(id);
-    default:
-        qCritical() << "newChatbot() Invalid chat type" << type;
-        return 0;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// convert CA::ContactInfoList to BE::Roster
-
-inline Lvk::BE::Roster toBERoster(const Lvk::CA::ContactInfoList &infoList)
-{
-    Lvk::BE::Roster roster;
-
-    foreach (const Lvk::CA::ContactInfo &info, infoList) {
-        roster.append(Lvk::BE::RosterItem(info.username, info.fullname));
-    }
-
-    return roster;
-}
-
-//--------------------------------------------------------------------------------------------------
-// convert BE::Roster to CA::ContactInfoList
-
-inline Lvk::CA::ContactInfoList toCAContactInfoList(const Lvk::BE::Roster &roster)
-{
-    Lvk::CA::ContactInfoList infoList;
-
-    foreach (const Lvk::BE::RosterItem &item, roster) {
-        infoList.append(Lvk::CA::ContactInfo(item.username, item.username));
-    }
-
-    return infoList;
-}
-
 } // namespace
 
 
@@ -122,7 +79,6 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
       m_evasivesRule(0),
       m_nlpEngine(Nlp::EngineFactory().createEngine()),
       m_chatbot(0),
-      m_tmpChatbot(0),
       m_nlpOptions(0)
 {
     init();
@@ -135,7 +91,6 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
       m_chatbot(0),
-      m_tmpChatbot(0),
       m_nlpOptions(0) // FIXME value?
 {
     init();
@@ -149,6 +104,15 @@ void Lvk::BE::AppFacade::init()
             SIGNAL(scoreRemainingTime(int)),
             SIGNAL(scoreRemainingTime(int)));
 
+    connect(&m_account,
+            SIGNAL(accountOk(AccountVerifier::AccountInfo)),
+            SLOT(onAccountOk(AccountVerifier::AccountInfo)));
+
+    connect(&m_account,
+            SIGNAL(accountError(int,QString)),
+            SLOT(onAccountError(int,QString)));
+
+
     setupChatbot();
 }
 
@@ -158,7 +122,6 @@ Lvk::BE::AppFacade::~AppFacade()
 {
     close();
 
-    delete m_tmpChatbot;
     delete m_chatbot;
     delete m_nlpEngine;
 }
@@ -532,17 +495,31 @@ unsigned Lvk::BE::AppFacade::nlpEngineOptions() const
 // Chat methods
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::AppFacade::ChatType Lvk::BE::AppFacade::chatType() const
+Lvk::BE::ChatType Lvk::BE::AppFacade::chatType() const
 {
-    return static_cast<BE::AppFacade::ChatType>
+    return static_cast<BE::ChatType>
             (m_rules.metadata(FILE_METADATA_CHAT_TYPE).toInt());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::setChatType(Lvk::BE::AppFacade::ChatType type)
+void Lvk::BE::AppFacade::setChatType(Lvk::BE::ChatType type)
 {
     m_rules.setMetadata(FILE_METADATA_CHAT_TYPE, type);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::AppFacade::chatUsername() const
+{
+    return m_rules.metadata(FILE_METADATA_CHAT_USERNAME).toString();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setChatUsername(const QString &username)
+{
+    m_rules.setMetadata(FILE_METADATA_CHAT_USERNAME, username);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -563,70 +540,53 @@ void Lvk::BE::AppFacade::setUsername(const QString &username)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::AppFacade::ChatType type, const QString &user,
+void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::ChatType type, const QString &user,
                                        const QString &passwd)
 {
-    // FIXME add mutex
-
-    // CHECK
-    // If there is already a verification in progress, we abort it by deleting the object
-    if (m_tmpChatbot) {
-        delete m_tmpChatbot;
-    }
-
-    m_tmpChatbot = createChatbot("", type);
-
-    if (m_tmpChatbot) {
-        connect(m_tmpChatbot, SIGNAL(connected()), SLOT(onAccountOk()));
-        connect(m_tmpChatbot, SIGNAL(error(int)), SLOT(onAccountError(int)));
-        m_tmpChatbot->connectToServer(user, passwd);
-    } else {
-        emit accountError(UnknownServerTypeError);
-    }
+    m_account.verify(type, user, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::cancelVerifyAccount()
 {
-    delete m_tmpChatbot;
-    m_tmpChatbot = 0;
+    m_account.abort();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::onAccountOk()
+void Lvk::BE::AppFacade::onAccountOk(const AccountVerifier::AccountInfo &info)
 {
-    m_rlogh.logAccountVerified(m_tmpChatbot->username(), m_tmpChatbot->domain());
+    m_rlogh.logAccountVerified(info.username, info.chatUsername);
 
-    Roster roster = toBERoster(m_tmpChatbot->roster());
+    setChatType(info.type);
+    setUsername(info.username);
+    setChatUsername(info.chatUsername);
 
-    m_tmpChatbot->deleteLater();
-    m_tmpChatbot = 0;
-
-    emit accountOk(roster);
+    emit accountOk(info.roster);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::onAccountError(int err)
+void Lvk::BE::AppFacade::onAccountError(int err, const QString &msg)
 {
-    m_tmpChatbot->deleteLater();
-    m_tmpChatbot = 0;
-
-    emit accountError(err);
+    emit accountError(err, msg);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::BE::AppFacade::connectToChat(const QString &passwd)
 {
-    connectToChat(chatType(), username(), passwd);
+    if (!chatUsername().isEmpty()) {
+        connectToChat(chatType(), chatUsername(), passwd);
+    } else {
+        connectToChat(chatType(), username(), passwd); // Backward compatibility
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::connectToChat(Lvk::BE::AppFacade::ChatType type, const QString &user,
+void Lvk::BE::AppFacade::connectToChat(Lvk::BE::ChatType type, const QString &user,
                                        const QString &passwd)
 {
     setupChatbot(type);
@@ -670,7 +630,7 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
 
     if (!m_chatbot) {
         m_currentChatbotType = type;
-        m_chatbot = createChatbot(m_rules.chatbotId(), type);
+        m_chatbot = BE::ChatbotFactory().createChatbot(m_rules.chatbotId(), type);
         m_chatbot->setAI(new AIAdapter(m_rules.chatbotId(), m_nlpEngine));
 
         refreshEvasives();
@@ -711,14 +671,24 @@ void Lvk::BE::AppFacade::connectChatbotSignals()
 
 Lvk::BE::Roster Lvk::BE::AppFacade::roster() const
 {
-    return toBERoster(m_chatbot->roster());
+    Lvk::BE::Roster roster;
+    foreach (const Lvk::CA::ContactInfo &info, m_chatbot->roster()) {
+        roster.append(Lvk::BE::RosterItem(info.username, info.fullname));
+    }
+
+    return roster;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::setBlackListRoster(const Roster &roster)
+void Lvk::BE::AppFacade::setBlackListRoster(const BE::Roster &roster)
 {
-    m_chatbot->setBlackListRoster(toCAContactInfoList(roster));
+    Lvk::CA::ContactInfoList infoList;
+    foreach (const Lvk::BE::RosterItem &item, roster) {
+        infoList.append(Lvk::CA::ContactInfo(item.username, item.username));
+    }
+
+    m_chatbot->setBlackListRoster(infoList);
 }
 
 //--------------------------------------------------------------------------------------------------
