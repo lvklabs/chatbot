@@ -83,6 +83,7 @@ void Lvk::DAS::Rest::onFinished()
     {
         QMutexLocker locker(m_replyMutex);
         resp = QString::fromUtf8(m_reply->readAll());
+        unescape(resp);
     }
 
     qDebug() << resp;
@@ -103,4 +104,15 @@ void Lvk::DAS::Rest::onError(QNetworkReply::NetworkError err)
 void Lvk::DAS::Rest::onSslErrors(const QList<QSslError> &/*errs*/)
 {
     qDebug() << "Lvk::DAS::Rest::onSslErrors";
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::DAS::Rest::unescape(QString &resp)
+{
+    QRegExp regex("(\\\\u[0-9a-fA-F]{4})");
+    int pos = 0;
+    while ((pos = regex.indexIn(resp, pos)) != -1) {
+        resp.replace(pos++, 6, QChar(regex.cap(1).right(4).toUShort(0, 16)));
+    }
 }

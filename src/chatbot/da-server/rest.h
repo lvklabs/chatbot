@@ -56,6 +56,8 @@ private:
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_reply;
     QMutex *m_replyMutex;
+
+    void unescape(QString &resp);
 };
 
 
