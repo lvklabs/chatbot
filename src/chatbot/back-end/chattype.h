@@ -38,7 +38,8 @@ namespace BE
 /**
  * Chat server type
  */
-enum ChatType {
+enum ChatType
+{
     FbChat,     ///< Facebook chat
     GTalkChat   ///< Gtalk or Gmail chat
 };

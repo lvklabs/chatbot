@@ -52,9 +52,15 @@ namespace BE
 /// @{
 
 /**
- * \brief AccountVerifier class 
+ * \brief The AccountVerifier class verifies is a given account is valid.
+ *
+ * For 'Dale Aceptar' contest we have a two-step verification process.
+ * 1. Go to the Dale Aceptar server and verify if user is registered.
+ *    If registered, we will get the username to connect to the chat server.
+ * 2. Connect to the chat server to verify if user/password is OK.
+ *
+ * For ordinary versions we only perform step 2.
  */
-
 class AccountVerifier : public QObject
 {
     Q_OBJECT
@@ -62,22 +68,27 @@ class AccountVerifier : public QObject
 public:
 
     /**
+     * Constructs a AccountVerifier object.
      */
     AccountVerifier();
 
     /**
+     * Destroys the object
      */
     ~AccountVerifier();
 
     /**
+     * Verifies an account of type \a type with username \a user and password \a passwd
      */
     void verify(ChatType type, const QString &user, const QString &passwd);
 
     /**
+     * Aborts the verification in progress (if any)
      */
     void abort();
 
     /**
+     * The AccountInfo provides a simple structure with account information
      */
     struct AccountInfo
     {
@@ -90,13 +101,13 @@ public:
 signals:
 
     /**
-     * This signal is emitted after invoking verifyAccount() if the account was verified.
-     * Returns the \a roster of the given account.
+     * This signal is emitted after invoking verify() if the account verification was success.
+     * Returns the account information \a info of the given account.
      */
     void accountOk(const AccountVerifier::AccountInfo &info);
 
     /**
-     * This signal is emitted after invoking verifyAccount() if there was an error while trying
+     * This signal is emitted after invoking verify() if there was an error while trying
      * to verify the account.
      */
     void accountError(int err, const QString &msg);

@@ -104,8 +104,8 @@ void Lvk::BE::AccountVerifier::verify(BE::ChatType type, const QString &user, co
 
     // For Dale Aceptar contest we have a two-step verification process.
     // 1. Go to the Dale Aceptar server and verify if user is registered.
-    //    If registered, we will get the username to connect to the chat server
-    // 2. Connect to the chat server to verify if user/password is OK
+    //    If registered, we will get the username to connect to the chat server.
+    // 2. Connect to the chat server to verify if user/password is OK.
 
 #ifdef DA_CONTEST
     stepOne();

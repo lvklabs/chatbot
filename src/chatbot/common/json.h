@@ -42,9 +42,8 @@ namespace Cmn
 /**
  * \brief The Json class provides a simple JSON parser.
  *
- * Warning! Partially implemented. Nested objects and lists are not supported.
+ * WARNING! Partially implemented. Nested objects and lists are not supported.
  */
-
 class Json
 {
 public:

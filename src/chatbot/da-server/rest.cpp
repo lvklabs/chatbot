@@ -37,7 +37,7 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
     if (m_reply) {
         if (m_reply->isRunning()) {
-            qCritical() << "Previous REST request still runnning";
+            qCritical() << "Rest::request: Previous REST request still runnning";
             return false;
         }
 
@@ -76,7 +76,7 @@ void Lvk::DAS::Rest::abort()
 
 void Lvk::DAS::Rest::onFinished()
 {
-    qDebug() << "Lvk::DAS::Rest::onFinished";
+    qDebug() << "Rest::onFinished";
 
     QString resp;
 
@@ -94,7 +94,7 @@ void Lvk::DAS::Rest::onFinished()
 
 void Lvk::DAS::Rest::onError(QNetworkReply::NetworkError err)
 {
-    qDebug() << "Lvk::DAS::Rest::onError" << err;
+    qDebug() << "Rest::onError" << err;
 
     emit error(err);
 }
@@ -103,7 +103,7 @@ void Lvk::DAS::Rest::onError(QNetworkReply::NetworkError err)
 
 void Lvk::DAS::Rest::onSslErrors(const QList<QSslError> &/*errs*/)
 {
-    qDebug() << "Lvk::DAS::Rest::onSslErrors";
+    qDebug() << "Rest::onSslErrors";
 }
 
 //--------------------------------------------------------------------------------------------------

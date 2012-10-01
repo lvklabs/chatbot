@@ -41,13 +41,12 @@ namespace BE
 /**
  * \brief The ChatbotFactory class provides a factory of chatbots
  */
-
 class ChatbotFactory
 {
 public:
 
     /**
-     * Creates a chatbot of \a type with null id
+     * Creates a chatbot of \a type with null id.
      */
     CA::Chatbot *createChatbot(Lvk::BE::ChatType type);
 
@@ -55,7 +54,6 @@ public:
      * Creates a chatbot of \a type with \a id.
      */
     CA::Chatbot *createChatbot(const QString &id, Lvk::BE::ChatType type);
-
 };
 
 /// @}

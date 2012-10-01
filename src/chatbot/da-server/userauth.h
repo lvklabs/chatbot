@@ -44,7 +44,7 @@ namespace DAS
 /// @{
 
 /**
- * \brief The UserAuth class provides user authentification against the 'Dale Aceptar' contest
+ * \brief The UserAuth class provides user authentification against the 'Dale Aceptar' server
  */
 class UserAuth : public QObject
 {
