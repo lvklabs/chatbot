@@ -83,11 +83,15 @@ void Lvk::DAS::Rest::onFinished()
     {
         QMutexLocker locker(m_replyMutex);
         resp = QString::fromUtf8(m_reply->readAll());
-        unescape(resp);
     }
 
-    qDebug() << resp;
-    emit response(resp);
+    unescape(resp);
+
+    qDebug() << "Rest response: " << resp;
+
+    if (resp.size() > 0) {
+        emit response(resp);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
