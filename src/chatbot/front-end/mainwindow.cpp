@@ -1960,19 +1960,26 @@ void Lvk::FE::MainWindow::updateTinyScorePos()
 void Lvk::FE::MainWindow::onUploadScore()
 {
 #ifdef GELF_STATS_SUPPORT
-    QString details;
-    getSendScoreDetails(details);
+    if (m_appFacade->username().isEmpty()) {
+        QString title = tr("Upload score");
+        QString message = tr("Before sending your score you need to verify your account.\n"
+                             "Please, go to the 'Connection' tab and verify your account");
+        QMessageBox::critical(this, title, message);
+    } else {
+        QString details;
+        getSendScoreDetails(details);
 
-    if (FE::SendScoreDialog(details, this).exec() == QDialog::Accepted) {
-        if (!m_appFacade->uploadBestScore()) {
-            QString title = tr("Upload score");
-            QString message = tr("Could not upload score. Please, check your internet connection "
-                                 "and try again");
-            QMessageBox::critical(this, title, message);
-        } else {
-            QString title = tr("Upload score");
-            QString message = tr("Score uploaded successfully!");
-            QMessageBox::information(this, title, message);
+        if (FE::SendScoreDialog(details, this).exec() == QDialog::Accepted) {
+            if (!m_appFacade->uploadBestScore()) {
+                QString title = tr("Upload score");
+                QString message = tr("Could not upload score. Please, check your internet "
+                                     "connection and try again");
+                QMessageBox::critical(this, title, message);
+            } else {
+                QString title = tr("Upload score");
+                QString message = tr("Score uploaded successfully!");
+                QMessageBox::information(this, title, message);
+            }
         }
     }
 #else
