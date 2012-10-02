@@ -86,7 +86,7 @@ signals:
     /**
      * This signal is emitted whenever checkForUpdate() was called and there is an update available
      */
-    void update(const UpdateInfo &info);
+    void update(const DAS::UpdateInfo &info);
 
 private slots:
     void onCfuResponse(const QString &resp);
@@ -94,12 +94,13 @@ private slots:
 
 private:
     Rest *m_rest;
+    UpdateVersion m_curVersion;
 
     Updater(Rest *rest);
 
     bool parseResponse(UpdateInfo &info, const QString &response);
     bool parseVersion(UpdateInfo &info, const QString &strVer);
-    bool parseUpdateNode(UpdateInfo &info, QDomNode &updateNode);
+    bool parseUpdateNode(UpdateInfo &info, QDomNode &updateElem);
     bool parseWhatsNewNode(UpdateInfo &info, QDomNode &wnNode);
 };
 

@@ -43,7 +43,7 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::DAS::Updater::Updater()
-    : m_rest(new DAS::Rest())
+    : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR)
 {
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -54,7 +54,7 @@ Lvk::DAS::Updater::Updater()
 
 
 Lvk::DAS::Updater::Updater(DAS::Rest *rest)
-    : m_rest(rest)
+    : m_rest(rest), m_curVersion(APP_VERSION_STR)
 {
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -95,7 +95,7 @@ void Lvk::DAS::Updater::onCfuResponse(const QString &resp)
     DAS::UpdateInfo info;
 
     if (parseResponse(info, resp)) {
-        if (DAS::UpdateVersion(APP_VERSION_STR) < info.version()) {
+        if (m_curVersion < info.version()) {
             qDebug() << "Updater: Found new update!";
             emit update(info);
         } else {
@@ -141,12 +141,12 @@ bool Lvk::DAS::Updater::parseResponse(Lvk::DAS::UpdateInfo &info, const QString 
     bool parsingOk = false;
 
     if (doc.setContent(response, &err, &line, &col)) {
-        QDomNode rootNode = doc.documentElement();
+        QDomElement root = doc.documentElement();
 
-        if (rootNode.nodeName().compare("update", Qt::CaseInsensitive) == 0) {
-            parsingOk = parseUpdateNode(info, rootNode);
+        if (root.tagName().compare("update", Qt::CaseInsensitive) == 0) {
+            parsingOk = parseUpdateNode(info, root);
         } else {
-            qCritical() << "Updater: Invalid root node name" << rootNode.nodeName();
+            qCritical() << "Updater: Invalid root node name" << root.tagName();
         }
     } else {
         qDebug() << "Updater: Error line " << line << ":" << col << err ;
@@ -163,8 +163,13 @@ bool Lvk::DAS::Updater::parseUpdateNode(Lvk::DAS::UpdateInfo &info, QDomNode &up
 
     for (int i = 0; i < updateNode.childNodes().size(); ++i) {
         QDomNode node = updateNode.childNodes().item(i);
+
+        if (node.childNodes().isEmpty()) {
+            continue;
+        }
+
         QString name = node.nodeName().toLower();
-        QString value = node.nodeValue().trimmed();
+        QString value = node.childNodes().at(0).nodeValue().trimmed();
 
         if (name == "version") {
             info.setVersion(DAS::UpdateVersion(value));
@@ -196,11 +201,18 @@ bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &
 
     for (int i = 0; i < wnNode.childNodes().size(); ++i) {
         QDomNode node = wnNode.childNodes().item(i);
+
+        if (node.childNodes().isEmpty()) {
+            continue;
+        }
+
         QString name = node.nodeName().toLower();
-        QString value = node.nodeValue().trimmed();
+        QString value = node.childNodes().at(0).nodeValue().trimmed();
 
         if (name == "li") {
-            whatsNew.append(value);
+            if (!value.isEmpty()) {
+                whatsNew.append(value);
+            }
         } else {
             qCritical() << "Updater: parseWhatsNewNode: Unknown node" << name;
         }
