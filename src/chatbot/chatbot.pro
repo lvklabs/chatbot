@@ -323,6 +323,11 @@ da_contest {
     HEADERS += crypto/dakeymanager.h
     SOURCES += crypto/dakeymanager.cpp
     LIBS +=
+
+    unix:!mac{
+      QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN\''
+      QMAKE_LFLAGS_RPATH=
+    }
 }
 
 
