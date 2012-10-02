@@ -34,17 +34,17 @@ public:
 
     explicit Rest(QObject *parent = 0);
 
-    ~Rest();
+    virtual ~Rest();
 
-    bool request(const QString &url);
+    virtual bool request(const QString &url);
 
-    void abort();
+    virtual void abort();
 
 signals:
 
-    void response(const QString &resp);
+    virtual void response(const QString &resp);
 
-    void error(QNetworkReply::NetworkError err);
+    virtual void error(QNetworkReply::NetworkError err);
 
 private slots:
 

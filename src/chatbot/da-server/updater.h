@@ -28,6 +28,7 @@
 #include <QNetworkReply>
 
 class QDomNode;
+class UpdaterUnitTest;
 
 namespace Lvk
 {
@@ -50,6 +51,8 @@ class Rest;
 class Updater : public QObject
 {
     Q_OBJECT
+
+    friend class ::UpdaterUnitTest;
 
 public:
 
@@ -91,6 +94,8 @@ private slots:
 
 private:
     Rest *m_rest;
+
+    Updater(Rest *rest);
 
     bool parseResponse(UpdateInfo &info, const QString &response);
     bool parseVersion(UpdateInfo &info, const QString &strVer);

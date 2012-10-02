@@ -52,6 +52,17 @@ Lvk::DAS::Updater::Updater()
 
 //--------------------------------------------------------------------------------------------------
 
+
+Lvk::DAS::Updater::Updater(DAS::Rest *rest)
+    : m_rest(rest)
+{
+    connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
+    connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
+            SLOT(onCfuRerror(QNetworkReply::NetworkError)));
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::DAS::Updater::~Updater()
 {
     delete m_rest;
