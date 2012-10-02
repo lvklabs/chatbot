@@ -10,7 +10,7 @@ QT       -= gui
 
 INCLUDEPATH += ../../chatbot
 
-TARGET = updaterunittest
+TARGET = updaterUnitTest
 CONFIG   += console
 CONFIG   -= app_bundle
 
