@@ -2,9 +2,9 @@ TARGET = chatbot
 
 QT += \
     gui \
-    xml \           #required for ProgramQ
-    qt3support \    #required for ProgramQ
-    network         #required for QXmpp
+    xml \
+    network \
+    qt3support  #required for ProgramQ
 
 TEMPLATE = app
 
@@ -191,6 +191,9 @@ HEADERS += \
     da-server/nullremotelogger.h \
     da-server/rest.h \
     da-server/userauth.h \
+    da-server/updater.h \
+    da-server/updateinfo.h \
+    da-server/updateversion.h
 
 
 SOURCES += \
@@ -255,6 +258,7 @@ SOURCES += \
     da-server/remoteloggerfactory.cpp \
     da-server/rest.cpp \
     da-server/userauth.cpp \
+    da-server/updater.cpp
 
 
 FORMS += \
@@ -341,6 +345,10 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 
