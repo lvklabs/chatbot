@@ -53,9 +53,10 @@ private slots:
     void onSslErrors(const QList<QSslError> &errs);
 
 private:
+    QMutex *m_replyMutex;
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_reply;
-    QMutex *m_replyMutex;
+    QNetworkReply::NetworkError m_lastErr;
 
     void unescape(QString &resp);
 };

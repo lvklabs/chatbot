@@ -11,8 +11,11 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::DAS::Rest::Rest(QObject *parent) :
-    QObject(parent), m_manager(new QNetworkAccessManager(this)), m_reply(0),
-    m_replyMutex(new QMutex(QMutex::Recursive))
+    QObject(parent),
+    m_replyMutex(new QMutex(QMutex::Recursive)),
+    m_manager(new QNetworkAccessManager(this)),
+    m_reply(0),
+    m_lastErr(QNetworkReply::NoError)
 {
 }
 
@@ -56,6 +59,7 @@ bool Lvk::DAS::Rest::request(const QString &url)
             SLOT(onError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(onSslErrors(QList<QSslError>)));
 
+    m_lastErr = QNetworkReply::NoError;
     m_reply = reply;
 
     return true;
@@ -82,14 +86,15 @@ void Lvk::DAS::Rest::onFinished()
 
     {
         QMutexLocker locker(m_replyMutex);
-        resp = QString::fromUtf8(m_reply->readAll());
+
+        if (m_reply->error() == QNetworkReply::NoError) {
+            resp = QString::fromUtf8(m_reply->readAll());
+            unescape(resp);
+        }
     }
 
-    unescape(resp);
-
-    qDebug() << "Rest response: " << resp;
-
     if (resp.size() > 0) {
+        qDebug() << "Rest response: " << resp;
         emit response(resp);
     }
 }
@@ -100,7 +105,17 @@ void Lvk::DAS::Rest::onError(QNetworkReply::NetworkError err)
 {
     qDebug() << "Rest::onError" << err;
 
-    emit error(err);
+    m_replyMutex->lock();
+
+    // emit only one error per request
+    if (m_lastErr == QNetworkReply::NoError) {
+        m_lastErr = err;
+        m_replyMutex->unlock();
+
+        emit error(err);
+    } else {
+        m_replyMutex->unlock();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
