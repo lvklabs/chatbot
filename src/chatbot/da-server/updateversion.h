@@ -100,6 +100,15 @@ struct UpdateVersion
     {
         return _major == 0 && _minor == 0;
     }
+
+    /**
+     * Clears the object setting all members to zero.
+     */
+    void clear()
+    {
+        _major = 0;
+        _minor = 0;
+    }
 };
 
 /// @}

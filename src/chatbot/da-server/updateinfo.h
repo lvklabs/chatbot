@@ -60,6 +60,8 @@ public:
         Critical
     };
 
+    UpdateInfo() : m_version(0,0), m_severity(Low) { }
+
     /**
      *
      */
@@ -100,7 +102,6 @@ public:
      */
     const QString & url() const { return m_url; }
 
-
     /**
      *
      */
@@ -111,6 +112,17 @@ public:
      */
     const QDate & date() const { return m_date; }
 
+    /**
+     *
+     */
+    void clear()
+    {
+        m_version.clear();
+        m_severity = Low;
+        m_whatsNew.clear();
+        m_url.clear();
+        m_date = QDate();
+    }
 
 private:
     UpdateVersion m_version;
