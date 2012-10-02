@@ -37,7 +37,7 @@ OTHER_FILES += \
 win32 {
     copyfiles.commands = @call copy $$OTHER_FILES .
 } else {
-    copyfiles.commands = cp $$OTHER_FILES .
+    copyfiles.commands = cp -f $$OTHER_FILES .
 }
 
 QMAKE_EXTRA_TARGETS += copyfiles
