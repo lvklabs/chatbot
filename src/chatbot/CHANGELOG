@@ -1,3 +1,6 @@
+v0.24
+ - Added authentication against 'Dale Aceptar' server.
+ 
 v0.23
  - Improved NLP engine: 
     - Added higher priority to those rules that match the current 'topic' 
