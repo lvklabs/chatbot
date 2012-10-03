@@ -26,9 +26,13 @@
 #include <QtDebug>
 #include <QDomDocument>
 
-// TODO read from config file
-#define REST_HOST        "https://www.daleaceptar.gob.ar"
-#define REST_URL_BASE    "/media/chatbot"
+#define REST_HOST         "https://www.daleaceptar.gob.ar"
+
+#ifdef QT_NO_DEBUG
+# define REST_URL_BASE    "/media/chatbot/updates"
+#else
+# define REST_URL_BASE    "/media/chatbot/updates_test"
+#endif
 
 #ifdef WIN32
 # define REST_API_CFU       REST_HOST REST_URL_BASE "/latest_win32.xml"

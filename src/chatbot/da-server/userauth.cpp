@@ -26,14 +26,14 @@
 #include <memory>
 #include <QtDebug>
 
-// TODO read from config file
-#define REST_USER_TRANSL "http://%1pruebas.daleaceptar.gob.ar/facebook_user_translation/?email=%2"
+#define REST_HOST        "pruebas.daleaceptar.gob.ar"
+#define REST_USER_TRANSL "http://%1" REST_HOST "/facebook_user_translation/?email=%2"
 
-#define KEY_UID         "uid"
-#define KEY_USERNAME    "username"
-#define KEY_EMAIL       "email"
-#define KEY_ERR_MSG     "error_message"
-#define KEY_ERR_CODE    "error_code"
+#define KEY_UID          "uid"
+#define KEY_USERNAME     "username"
+#define KEY_EMAIL        "email"
+#define KEY_ERR_MSG      "error_message"
+#define KEY_ERR_CODE     "error_code"
 
 
 //--------------------------------------------------------------------------------------------------
