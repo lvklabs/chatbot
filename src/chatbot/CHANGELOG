@@ -1,5 +1,11 @@
+v0.25
+ - Added verification of updates
+ - Blocking chatbot connection and score upload if there is a critical
+   update
+
 v0.24
  - Added authentication against 'Dale Aceptar' server.
+ - Removed script to launch the application on Linux package
  
 v0.23
  - Improved NLP engine: 
