@@ -42,9 +42,9 @@ public:
 
 signals:
 
-    virtual void response(const QString &resp);
+    void response(const QString &resp);
 
-    virtual void error(QNetworkReply::NetworkError err);
+    void error(QNetworkReply::NetworkError err);
 
 private slots:
 

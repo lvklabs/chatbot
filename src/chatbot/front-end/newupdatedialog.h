@@ -19,10 +19,11 @@
  *
  */
 
-#ifndef LVK_FE_SENDSCOREDIALOG_H
-#define LVK_FE_SENDSCOREDIALOG_H
+#ifndef LVK_FE_NEWUPDATEDIALOG_H
+#define LVK_FE_NEWUPDATEDIALOG_H
 
-#include "front-end/detailsdialog.h"
+#include <QObject>
+#include <QMessageBox>
 
 namespace Lvk
 {
@@ -30,14 +31,9 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace BE
+namespace DAS
 {
-class Rule;
-}
-
-namespace Stats
-{
-class Score;
+class UpdateInfo;
 }
 
 namespace FE
@@ -48,22 +44,27 @@ namespace FE
 /// @{
 
 /**
- * \brief The SendScoreDialog class provides a dialog to ask for confirmation before sending
- *        the score and allows the user to see details of what is being sent.
+ * \brief The NewUpdateDialog class provides a dialog that displays information about a new update
  */
-class SendScoreDialog : public DetailsDialog
+class NewUpdateDialog : public QMessageBox
 {
     Q_OBJECT
 
 public:
+
     /**
-     * Constructs a SendScoreDialog with best score \s and provides details of the rules being sent
-     * from \a root.
+     * Constructs a NewUpdateDialog object which is child of \a parent and display the update
+     * information \a info
      */
-    explicit SendScoreDialog(const Stats::Score &s, const BE::Rule *root, QWidget *parent = 0);
+    NewUpdateDialog(const DAS::UpdateInfo &info, QWidget *parent = 0);
+
+private slots:
+    void onAccepted();
 
 private:
-    QString getSendScoreDetails(const Stats::Score &s, const BE::Rule *root);
+    QString m_url;
+
+    void setUpdateInfo(const DAS::UpdateInfo &info);
 };
 
 /// @}
@@ -75,5 +76,5 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_FE_SENDSCOREDIALOG_H
+#endif // LVK_FE_NEWUPDATEDIALOG_H
 

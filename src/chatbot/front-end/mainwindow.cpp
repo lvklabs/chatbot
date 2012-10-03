@@ -29,6 +29,7 @@
 #include "front-end/optionswindow.h"
 #include "front-end/filedialog.h"
 #include "front-end/rosterhelper.h"
+#include "front-end/newupdatedialog.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -38,6 +39,7 @@
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
+#include "da-server/updater.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -108,7 +110,8 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleEdited(false),
     m_ruleAdded(false),
     m_connectionStatus(DisconnectedFromChat),
-    m_tinyScore(0)
+    m_tinyScore(0),
+    m_updater(new DAS::Updater())
 {
     qDebug() << "Setting up main window...";
 
@@ -122,12 +125,15 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     loadAllSettings();
 
     qDebug() << "Main window created!";
+
+    m_updater->checkForUpdate();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::MainWindow::~MainWindow()
 {
+    delete m_updater;
     delete m_appFacade;
     delete ui;
 
@@ -331,8 +337,10 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onScoreRemainingTime(int)));
 
     // Misc
-    connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
+    connect(ui->mainTabWidget,        SIGNAL(currentChanged(QWidget*)),
             SLOT(onCurrentTabChanged(QWidget*)));
+    connect(m_updater,                SIGNAL(update(DAS::UpdateInfo)),
+            SLOT(onUpdate(DAS::UpdateInfo)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1966,10 +1974,10 @@ void Lvk::FE::MainWindow::onUploadScore()
                              "Please, go to the 'Connection' tab and verify your account");
         QMessageBox::critical(this, title, message);
     } else {
-        QString details;
-        getSendScoreDetails(details);
+        Stats::Score best = m_appFacade->bestScore();
+        const BE::Rule *root = m_appFacade->rootRule();
 
-        if (FE::SendScoreDialog(details, this).exec() == QDialog::Accepted) {
+        if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
             if (!m_appFacade->uploadBestScore()) {
                 QString title = tr("Upload score");
                 QString message = tr("Could not upload score. Please, check your internet "
@@ -2011,36 +2019,9 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::getSendScoreDetails(QString &details)
+void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
-    details.clear();
-
-    // Append best score
-    Stats::Score s = m_appFacade->bestScore();
-    details += QString("%1,%2,%3,%4\n").arg(QString::number(s.contacts),
-                                            QString::number(s.conversations),
-                                            QString::number(s.rules),
-                                            QString::number(s.total));
-
-    // Append rule definitions with custom format (it's not important)
-    BE::Rule::iterator it;
-    for (it = m_appFacade->rootRule()->begin(); it != m_appFacade->rootRule()->end(); ++it) {
-        const BE::Rule *rule = *it;
-        if (rule == m_appFacade->rootRule()) {
-            continue;
-        }
-        switch (rule->type()) {
-        case BE::Rule::OrdinaryRule:
-            details += "   " + rule->input().join(",") + " ==> " + rule->output().join(",") + "\n";
-            break;
-        case BE::Rule::ContainerRule:
-            details += "[[" + rule->name() + "]]\n";
-            break;
-        case BE::Rule::EvasiveRule:
-            details += "[[_]]\n" + rule->output().join(",") + "\n";
-            break;
-        }
-    }
+    FE::NewUpdateDialog(info, this).exec();
 }
 
 

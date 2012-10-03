@@ -1,70 +1,71 @@
-#include "sendscoredialog.h"
-#include "ui_sendscoredialog.h"
+/*
+ * Copyright (C) 2012 Andres Pagliano, Gabriel Miretti, Gonzalo Buteler,
+ * Nestor Bustamante, Pablo Perez de Angelis
+ *
+ * This file is part of LVK Chatbot.
+ *
+ * LVK Chatbot is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * LVK Chatbot is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with LVK Chatbot.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
-#include <QPixmap>
-#include <QImage>
-#include <QIcon>
-#include <QStyle>
-#include <QDesktopWidget>
-
-#ifdef WIN32
-# define DIALOG_INIT_W  500
-# define DIALOG_INIT_H  100
-# define DIALOG_DET_W   (500*1.2)
-# define DIALOG_DET_H   (100*3)
-#else
-# define DIALOG_INIT_W  500
-# define DIALOG_INIT_H  120
-# define DIALOG_DET_W   (500*1.2)
-# define DIALOG_DET_H   (100*3)
-#endif
+#include "front-end/sendscoredialog.h"
+#include "stats/score.h"
+#include "back-end/rule.h"
 
 //--------------------------------------------------------------------------------------------------
-// TinyScoreWidget
+// SendScoreDialog
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::SendScoreDialog::SendScoreDialog(QString details, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SendScoreDialog)
+Lvk::FE::SendScoreDialog::SendScoreDialog(const Stats::Score &s, const BE::Rule *root,
+                                          QWidget *parent)
+    : DetailsDialog(QObject::tr("Send score? This will also send your rule definitions."),
+                    QObject::tr("See what I'm sending."),
+                    getSendScoreDetails(s, root), parent)
 {
-    QPixmap questionPix = style()->standardIcon(QStyle::SP_MessageBoxQuestion).pixmap(48,48);
-
-    ui->setupUi(this);
-    ui->detailsText->setPlainText(details);
-    ui->detailsLabel->setVisible(false);
-    ui->detailsText->setVisible(false);
-    ui->icon->setPixmap(questionPix);
-    ui->label->setText(tr("Send score? This will also send your rule definitions."
-                          "<br/><a href=\"#\">See what I'm sending</a>"));
-
-    alignCenter(DIALOG_INIT_W, DIALOG_INIT_H);
-
-    connect(ui->label,        SIGNAL(linkActivated(QString)), SLOT(onLinkActivated(QString)));
-    connect(ui->rejectButton, SIGNAL(clicked()),              SLOT(reject()));
-    connect(ui->acceptButton, SIGNAL(clicked()),              SLOT(accept()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::SendScoreDialog::~SendScoreDialog()
+QString Lvk::FE::SendScoreDialog::getSendScoreDetails(const Stats::Score &s, const BE::Rule *root)
 {
-    delete ui;
-}
+    QString details;
 
-//--------------------------------------------------------------------------------------------------
+    // Append score
+    details += QString("%1,%2,%3,%4\n").arg(QString::number(s.contacts),
+                                            QString::number(s.conversations),
+                                            QString::number(s.rules),
+                                            QString::number(s.total));
 
-void Lvk::FE::SendScoreDialog::onLinkActivated(const QString &)
-{
-    alignCenter(DIALOG_DET_W, DIALOG_DET_H);
-    ui->detailsLabel->setVisible(true);
-    ui->detailsText->setVisible(true);
-    ui->label->setText(tr("Send score? This will also send your rule definitions."));
-}
+    // Append rule definitions with custom format (it's not important)
+    BE::Rule::const_iterator it;
+    for (it = root->begin(); it != root->end(); ++it) {
+        const BE::Rule *rule = *it;
+        if (rule == root) {
+            continue;
+        }
+        switch (rule->type()) {
+        case BE::Rule::OrdinaryRule:
+            details += "   " + rule->input().join(",") + " ==> " + rule->output().join(",") + "\n";
+            break;
+        case BE::Rule::ContainerRule:
+            details += "[[" + rule->name() + "]]\n";
+            break;
+        case BE::Rule::EvasiveRule:
+            details += "[[_]]\n" + rule->output().join(",") + "\n";
+            break;
+        }
+    }
 
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::SendScoreDialog::alignCenter(int w, int h)
-{
-    QRect g = parentWidget() ? parentWidget()->geometry() : qApp->desktop()->availableGeometry();
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, QSize(w, h), g));
+    return details;
 }

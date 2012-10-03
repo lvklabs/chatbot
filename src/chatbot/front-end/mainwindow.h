@@ -53,6 +53,12 @@ namespace BE
     class ConversationWriter;
 }
 
+namespace DAS
+{
+    class UpdateInfo;
+    class Updater;
+}
+
 namespace FE
 {
 
@@ -137,6 +143,7 @@ private:
     QString                  m_lastFilename;
     ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
+    DAS::Updater            *m_updater;
 
     void setupUi();
 
@@ -207,7 +214,6 @@ private:
 
     void updateScore();
     void updateTinyScorePos();
-    void getSendScoreDetails(QString &details);
 
 private slots:
     void onAddCategoryButtonClicked();
@@ -268,6 +274,8 @@ private slots:
 
     void onUploadScore();
     void onScoreRemainingTime(int time);
+
+    void onUpdate(const DAS::UpdateInfo &info);
 };
 
 /// @}

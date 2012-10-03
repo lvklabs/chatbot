@@ -32,32 +32,32 @@ win32 {
     CONFIG  += freeling
 }
 
-# Config options required for "Dale Aceptar" contest
-da_contest {
-    CONFIG  += gelf_stats openssl
-}
-
-# Paths
 PROJECT_PATH          = $$PWD
 
+# Paths to third party libraries
 THIRD_PARTY_PATH      = $$PWD/../third-party
 
+# ProgramQ - Mandatory
 PRGRAMQ_BASE_PATH     = $$THIRD_PARTY_PATH/ProgramQ
 PRGRAMQ_INCLUDE_PATH  = $$PRGRAMQ_BASE_PATH
 PRGRAMQ_SRC_PATH      = $$PRGRAMQ_BASE_PATH
 
+# QXmpp - Mandatory
 QXMPP_BASE_PATH       = $$THIRD_PARTY_PATH/QXmpp
 QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include
 QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
 
+# Freeling - Optional
 FREELING_BASE_PATH    = $$THIRD_PARTY_PATH/Freeling
 FREELING_INCLUDE_PATH = $$FREELING_BASE_PATH/include
 FREELING_LIB_PATH     = $$FREELING_BASE_PATH/lib
 
+# Zlib - Optional
 ZLIB_BASE_PATH        = $$THIRD_PARTY_PATH/zlib
 ZLIB_INCLUDE_PATH     = $$ZLIB_BASE_PATH/include
 ZLIB_LIB_PATH         = $$ZLIB_BASE_PATH/lib
 
+# OpenSSL - Optional
 OPENSSL_BASE_PATH     = $$THIRD_PARTY_PATH/openssl
 OPENSSL_INCLUDE_PATH  = $$OPENSSL_BASE_PATH/include
 OPENSSL_LIB_PATH      = $$OPENSSL_BASE_PATH/lib
@@ -120,12 +120,14 @@ HEADERS += \
     front-end/ruletextview.h \
     front-end/scorewidget.h \
     front-end/tinyscorewidget.h \
-    front-end/sendscoredialog.h \
+    front-end/detailsdialog.h \
     front-end/welcomewidget.h \
     front-end/optionswindow.h \
     front-end/filedialog.h \
     front-end/rosterhelper.h \
     front-end/mainwindowrefactor.h \
+    front-end/sendscoredialog.h \
+    front-end/newupdatedialog.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -193,7 +195,7 @@ HEADERS += \
     da-server/userauth.h \
     da-server/updater.h \
     da-server/updateinfo.h \
-    da-server/updateversion.h
+    da-server/updateversion.h \
 
 
 SOURCES += \
@@ -214,11 +216,13 @@ SOURCES += \
     front-end/ruletextview.cpp \
     front-end/scorewidget.cpp \
     front-end/tinyscorewidget.cpp \
-    front-end/sendscoredialog.cpp \
+    front-end/detailsdialog.cpp \
     front-end/optionswindow.cpp \
     front-end/welcomewidget.cpp \
     front-end/rosterhelper.cpp \
     front-end/mainwindowrefactor.cpp \
+    front-end/sendscoredialog.cpp \
+    front-end/newupdatedialog.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -258,7 +262,7 @@ SOURCES += \
     da-server/remoteloggerfactory.cpp \
     da-server/rest.cpp \
     da-server/userauth.cpp \
-    da-server/updater.cpp
+    da-server/updater.cpp \
 
 
 FORMS += \
@@ -267,7 +271,7 @@ FORMS += \
     front-end/chathistorywidget.ui \
     front-end/scorewidget.ui \
     front-end/tinyscorewidget.ui \
-    front-end/sendscoredialog.ui \
+    front-end/detailsdialog.ui \
     front-end/optionswindow.ui \
     front-end/welcomewidget.ui
 
@@ -286,6 +290,7 @@ OTHER_FILES += \
 LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 
 
+# Freeling support
 freeling {
     DEFINES += PCRE_STATIC FREELING_SUPPORT
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
@@ -294,35 +299,36 @@ freeling {
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 
-
-gelf_stats {
-    DEFINES += GELF_STATS_SUPPORT
-    INCLUDEPATH += $$ZLIB_INCLUDE_PATH
-    HEADERS += da-server/zlibhelper.h \
-        da-server/graylogremotelogger.h \
-        da-server/gelf.h \
-        da-server/syslog.h
-    SOURCES += da-server/zlibhelper.cpp \
-        da-server/graylogremotelogger.cpp \
-        da-server/gelf.cpp \
-        da-server/syslog.cpp
-    LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
-}
-
-openssl {
-    DEFINES += OPENSSL_SUPPORT
-    INCLUDEPATH += $$OPENSSL_INCLUDE_PATH
-    HEADERS +=
-    SOURCES +=
-    LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
-}
-
+# Config options required for "Dale Aceptar" contest
 da_contest {
+    CONFIG  += gelf_stats openssl
     DEFINES += DA_CONTEST
     INCLUDEPATH +=
     HEADERS += crypto/dakeymanager.h
     SOURCES += crypto/dakeymanager.cpp
     LIBS +=
+
+    gelf_stats {
+        DEFINES += GELF_STATS_SUPPORT
+        INCLUDEPATH += $$ZLIB_INCLUDE_PATH
+        HEADERS += da-server/zlibhelper.h \
+            da-server/graylogremotelogger.h \
+            da-server/gelf.h \
+            da-server/syslog.h
+        SOURCES += da-server/zlibhelper.cpp \
+            da-server/graylogremotelogger.cpp \
+            da-server/gelf.cpp \
+            da-server/syslog.cpp
+        LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
+    }
+
+    openssl {
+        DEFINES += OPENSSL_SUPPORT
+        INCLUDEPATH += $$OPENSSL_INCLUDE_PATH
+        HEADERS +=
+        SOURCES +=
+        LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
+    }
 
     unix:!mac{
       QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN\''
@@ -350,6 +356,10 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

@@ -64,7 +64,7 @@ struct UpdateVersion
     /**
      * Returns the string representation of the current object.
      */
-    QString toString()
+    QString toString() const
     {
         return QString("%1.%2").arg(_major).arg(_minor);
     }

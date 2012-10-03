@@ -59,7 +59,7 @@ HEADERS += \
     ../../chatbot/front-end/linefilteredit.h \
     ../../chatbot/front-end/ruletextview.h \
     ../../chatbot/front-end/scorewidget.h \
-    ../../chatbot/front-end/sendscoredialog.h \
+    ../../chatbot/front-end/detailsdialog.h \
     ../../chatbot/front-end/tinyscorewidget.h \
     ../../chatbot/front-end/optionswindow.h \
     ../../chatbot/front-end/optionswindow.h \
@@ -67,6 +67,8 @@ HEADERS += \
     ../../chatbot/front-end/welcomewidget.h \
     ../../chatbot/front-end/rosterhelper.h \
     ../../chatbot/front-end/mainwindowrefactor.h \
+    ../../chatbot/front-end/sendscoredialog.h \
+    ../../chatbot/front-end/newupdatedialog.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/roster.h \
@@ -115,6 +117,7 @@ HEADERS += \
     ../../chatbot/da-server/rest.h \
     ../../chatbot/da-server/userauth.h \
     ../../chatbot/da-server/remoteloggerfactory.h \
+    ../../chatbot/da-server/updater.h \
     ../../chatbot/stats/statsmanager.h \
     ../../chatbot/stats/statsfile.h \
     ../../chatbot/stats/securestatsfile.h \
@@ -141,12 +144,14 @@ SOURCES += \
     ../../chatbot/front-end/linefilteredit.cpp \
     ../../chatbot/front-end/ruletextview.cpp \
     ../../chatbot/front-end/scorewidget.cpp \
-    ../../chatbot/front-end/sendscoredialog.cpp \
+    ../../chatbot/front-end/detailsdialog.cpp \
     ../../chatbot/front-end/tinyscorewidget.cpp \
     ../../chatbot/front-end/optionswindow.cpp \
     ../../chatbot/front-end/welcomewidget.cpp \
     ../../chatbot/front-end/rosterhelper.cpp \
     ../../chatbot/front-end/mainwindowrefactor.cpp \
+    ../../chatbot/front-end/sendscoredialog.cpp \
+    ../../chatbot/front-end/newupdatedialog.cpp \
     ../../chatbot/back-end/appfacade.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../chatbot/back-end/chatbotrulesfile.cpp \
@@ -180,6 +185,7 @@ SOURCES += \
     ../../chatbot/da-server/remoteloggerfactory.cpp \
     ../../chatbot/da-server/userauth.cpp \
     ../../chatbot/da-server/rest.cpp \
+    ../../chatbot/da-server/updater.cpp \
     ../../chatbot/crypto/cipher.cpp \
     ../../chatbot/crypto/keymanagerfactory.cpp \
     ../../chatbot/stats/statsmanager.cpp \
@@ -196,7 +202,7 @@ FORMS += \
     ../../chatbot/front-end/chathistorywidget.ui \
     ../../chatbot/front-end/scorewidget.ui \
     ../../chatbot/front-end/tinyscorewidget.ui \
-    ../../chatbot/front-end/sendscoredialog.ui \
+    ../../chatbot/front-end/detailsdialog.ui \
     ../../chatbot/front-end/optionswindow.ui \
     ../../chatbot/front-end/welcomewidget.ui
 
