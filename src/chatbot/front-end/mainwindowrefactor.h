@@ -55,8 +55,9 @@ enum UiMode
     NullMode,
     WelcomeTabUiMode,
     VerifyAccountUiMode,
-    VerifyAccountConnectingUiMode,
+    VerifyingAccountUiMode,
     VerifyAccountFailedUiMode,
+    ChangeAccountUiMode,
     RuleSelectionEmptyUiMode,
     EditCategoryUiMode,
     EditRuleUiMode,
@@ -65,10 +66,7 @@ enum UiMode
     ChatConnectingUiMode,
     ChatConnectionFailedUiMode,
     ChatConnectionSSLFailedUiMode,
-    ChatConnectionOkUiMode,
-    ChangeAccountUiMode,
-    ChangeAccountConnectingUiMode,
-    ChangeAccountFailedUiMode
+    ChatConnectionOkUiMode
 };
 
 /**

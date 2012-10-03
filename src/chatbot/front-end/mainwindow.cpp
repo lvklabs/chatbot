@@ -269,9 +269,9 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->openChatbotButton,     SIGNAL(clicked()),   SLOT(onOpenMenuTriggered()));
     connect(ui->openLastChatbotButton, SIGNAL(clicked()),   SLOT(onOpenLastFileMenuTriggered()));
     connect(ui->createChatbotButton,   SIGNAL(clicked()),   SLOT(onNewMenuTriggered()));
-    connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountButtonPressed()));
+    connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountPressed()));
     connect(ui->passwordText_v,        SIGNAL(returnPressed()),
-            SLOT(onVerifyAccountButtonPressed()));
+            SLOT(onVerifyAccountPressed()));
     connect(m_appFacade,               SIGNAL(accountOk(BE::Roster)),
             SLOT(onVerifyAccountOk(BE::Roster)));
     connect(m_appFacade,               SIGNAL(accountError(int, QString)),
@@ -1637,13 +1637,12 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 // Verify account
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
+void Lvk::FE::MainWindow::onVerifyAccountPressed()
 {
     QString title;
     QString errMsg;
 
     QString username = ui->usernameText_v->text();
-    QString password = ui->passwordText_v->text();
 
     if (username.isEmpty()) {
         title = tr("Invalid username");
@@ -1664,22 +1663,41 @@ void Lvk::FE::MainWindow::onVerifyAccountButtonPressed()
     #endif
 
     if (errMsg.isEmpty()) {
-        //  TODO Define setUiMode(AccountConnectingUiMode) and remove if
-        if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
-            setUiMode(FE::VerifyAccountConnectingUiMode);
-        } else {
-            setUiMode(FE::ChangeAccountConnectingUiMode);
-        }
+        setUiMode(FE::VerifyingAccountUiMode);
 
-        qDebug() << "MainWindow: Verifying Account...";
-
-        m_appFacade->verifyAccount(uiChatSelected(), username, password);
-
+    #ifdef DA_CONTEST
+        UpdateExecutor::exec(this, &MainWindow::verifyBlockedForUpdate, &MainWindow::verifyAccount,
+                             &UpdateExecutor::isCritical);
+    #else
+        verifyAccount();
+    #endif
     } else {
         QMessageBox::information(this, title, errMsg);
 
         ui->usernameText_v->setFocus();
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::verifyAccount()
+{
+    qDebug() << "MainWindow: Verifying Account...";
+    QString username = ui->usernameText_v->text();
+    QString password = ui->passwordText_v->text();
+    m_appFacade->verifyAccount(uiChatSelected(), username, password);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::verifyBlockedForUpdate(const DAS::UpdateInfo &info)
+{
+    if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
+        setUiMode(FE::VerifyAccountUiMode);
+    } else {
+        setUiMode(FE::ChangeAccountUiMode);
+    }
+    onUpdate(info);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1713,12 +1731,7 @@ void Lvk::FE::MainWindow::onVerifyAccountError(int err, const QString &msg_)
 {
     qDebug() << "MainWindow: Verify Account Error" << err;
 
-    //  TODO Define setUiMode(AccountFailedUiMode) and remove if
-    if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
-        setUiMode(FE::VerifyAccountFailedUiMode);
-    } else {
-        setUiMode(FE::ChangeAccountFailedUiMode);
-    }
+    setUiMode(FE::VerifyAccountFailedUiMode);
 
     QString title;
     QString msg = msg_;
@@ -1754,6 +1767,9 @@ void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 
 void Lvk::FE::MainWindow::onChangeAccountPressed()
 {
+    ui->usernameText_v->clear();
+    ui->passwordText_v->clear();
+
     if (!m_appFacade->username().isEmpty()) {
         QString title = tr("Change Account");
         QString msg   = tr("If you change your account some rules might not work anymore.\n"
@@ -1790,24 +1806,18 @@ void Lvk::FE::MainWindow::onCancelChAccountPressed()
 
 void Lvk::FE::MainWindow::onConnectPressed()
 {
-#ifdef DA_CONTEST
-    FE::UpdateExecutor::exec(this, &MainWindow::onOpBlockWithUpdate, &MainWindow::connectChatbot,
-                             &UpdateExecutor::isCritical);
-#else
-    connectChatbot();
-#endif
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::connectChatbot()
-{
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         qDebug() << "MainWindow: Connecting chatbot...";
 
         m_connectionStatus =  ConnectingToChat;
         setUiMode(FE::ChatConnectingUiMode);
-        m_appFacade->connectToChat(ui->passwordText->text());
+
+    #ifdef DA_CONTEST
+        FE::UpdateExecutor::exec(this, &MainWindow::connectBlockedForUpdate,
+                                 &MainWindow::connectChatbot, &UpdateExecutor::isCritical);
+    #else
+        connectChatbot();
+    #endif
 
     } else if (m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Aborting chatbot connection...";
@@ -1817,14 +1827,22 @@ void Lvk::FE::MainWindow::connectChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onDisconnectPressed()
+void Lvk::FE::MainWindow::connectChatbot()
 {
-    disconnectChatbot();
+    m_appFacade->connectToChat(ui->passwordText->text());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::disconnectChatbot()
+void Lvk::FE::MainWindow::connectBlockedForUpdate(const DAS::UpdateInfo &info)
+{
+    onDisconnection();
+    onUpdate(info);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onDisconnectPressed()
 {
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Disconnecting chatbot...";
@@ -1983,8 +2001,20 @@ void Lvk::FE::MainWindow::updateTinyScorePos()
 
 void Lvk::FE::MainWindow::onUploadScore()
 {
-    FE::UpdateExecutor::exec(this, &MainWindow::onOpBlockWithUpdate, &MainWindow::uploadScore,
-                             &UpdateExecutor::isCritical);
+    if (m_appFacade->username().isEmpty()) {
+        QString title = tr("Upload score");
+        QString message = tr("Before sending your score you need to verify your account.\n"
+                             "Please, go to the 'Connection' tab and verify your account");
+        QMessageBox::critical(this, title, message);
+    } else {
+        Stats::Score best = m_appFacade->bestScore();
+        const BE::Rule *root = m_appFacade->rootRule();
+
+        if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
+            UpdateExecutor::exec(this, &MainWindow::uploadBlockedForUpdate,
+                                 &MainWindow::uploadScore, &UpdateExecutor::isCritical);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2011,39 +2041,27 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
 void Lvk::FE::MainWindow::uploadScore()
 {
-    if (m_appFacade->username().isEmpty()) {
+    if (!m_appFacade->uploadBestScore()) {
         QString title = tr("Upload score");
-        QString message = tr("Before sending your score you need to verify your account.\n"
-                             "Please, go to the 'Connection' tab and verify your account");
+        QString message = tr("Could not upload score. Please, check your internet "
+                             "connection and try again");
         QMessageBox::critical(this, title, message);
     } else {
-        Stats::Score best = m_appFacade->bestScore();
-        const BE::Rule *root = m_appFacade->rootRule();
-
-        if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
-            if (!m_appFacade->uploadBestScore()) {
-                QString title = tr("Upload score");
-                QString message = tr("Could not upload score. Please, check your internet "
-                                     "connection and try again");
-                QMessageBox::critical(this, title, message);
-            } else {
-                QString title = tr("Upload score");
-                QString message = tr("Score uploaded successfully!");
-                QMessageBox::information(this, title, message);
-            }
-        }
+        QString title = tr("Upload score");
+        QString message = tr("Score uploaded successfully!");
+        QMessageBox::information(this, title, message);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
-// Updates
-//--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onOpBlockWithUpdate(const DAS::UpdateInfo &info)
+void Lvk::FE::MainWindow::uploadBlockedForUpdate(const DAS::UpdateInfo &info)
 {
     onUpdate(info);
 }
 
+//--------------------------------------------------------------------------------------------------
+// Updates
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)

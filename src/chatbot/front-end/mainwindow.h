@@ -113,25 +113,8 @@ public:
      */
     void openLastFile();
 
-    /**
-     * Uploads the best score to the server
-     */
-    void uploadScore();
-
-    /**
-     * Connects the chatbot
-     */
-    void connectChatbot();
-
-    /**
-     * Disconnects the chatbot
-     */
-    void disconnectChatbot();
-
 protected:
-
     virtual bool event(QEvent *event);
-
     virtual void closeEvent(QCloseEvent *event);
 
 private:
@@ -225,7 +208,15 @@ private:
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
     bool nlpEngineOption(BE::AppFacade::NlpEngineOption option);
 
+    void verifyAccount();
+    void verifyBlockedForUpdate(const DAS::UpdateInfo &info);
+
+    void connectChatbot();
+    void connectBlockedForUpdate(const DAS::UpdateInfo &info);
+    void uploadScore();
+
     void updateScore();
+    void uploadBlockedForUpdate(const DAS::UpdateInfo &info);
     void updateTinyScorePos();
 
 private slots:
@@ -255,7 +246,7 @@ private slots:
     void onClearTestConvPressed();
     void onTestShowRule();
 
-    void onVerifyAccountButtonPressed();
+    void onVerifyAccountPressed();
     void onVerifyAccountOk(const BE::Roster &roster);
     void onVerifyAccountError(int err, const QString &msg);
     void onVerifyAccountSkipped();
@@ -288,7 +279,6 @@ private slots:
     void onUploadScore();
     void onScoreRemainingTime(int time);
 
-    void onOpBlockWithUpdate(const DAS::UpdateInfo &info);
     void onUpdate(const DAS::UpdateInfo &info);
 };
 

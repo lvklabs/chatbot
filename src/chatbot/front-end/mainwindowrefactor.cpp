@@ -244,10 +244,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->passwordText->setText("");
         break;
 
-    case ChangeAccountConnectingUiMode:
-    case VerifyAccountConnectingUiMode:
-        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountConnectingUiMode ?
-                                                ui->welcomeTab : ui->connectTab);
+    case VerifyingAccountUiMode:
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyAccountButton->setEnabled(false);
         ui->usernameText_v->setEnabled(false);
@@ -259,10 +256,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->connectionStatusLabel_v->setVisible(true);
         break;
 
-    case ChangeAccountFailedUiMode:
     case VerifyAccountFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(mode == VerifyAccountFailedUiMode ?
-                                                ui->welcomeTab : ui->connectTab);
         ui->connectToChatStackWidget->setCurrentIndex(2);
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
@@ -290,15 +284,13 @@ void Lvk::FE::MainWindowRefactor::updateTabsIcons(UiMode mode)
     case ChatConnectionFailedUiMode:
     case ChatConnectionSSLFailedUiMode:
     case ChangeAccountUiMode:
-    case ChangeAccountConnectingUiMode:
-    case ChangeAccountFailedUiMode:
         ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_DISCONNEC_ICON_FILE));
         break;
     case ChatConnectionOkUiMode:
         ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_CONNECTED_ICON_FILE));
         break;
     case VerifyAccountUiMode:
-    case VerifyAccountConnectingUiMode:
+    case VerifyingAccountUiMode:
     case VerifyAccountFailedUiMode:
         ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon());
         break;
@@ -326,9 +318,11 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
         visibleTabs = WelcomeTabsLayout;
         break;
     case VerifyAccountUiMode:
-    case VerifyAccountConnectingUiMode:
-    case VerifyAccountFailedUiMode:
         visibleTabs = VerifyAccountTabsLayout;
+        break;
+    case VerifyingAccountUiMode:
+    case VerifyAccountFailedUiMode:
+        visibleTabs = m_tabsLayout; // Keep layout!
         break;
     default:
         visibleTabs = TeachTabsLayout;
@@ -363,8 +357,6 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             break;
 
         case VerifyAccountUiMode:
-        case VerifyAccountConnectingUiMode:
-        case VerifyAccountFailedUiMode:
             ui->actionSave->setEnabled(false);
             ui->actionSaveAs->setEnabled(false);
             ui->actionImport->setEnabled(false);
@@ -384,6 +376,11 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
+            break;
+
+        case VerifyingAccountUiMode:
+        case VerifyAccountFailedUiMode:
+            // Nothing to do
             break;
 
         default:

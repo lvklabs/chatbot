@@ -48,9 +48,9 @@ void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
             .arg(info.version().toString());
 
     if (info.severity() == DAS::UpdateInfo::Critical) {
-        msg.append(tr("<p><span style=\"color:#ff0000\"><b>"
-                      "This is a critical update! You cannot connect your chatbot or send your "
-                      "score until you update the program.</b></span></p>"));
+        msg.append(tr("<p><b><span style=\"color:#ff0000\">This is a critical update!</span> "
+                      "You cannot connect your chatbot, send your score or verify new accounts "
+                      "until you update the program.</b></p>"));
     } else {
         msg.append(tr("<p>This new version fixes several bugs. We recommend you to update the "
                       "application.</p>"));
