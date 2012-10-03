@@ -30,6 +30,7 @@
 #include "front-end/filedialog.h"
 #include "front-end/rosterhelper.h"
 #include "front-end/newupdatedialog.h"
+#include "front-end/updateexecutor.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -110,14 +111,13 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleEdited(false),
     m_ruleAdded(false),
     m_connectionStatus(DisconnectedFromChat),
-    m_tinyScore(0),
-    m_updater(new DAS::Updater())
+    m_tinyScore(0)
 {
     qDebug() << "Setting up main window...";
 
     checkAppExpiration();
 
-    Lvk::Cmn::Settings settings;
+    Cmn::Settings settings;
     m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
 
     setupUi();
@@ -126,14 +126,13 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     qDebug() << "Main window created!";
 
-    m_updater->checkForUpdate();
+    FE::UpdateExecutor::exec(this, &MainWindow::onUpdate);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::MainWindow::~MainWindow()
 {
-    delete m_updater;
     delete m_appFacade;
     delete ui;
 
@@ -339,8 +338,6 @@ void Lvk::FE::MainWindow::connectSignals()
     // Misc
     connect(ui->mainTabWidget,        SIGNAL(currentChanged(QWidget*)),
             SLOT(onCurrentTabChanged(QWidget*)));
-    connect(m_updater,                SIGNAL(update(DAS::UpdateInfo)),
-            SLOT(onUpdate(DAS::UpdateInfo)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1793,6 +1790,18 @@ void Lvk::FE::MainWindow::onCancelChAccountPressed()
 
 void Lvk::FE::MainWindow::onConnectPressed()
 {
+#ifdef DA_CONTEST
+    FE::UpdateExecutor::exec(this, &MainWindow::onOpBlockWithUpdate, &MainWindow::connectChatbot,
+                             &UpdateExecutor::isCritical);
+#else
+    connectChatbot();
+#endif
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::connectChatbot()
+{
     if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
         qDebug() << "MainWindow: Connecting chatbot...";
 
@@ -1809,6 +1818,13 @@ void Lvk::FE::MainWindow::onConnectPressed()
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onDisconnectPressed()
+{
+    disconnectChatbot();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::disconnectChatbot()
 {
     if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
         qDebug() << "MainWindow: Disconnecting chatbot...";
@@ -1967,7 +1983,34 @@ void Lvk::FE::MainWindow::updateTinyScorePos()
 
 void Lvk::FE::MainWindow::onUploadScore()
 {
-#ifdef GELF_STATS_SUPPORT
+    FE::UpdateExecutor::exec(this, &MainWindow::onOpBlockWithUpdate, &MainWindow::uploadScore,
+                             &UpdateExecutor::isCritical);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
+{
+    QTime time = QTime(0,0,0).addSecs(secs);
+
+    m_tinyScore->setRemainingTime(time);
+
+    QString status = m_appFacade->isConnected() ?
+                tr("Chatbot connected") : tr("Chatbot disconnected");
+
+    QString text = QString(tr("Remaining time: %1 (%2)")).arg(time.toString("hh:mm:ss"), status);
+
+    ui->remainingTimeLabel->setText(text);
+
+    if (secs == 0) {
+        updateScore();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::uploadScore()
+{
     if (m_appFacade->username().isEmpty()) {
         QString title = tr("Upload score");
         QString message = tr("Before sending your score you need to verify your account.\n"
@@ -1990,31 +2033,15 @@ void Lvk::FE::MainWindow::onUploadScore()
             }
         }
     }
-#else
-    QString title = tr("Upload score");
-    QString message = tr("This version does not support score uploading");
-    QMessageBox::information(this, title, message);
-#endif
 }
 
 //--------------------------------------------------------------------------------------------------
+// Updates
+//--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
+void Lvk::FE::MainWindow::onOpBlockWithUpdate(const DAS::UpdateInfo &info)
 {
-    QTime time = QTime(0,0,0).addSecs(secs);
-
-    m_tinyScore->setRemainingTime(time);
-
-    QString status = m_appFacade->isConnected() ?
-                tr("Chatbot connected") : tr("Chatbot disconnected");
-
-    QString text = QString(tr("Remaining time: %1 (%2)")).arg(time.toString("hh:mm:ss"), status);
-
-    ui->remainingTimeLabel->setText(text);
-
-    if (secs == 0) {
-        updateScore();
-    }
+    onUpdate(info);
 }
 
 //--------------------------------------------------------------------------------------------------

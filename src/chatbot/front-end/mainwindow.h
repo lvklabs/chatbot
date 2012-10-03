@@ -56,7 +56,6 @@ namespace BE
 namespace DAS
 {
     class UpdateInfo;
-    class Updater;
 }
 
 namespace FE
@@ -114,6 +113,21 @@ public:
      */
     void openLastFile();
 
+    /**
+     * Uploads the best score to the server
+     */
+    void uploadScore();
+
+    /**
+     * Connects the chatbot
+     */
+    void connectChatbot();
+
+    /**
+     * Disconnects the chatbot
+     */
+    void disconnectChatbot();
+
 protected:
 
     virtual bool event(QEvent *event);
@@ -143,7 +157,6 @@ private:
     QString                  m_lastFilename;
     ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
-    DAS::Updater            *m_updater;
 
     void setupUi();
 
@@ -275,6 +288,7 @@ private slots:
     void onUploadScore();
     void onScoreRemainingTime(int time);
 
+    void onOpBlockWithUpdate(const DAS::UpdateInfo &info);
     void onUpdate(const DAS::UpdateInfo &info);
 };
 

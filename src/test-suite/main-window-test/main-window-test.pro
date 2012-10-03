@@ -69,6 +69,7 @@ HEADERS += \
     ../../chatbot/front-end/mainwindowrefactor.h \
     ../../chatbot/front-end/sendscoredialog.h \
     ../../chatbot/front-end/newupdatedialog.h \
+    ../../chatbot/front-end/updateexecutor.h \
     ../../chatbot/back-end/appfacade.h \
     ../../chatbot/back-end/rule.h \
     ../../chatbot/back-end/roster.h \

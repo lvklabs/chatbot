@@ -128,6 +128,7 @@ HEADERS += \
     front-end/mainwindowrefactor.h \
     front-end/sendscoredialog.h \
     front-end/newupdatedialog.h \
+    front-end/updateexecutor.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
