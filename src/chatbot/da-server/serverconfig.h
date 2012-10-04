@@ -18,30 +18,18 @@
  * along with LVK Chatbot.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "keymanagerfactory.h"
+#ifndef LVK_DAS_SERVERCONFIG_H
+#define LVK_DAS_SERVERCONFIG_H
 
 #ifdef DA_CONTEST
-#  ifdef DA_KEY_MANAGER
-#    include "crypto/dakeymanager.h"
+#  ifdef DA_SERVER_CONFIG
+#    include "daserverconfig.h"
 #  else
-#    error "dakeymanager.h is required to build a DA release"
+#    error "daserverconfig.h is required to build a DA release"
 #    error "Contact andres.pagliano@lvklabs.com for support"
 #  endif
 #else
-#  include "crypto/defaultkeymanager.h"
+#  include "nullserverconfig.h"
 #endif
 
-//--------------------------------------------------------------------------------------------------
-// KeyManagerFactory
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Crypto::KeyManager * Lvk::Crypto::KeyManagerFactory::create()
-{
-#ifdef DA_CONTEST
-    return new Crypto::DAKeyManager();
-#else
-    return new Crypto::DefaultKeyManager();
-#endif
-}
-
+#endif // LVK_DAS_SERVERCONFIG_H

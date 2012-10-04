@@ -19,15 +19,14 @@
  *
  */
 
-#include "userauth.h"
+#include "da-server/userauth.h"
+#include "da-server/serverconfig.h"
 #include "crypto/keymanagerfactory.h"
 #include "common/json.h"
 
 #include <memory>
 #include <QtDebug>
 
-#define REST_HOST        "pruebas.daleaceptar.gob.ar"
-#define REST_USER_TRANSL "http://%1" REST_HOST "/facebook_user_translation/?email=%2"
 
 #define KEY_UID          "uid"
 #define KEY_USERNAME     "username"
@@ -62,7 +61,7 @@ void Lvk::DAS::UserAuth::authenticate(const QString &email)
         passwd.append("@");
     }
 
-    QString req = QString(REST_USER_TRANSL).arg(passwd, email);
+    QString req = QString(USER_AUTH_REST_FB_TRANSL).arg(passwd, email);
 
     if (!m_rest.request(req)) {
         emit error(ConnectionError, tr("Cannot connect to the server. Please try later."));

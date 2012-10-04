@@ -22,25 +22,10 @@
 #include "da-server/updater.h"
 #include "da-server/rest.h"
 #include "common/version.h"
+#include "da-server/serverconfig.h"
 
 #include <QtDebug>
 #include <QDomDocument>
-
-#define REST_HOST         "https://www.daleaceptar.gob.ar"
-
-#ifdef QT_NO_DEBUG
-# define REST_URL_BASE    "/media/chatbot/updates"
-#else
-# define REST_URL_BASE    "/media/chatbot/updates_test"
-#endif
-
-#ifdef WIN32
-# define REST_API_CFU       REST_HOST REST_URL_BASE "/latest_win32.xml"
-#elif defined(Q_WS_MAC)
-# define REST_API_CFU       REST_HOST REST_URL_BASE "/latest_mac.xml"
-#else
-# define REST_API_CFU       REST_HOST REST_URL_BASE "/latest_linux32.xml"
-#endif
 
 //--------------------------------------------------------------------------------------------------
 // Updater
@@ -78,7 +63,7 @@ void Lvk::DAS::Updater::checkForUpdate()
 {
     qDebug() << "Updater: Checking for updates...";
 
-    m_rest->request(REST_API_CFU);
+    m_rest->request(UPDATER_REST_API_CFU);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -22,9 +22,8 @@
 #include "da-server/graylogremotelogger.h"
 #include "da-server/gelf.h"
 #include "da-server/syslog.h"
+#include "da-server/serverconfig.h"
 #include "common/version.h"
-#include "common/settings.h"
-#include "common/settingskeys.h"
 #include "crypto/cipher.h"
 #include "crypto/keymanagerfactory.h"
 
@@ -152,10 +151,9 @@ Lvk::DAS::GraylogRemoteLogger::GraylogRemoteLogger(LogFomat format)
 
 void Lvk::DAS::GraylogRemoteLogger::initHostPort()
 {
-    Cmn::Settings settings;
-    m_host    = settings.value(SETTING_LOG_SERVER_HOST).toString();
-    m_udpPort = settings.value(SETTING_LOG_SERVER_UDP_PORT).toUInt();
-    m_tcpPort = settings.value(SETTING_LOG_SERVER_TCP_PORT).toUInt();
+    m_host    = GRAYLOG_HOST;
+    m_udpPort = GRAYLOG_UDP_PORT;
+    m_tcpPort = GRAYLOG_TCP_PORT;
 }
 
 //--------------------------------------------------------------------------------------------------

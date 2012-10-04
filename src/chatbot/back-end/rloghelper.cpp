@@ -113,10 +113,6 @@ bool Lvk::BE::RlogHelper::logAutoScore(const Stats::Score &s)
 
 bool Lvk::BE::RlogHelper::logManualScore(const Stats::Score &s)
 {
-    if (!m_statsEnabled) {
-        return true;
-    }
-
     DAS::RemoteLogger::FieldList fields;
     // TODO append app version
     fields.append(RLOG_KEY_CHATBOT_ID,     m_chatbotId);

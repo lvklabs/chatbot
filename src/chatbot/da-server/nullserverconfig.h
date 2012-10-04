@@ -18,30 +18,23 @@
  * along with LVK Chatbot.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LVK_DAS_NULLSERVERCONFIG_H
+#define LVK_DAS_NULLSERVERCONFIG_H
 
-#include "keymanagerfactory.h"
+// Updater -----------------------------------------------------------------------------------------
 
-#ifdef DA_CONTEST
-#  ifdef DA_KEY_MANAGER
-#    include "crypto/dakeymanager.h"
-#  else
-#    error "dakeymanager.h is required to build a DA release"
-#    error "Contact andres.pagliano@lvklabs.com for support"
-#  endif
-#else
-#  include "crypto/defaultkeymanager.h"
+#define UPDATER_REST_API_CFU        "http://127.0.0.1/cfu"
+
+// UserAuth ----------------------------------------------------------------------------------------
+
+#define USER_AUTH_REST_FB_TRANSL    "http://127.0.0.1/fbtransl?email=%1"
+
+// Graylog -----------------------------------------------------------------------------------------
+
+#ifdef GELF_STATS_SUPPORT
+# define GRAYLOG_HOST               "127.0.0.1"
+# define GRAYLOG_UDP_PORT           0
+# define GRAYLOG_TCP_PORT           0
 #endif
 
-//--------------------------------------------------------------------------------------------------
-// KeyManagerFactory
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Crypto::KeyManager * Lvk::Crypto::KeyManagerFactory::create()
-{
-#ifdef DA_CONTEST
-    return new Crypto::DAKeyManager();
-#else
-    return new Crypto::DefaultKeyManager();
-#endif
-}
-
+#endif // LVK_DAS_NULLSERVERCONFIG_H

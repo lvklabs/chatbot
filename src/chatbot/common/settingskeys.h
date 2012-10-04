@@ -39,12 +39,6 @@
 #define SETTING_MAIN_WINDOW_RULE_TREE_W             "MainWindow/RuleTreeWidget/Width"
 #define SETTING_MAIN_WINDOW_RULE_EDIT_W             "MainWindow/RuleEditWidget/Width"
 
-#define SETTING_BLACK_LIST_ROSTER                   "Chat/BlackListRoster"
-
 #define SETTING_NLP_LANGUAGE                        "NlpEngine/Language"
-
-#define SETTING_LOG_SERVER_HOST                     "LogServer/Host"
-#define SETTING_LOG_SERVER_UDP_PORT                 "LogServer/UdpPort"
-#define SETTING_LOG_SERVER_TCP_PORT                 "LogServer/TcpPort"
 
 #endif // LVK_CMN_SETTINGSKEYS_H

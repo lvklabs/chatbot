@@ -197,6 +197,8 @@ HEADERS += \
     da-server/updater.h \
     da-server/updateinfo.h \
     da-server/updateversion.h \
+    da-server/serverconfig.h \
+    da-server/nullserverconfig.h
 
 
 SOURCES += \
@@ -305,9 +307,20 @@ da_contest {
     CONFIG  += gelf_stats openssl
     DEFINES += DA_CONTEST
     INCLUDEPATH +=
-    HEADERS += crypto/dakeymanager.h
-    SOURCES += crypto/dakeymanager.cpp
+    HEADERS +=
+    SOURCES +=
     LIBS +=
+
+    exists (da-server/daserverconfig.h) {
+        DEFINES += DA_SERVER_CONFIG
+        HEADERS += da-server/daserverconfig.h
+    }
+
+    exists (crypto/dakeymanager.h) {
+        DEFINES += DA_KEY_MANAGER
+        HEADERS += crypto/dakeymanager.h
+        SOURCES += crypto/dakeymanager.cpp
+    }
 
     gelf_stats {
         DEFINES += GELF_STATS_SUPPORT
@@ -357,6 +370,8 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 
