@@ -62,9 +62,9 @@ inline QString getBareJid(const QString &from)
 // XmppChatbot
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::XmppChatbot::XmppChatbot(const QString &chatbotId, QObject *parent)
+Lvk::CA::XmppChatbot::XmppChatbot(const QString &/*chatbotId*/, QObject *parent)
     : m_xmppClient(new QXmppClient(parent)),
-      m_history(chatbotId),
+      m_history(),
       m_ai(0),
       m_contactInfoMutex(new QMutex(QMutex::Recursive)),
       m_rosterMutex(new QMutex()),
@@ -445,6 +445,20 @@ void Lvk::CA::XmppChatbot::setChatHistory(const Cmn::Conversation &conv)
 void Lvk::CA::XmppChatbot::clearHistory()
 {
     m_history.clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::setHistoryFilename(const QString &filename)
+{
+    m_history.setFilename(filename);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::CA::XmppChatbot::historyFilename() const
+{
+    return m_history.filename();
 }
 
 

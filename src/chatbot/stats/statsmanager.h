@@ -80,7 +80,7 @@ public:
     /**
      * Sets the chatbot ID of the chabot that we are logging statistics.
      */
-    void setChatbotId(const QString &id);
+    void setFilename(const QString &id);
 
     /**
      * \copydoc StatsFile::metric()
@@ -154,7 +154,7 @@ private:
     StatsManager(StatsManager&);
     StatsManager& operator=(StatsManager&);
 
-    QString m_chatbotId;
+    QString m_filename;
     static StatsManager *m_manager;
     static QMutex *m_mgrMutex;
 

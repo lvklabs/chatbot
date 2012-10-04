@@ -136,17 +136,27 @@ public:
     virtual ContactInfoList blackListRoster() const;
 
     /**
-     * Returns the chat history of the chatbot
+     * \copydoc Chatbot::setHistoryFilename()
+     */
+    virtual void setHistoryFilename(const QString &filename);
+
+    /**
+     * \copydoc Chatbot::historyFilename()
+     */
+    virtual QString historyFilename() const;
+
+    /**
+     * \copydoc Chatbot::chatHistory()
      */
     virtual const Cmn::Conversation &chatHistory() const;
 
     /**
-     * Sets the chat history of the chatbot.
+     * \copydoc Chatbot::setChatHistory()
      */
     virtual void setChatHistory(const Cmn::Conversation &conv);
 
     /**
-     * Clears the chat history.
+     * \copydoc Chatbot::clearHistory()
      */
     virtual void clearHistory();
 

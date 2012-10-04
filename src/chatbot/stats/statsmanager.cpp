@@ -21,8 +21,6 @@
 
 #include "stats/statsmanager.h"
 #include "stats/securestatsfile.h"
-#include "common/settings.h"
-#include "common/settingskeys.h"
 
 #include <QMutex>
 #include <QMutexLocker>
@@ -33,27 +31,6 @@
 #define STATS_FILE_EXT    ".stat"
 
 #define SCORE_INTERVAL_DUR                (5*3600) // In seconds
-
-
-//--------------------------------------------------------------------------------------------------
-// StatsManager
-//--------------------------------------------------------------------------------------------------
-
-namespace
-{
-
-inline QString getStatsFilename(const QString &id)
-{
-    Lvk::Cmn::Settings settings;
-    QString statsPath = settings.value(SETTING_STATS_PATH).toString();
-
-    QString filename = STATS_FILE_PREFIX + id + STATS_FILE_EXT;
-
-    return statsPath + "/" + filename;
-}
-
-} // namespace
-
 
 //--------------------------------------------------------------------------------------------------
 // StatsManager
@@ -92,23 +69,21 @@ Lvk::Stats::StatsManager * Lvk::Stats::StatsManager::manager()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Stats::StatsManager::setChatbotId(const QString &chatbotId)
+void Lvk::Stats::StatsManager::setFilename(const QString &filename)
 {
     QMutexLocker locker(m_scoreMutex);
 
     m_scoreTimer.stop();
 
-    if (!m_chatbotId.isEmpty()) {
+    if (!m_statsFile->filename().isEmpty()) {
         if (!m_statsFile->isEmpty()) {
             m_statsFile->save();
         }
         m_statsFile->close();
-        m_chatbotId.clear();
     }
 
-    if (!chatbotId.isEmpty()) {
-        m_chatbotId = chatbotId;
-        m_statsFile->load(getStatsFilename(chatbotId));
+    if (!filename.isEmpty()) {
+        m_statsFile->load(filename);
         m_elapsedTime = m_statsFile->scoreElapsedTime();
 
         Cmn::Conversation h;

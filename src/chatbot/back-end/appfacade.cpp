@@ -36,6 +36,9 @@
 #include <QDateTime>
 #include <QMetaType>
 #include <QtDebug>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 
 #define FILE_METADATA_CHAT_TYPE           "chat_type"
 #define FILE_METADATA_USERNAME            "username"
@@ -80,7 +83,6 @@ inline Lvk::CA::ContactInfoList toChatbotRoster(const Lvk::BE::Roster &roster)
     }
     return infoList;
 }
-
 
 } // namespace
 
@@ -130,6 +132,7 @@ void Lvk::BE::AppFacade::init()
             SIGNAL(accountError(int,QString)),
             SLOT(onAccountError(int,QString)));
 
+    setNlpEngineOptions(defaultNlpOptions());
 
     setupChatbot();
 }
@@ -148,28 +151,40 @@ Lvk::BE::AppFacade::~AppFacade()
 // Rules files
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::AppFacade::load(const QString &filename)
+bool Lvk::BE::AppFacade::newFile(const QString &filename)
 {
+    bool created = false;
+
     close();
 
+    if (setDefaultRules() && setDefaultNlpOptions()) {
+        created = m_rules.saveAs(filename);
+    }
+
+    if (created) {
+        generalSetup();
+    } else {
+        close();
+        setupChatbot();
+    }
+
+    return created;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::load(const QString &filename)
+{
     bool loaded = false;
 
-    if (filename.isEmpty()) {
-        loaded = setDefaultRules();
+    close();
 
-        m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, getDefaultNlpOptions());
-        m_rules.setAsSaved();
-    } else {
+    if (!filename.isEmpty()) {
         loaded = m_rules.load(filename);
     }
 
     if (loaded) {
-        Stats::StatsManager::manager()->setChatbotId(m_rules.chatbotId());
-        m_rlogh.setChatbotId(m_rules.chatbotId());
-        m_rlogh.setUsername(m_rules.metadata(FILE_METADATA_USERNAME).toString());
-        setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
-        setupChatbot();
-        refreshNlpEngine();
+        generalSetup();
     } else {
         close();
         setupChatbot();
@@ -180,7 +195,7 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned Lvk::BE::AppFacade::getDefaultNlpOptions()
+unsigned Lvk::BE::AppFacade::defaultNlpOptions()
 {
     unsigned options = RemoveDupChars | SanitizePostLemma;
 
@@ -227,6 +242,44 @@ bool Lvk::BE::AppFacade::setDefaultRules()
     }
 
     return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::setDefaultNlpOptions()
+{
+    m_rules.setMetadata(FILE_METADATA_NLP_OPTIONS, defaultNlpOptions());
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::generalSetup()
+{
+    Stats::StatsManager::manager()->setFilename(getExtrasPath() + m_rules.chatbotId() + ".stat");
+
+    m_rlogh.setChatbotId(m_rules.chatbotId());
+    m_rlogh.setUsername(m_rules.metadata(FILE_METADATA_USERNAME).toString());
+
+    // Warning order is importante here:
+    setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
+    setupChatbot();
+    refreshNlpEngine();
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::AppFacade::getExtrasPath()
+{
+    QFileInfo info(m_rules.filename());
+    QString extrasPath = info.canonicalPath() + QDir::separator() + info.baseName() + "_extras";
+
+    QDir().mkpath(extrasPath);
+
+    return extrasPath + QDir::separator();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -291,7 +344,7 @@ void Lvk::BE::AppFacade::close()
     m_rules.close();
     m_evasivesRule = 0;
 
-    Stats::StatsManager::manager()->setChatbotId("");
+    Stats::StatsManager::manager()->setFilename("");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -653,6 +706,7 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
         m_chatbot = BE::ChatbotFactory().createChatbot(m_rules.chatbotId(), type);
         m_chatbot->setAI(new AIAdapter(m_rules.chatbotId(), m_nlpEngine));
         m_chatbot->setBlackListRoster(toChatbotRoster(blackRoster()));
+        m_chatbot->setHistoryFilename(getExtrasPath() +  m_rules.chatbotId() + ".hist");
 
         refreshEvasives();
         connectChatbotSignals();

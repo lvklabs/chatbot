@@ -226,6 +226,16 @@ void Lvk::Stats::SecureStatsFile::close()
     m_history.clear();
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Stats::SecureStatsFile::filename() const
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_filename;
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Stats::SecureStatsFile::clear()

@@ -133,7 +133,7 @@ private:
     void resetManager()
     {
         if (Stats::StatsManager::m_manager) {
-            Stats::StatsManager::manager()->setChatbotId("");
+            Stats::StatsManager::manager()->setFilename("");
         }
         delete Stats::StatsManager::m_manager;
         Stats::StatsManager::m_manager = new Stats::StatsManager();
@@ -174,9 +174,9 @@ void StatsManagerTest::init()
 {
     resetManager();
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
     manager()->clear();
-    manager()->setChatbotId(CHATBOT_ID_2);
+    manager()->setFilename(STAT_FILENAME_2);
     manager()->clear();
 
     if (QFile::exists(STAT_FILENAME_1)) {
@@ -203,9 +203,9 @@ void StatsManagerTest::testFileCreationAndClear()
         QVERIFY(QFile::remove(STAT_FILENAME_1));
     }
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
     manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 1);
-    manager()->setChatbotId(CHATBOT_ID_2);
+    manager()->setFilename(STAT_FILENAME_2);
     manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 2);
 
     resetManager();
@@ -213,11 +213,11 @@ void StatsManagerTest::testFileCreationAndClear()
     QVERIFY(QFile::exists(STAT_FILENAME_1));
     QVERIFY(QFile::exists(STAT_FILENAME_2));
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
     manager()->clear();
     QVERIFY(!QFile::exists(STAT_FILENAME_1));
 
-    manager()->setChatbotId(CHATBOT_ID_2);
+    manager()->setFilename(STAT_FILENAME_2);
     manager()->clear();
     QVERIFY(!QFile::exists(STAT_FILENAME_2));
 }
@@ -242,7 +242,7 @@ void StatsManagerTest::testSetMetricsAndIntervals()
     QVariant v;
 
     for (int i = 0; i < ITERATIONS; ++i) {
-        manager()->setChatbotId((i % 2 == 0) ? CHATBOT_ID_1 : CHATBOT_ID_2);
+        manager()->setFilename((i % 2 == 0) ? STAT_FILENAME_1 : STAT_FILENAME_2);
 
         if (i == 0 || i == 1) {
             manager()->metric(m1, v);
@@ -295,14 +295,14 @@ void StatsManagerTest::testSetMetricsAndIntervals()
 
     resetManager();
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
 
     QVERIFY(manager()->metric(m1).toUInt() == m1_fvalue1);
     QVERIFY(manager()->metric(m2).toUInt() == m1_fvalue2);
     QVERIFY(manager()->metric(m3).toUInt() == m1_fvalue3);
     QVERIFY(manager()->metric(m4).toUInt() == m1_fvalue4);
 
-    manager()->setChatbotId(CHATBOT_ID_2);
+    manager()->setFilename(STAT_FILENAME_2);
 
     QVERIFY(manager()->metric(m1).toUInt() == m2_fvalue1);
     QVERIFY(manager()->metric(m2).toUInt() == m2_fvalue2);
@@ -316,7 +316,7 @@ void StatsManagerTest::testSetMetricsAndIntervals()
     QVERIFY(manager()->metric(m3).toUInt() == 0);
     QVERIFY(manager()->metric(m4).toUInt() == 0);
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
 
     QVERIFY(manager()->metric(m1).toUInt() == m1_fvalue1);
     QVERIFY(manager()->metric(m2).toUInt() == m1_fvalue2);
@@ -456,7 +456,7 @@ void StatsManagerTest::testScoreAlgorithm()
     QFETCH(Cmn::Conversation, conv);
     QFETCH(Stats::Score, s);
 
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
     manager()->clear();
 
     QVERIFY(manager()->bestScore().isNull());
@@ -487,7 +487,7 @@ void StatsManagerTest::testScoreAlgorithm()
 
 void StatsManagerTest::testBestScoreAndIntervals()
 {
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
     manager()->clear();
 
     BE::Rule *root1 = newRuleTree1();
@@ -565,7 +565,7 @@ void StatsManagerTest::testBestScoreAndIntervals()
     QVERIFY(manager()->bestScore() == s2);
 
     resetManager();
-    manager()->setChatbotId(CHATBOT_ID_1);
+    manager()->setFilename(STAT_FILENAME_1);
 
     manager()->updateScoreWith(root2);
 

@@ -50,7 +50,7 @@ namespace CA
  * \brief The HistoryHelper class provides persitent and easy way to store and retrieve chat
  *        history.
  *
- * Given a chatbot ID, the class loads the chat history for that chatbot. If the history does not
+ * Given a filename, the class loads the chat history. If the history does not
  * exits, it creates an empty one. All ChatHistory operations are persistent.
  *
  * This class is thread-safe.
@@ -60,9 +60,14 @@ class HistoryHelper
 public:
 
     /**
-     * Constructs a HistoryHelper for chatbot ID \a chatbotId
+     * Constructs a HistoryHelper without filename.
      */
-    HistoryHelper(const QString &chatbotId);
+    HistoryHelper();
+
+    /**
+     * Constructs a HistoryHelper that reads and stores from \a filename
+     */
+    HistoryHelper(const QString &filename);
 
     /**
      * Destroys the object.
@@ -75,14 +80,25 @@ public:
     void append(const Cmn::Conversation::Entry &entry);
 
     /**
-     * Returns the full chat history for the current chatbot id.
+     * Returns the full chat history for the current file.
      */
     const Cmn::Conversation &history() const;
 
     /**
-     * Sets \a conv as the chat history for the current chatbot id.
+     * Sets \a conv as the chat history for the current file.
      */
     void setHistory(const Cmn::Conversation &conv);
+
+    /**
+     * Sets \a filename as the new filename to store data. If the file already exists,
+     * it also loads the file contents.
+     */
+    void setFilename(const QString &filename);
+
+    /**
+     * Returns the current filename
+     */
+    QString filename() const;
 
     /**
      * Clears the chat history and removes any file created.
@@ -93,13 +109,12 @@ private:
     HistoryHelper(HistoryHelper&);
     HistoryHelper& operator=(const HistoryHelper&);
 
-    QString m_id;
     QString m_filename;
     Cmn::Conversation m_conv;
     Cmn::ConversationWriter *m_convWriter;
     QReadWriteLock *m_rwLock;
 
-    void init();
+    void load();
     void resetHistoryLog();
 };
 

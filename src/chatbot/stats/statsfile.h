@@ -152,6 +152,11 @@ public:
     virtual void close() = 0;
 
     /**
+     * Returns the current filename
+     */
+    virtual QString filename() const = 0;
+
+    /**
      * Clears the statistics and removes any file created.
      */
     virtual void clear() = 0;

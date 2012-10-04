@@ -224,7 +224,9 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
 
     setFilename(filename);
 
-    success = m_appFacade->load(filename);
+    if (!filename.isEmpty()) {
+        success = m_appFacade->load(filename);
+    }
 
     delete m_ruleTreeModel;
 
@@ -641,7 +643,7 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
     if (!filename.isEmpty()) {
         clear();
         setFilename(filename);
-        m_appFacade->saveAs(m_filename);
+        m_appFacade->newFile(filename);
         setUiMode(FE::VerifyAccountUiMode);
     }
 }

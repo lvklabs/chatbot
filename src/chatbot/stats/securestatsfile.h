@@ -160,6 +160,11 @@ public:
     virtual void close();
 
     /**
+     * \copydoc StatsFile::filename()
+     */
+    virtual QString filename() const;
+
+    /**
      * \copydoc StatsFile::clear()
      */
     virtual void clear();

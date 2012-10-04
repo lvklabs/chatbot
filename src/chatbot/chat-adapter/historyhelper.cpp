@@ -20,8 +20,6 @@
  */
 
 #include "chat-adapter/historyhelper.h"
-#include "common/settings.h"
-#include "common/settingskeys.h"
 #include "common/conversationreader.h"
 #include "common/conversationwriter.h"
 
@@ -32,18 +30,25 @@
 #include <QWriteLocker>
 #include <QtDebug>
 
-#define HISTORY_BASE_FILENAME       "history_"
-#define HISTORY_EXT_FILENAME        "dat"
-
-
 //--------------------------------------------------------------------------------------------------
 // HistoryHelper
 //--------------------------------------------------------------------------------------------------
 
-Lvk::CA::HistoryHelper::HistoryHelper(const QString &chatbotId)
-    : m_id(chatbotId), m_convWriter(0), m_rwLock(new QReadWriteLock())
+Lvk::CA::HistoryHelper::HistoryHelper()
+    : m_filename(),
+      m_convWriter(new Cmn::ConversationWriter()),
+      m_rwLock(new QReadWriteLock())
 {
-    init();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::CA::HistoryHelper::HistoryHelper(const QString &filename)
+    : m_filename(filename),
+      m_convWriter(new Cmn::ConversationWriter(m_filename)),
+      m_rwLock(new QReadWriteLock())
+{
+    load();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -56,23 +61,39 @@ Lvk::CA::HistoryHelper::~HistoryHelper()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::CA::HistoryHelper::init()
+void Lvk::CA::HistoryHelper::load()
 {
-    Lvk::Cmn::Settings settings;
-
-    QString dataPath = settings.value(SETTING_DATA_PATH).toString();
-    QString logFilename = HISTORY_BASE_FILENAME + m_id + "." + HISTORY_EXT_FILENAME;
-    m_filename = dataPath + QDir::separator() + logFilename;
-
     if (QFile::exists(m_filename)) {
         Cmn::ConversationReader convReader(m_filename);
+        m_conv.clear();
         if (!convReader.read(&m_conv)) {
-            qWarning() << "HistoryHelper: Cannot read the conversation history for chatbot id"
-                       << m_id;
+            qWarning() << "HistoryHelper: Cannot read the conversation history from file"
+                       << m_filename;
         }
     }
+}
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::HistoryHelper::setFilename(const QString &filename)
+{
+    QWriteLocker locker(m_rwLock);
+
+    m_filename = filename;
+
+    load();
+
+    delete m_convWriter;
     m_convWriter = new Cmn::ConversationWriter(m_filename);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::CA::HistoryHelper::filename() const
+{
+    QWriteLocker locker(m_rwLock);
+
+    return m_filename;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -84,8 +105,7 @@ void Lvk::CA::HistoryHelper::append(const Cmn::Conversation::Entry &entry)
     m_conv.append(entry);
 
     if (!m_convWriter->write(entry)) {
-        qCritical() << "HistoryHelper: Cannot write the conversation entry for chatbot id"
-                    << m_id;
+        qCritical() << "HistoryHelper: Cannot write the conversation entry to file" << m_filename;
     }
 }
 
@@ -104,13 +124,12 @@ void Lvk::CA::HistoryHelper::setHistory(const Cmn::Conversation &conv)
 {
     QWriteLocker locker(m_rwLock);
 
-    m_conv = conv;
-
     resetHistoryLog();
 
+    m_conv = conv;
+
     if (!m_convWriter->write(conv)) {
-        qCritical() << "HistoryHelper: Cannot write the conversation entry for chatbot id"
-                    << m_id;
+        qCritical() << "HistoryHelper: Cannot write the conversation to file" << m_filename;
     }
 }
 
@@ -120,8 +139,6 @@ void Lvk::CA::HistoryHelper::clear()
 {
     QWriteLocker locker(m_rwLock);
 
-    m_conv = Cmn::Conversation();
-
     resetHistoryLog();
 }
 
@@ -129,6 +146,8 @@ void Lvk::CA::HistoryHelper::clear()
 
 void Lvk::CA::HistoryHelper::resetHistoryLog()
 {
+    m_conv.clear();
+
     delete m_convWriter;
 
     QFile::remove(m_filename);

@@ -104,8 +104,13 @@ public:
     ~AppFacade();
 
     /**
-     * Loads \a filename. Filename must be a valid chabot file or the empty string.
-     * If \a filename is empty it creates a new chatbot file with the default initial rules.
+     * Creates a new chatbot file with the default initial rules and NLP engine options.
+     * Returns true on success. Otherwise; false.
+     */
+    bool newFile(const QString &filename);
+
+    /**
+     * Loads \a filename. Filename must be a valid chabot file.
      * Returns true on success. Otherwise; false.
      */
     bool load(const QString &filename);
@@ -426,8 +431,11 @@ private:
     AccountVerifier m_account;
 
     void init();
-    unsigned getDefaultNlpOptions();
+    bool setDefaultNlpOptions();
     bool setDefaultRules();
+    bool generalSetup();
+    unsigned defaultNlpOptions();
+    QString getExtrasPath();
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
     void refreshEvasives();

@@ -132,6 +132,16 @@ public:
     virtual ContactInfoList blackListRoster() const = 0;
 
     /**
+     * Sets the \a filename where the chat history must be stored or loaded
+     */
+    virtual void setHistoryFilename(const QString &filename) = 0;
+
+    /**
+     * Returns the filename where the chat history is stored
+     */
+    virtual QString historyFilename() const = 0;
+
+    /**
      * Returns the chat history of the chatbot
      */
     virtual const Cmn::Conversation &chatHistory() const = 0;
