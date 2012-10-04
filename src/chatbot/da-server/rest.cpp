@@ -16,7 +16,8 @@ Lvk::DAS::Rest::Rest(QObject *parent) :
     m_replyMutex(new QMutex(QMutex::Recursive)),
     m_manager(new QNetworkAccessManager(this)),
     m_reply(0),
-    m_lastErr(QNetworkReply::NoError)
+    m_lastErr(QNetworkReply::NoError),
+    m_ignoreSslErrors(false)
 {
 }
 
@@ -57,6 +58,10 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
     QNetworkReply *reply = m_manager->get(request);
 
+    if (m_ignoreSslErrors) {
+        reply->ignoreSslErrors();
+    }
+
     connect(reply, SIGNAL(finished()), SLOT(onFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             SLOT(onError(QNetworkReply::NetworkError)));
@@ -79,6 +84,13 @@ void Lvk::DAS::Rest::abort()
     if (m_reply) {
         m_reply->abort();
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::DAS::Rest::setIgnoreSslErrors(bool ignore)
+{
+    m_ignoreSslErrors = ignore;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -125,9 +137,12 @@ void Lvk::DAS::Rest::onError(QNetworkReply::NetworkError err)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::Rest::onSslErrors(const QList<QSslError> &/*errs*/)
+void Lvk::DAS::Rest::onSslErrors(const QList<QSslError> &errs)
 {
     qDebug() << "Rest::onSslErrors";
+    foreach (const QSslError &err, errs) {
+        qDebug() << "Error: " << err.errorString();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -40,6 +40,8 @@ public:
 
     virtual void abort();
 
+    virtual void setIgnoreSslErrors(bool ignore);
+
 signals:
 
     void response(const QString &resp);
@@ -57,6 +59,7 @@ private:
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_reply;
     QNetworkReply::NetworkError m_lastErr;
+    bool m_ignoreSslErrors;
 
     void unescape(QString &resp);
 };

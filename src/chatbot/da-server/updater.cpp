@@ -34,6 +34,9 @@
 Lvk::DAS::Updater::Updater()
     : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR)
 {
+    // TODO QSslConfiguration::setLocalCertificate
+    m_rest->setIgnoreSslErrors(true);
+
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
             SLOT(onCfuRerror(QNetworkReply::NetworkError)));
