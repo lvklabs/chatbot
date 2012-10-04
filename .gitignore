@@ -12,4 +12,6 @@ da_release/win32/chatbot-*
 da_release/win32/.build
 src/chatbot/crypto/dakeymanager.h
 src/chatbot/crypto/dakeymanager.cpp
+src/chatbot/da-server/daserverconfig.h
+src/chatbot/sh/*.sh
 .cccc
