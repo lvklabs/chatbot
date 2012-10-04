@@ -28,7 +28,6 @@
 #include "front-end/sendscoredialog.h"
 #include "front-end/optionswindow.h"
 #include "front-end/filedialog.h"
-#include "front-end/rosterhelper.h"
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
 #include "back-end/appfacade.h"
@@ -61,14 +60,6 @@
 
 namespace
 {
-
-//--------------------------------------------------------------------------------------------------
-// Cannonic representation for chat accounts used to persist some settings
-
-inline QString canonicAccount(const QString &username, Lvk::BE::ChatType type)
-{
-    return username.trimmed().split("@").at(0) + "@" + QString::number(type);
-}
 
 //--------------------------------------------------------------------------------------------------
 // Check if chatbot has expired
@@ -272,8 +263,7 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountPressed()));
     connect(ui->passwordText_v,        SIGNAL(returnPressed()),
             SLOT(onVerifyAccountPressed()));
-    connect(m_appFacade,               SIGNAL(accountOk(BE::Roster)),
-            SLOT(onVerifyAccountOk(BE::Roster)));
+    connect(m_appFacade,               SIGNAL(accountOk()), SLOT(onVerifyAccountOk()));
     connect(m_appFacade,               SIGNAL(accountError(int, QString)),
             SLOT(onVerifyAccountError(int, QString)));
 
@@ -746,16 +736,8 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
     bool success = initCoreAndModelsWithFile(filename);
 
     if (success) {
-        // load conversation history
         ui->chatHistory->setConversation(m_appFacade->chatHistory());
-
-        // load persisted roster
-        BE::Roster roster;
-        RosterHelper rh(FullRoster, canonicAccount());
-        if (rh.exists()) {
-            rh.load(roster);
-        }
-        ui->ruleInputWidget->setRoster(roster);
+        ui->ruleInputWidget->setRoster(m_appFacade->roster());
 
         // score
         updateScore();
@@ -1702,17 +1684,11 @@ void Lvk::FE::MainWindow::verifyBlockedForUpdate(const DAS::UpdateInfo &info)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
+void Lvk::FE::MainWindow::onVerifyAccountOk()
 {
     qDebug() << "MainWindow: Verify Account Ok";
 
-    ui->ruleInputWidget->setRoster(roster);
-
-    BE::ChatType chatType = uiChatSelected();
-    QString username = ui->usernameText_v->text();
-
-    // persist roster
-    RosterHelper(FullRoster, ::canonicAccount(username, chatType)).save(roster);
+    ui->ruleInputWidget->setRoster(m_appFacade->roster());
 
     if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
         startEditMode();
@@ -1720,9 +1696,7 @@ void Lvk::FE::MainWindow::onVerifyAccountOk(const BE::Roster &roster)
         setUiMode(FE::ChatDisconnectedUiMode);
     }
 
-    if (!username.isEmpty()) {
-        QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
-    }
+    QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1759,8 +1733,9 @@ void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 
     ui->fbChatRadio_v->setChecked(true);
     ui->usernameText_v->setText("");
+    ui->passwordText_v->setText("");
 
-    onVerifyAccountOk(BE::Roster());
+    onVerifyAccountOk();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1863,18 +1838,9 @@ void Lvk::FE::MainWindow::onConnectionOk()
     setUiMode(FE::ChatConnectionOkUiMode);
 
     BE::Roster roster = m_appFacade->roster();
-
-    RosterHelper(FullRoster, canonicAccount()).save(roster);
-
-    ui->ruleInputWidget->setRoster(roster);
-
-    BE::Roster blackRoster;
-    if (!RosterHelper(BlackRoster, canonicAccount()).load(blackRoster)) {
-        blackRoster = roster; // By default all contacts are in the black list
-    }
-
+    BE::Roster blackRoster = m_appFacade->blackRoster();
+    ui->ruleInputWidget->setRoster(m_appFacade->roster());
     ui->rosterWidget->setRoster(roster, blackRoster);
-    m_appFacade->setBlackListRoster(blackRoster);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1925,10 +1891,7 @@ void Lvk::FE::MainWindow::onRosterSelectChanged()
 void Lvk::FE::MainWindow::updateBlackList()
 {
     BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
-
-    m_appFacade->setBlackListRoster(blackList);
-
-    RosterHelper(BlackRoster, canonicAccount()).save(blackList);
+    m_appFacade->setBlackRoster(blackList);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1936,13 +1899,6 @@ void Lvk::FE::MainWindow::updateBlackList()
 inline Lvk::BE::ChatType Lvk::FE::MainWindow::uiChatSelected()
 {
     return ui->gtalkChatRadio_v->isChecked() ? BE::GTalkChat : BE::FbChat;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline QString Lvk::FE::MainWindow::canonicAccount()
-{
-    return ::canonicAccount(m_appFacade->username(), m_appFacade->chatType());
 }
 
 //--------------------------------------------------------------------------------------------------

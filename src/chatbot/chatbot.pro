@@ -124,7 +124,6 @@ HEADERS += \
     front-end/welcomewidget.h \
     front-end/optionswindow.h \
     front-end/filedialog.h \
-    front-end/rosterhelper.h \
     front-end/mainwindowrefactor.h \
     front-end/sendscoredialog.h \
     front-end/newupdatedialog.h \
@@ -222,7 +221,6 @@ SOURCES += \
     front-end/detailsdialog.cpp \
     front-end/optionswindow.cpp \
     front-end/welcomewidget.cpp \
-    front-end/rosterhelper.cpp \
     front-end/mainwindowrefactor.cpp \
     front-end/sendscoredialog.cpp \
     front-end/newupdatedialog.cpp \
@@ -370,6 +368,8 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

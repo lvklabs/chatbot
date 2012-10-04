@@ -314,16 +314,20 @@ public:
     bool isConnected() const;
 
     /**
-     * Returns the roster of the last connected or verified user. Before calling this method
-     * must be connected.
+     * Returns the roster of the current user.
      */
-    Roster roster() const;
+    Roster roster();
+
+    /**
+     * Returns the black roster (the list of people the chatbot cannot talk to)
+     */
+    Roster blackRoster() const;
 
     /**
      * Sets the list of people the chatbot cannot talk to. Before calling this method you
      * must be connected.
      */
-    void setBlackListRoster(const Roster &roster);
+    void setBlackRoster(const Roster &roster);
 
     /**
      * Returns the chat history of the current chatbot. Before calling this method you
@@ -365,9 +369,8 @@ signals:
 
     /**
      * This signal is emitted after invoking verifyAccount() if the account was verified.
-     * Returns the \a roster of the given account.
      */
-    void accountOk(const BE::Roster &roster);
+    void accountOk();
 
     /**
      * This signal is emitted after invoking verifyAccount() if there was an error while trying
@@ -433,6 +436,7 @@ private:
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
     void connectChatbotSignals();
+    void setRoster(const Roster &roster);
     void updateStats();
 };
 

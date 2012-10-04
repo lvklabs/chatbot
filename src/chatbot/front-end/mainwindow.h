@@ -247,7 +247,7 @@ private slots:
     void onTestShowRule();
 
     void onVerifyAccountPressed();
-    void onVerifyAccountOk(const BE::Roster &roster);
+    void onVerifyAccountOk();
     void onVerifyAccountError(int err, const QString &msg);
     void onVerifyAccountSkipped();
     void onChangeAccountPressed();

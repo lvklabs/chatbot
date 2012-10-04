@@ -34,12 +34,15 @@
 #include "stats/statsmanager.h"
 
 #include <QDateTime>
+#include <QMetaType>
 #include <QtDebug>
 
 #define FILE_METADATA_CHAT_TYPE           "chat_type"
 #define FILE_METADATA_USERNAME            "username"
 #define FILE_METADATA_CHAT_USERNAME       "chat_username"
 #define FILE_METADATA_NLP_OPTIONS         "nlp_options"
+#define FILE_METADATA_ROSTER              "roster"
+#define FILE_METADATA_BLACK_ROSTER        "black_roster"
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -66,6 +69,18 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 
     return nlpRule;
 }
+
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::CA::ContactInfoList toChatbotRoster(const Lvk::BE::Roster &roster)
+{
+    Lvk::CA::ContactInfoList infoList;
+    foreach (const Lvk::BE::RosterItem &item, roster) {
+        infoList.append(Lvk::CA::ContactInfo(item.username, item.username));
+    }
+    return infoList;
+}
+
 
 } // namespace
 
@@ -100,6 +115,9 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 
 void Lvk::BE::AppFacade::init()
 {
+    qRegisterMetaTypeStreamOperators<BE::RosterItem>("Lvk::BEk::RosterItem");
+    qRegisterMetaTypeStreamOperators<BE::Roster>("Lvk::BEk::Roster");
+
     connect(Stats::StatsManager::manager(),
             SIGNAL(scoreRemainingTime(int)),
             SIGNAL(scoreRemainingTime(int)));
@@ -562,8 +580,10 @@ void Lvk::BE::AppFacade::onAccountOk(const AccountVerifier::AccountInfo &info)
     setChatType(info.type);
     setUsername(info.username);
     setChatUsername(info.chatUsername);
+    setRoster(info.roster);
+    setBlackRoster(info.roster); // Initially all contacts are in the black list
 
-    emit accountOk(info.roster);
+    emit accountOk();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -632,6 +652,7 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
         m_currentChatbotType = type;
         m_chatbot = BE::ChatbotFactory().createChatbot(m_rules.chatbotId(), type);
         m_chatbot->setAI(new AIAdapter(m_rules.chatbotId(), m_nlpEngine));
+        m_chatbot->setBlackListRoster(toChatbotRoster(blackRoster()));
 
         refreshEvasives();
         connectChatbotSignals();
@@ -669,11 +690,20 @@ void Lvk::BE::AppFacade::connectChatbotSignals()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::BE::Roster Lvk::BE::AppFacade::roster() const
+Lvk::BE::Roster Lvk::BE::AppFacade::roster()
 {
-    Lvk::BE::Roster roster;
-    foreach (const Lvk::CA::ContactInfo &info, m_chatbot->roster()) {
-        roster.append(Lvk::BE::RosterItem(info.username, info.fullname));
+    BE::Roster persistedRoster = m_rules.metadata(FILE_METADATA_ROSTER).value<BE::Roster>();
+    BE::Roster roster;
+
+    if (m_chatbot->isConnected()) {
+        foreach (const CA::ContactInfo &info, m_chatbot->roster()) {
+            roster.append(BE::RosterItem(info.username, info.fullname));
+        }
+        if (persistedRoster != roster) {
+            m_rules.setMetadata(FILE_METADATA_ROSTER, QVariant::fromValue(roster));
+        }
+    } else {
+        roster = persistedRoster;
     }
 
     return roster;
@@ -681,14 +711,25 @@ Lvk::BE::Roster Lvk::BE::AppFacade::roster() const
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::setBlackListRoster(const BE::Roster &roster)
+void Lvk::BE::AppFacade::setRoster(const BE::Roster &roster)
 {
-    Lvk::CA::ContactInfoList infoList;
-    foreach (const Lvk::BE::RosterItem &item, roster) {
-        infoList.append(Lvk::CA::ContactInfo(item.username, item.username));
-    }
+    m_rules.setMetadata(FILE_METADATA_ROSTER, QVariant::fromValue(roster));
+}
 
-    m_chatbot->setBlackListRoster(infoList);
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setBlackRoster(const BE::Roster &roster)
+{
+    m_chatbot->setBlackListRoster(toChatbotRoster(roster));
+
+    m_rules.setMetadata(FILE_METADATA_BLACK_ROSTER, QVariant::fromValue(roster));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::BE::Roster Lvk::BE::AppFacade::blackRoster() const
+{
+    return m_rules.metadata(FILE_METADATA_BLACK_ROSTER).value<BE::Roster>();
 }
 
 //--------------------------------------------------------------------------------------------------

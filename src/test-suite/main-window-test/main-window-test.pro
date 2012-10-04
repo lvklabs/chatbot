@@ -65,7 +65,6 @@ HEADERS += \
     ../../chatbot/front-end/optionswindow.h \
     ../../chatbot/front-end/filedialog.h \
     ../../chatbot/front-end/welcomewidget.h \
-    ../../chatbot/front-end/rosterhelper.h \
     ../../chatbot/front-end/mainwindowrefactor.h \
     ../../chatbot/front-end/sendscoredialog.h \
     ../../chatbot/front-end/newupdatedialog.h \
@@ -149,7 +148,6 @@ SOURCES += \
     ../../chatbot/front-end/tinyscorewidget.cpp \
     ../../chatbot/front-end/optionswindow.cpp \
     ../../chatbot/front-end/welcomewidget.cpp \
-    ../../chatbot/front-end/rosterhelper.cpp \
     ../../chatbot/front-end/mainwindowrefactor.cpp \
     ../../chatbot/front-end/sendscoredialog.cpp \
     ../../chatbot/front-end/newupdatedialog.cpp \

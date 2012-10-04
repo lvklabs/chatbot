@@ -270,6 +270,8 @@ bool Lvk::BE::ChatbotRulesFile::write(QFile &file)
 
 void Lvk::BE::ChatbotRulesFile::setMetadata(const QString &key, const QVariant &value)
 {
+    qDebug() << "Setting file metadata for key" << key;
+
     m_metadata[key] = value;
 
     m_dirty = true;
@@ -279,6 +281,8 @@ void Lvk::BE::ChatbotRulesFile::setMetadata(const QString &key, const QVariant &
 
 const QVariant & Lvk::BE::ChatbotRulesFile::metadata(const QString &key) const
 {
+    qDebug() << "Getting file metadata for key" << key;
+
     FileMetadata::const_iterator it = m_metadata.find(key);
 
     if (it != m_metadata.end()) {
