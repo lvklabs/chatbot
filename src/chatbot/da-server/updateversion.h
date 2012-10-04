@@ -71,6 +71,7 @@ struct UpdateVersion
 
     /**
      * Creates a version from string. The String must have format "major.minor".
+     * Format "major.minor.rev" is also allowed but the revision part is ignored.
      * Returns a valid UpdateVersion if the string format is valid. Otherwise;
      * return an invalid UpdateVersion. \see isValid()
      */
@@ -78,7 +79,7 @@ struct UpdateVersion
     {
         UpdateVersion v(-1, -1);
         QStringList tokens = strVer.split(".", QString::SkipEmptyParts);
-        if (tokens.size() == 2) {
+        if (tokens.size() == 2 || tokens.size() == 3) {
             v._major = tokens[0].toInt();
             v._minor = tokens[1].toInt();
         }
