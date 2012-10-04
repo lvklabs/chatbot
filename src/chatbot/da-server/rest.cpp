@@ -1,4 +1,5 @@
-#include "rest.h"
+#include "da-server/rest.h"
+#include "common/version.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -36,11 +37,13 @@ Lvk::DAS::Rest::~Rest()
 
 bool Lvk::DAS::Rest::request(const QString &url)
 {
+    qDebug() << "Rest::request";
+
     QMutexLocker locker(m_replyMutex);
 
     if (m_reply) {
         if (m_reply->isRunning()) {
-            qCritical() << "Rest::request: Previous REST request still runnning";
+            qCritical() << "Rest: Previous REST request still runnning";
             return false;
         }
 
@@ -50,7 +53,7 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
     QNetworkRequest request;
     request.setUrl(QUrl(url));
-    request.setRawHeader("User-Agent", "Chatbot");
+    request.setRawHeader("User-Agent", APP_NAME "-" APP_VERSION_STR);
 
     QNetworkReply *reply = m_manager->get(request);
 
@@ -69,6 +72,8 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
 void Lvk::DAS::Rest::abort()
 {
+    qDebug() << "Rest::abort";
+
     QMutexLocker locker(m_replyMutex);
 
     if (m_reply) {
@@ -94,7 +99,7 @@ void Lvk::DAS::Rest::onFinished()
     }
 
     if (resp.size() > 0) {
-        qDebug() << "Rest response: " << resp;
+        qDebug() << "Rest: Got response: " << resp;
         emit response(resp);
     }
 }
