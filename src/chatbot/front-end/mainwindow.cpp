@@ -218,14 +218,18 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename)
+bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename, bool newFile)
 {
     bool success = true;
 
     setFilename(filename);
 
     if (!filename.isEmpty()) {
-        success = m_appFacade->load(filename);
+        if (newFile) {
+            success = m_appFacade->newFile(filename);
+        } else {
+            success = m_appFacade->load(filename);
+        }
     }
 
     delete m_ruleTreeModel;
@@ -642,9 +646,12 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
 
     if (!filename.isEmpty()) {
         clear();
-        setFilename(filename);
-        m_appFacade->newFile(filename);
-        setUiMode(FE::VerifyAccountUiMode);
+        if (initCoreAndModelsWithFile(filename, true)) {
+            setUiMode(FE::VerifyAccountUiMode);
+        } else {
+            QMessageBox::critical(this, tr("New File"), tr("Could not create file. "
+                                  "Please verify that you have write permissions."));
+        }
     }
 }
 
@@ -1698,7 +1705,10 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
         setUiMode(FE::ChatDisconnectedUiMode);
     }
 
-    QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
+    // Check if verication was not skipped!
+    if (!m_appFacade->username().isEmpty()) {
+        QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

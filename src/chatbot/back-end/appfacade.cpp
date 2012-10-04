@@ -328,7 +328,6 @@ void Lvk::BE::AppFacade::close()
     }
 
     if (m_nlpEngine) {
-        // CHECK Do not reset NLP options?
         m_nlpEngine->setRules(Nlp::RuleList());
     }
 

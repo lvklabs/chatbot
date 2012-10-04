@@ -157,7 +157,7 @@ private:
 
     void setUiMode(UiMode mode);
 
-    bool initCoreAndModelsWithFile(const QString &filename);
+    bool initCoreAndModelsWithFile(const QString &filename, bool newFile = false);
     void connectSignals();
 
     void loadAllSettings();
