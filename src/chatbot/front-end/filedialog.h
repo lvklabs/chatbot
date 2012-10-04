@@ -24,7 +24,9 @@
 
 #include <QString>
 #include <QObject>
+#include <QDir>
 #include <QFileDialog>
+#include <QDesktopServices>
 
 namespace Lvk
 {
@@ -65,14 +67,30 @@ public:
     }
 
     /**
+     * Returns the default location where the file dialogs are opened.
+     */
+    static QString defaultLocation()
+    {
+        QString docsLoc = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+
+        if (docsLoc.isEmpty()) {
+            docsLoc = ".";
+        }
+        docsLoc.append(QDir::separator() + "Chatbots");
+
+        QDir().mkpath(docsLoc);
+
+        return docsLoc;
+    }
+
+    /**
      * Shows the "New chatbot file" dialog. Returns the selected filename or
      * an empty string if the dialog was canceled
      */
     static QString newChatbot(QWidget *parent = 0)
     {
-        QString filename = QFileDialog::getSaveFileName(parent,
-                                                        QObject::tr("New file"), "",
-                                                        chatbotFilter());
+        QString filename = QFileDialog::getSaveFileName(parent, QObject::tr("New file"),
+                                                        defaultLocation(), chatbotFilter());
 
         appendExtension(filename, chatbotExtension());
 
@@ -85,9 +103,8 @@ public:
      */
     static QString saveChatbot(QWidget *parent = 0)
     {
-        QString filename = QFileDialog::getSaveFileName(parent,
-                                                        QObject::tr("Save File"), "",
-                                                        chatbotFilter());
+        QString filename = QFileDialog::getSaveFileName(parent, QObject::tr("Save File"),
+                                                        defaultLocation(), chatbotFilter());
 
         appendExtension(filename, chatbotExtension());
 
@@ -100,9 +117,8 @@ public:
      */
     static QString openChatbot(QWidget *parent = 0)
     {
-        return QFileDialog::getOpenFileName(parent,
-                                            QObject::tr("Open File"), "",
-                                            chatbotFilter());
+        return QFileDialog::getOpenFileName(parent, QObject::tr("Open File"),
+                                            defaultLocation(), chatbotFilter());
     }
 
 
@@ -112,9 +128,8 @@ public:
      */
     static QString saveExport(QWidget *parent = 0)
     {
-        QString filename = QFileDialog::getSaveFileName(parent,
-                                                        QObject::tr("Export Rules"), "",
-                                                        exportFilter());
+        QString filename = QFileDialog::getSaveFileName(parent, QObject::tr("Export Rules"),
+                                                        defaultLocation(), exportFilter());
 
         appendExtension(filename, exportExtension());
 
@@ -127,9 +142,8 @@ public:
      */
     static QString openExport(QWidget *parent = 0)
     {
-        return QFileDialog::getOpenFileName(parent,
-                                            QObject::tr("Import Rules"), "",
-                                            exportFilter());
+        return QFileDialog::getOpenFileName(parent, QObject::tr("Import Rules"),
+                                            defaultLocation(), exportFilter());
     }
 
 private:
