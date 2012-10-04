@@ -2,6 +2,8 @@ v0.25
  - Added verification of updates
  - Blocking chatbot connection and score upload if there is a critical
    update
+ - Saving rosters inside the rules file
+ - Saving stats and history in a new folder named <chatbot_basename>_extras
 
 v0.24
  - Added authentication against 'Dale Aceptar' server.
