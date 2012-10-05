@@ -24,6 +24,7 @@
 
 #include "stats/statshelper.h"
 #include "common/conversation.h"
+#include "common/globalstrings.h"
 
 #include <QHash>
 #include <functional>
@@ -163,7 +164,7 @@ protected:
         StatsHelper::count(entry.msg);
         StatsHelper::count(entry.response);
 
-        if (!entry.response.isEmpty()) {
+        if (!entry.response.isEmpty() || entry.from.startsWith(OWN_MESSAGE_TOKEN)) {
             trackConversation(entry);
         }
     }
@@ -194,7 +195,7 @@ private:
     unsigned m_cbLinesCount;
     unsigned m_deadConvDiffLinesCount;
 
-    void trackConversation(const Lvk::Cmn::Conversation::Entry &entry);
+    void trackConversation(const Cmn::Conversation::Entry &entry);
     unsigned liveConvDiffLinesCount() const;
 };
 

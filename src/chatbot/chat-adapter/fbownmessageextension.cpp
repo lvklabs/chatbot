@@ -35,7 +35,7 @@ bool Lvk::CA::FbOwnMessageExtension::handleStanza(const QDomElement &nodeRecv)
     if (nodeRecv.tagName() == "iq") {
         QDomElement child = nodeRecv.firstChildElement();
 
-        if (child.tagName() == "own-message") {
+        if (child.tagName() == "own-message" && child.attribute("self") == "false") {
             QXmppMessage msg;
             msg.parse(child);
 
