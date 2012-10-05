@@ -157,10 +157,18 @@ protected:
     }
 
 private:
-    // (last entry timestamp, #entries)
-    typedef QPair<QDateTime, unsigned> DateCountPair;
-    // username -> (last entry timestamp, #entries)
-    typedef QHash<QString, DateCountPair> ConversationTracker;
+
+    struct ConversationInfo
+    {
+        ConversationInfo() : entries(0), interfered(false) { last.setTime_t(0); }
+
+        QDateTime last;     // last entry timestamp
+        unsigned entries;   // #entries
+        bool interfered;    // Conversation interfered by user -- Not used.
+    };
+
+    // username -> ConversationInfo
+    typedef QHash<QString, ConversationInfo> ConversationTracker;
 
     ConversationTracker m_convTracker;
     QSet<QString> m_scoreContacts;

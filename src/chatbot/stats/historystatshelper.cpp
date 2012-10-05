@@ -27,7 +27,7 @@
 //--------------------------------------------------------------------------------------------------
 
 static const unsigned MAX_INACTIVITY = 60*15; // Max period of inactivity allowed. In seconds.
-static const unsigned MIN_CONV_LEN = 20;      // Minimum conversation entries to add a contact
+static const unsigned MIN_CONV_LEN = 20;      // Minimum conversation entries to score a contact
 
 // Tracks chatbot conversations. If the conversation has at least MIN_CONV_LEN entries and
 // it was not interfered by the user, adds username to the score contacts set
@@ -38,23 +38,19 @@ void Lvk::Stats::HistoryStatsHelper::trackConversation(const Lvk::Cmn::Conversat
 
     if (!interfered) {
         // Update conversation tracker
-        ConversationTracker::iterator it = m_convTracker.find(entry.from);
+        ConversationInfo &info = m_convTracker[entry.from];
 
-        if (it != m_convTracker.end()) {
-            DateCountPair &p =  it.value();
+        // If inactivity period not surpassed
+        if (entry.dateTime.toTime_t() - info.last.toTime_t() < MAX_INACTIVITY) {
+            info.last = entry.dateTime;
+            info.entries = info.entries + 1;
 
-            // If inactivity period not surpassed
-            if (entry.dateTime.toTime_t() - p.first.toTime_t() < MAX_INACTIVITY) {
-                p = DateCountPair(entry.dateTime, p.second + 1);
-
-                if (p.second >= MIN_CONV_LEN) {
-                    m_scoreContacts.insert(entry.from);
-                }
-            } else {
-                p = DateCountPair(entry.dateTime, 1);
+            if (info.entries >= MIN_CONV_LEN) {
+                m_scoreContacts.insert(entry.from);
             }
         } else {
-            m_convTracker[entry.from] = DateCountPair(entry.dateTime, 1);
+            info.last = entry.dateTime;
+            info.entries = 1;
         }
 
         // Finally update some chatbot stats
