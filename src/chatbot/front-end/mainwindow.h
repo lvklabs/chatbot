@@ -137,7 +137,6 @@ private:
     bool                     m_ruleAdded;
     BE::Rule                 m_ruleBackup;
     QString                  m_filename;
-    QString                  m_lastFilename;
     ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
 

@@ -108,9 +108,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     checkAppExpiration();
 
-    Cmn::Settings settings;
-    m_lastFilename = settings.value(SETTING_LAST_FILE, QString()).toString();
-
     setupUi();
 
     loadAllSettings();
@@ -424,7 +421,6 @@ void Lvk::FE::MainWindow::saveAllSettings()
     if (!m_filename.isEmpty()) {
         Lvk::Cmn::Settings settings;
         settings.setValue(SETTING_LAST_FILE, m_filename);
-        m_lastFilename = m_filename;
     }
 }
 
@@ -672,18 +668,21 @@ void Lvk::FE::MainWindow::openFile(const QString &filename)
 
 void Lvk::FE::MainWindow::openLastFile()
 {
-    if (!m_lastFilename.isEmpty()) {
-        if (QFile::exists(m_lastFilename)) {
-            if (load(m_lastFilename)) {
+    QString lastFile = Cmn::Settings().value(SETTING_LAST_FILE, QString()).toString();
+
+    if (!lastFile.isEmpty()) {
+        if (QFile::exists(lastFile)) {
+            if (load(lastFile)) {
                 startEditMode();
             } else {
                 clear();
             }
         } else {
             QString msg = tr("Last file opened does not exist anymore: '%1'");
-            QMessageBox::critical(this, tr("Open last file"), msg.arg(m_lastFilename));
-            m_lastFilename.clear();
+            QMessageBox::critical(this, tr("Open last file"), msg.arg(lastFile));
             Lvk::Cmn::Settings().remove(SETTING_LAST_FILE);
+            setFilename("");
+            setUiMode(FE::WelcomeTabUiMode);
         }
     }
 }
@@ -1785,6 +1784,7 @@ void Lvk::FE::MainWindow::onCancelChAccountPressed()
     m_appFacade->cancelVerifyAccount();
 
     if (m_refactor.uiTabsLayout() == VerifyAccountTabsLayout) {
+        setFilename("");
         setUiMode(FE::WelcomeTabUiMode);
     } else {
         setUiMode(FE::ChatDisconnectedUiMode);
