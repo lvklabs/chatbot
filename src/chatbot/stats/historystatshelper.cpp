@@ -26,7 +26,7 @@
 // HistoryStatsHelper
 //--------------------------------------------------------------------------------------------------
 
-static const unsigned MAX_INACTIVITY = 60*30; // Max period of inactivity allowed. In seconds.
+static const unsigned MAX_INACTIVITY = 60*15; // Max period of inactivity allowed. In seconds.
 static const unsigned MIN_CONV_LEN = 20;      // Minimum conversation entries to add a contact
 
 // Tracks chatbot conversations. If the conversation has at least MIN_CONV_LEN entries and
