@@ -26,7 +26,8 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
     connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenChatbot()));
     connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastChatbot()));
 
-    m_lastFilename = Lvk::Cmn::Settings().value(SETTING_LAST_FILE).toString();
+    Cmn::Settings settings(Cmn::Settings::UserScope(), this);
+    m_lastFilename = settings.value(SETTING_LAST_FILE).toString();
 
     ui->openLastChatbotButton->setVisible(!m_lastFilename.isEmpty());
 

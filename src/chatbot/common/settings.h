@@ -47,16 +47,28 @@ class Settings : public QSettings
     Q_OBJECT
 
 public:
+
     /**
-     * Constructs a Settings object with the given parent
+     * Dummy struct used to construct a Settings object that stores in a location specific to
+     * the current user (e.g., in the user's home directory).
+     */
+    struct UserScope {};
+
+    /**
+     * Constructs a Settings object with the given parent and scope local to the current
+     * instance of the chatbot. Settings are stored in the working directory.
      */
     explicit Settings(QObject *parent = 0);
+
+    /**
+     * Constructs a Settings object with the given parent and scope user. \see UserScope
+     */
+    explicit Settings(UserScope, QObject *parent = 0);
 
     /**
      * Returns the value for the given key. If the key doesn't exist, returns defaultValue.
      */
     virtual QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
-
 };
 
 /// @}

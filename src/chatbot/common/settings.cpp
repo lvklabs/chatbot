@@ -19,6 +19,7 @@
  *
  */
 
+#include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
@@ -34,6 +35,13 @@
 
 Lvk::Cmn::Settings::Settings(QObject *parent)
     : QSettings(SETTINGS_FILENAME, QSettings::IniFormat, parent)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Cmn::Settings::Settings(UserScope, QObject *parent)
+    : QSettings(ORGANIZATION_NAME, APP_NAME, parent)
 {
 }
 

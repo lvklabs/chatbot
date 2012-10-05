@@ -416,7 +416,7 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
 
 inline bool Lvk::FE::MainWindowRefactor::hasLastFile()
 {
-    return Lvk::Cmn::Settings().contains(SETTING_LAST_FILE);
+    return Cmn::Settings(Cmn::Settings::UserScope()).contains(SETTING_LAST_FILE);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -419,7 +419,7 @@ void Lvk::FE::MainWindow::saveAllSettings()
     saveSplittersSettings();
 
     if (!m_filename.isEmpty()) {
-        Lvk::Cmn::Settings settings;
+        Cmn::Settings settings(Cmn::Settings::UserScope(), this);
         settings.setValue(SETTING_LAST_FILE, m_filename);
     }
 }
@@ -668,7 +668,8 @@ void Lvk::FE::MainWindow::openFile(const QString &filename)
 
 void Lvk::FE::MainWindow::openLastFile()
 {
-    QString lastFile = Cmn::Settings().value(SETTING_LAST_FILE, QString()).toString();
+    Cmn::Settings settings(Cmn::Settings::UserScope(), this);
+    QString lastFile = settings.value(SETTING_LAST_FILE, QString()).toString();
 
     if (!lastFile.isEmpty()) {
         if (QFile::exists(lastFile)) {
@@ -680,7 +681,7 @@ void Lvk::FE::MainWindow::openLastFile()
         } else {
             QString msg = tr("Last file opened does not exist anymore: '%1'");
             QMessageBox::critical(this, tr("Open last file"), msg.arg(lastFile));
-            Lvk::Cmn::Settings().remove(SETTING_LAST_FILE);
+            Cmn::Settings(Cmn::Settings::UserScope()).remove(SETTING_LAST_FILE);
             setFilename("");
             setUiMode(FE::WelcomeTabUiMode);
         }
