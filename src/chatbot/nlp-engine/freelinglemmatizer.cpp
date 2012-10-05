@@ -41,6 +41,7 @@ inline std::string getLang()
     return lang.toStdString();
 }
 
+//--------------------------------------------------------------------------------------------------
 
 inline void getFlConfigFiles(ConfigFilesMap &configFiles)
 {
