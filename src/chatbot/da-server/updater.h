@@ -93,10 +93,13 @@ private slots:
     void onCfuRerror(QNetworkReply::NetworkError err);
 
 private:
+    Updater(Rest *rest);
+    Updater(const Updater&);
+    Updater & operator=(const Updater&);
+
     Rest *m_rest;
     UpdateVersion m_curVersion;
 
-    Updater(Rest *rest);
 
     bool parseResponse(UpdateInfo &info, const QString &response);
     bool parseVersion(UpdateInfo &info, const QString &strVer);

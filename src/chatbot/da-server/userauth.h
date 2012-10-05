@@ -116,6 +116,9 @@ private slots:
     void onRestError(QNetworkReply::NetworkError err);
 
 private:
+    UserAuth(const UserAuth&);
+    UserAuth & operator=(const UserAuth&);
+
     Rest m_rest;
 
     void handleAuthOk(Cmn::Json::Object &jresp);

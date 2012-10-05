@@ -187,6 +187,9 @@ private:
     typedef QHash<int, int> IndexRemap;
     typedef QHash<RuleId, IndexRemap > RuleIndexRemap;
 
+    HybridEngine(const HybridEngine&);
+    HybridEngine & operator=(const HybridEngine&);
+
     RuleList m_rules;
     QMutex *m_engineMutex;
     Engine *m_emEngine;

@@ -45,6 +45,9 @@ public:
     QString lemmatize(const QString &input);
 
 private:
+    FreelingLemmatizer(const FreelingLemmatizer&);
+    FreelingLemmatizer & operator=(const FreelingLemmatizer&);
+
     bool m_flInit;
     tokenizer *m_tk;
     splitter *m_sp;

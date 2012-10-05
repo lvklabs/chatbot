@@ -80,6 +80,9 @@ protected slots:
     virtual void onOwnMessageReceived(const QXmppMessage &msg);
 
 private:
+    FbChatbot(const FbChatbot&);
+    FbChatbot & operator=(const FbChatbot&);
+
     virtual void connectToServer(const QString &user, const QString &passwd, const QString &host);
 
     FbOwnMessageExtension    *m_ownMsgExtension;

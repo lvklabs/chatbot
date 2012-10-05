@@ -119,6 +119,9 @@ private slots:
     void onChatbotConnectionError(int err);
 
 private:
+    AccountVerifier(const AccountVerifier&);
+    AccountVerifier & operator=(const AccountVerifier&);
+
     QMutex *m_mutex;
     CA::Chatbot *m_chatbot;
     DAS::UserAuth m_daAuth;

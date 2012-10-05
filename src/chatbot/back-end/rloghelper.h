@@ -93,6 +93,9 @@ public:
     bool logManualScore(const Stats::Score &s);
 
 private:
+    RlogHelper(const RlogHelper&);
+    RlogHelper & operator=(const RlogHelper&);
+
     DAS::RemoteLogger *m_fastLogger;
     DAS::RemoteLogger *m_secureLogger;
     bool m_statsEnabled;
