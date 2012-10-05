@@ -163,7 +163,7 @@ private:
         ConversationInfo() : entries(0), interfered(false) { last.setTime_t(0); }
 
         QDateTime last;     // last entry timestamp
-        unsigned entries;   // #entries
+        unsigned entries;   // #consecutive entries not interfered
         bool interfered;    // Conversation interfered by user -- Not used.
     };
 

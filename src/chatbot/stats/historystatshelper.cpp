@@ -22,6 +22,8 @@
 #include "stats/historystatshelper.h"
 #include "common/globalstrings.h"
 
+#include <QtDebug>
+
 //--------------------------------------------------------------------------------------------------
 // HistoryStatsHelper
 //--------------------------------------------------------------------------------------------------
@@ -33,33 +35,35 @@ static const unsigned MIN_CONV_LEN = 20;      // Minimum conversation entries to
 // it was not interfered by the user, adds username to the score contacts set
 void Lvk::Stats::HistoryStatsHelper::trackConversation(const Lvk::Cmn::Conversation::Entry &entry)
 {
-    // If the conversation has been interfered by user
+    // If interfered by user
     bool interfered = entry.from.startsWith(OWN_MESSAGE_TOKEN);
 
-    if (!interfered) {
-        // Update conversation tracker
-        ConversationInfo &info = m_convTracker[entry.from];
+    if (interfered) {
+        qDebug() << "trackConversation: Interference with user" << entry.to;
+    }
 
-        // If inactivity period not surpassed
-        if (entry.dateTime.toTime_t() - info.last.toTime_t() < MAX_INACTIVITY) {
-            info.last = entry.dateTime;
-            info.entries = info.entries + 1;
+    ConversationInfo &info = m_convTracker[!interfered ? entry.from : entry.to];
 
-            if (info.entries >= MIN_CONV_LEN) {
-                m_scoreContacts.insert(entry.from);
-            }
-        } else {
-            info.last = entry.dateTime;
-            info.entries = 1;
-        }
+    // If inactivity period surpassed. i.e. new conversation
+    if (entry.dateTime.toTime_t() - info.last.toTime_t() >= MAX_INACTIVITY) {
+        info.entries = interfered ? 0 : 1;
+        info.interfered = interfered;
+    } else {
+        info.entries = interfered ? 0 : info.entries + 1;
+        info.interfered |= interfered;
+    }
 
-        // Finally update some chatbot stats
+    info.last = entry.dateTime;
+
+    if (!info.interfered && info.entries >= MIN_CONV_LEN) {
+        qDebug() << "trackConversation: SCORE!!! with user" << entry.from;
+        m_scoreContacts.insert(entry.from);
+    }
+
+    if (!info.interfered) {
         m_cbLines.insert(entry.response);
         updateLexicon(splitSentence(entry.response), m_cbLexicon);
         ++m_cbLinesCount;
-    } else {
-        // Reset conversation
-        m_convTracker.remove(entry.to);
     }
 }
 
