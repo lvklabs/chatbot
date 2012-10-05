@@ -26,3 +26,5 @@
 31-08-2012 11:20:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holak,Holak!,match,2
 31-08-2012 11:22:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holal,Holal!,match,2
 31-08-2012 11:23:36,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,holam,Holam!,match,2
+31-08-2012 11:38:37,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,Hola,Hola de nuevo!,match,2
+31-08-2012 11:38:37,Andres Pagliano <-1575963427@chat.facebook.com>,df10a13a-3496-45e8-b614-ff3f9cf24732,Todo bien?,Todo OK,match,2

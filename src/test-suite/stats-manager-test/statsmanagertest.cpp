@@ -47,7 +47,7 @@ const int CONV_LONG2_CONV_SCORE = 24 + 26; // #lines + #lexicon
 const int CONV_LONG2_CONT_SCORE = 1*CONV_P;
 const int CONV_INACT_CONV_SCORE = 27 + 29; // #lines + #lexicon
 const int CONV_INACT_CONT_SCORE = 0;
-const int CONV_INTER_CONV_SCORE = 13 + 14; // #lines + #lexicon
+const int CONV_INTER_CONV_SCORE = 15 + 18; // #lines + #lexicon
 const int CONV_INTER_CONT_SCORE = 0;
 
 using namespace Lvk;
