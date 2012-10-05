@@ -95,7 +95,7 @@ public:
     /**
      * Log manually triggered score \s
      */
-    bool logDefaultStats();
+    bool logDefaultMetrics();
 
 private:
     RlogHelper(const RlogHelper&);

@@ -131,6 +131,11 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 
     m_statsFile->setCurrentScore(score);
 
+    // Set some metrics
+    m_statsFile->setMetric(Stats::TotalRules, m_ruleStats.rulesCount());
+    m_statsFile->setMetric(Stats::TotalRulePoints, m_ruleStats.points());
+    // TODO complete
+
     return score;
 }
 

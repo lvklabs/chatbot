@@ -23,6 +23,7 @@
 #include "da-server/remoteloggerfactory.h"
 #include "da-server/remoteloggerkeys.h"
 #include "stats/score.h"
+#include "stats/statsmanager.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -42,6 +43,13 @@ inline void append(Lvk::DAS::RemoteLogger::FieldList & fields, const Lvk::Stats:
     fields.append(RLOG_KEY_CONV_SCORE,     QString::number(s.conversations));
     fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(s.contacts));
     fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(s.total));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString getMetric(Lvk::Stats::Metric m)
+{
+    return QString::number(Lvk::Stats::StatsManager::manager()->metric(m).toInt(), 10);
 }
 
 }
@@ -122,14 +130,15 @@ bool Lvk::BE::RlogHelper::logManualScore(const Stats::Score &s)
     return m_secureLogger->log("Manually uploaded score", fields) == 0;
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::RlogHelper::logDefaultStats()
+bool Lvk::BE::RlogHelper::logDefaultMetrics()
 {
-    // TODO
+    // TODO complete metrics!
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(RLOG_KEY_RULE_COUNT, getMetric(Stats::TotalRules));
 
-    return true;
+    return remoteLog("Metrics", fields, false);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -32,4 +32,6 @@
 #define RLOG_KEY_USERNAME           "username"
 #define RLOG_KEY_DOMAIN             "domain"
 
+#define RLOG_KEY_RULE_COUNT         "rule_count"
+
 #endif // LVK_DAS_REMOTELOGGERKEYS_H

@@ -340,6 +340,7 @@ void Lvk::BE::AppFacade::close()
         }
     } else {
         m_rlogh.logAutoScore(bestScore());
+        m_rlogh.logDefaultMetrics();
     }
 
     if (m_nlpEngine) {
