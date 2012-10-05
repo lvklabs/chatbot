@@ -642,7 +642,7 @@ void Lvk::BE::AppFacade::cancelVerifyAccount()
 
 void Lvk::BE::AppFacade::onAccountOk(const AccountVerifier::AccountInfo &info)
 {
-    m_rlogh.logAccountVerified(info.username, info.chatUsername);
+    m_rlogh.logAccountVerified(info.username, info.type == BE::FbChat ? "facebook" : "gtalk");
 
     setChatType(info.type);
     setUsername(info.username);

@@ -92,6 +92,11 @@ public:
      */
     bool logManualScore(const Stats::Score &s);
 
+    /**
+     * Log manually triggered score \s
+     */
+    bool logDefaultStats();
+
 private:
     RlogHelper(const RlogHelper&);
     RlogHelper & operator=(const RlogHelper&);
