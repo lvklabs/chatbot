@@ -9,7 +9,9 @@
 #include <QtDebug>
 #include <QFileDialog>
 #include <QStyle>
+#include <QFile>
 #include <QDesktopWidget>
+#include <QMessageBox>
 
 //--------------------------------------------------------------------------------------------------
 // WelcomeWidget
@@ -24,7 +26,9 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
     connect(ui->openChatbotButton,     SIGNAL(clicked()), SLOT(onOpenChatbot()));
     connect(ui->openLastChatbotButton, SIGNAL(clicked()), SLOT(onOpenLastChatbot()));
 
-    ui->openLastChatbotButton->setVisible(Lvk::Cmn::Settings().contains(SETTING_LAST_FILE));
+    m_lastFilename = Lvk::Cmn::Settings().value(SETTING_LAST_FILE).toString();
+
+    ui->openLastChatbotButton->setVisible(!m_lastFilename.isEmpty());
 
 #ifdef WIN32
     ui->spacerTop->changeSize(20, 214);
@@ -74,8 +78,14 @@ void Lvk::FE::WelcomeWidget::onCreateChatbot()
 
 void Lvk::FE::WelcomeWidget::onOpenLastChatbot()
 {
-    m_mw->openLastFile();
-    m_mw->show();
-    close();
+    if (QFile::exists(m_lastFilename)) {
+        m_mw->openFile(m_lastFilename);
+        m_mw->show();
+        close();
+    } else {
+        QString msg = tr("Last file opened does not exist anymore: '%1'");
+        QMessageBox::critical(this, tr("Open last file"), msg.arg(m_lastFilename));
+        ui->openLastChatbotButton->setVisible(false);
+    }
 }
 

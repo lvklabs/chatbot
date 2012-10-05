@@ -673,10 +673,17 @@ void Lvk::FE::MainWindow::openFile(const QString &filename)
 void Lvk::FE::MainWindow::openLastFile()
 {
     if (!m_lastFilename.isEmpty()) {
-        if (load(m_lastFilename)) {
-            startEditMode();
+        if (QFile::exists(m_lastFilename)) {
+            if (load(m_lastFilename)) {
+                startEditMode();
+            } else {
+                clear();
+            }
         } else {
-            clear();
+            QString msg = tr("Last file opened does not exist anymore: '%1'");
+            QMessageBox::critical(this, tr("Open last file"), msg.arg(m_lastFilename));
+            m_lastFilename.clear();
+            Lvk::Cmn::Settings().remove(SETTING_LAST_FILE);
         }
     }
 }
