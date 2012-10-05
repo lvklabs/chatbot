@@ -119,12 +119,12 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
     unsigned hic  = m_statsFile->contacts().size();
     unsigned trp  = m_ruleStats.points();
     unsigned hcls = m_histStats.chatbotLexiconSize();
-    unsigned hcl  = m_histStats.chatbotLines();
+    unsigned hdcl = m_histStats.chatbotDiffConvLines();
 
     const unsigned SCORE_CONTACTS_POINTS = 1000;
 
     Stats::Score score;
-    score.conversations = hcls + hcl;
+    score.conversations = hcls + hdcl;
     score.contacts      = hic*SCORE_CONTACTS_POINTS;
     score.rules         = trp;
     score.total         = score.conversations + score.contacts + score.rules;

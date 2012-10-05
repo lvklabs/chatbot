@@ -39,15 +39,15 @@ const int CONV_P = 1000; // Valid conversation points
 #define CONV_INACT_FILENAME     "conv_inactive.txt"
 #define CONV_INTER_FILENAME     "conv_interfered.txt"
 
-const int CONV_SHORT_CONV_SCORE = 4 + 7;   // #lines + #lexicon
+const int CONV_SHORT_CONV_SCORE = 3 + 7;   // #conv diff lines + #lexicon
 const int CONV_SHORT_CONT_SCORE = 0;
-const int CONV_LONG_CONV_SCORE = 27 + 29;  // #lines + #lexicon
+const int CONV_LONG_CONV_SCORE = 26 + 29;  // #conv diff lines + #lexicon
 const int CONV_LONG_CONT_SCORE = 1*CONV_P;
-const int CONV_LONG2_CONV_SCORE = 24 + 26; // #lines + #lexicon
+const int CONV_LONG2_CONV_SCORE = 22 + 27; // #conv diff lines + #lexicon
 const int CONV_LONG2_CONT_SCORE = 1*CONV_P;
-const int CONV_INACT_CONV_SCORE = 27 + 29; // #lines + #lexicon
+const int CONV_INACT_CONV_SCORE = 25 + 30; // #conv diff lines + #lexicon
 const int CONV_INACT_CONT_SCORE = 0;
-const int CONV_INTER_CONV_SCORE = 15 + 18; // #lines + #lexicon
+const int CONV_INTER_CONV_SCORE = 15 + 17; // #conv diff lines + #lexicon
 const int CONV_INTER_CONT_SCORE = 0;
 
 using namespace Lvk;
@@ -594,6 +594,17 @@ void StatsManagerTest::testBestScoreAndIntervals()
     }
 
     Stats::Score s5(ruleTree2Score(), CONV_LONG_CONT_SCORE + CONV_LONG2_CONT_SCORE, CONV_LONG2_CONV_SCORE);
+
+    if (manager()->currentScore() != s5) {
+        qDebug() << " - Got:";
+        qDebug() << manager()->currentScore().rules;
+        qDebug() << manager()->currentScore().contacts;
+        qDebug() << manager()->currentScore().conversations;
+        qDebug() << " - Expected:";
+        qDebug() << s5.rules;
+        qDebug() << s5.contacts;
+        qDebug() << s5.conversations;
+    }
 
     QVERIFY(manager()->currentScore() == s5);
     QVERIFY(manager()->bestScore() == s5);

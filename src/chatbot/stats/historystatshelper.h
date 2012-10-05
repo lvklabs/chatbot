@@ -54,7 +54,7 @@ public:
      * Constructs a emtpy HistoryStatsHelper
      */
     HistoryStatsHelper()
-        : m_cbLinesCount(0)
+        : m_cbLinesCount(0), m_deadConvDiffLinesCount(0)
     {
     }
 
@@ -63,7 +63,7 @@ public:
      * \a conv.
      */
     HistoryStatsHelper(const Lvk::Cmn::Conversation &conv)
-        : m_cbLinesCount(0)
+        : m_cbLinesCount(0), m_deadConvDiffLinesCount(0)
     {
         count(conv);
     }
@@ -77,11 +77,21 @@ public:
     }
 
     /**
+     * Returns the total amount of "different conversation lines" in history produced by the
+     * chatbot. For more details see definition in the metrics documents, table 1.
+     */
+    unsigned chatbotDiffConvLines() const
+    {
+        return m_deadConvDiffLinesCount + liveConvDiffLinesCount();
+    }
+
+
+    /**
      * Returns the total amount of different lines in history produced by the chatbot
      */
     unsigned chatbotDiffLines() const
     {
-        return m_cbLines.size();
+        return m_cbDiffLines.size();
     }
 
     /**
@@ -124,10 +134,12 @@ public:
     {
         StatsHelper::clear();
         m_convTracker.clear();
+        m_convDiffLines.clear();
         m_scoreContacts.clear();
-        m_cbLines.clear();
+        m_cbDiffLines.clear();
         m_cbLexicon.clear();
         m_cbLinesCount = 0;
+        m_deadConvDiffLinesCount = 0;
     }
 
 protected:
@@ -169,15 +181,21 @@ private:
 
     // username -> ConversationInfo
     typedef QHash<QString, ConversationInfo> ConversationTracker;
+    // username -> Conversation diff lines
+    typedef QHash<QString, QSet<QString> > ConversationDiffLines;
 
     ConversationTracker m_convTracker;
+    ConversationDiffLines m_convDiffLines;
     QSet<QString> m_scoreContacts;
+
     // chatbot stats
-    QSet<QString> m_cbLines;
+    QSet<QString> m_cbDiffLines;
     QSet<QString> m_cbLexicon;
     unsigned m_cbLinesCount;
+    unsigned m_deadConvDiffLinesCount;
 
     void trackConversation(const Lvk::Cmn::Conversation::Entry &entry);
+    unsigned liveConvDiffLinesCount() const;
 };
 
 

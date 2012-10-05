@@ -38,16 +38,21 @@ void Lvk::Stats::HistoryStatsHelper::trackConversation(const Lvk::Cmn::Conversat
     // If interfered by user
     bool interfered = entry.from.startsWith(OWN_MESSAGE_TOKEN);
 
+    QString user = !interfered ? entry.from : entry.to;
+
     if (interfered) {
-        qDebug() << "trackConversation: Interference with user" << entry.to;
+        qDebug() << "trackConversation: Interference with user" << user;
     }
 
-    ConversationInfo &info = m_convTracker[!interfered ? entry.from : entry.to];
+    ConversationInfo &info = m_convTracker[user];
 
     // If inactivity period surpassed. i.e. new conversation
     if (entry.dateTime.toTime_t() - info.last.toTime_t() >= MAX_INACTIVITY) {
         info.entries = interfered ? 0 : 1;
         info.interfered = interfered;
+
+        m_deadConvDiffLinesCount += m_convDiffLines[user].size();
+        m_convDiffLines[user].clear();
     } else {
         info.entries = interfered ? 0 : info.entries + 1;
         info.interfered |= interfered;
@@ -55,15 +60,30 @@ void Lvk::Stats::HistoryStatsHelper::trackConversation(const Lvk::Cmn::Conversat
 
     info.last = entry.dateTime;
 
-    if (!info.interfered && info.entries >= MIN_CONV_LEN) {
-        qDebug() << "trackConversation: SCORE!!! with user" << entry.from;
-        m_scoreContacts.insert(entry.from);
-    }
-
     if (!info.interfered) {
-        m_cbLines.insert(entry.response);
+        if (info.entries >= MIN_CONV_LEN && !m_scoreContacts.contains(user)) {
+            qDebug() << "trackConversation: SCORE!!! with user" << user;
+            m_scoreContacts.insert(user);
+        }
+
+        m_cbDiffLines.insert(entry.response);
+        m_convDiffLines[user].insert(entry.response);
         updateLexicon(splitSentence(entry.response), m_cbLexicon);
         ++m_cbLinesCount;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+unsigned Lvk::Stats::HistoryStatsHelper::liveConvDiffLinesCount() const
+{
+    unsigned count = 0;
+
+    ConversationDiffLines::const_iterator it;
+    for (it = m_convDiffLines.begin(); it != m_convDiffLines.end(); ++it) {
+        count += it.value().size();
+    }
+
+    return count;
 }
 
