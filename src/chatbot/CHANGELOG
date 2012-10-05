@@ -5,6 +5,7 @@ v0.25
  - Saving rosters inside the rules file
  - Saving stats and history in a new folder named <chatbot_basename>_extras
  - By default, saving chatbot files in Documents/Chatbots
+ - Finished score algorithm
 
 v0.24
  - Added authentication against 'Dale Aceptar' server.
