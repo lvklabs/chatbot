@@ -170,7 +170,7 @@ void Lvk::FE::MainWindow::clear()
 void Lvk::FE::MainWindow::clear(bool resetModel)
 {
     if (resetModel) {
-        initCoreAndModelsWithFile("");
+        initWithFile("");
     }
 
     m_ruleEdited = false;
@@ -218,7 +218,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename, bool newFile)
+bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
 {
     bool success = true;
 
@@ -233,11 +233,8 @@ bool Lvk::FE::MainWindow::initCoreAndModelsWithFile(const QString &filename, boo
     }
 
     delete m_ruleTreeModel;
-
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
-
     ui->categoriesTree->setModel(m_ruleTreeModel);
-
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
     connect(m_ruleTreeSelectionModel,
@@ -630,6 +627,9 @@ void Lvk::FE::MainWindow::onSaveMenuTriggered()
 
 void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 {
+    QMessageBox::information(this, tr("Save As..."),
+                             tr("With this option you are creating a new chatbot. The new chatbot "
+                                "will not keep your current chat history and score."));
     saveAsChanges();
 }
 
@@ -646,11 +646,11 @@ void Lvk::FE::MainWindow::newFile(const QString &filename_)
 
     if (!filename.isEmpty()) {
         clear();
-        if (initCoreAndModelsWithFile(filename, true)) {
+        if (initWithFile(filename, true)) {
             setUiMode(FE::VerifyAccountUiMode);
         } else {
             QMessageBox::critical(this, tr("New File"), tr("Could not create file. "
-                                  "Please verify that you have write permissions."));
+                                 "Please verify that you have write permissions or enough space."));
         }
     }
 }
@@ -698,7 +698,7 @@ bool Lvk::FE::MainWindow::saveChanges()
 
         if (!saved) {
             QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
-                                  "Please verify that you have write permissions."));
+                                 "Please verify that you have write permissions or enough space."));
         }
     }
 
@@ -715,21 +715,20 @@ bool Lvk::FE::MainWindow::saveAsChanges()
 
     if (!filename.isEmpty()) {
 
-        QString filenameBak = m_filename;
-
-        setFilename(filename);
-
         if (m_ruleEdited || m_ruleAdded) {
             teachRule(selectedRule());
         }
 
         saved = m_appFacade->saveAs(m_filename);
 
-        if (!saved) {
+        if (saved) {
+            setFilename(filename);
+            ui->chatHistory->clear();
+            updateScore();
+            onScoreRemainingTime(m_appFacade->scoreRemainingTime());
+        } else  {
             QMessageBox::critical(this, tr("Save File"), tr("Could not save file. "
-                                  "Please verify that you have write permissions."));
-
-            setFilename(filenameBak);
+                                 "Please verify that you have write permissions or enough space."));
         }
     }
 
@@ -742,13 +741,11 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 {
     clear(false);
 
-    bool success = initCoreAndModelsWithFile(filename);
+    bool success = initWithFile(filename);
 
     if (success) {
         ui->chatHistory->setConversation(m_appFacade->chatHistory());
         ui->ruleInputWidget->setRoster(m_appFacade->roster());
-
-        // score
         updateScore();
         onScoreRemainingTime(m_appFacade->scoreRemainingTime());
     } else {

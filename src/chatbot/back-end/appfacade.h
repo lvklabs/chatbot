@@ -436,6 +436,8 @@ private:
     bool generalSetup();
     unsigned defaultNlpOptions();
     QString getExtrasPath();
+    QString getStatsFilename();
+    QString getHistoryFilename();
     void buildNlpRulesOf(const Rule* parentRule, Nlp::RuleList &nlpRules);
     void storeTargets(const TargetList &targets);
     void refreshEvasives();
