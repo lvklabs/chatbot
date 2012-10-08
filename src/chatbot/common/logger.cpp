@@ -164,7 +164,9 @@ void Lvk::Cmn::Logger::msgHandler(QtMsgType type, const char *msg)
 
     switch (type) {
     case QtDebugMsg:
+#ifndef QT_NO_DEBUG
         std::cout << DEBUG_STR << msg << std::endl;
+#endif
         m_logFile->write(DEBUG_STR);
         break;
 
