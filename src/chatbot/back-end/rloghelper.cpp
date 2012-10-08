@@ -29,6 +29,7 @@
 #include "common/settingskeys.h"
 
 #include <QtDebug>
+#include <QSysInfo>
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -52,7 +53,28 @@ inline QString getMetric(Lvk::Stats::Metric m)
     return QString::number(Lvk::Stats::StatsManager::manager()->metric(m).toInt(), 10);
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString getInvervalCount()
+{
+    return QString::number(Lvk::Stats::StatsManager::manager()->intervals(), 10);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString getOSType()
+{
+#ifdef Q_WS_X11
+    return QString("Linux");
+#elif defined(Q_WS_WIN)
+    return QString("Windows 0x%1").arg(QString::number(QSysInfo::WindowsVersion,16));
+#elif defined(Q_WS_MAC)
+    return QString("Mac 0x%1").arg(QString::number(QSysInfo::MacintoshVersion,16));
+#endif
+}
+
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 // RlogHelper
@@ -114,7 +136,7 @@ bool Lvk::BE::RlogHelper::logAutoScore(const Stats::Score &s)
     DAS::RemoteLogger::FieldList fields;
     append(fields, s);
 
-    return remoteLog("Score", fields, false);
+    return remoteLog("Score Metrics", fields, false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -136,9 +158,20 @@ bool Lvk::BE::RlogHelper::logDefaultMetrics()
 {
     // TODO complete metrics!
     DAS::RemoteLogger::FieldList fields;
-    fields.append(RLOG_KEY_RULE_COUNT, getMetric(Stats::TotalRules));
+    fields.append(RLOG_KEY_OS_TYPE,             getOSType());
+    fields.append(RLOG_KEY_RULE_COUNT,          getMetric(Stats::RuleDefCount));
+    fields.append(RLOG_KEY_RULE_LEXICON,        getMetric(Stats::RuleLexiconSize));
+    fields.append(RLOG_KEY_RULE_WORD_COUNT,     getMetric(Stats::RuleWordCount));
+    fields.append(RLOG_KEY_REGEX_RULE_COUNT,    getMetric(Stats::RegexRuleCount));
+    fields.append(RLOG_KEY_KEYWORD_RULE_COUNT,  getMetric(Stats::KeywordRuleCount));
+    fields.append(RLOG_KEY_VAR_RULE_COUNT,      getMetric(Stats::VarRuleCount));
+    fields.append(RLOG_KEY_COND_RULE_COUNT,     getMetric(Stats::CondRuleCount));
+    fields.append(RLOG_KEY_ROSTER_SIZE,         getMetric(Stats::RosterSize));
+    fields.append(RLOG_KEY_BLACK_ROSTER_SIZE,   getMetric(Stats::BlackRosterSize));
+    fields.append(RLOG_KEY_BLACK_ROSTER_SIZE,   getMetric(Stats::BlackRosterSize));
+    fields.append(RLOG_KEY_INTERVAL_COUNT,      getInvervalCount());
 
-    return remoteLog("Metrics", fields, false);
+    return remoteLog("General Metrics", fields, false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -152,8 +185,8 @@ bool Lvk::BE::RlogHelper::remoteLog(const QString &msg, const DAS::RemoteLogger:
 
     DAS::RemoteLogger::FieldList fields = cfields;
     fields.prepend(RLOG_KEY_APP_VERSION, m_appVersion);
-    fields.prepend(RLOG_KEY_CHATBOT_ID, m_chatbotId);
-    fields.prepend(RLOG_KEY_USER_ID,    m_username);
+    fields.prepend(RLOG_KEY_CHATBOT_ID,  m_chatbotId);
+    fields.prepend(RLOG_KEY_USER_ID,     m_username);
 
     if (secure) {
         return m_secureLogger->log(msg, fields) == 0;

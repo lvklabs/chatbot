@@ -782,6 +782,8 @@ Lvk::BE::Roster Lvk::BE::AppFacade::roster()
 
 void Lvk::BE::AppFacade::setRoster(const BE::Roster &roster)
 {
+    Stats::StatsManager::manager()->setMetric(Stats::RosterSize, roster.size());
+
     m_rules.setMetadata(FILE_METADATA_ROSTER, QVariant::fromValue(roster));
 }
 
@@ -789,6 +791,8 @@ void Lvk::BE::AppFacade::setRoster(const BE::Roster &roster)
 
 void Lvk::BE::AppFacade::setBlackRoster(const BE::Roster &roster)
 {
+    Stats::StatsManager::manager()->setMetric(Stats::BlackRosterSize, roster.size());
+
     m_chatbot->setBlackListRoster(toChatbotRoster(roster));
 
     m_rules.setMetadata(FILE_METADATA_BLACK_ROSTER, QVariant::fromValue(roster));

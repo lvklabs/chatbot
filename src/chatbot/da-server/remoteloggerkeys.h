@@ -31,7 +31,17 @@
 #define RLOG_KEY_TOTAL_SCORE        "total_score"
 #define RLOG_KEY_USERNAME           "username"
 #define RLOG_KEY_DOMAIN             "domain"
-
+#define RLOG_KEY_OS_TYPE            "os_type"
 #define RLOG_KEY_RULE_COUNT         "rule_count"
+#define RLOG_KEY_RULE_POINTS        "rule_points"
+#define RLOG_KEY_RULE_LEXICON       "rule_lexicon_size"
+#define RLOG_KEY_RULE_WORD_COUNT    "rule_word_count"
+#define RLOG_KEY_REGEX_RULE_COUNT   "regex_rule_count"
+#define RLOG_KEY_KEYWORD_RULE_COUNT "keyword_rule_count"
+#define RLOG_KEY_VAR_RULE_COUNT     "var_rule_count"
+#define RLOG_KEY_COND_RULE_COUNT    "cond_rule_count"
+#define RLOG_KEY_ROSTER_SIZE        "roster_size"
+#define RLOG_KEY_BLACK_ROSTER_SIZE  "black_roster_size"
+#define RLOG_KEY_INTERVAL_COUNT     "interval_count"
 
 #endif // LVK_DAS_REMOTELOGGERKEYS_H

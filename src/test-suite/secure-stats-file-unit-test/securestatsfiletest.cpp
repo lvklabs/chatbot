@@ -81,7 +81,7 @@ void SecureStatsFileTest::testIsEmptyAndClose()
     Stats::SecureStatsFile file(FILENAME_1);
 
     verifyAllEmpty(file);
-    file.setMetric(Stats::LexiconSize, QVariant(10));
+    file.setMetric(Stats::RuleLexiconSize, QVariant(10));
     QVERIFY(!file.isEmpty());
     file.close();
     verifyAllEmpty(file);
@@ -95,7 +95,7 @@ void SecureStatsFileTest::testIsEmptySaveAndClear()
     Stats::SecureStatsFile file(FILENAME_1);
 
     verifyAllEmpty(file);
-    file.setMetric(Stats::LexiconSize, QVariant(10));
+    file.setMetric(Stats::RuleLexiconSize, QVariant(10));
     QVERIFY(!file.isEmpty());
     file.save();
     QVERIFY(QFile::exists(FILENAME_1));
@@ -223,9 +223,9 @@ void SecureStatsFileTest::testSaveAndLoadScore()
 
 void SecureStatsFileTest::testSaveAndLoadMetrics()
 {
-    const Stats::Metric m1 = Stats::LexiconSize;
-    const Stats::Metric m2 = Stats::HistoryChatbotDiffLines;
-    const Stats::Metric m3 = Stats::HistoryScoreContacts;
+    const Stats::Metric m1 = Stats::RuleLexiconSize;
+    const Stats::Metric m2 = Stats::RuleWordCount;
+    const Stats::Metric m3 = Stats::RulePoints;
     const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
 
     const unsigned value1  = 10;
@@ -301,9 +301,9 @@ void SecureStatsFileTest::testSaveAndLoadMetrics()
 
 void SecureStatsFileTest::testNewIntervalAndHistory()
 {
-    const Stats::Metric m1 = Stats::LexiconSize;
+    const Stats::Metric m1 = Stats::RuleLexiconSize;
     const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
-    const Stats::Metric id5 = Stats::HistoryTotalLines;
+    const Stats::Metric id5 = Stats::CondRuleCount;
 
     const unsigned value1a = 10;
     const unsigned value1b = 20;

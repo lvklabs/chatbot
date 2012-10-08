@@ -24,7 +24,6 @@
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
-#include "stats/statsmanager.h"
 
 #include "QXmppClient.h"
 #include "QXmppMessage.h"

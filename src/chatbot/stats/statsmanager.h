@@ -83,6 +83,11 @@ public:
     void setFilename(const QString &id);
 
     /**
+     * \copydoc StatsFile::setMetric()
+     */
+    void setMetric(Stats::Metric m, const QVariant &value);
+
+    /**
      * \copydoc StatsFile::metric()
      */
     void metric(Stats::Metric m, QVariant &value);
@@ -118,6 +123,11 @@ public:
      * Returns the best score for the current chatbot.
      */
     Score bestScore();
+
+    /**
+     * Returns the amount of score intervals that have elapsed.
+     */
+    unsigned intervals();
 
 public slots:
 
@@ -167,6 +177,7 @@ private:
     int m_elapsedTime;
 
     void updateBestScore();
+    void setRuleMetrics();
 
 private slots:
     void onScoreTick();

@@ -75,6 +75,11 @@ public:
     virtual void newInterval();
 
     /**
+     * \copydoc StatsFile::intervals()
+     */
+    virtual unsigned intervals();
+
+    /**
      * \copydoc StatsFile::setMetric()
      */
     virtual void setMetric(Stats::Metric m, const QVariant &value);

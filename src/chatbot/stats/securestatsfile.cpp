@@ -96,6 +96,15 @@ void Lvk::Stats::SecureStatsFile::newInterval()
 
 //--------------------------------------------------------------------------------------------------
 
+unsigned Lvk::Stats::SecureStatsFile::intervals()
+{
+    QMutexLocker locker(m_mutex);
+
+    return m_curInterv;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Stats::SecureStatsFile::setMetric(Stats::Metric m, const QVariant &value)
 {
     switch (m) {
@@ -336,7 +345,7 @@ inline void Lvk::Stats::SecureStatsFile::setMetric(int col, unsigned value, bool
     assert(col < TotalColumns);
     assert(col != TimeIntervalCol);
 
-    qDebug() << "SecureStatsFile: Setting col #" << col << ":" << value;
+    //qDebug() << "SecureStatsFile: Setting col #" << col << ":" << value;
 
     QMutexLocker locker(m_mutex);
 
@@ -447,4 +456,3 @@ void Lvk::Stats::SecureStatsFile::appendChatEntry(const Cmn::Conversation::Entry
 
     m_history.append(entry);
 }
-

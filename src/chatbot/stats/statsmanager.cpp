@@ -96,6 +96,13 @@ void Lvk::Stats::StatsManager::setFilename(const QString &filename)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Stats::StatsManager::setMetric(Stats::Metric m, const QVariant &value)
+{
+    return m_statsFile->setMetric(m, value);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Stats::StatsManager::metric(Stats::Metric m, QVariant &value)
 {
     return m_statsFile->metric(m, value);
@@ -131,10 +138,7 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 
     m_statsFile->setCurrentScore(score);
 
-    // Set some metrics
-    m_statsFile->setMetric(Stats::TotalRules, m_ruleStats.rulesCount());
-    m_statsFile->setMetric(Stats::TotalRulePoints, m_ruleStats.points());
-    // TODO complete
+    setRuleMetrics();
 
     return score;
 }
@@ -148,6 +152,14 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::bestScore()
     updateBestScore();
 
     return m_statsFile->bestScore();
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+unsigned Lvk::Stats::StatsManager::intervals()
+{
+    return m_statsFile->intervals();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -253,4 +265,20 @@ void Lvk::Stats::StatsManager::updateScoreWith(const Cmn::Conversation::Entry &e
         }
     }
 
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Stats::StatsManager::setRuleMetrics()
+{
+    // Set some metrics
+    // TODO complete
+    m_statsFile->setMetric(Stats::RuleDefCount,     m_ruleStats.rulesCount());
+    m_statsFile->setMetric(Stats::RulePoints,       m_ruleStats.points());
+    m_statsFile->setMetric(Stats::RuleLexiconSize,  m_ruleStats.lexiconSize());
+    m_statsFile->setMetric(Stats::RuleWordCount,    m_ruleStats.words());
+    m_statsFile->setMetric(Stats::RegexRuleCount,   m_ruleStats.regexRules());
+    m_statsFile->setMetric(Stats::KeywordRuleCount, m_ruleStats.keywordRules());
+    m_statsFile->setMetric(Stats::VarRuleCount,     m_ruleStats.variableRules());
+    m_statsFile->setMetric(Stats::CondRuleCount,    m_ruleStats.conditionalRules());
 }

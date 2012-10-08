@@ -41,23 +41,27 @@ namespace Stats
 enum Metric
 {
     NullStat,                   ///< The null stat
-    LexiconSize,                ///< The lexicon size, i.e. the amount of different words used to define rules.
-    TotalWords,                 ///< The total amount of words used to define rules.
-    TotalRules,                 ///< The total amount of rules.
-    TotalRulePoints,            ///< The total amount of rule points.
-    ConnectionTime = 10,        ///< The total daily connection time.
-    RosterSize,                 ///< The roster size, i.e. the amounts of chat contacts.
-    EnabledRosterSize,          ///< The enabled roster size, i.e. the amounts of chat contacts allowed to chat
-    HistoryTotalLines,          ///< The total amount of lines in the chat history.
-    HistoryLexiconSize,         ///< The history lexicon size, i.e. the total amount of different words used
-    HistoryChatbotLines,        ///< The total amount of lines in the chat history produced by the chatbot.
-    HistoryChatbotDiffLines,    ///< The total amount of different lines in the chat history produced by the chatbot
-    HistoryChatbotLexiconSize,  ///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot
-    HistoryChatbotLinesInterval,///< The total amount of lines in the chat history produced by the chatbot within interval
-    HistoryChatbotDiffLinesInterval,///< The total amount of different lines in the chat history produced by the chatbot within interval
-    HistoryChatbotLexiconSizeInterval,///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot within interval
-    HistoryContacts,            ///< The amount of different contacts found in the history.
-    HistoryScoreContacts        ///< The amount of different contacts found in the history that scores
+    RuleLexiconSize,            ///< The rule lexicon size, i.e. the amount of different words used to define rules.
+    RuleWordCount,              ///< The total amount of words used to define rules.
+    RuleDefCount,               ///< The total amount of rules.
+    RulePoints,                 ///< The total amount of rule points.
+    RegexRuleCount,             ///< The total amount of rule with regular expresion.
+    KeywordRuleCount,           ///< The total amount of rule with keyword operator.
+    VarRuleCount,               ///< The total amount of rule with variables.
+    CondRuleCount,              ///< The total amount of rule with conditional.
+    ConnectionTime = 20,        ///< The total daily connection time.
+    RosterSize = 30,            ///< The roster size, i.e. the amounts of chat contacts.
+    BlackRosterSize,            ///< The disable roster size, i.e. the amounts of chat contacts not allowed to chat
+//    HistoryTotalLines = 40,   ///< The total amount of lines in the chat history.
+//    HistoryLexiconSize,         ///< The history lexicon size, i.e. the total amount of different words used
+//    HistoryChatbotLines,        ///< The total amount of lines in the chat history produced by the chatbot.
+//    HistoryChatbotDiffLines,    ///< The total amount of different lines in the chat history produced by the chatbot
+//    HistoryChatbotLexiconSize,  ///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot
+//    HistoryChatbotLinesInterval,///< The total amount of lines in the chat history produced by the chatbot within interval
+//    HistoryChatbotDiffLinesInterval,///< The total amount of different lines in the chat history produced by the chatbot within interval
+//    HistoryChatbotLexiconSizeInterval,///< The chatbot history lexicon size, i.e. the total amount of different words used by the chatbot within interval
+//    HistoryContacts,            ///< The amount of different contacts found in the history.
+//    HistoryScoreContacts        ///< The amount of different contacts found in the history that scores
 };
 
 /// @}

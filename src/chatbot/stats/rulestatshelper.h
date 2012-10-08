@@ -55,7 +55,8 @@ public:
      * Constructs an emtpy RuleStatsHelper
      */
     RuleStatsHelper()
-        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine())
+        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine()),
+          m_regexRules(0), m_keywordRules(0), m_varRules(0), m_condRules(0)
     {
     }
 
@@ -63,7 +64,8 @@ public:
      * Constructs a RuleStatsHelper and provides statistics for the given \a root rule.
      */
     RuleStatsHelper(const Lvk::BE::Rule *root)
-        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine())
+        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine()),
+          m_regexRules(0), m_keywordRules(0), m_varRules(0), m_condRules(0)
     {
         if (root) {
             rcount(root);
@@ -95,6 +97,38 @@ public:
     }
 
     /**
+     * Returns the total amount of rules with regular expresions
+     */
+    unsigned regexRules()
+    {
+        return m_regexRules;
+    }
+
+    /**
+     * Returns the total amount of rules with keyword operator
+     */
+    unsigned keywordRules()
+    {
+        return m_keywordRules;
+    }
+
+    /**
+     * Returns the total amount of rules with variables
+     */
+    unsigned variableRules()
+    {
+        return m_varRules;
+    }
+
+    /**
+     * Returns the total amount of rules with conditionals
+     */
+    unsigned conditionalRules()
+    {
+        return m_condRules;
+    }
+
+    /**
      * Resets stats with the given new \a root
      */
     void reset(const Lvk::BE::Rule *root)
@@ -114,6 +148,10 @@ public:
         m_ioPairs.clear();
         m_rules = 0;
         m_points = 0;
+        m_regexRules = 0;
+        m_keywordRules = 0;
+        m_varRules = 0;
+        m_condRules = 0;
     }
 
 protected:
@@ -181,21 +219,25 @@ protected:
      *   <li>4 points rules with conditionals</li>
      * </ul>
      */
-    unsigned points(const QString &input, const QString &output) const
+    unsigned points(const QString &input, const QString &output)
     {
         if (input.isEmpty() || output.isEmpty()) {
             return 0;
         } else if (m_engine->hasVariable(input)) {
             if (m_engine->hasConditional(output)) {
+                ++m_condRules;
                 return 4;
             } else if (m_engine->hasVariable(output)) {
+                ++m_varRules;
                 return 3;
             } else {
                 return 1;
             }
         } else if (m_engine->hasKeywordOp(input)) {
+            ++m_keywordRules;
             return 2;
         } else if (m_engine->hasRegexOp(input)) {
+            ++m_regexRules;
             return 2;
         } else {
             return 1;
@@ -212,6 +254,10 @@ private:
     unsigned m_rules;
     unsigned m_points;
     std::auto_ptr<Nlp::Engine> m_engine;
+    unsigned m_regexRules;
+    unsigned m_keywordRules;
+    unsigned m_varRules;
+    unsigned m_condRules;
 };
 
 /// @}

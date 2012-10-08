@@ -63,6 +63,11 @@ public:
     virtual void newInterval() = 0;
 
     /**
+     * Returns the amount of score intervals that have elapsed.
+     */
+    virtual unsigned intervals() = 0;
+
+    /**
      * Sets \a value as the value for the metric with the given \a m in the current date
      */
     virtual void setMetric(Metric m, const QVariant &value) = 0;
