@@ -127,6 +127,8 @@ void Lvk::CA::XmppChatbot::connectSignals()
 
     connect(m_xmppClient, SIGNAL(error(QXmppClient::Error)),
             SLOT(emitLocalError(QXmppClient::Error)));
+
+    connect(&m_netMgr, SIGNAL(onlineStateChanged(bool)), SLOT(onOnlineStateChanged(bool)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -458,6 +460,18 @@ void Lvk::CA::XmppChatbot::setHistoryFilename(const QString &filename)
 QString Lvk::CA::XmppChatbot::historyFilename() const
 {
     return m_history.filename();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::CA::XmppChatbot::onOnlineStateChanged(bool isOnline)
+{
+    // Detect internet disconnection
+    if (!isOnline) {
+        if (m_isConnected) {
+            disconnectFromServer();
+        }
+    }
 }
 
 

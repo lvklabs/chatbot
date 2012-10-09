@@ -1,3 +1,6 @@
+v0.26
+ - Fixed bug #27
+
 v0.25
  - Added verification of updates
  - Blocking chatbot connection and score upload if there is a critical

@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QNetworkConfigurationManager>
 #include <memory>
 
 #include "QXmppClient.h"
@@ -198,7 +199,7 @@ protected:
 
 private slots:
     void emitLocalError(QXmppClient::Error);
-
+    void onOnlineStateChanged(bool isOnline);
 private:
     XmppChatbot(XmppChatbot&);
     XmppChatbot& operator=(XmppChatbot&);
@@ -208,18 +209,16 @@ private:
     QMutex *m_contactInfoMutex;
     QMutex *m_rosterMutex;
     QMutex *m_aiMutex;
-
     bool m_isConnected;
     bool m_rosterHasChanged;
     mutable ContactInfoList m_roster;
     ContactInfoList m_blackListRoster;
     QSet<QString> m_blackListSet;
-
     uint m_connStartTime;
+    QNetworkConfigurationManager m_netMgr;
 
     void setupLogger();
     void connectSignals();
-
     virtual void connectToServer(const QString &, const QString &) {}
 
     ContactInfo getContactInfo(const QString &bareJid) const;
