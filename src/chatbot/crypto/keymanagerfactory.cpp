@@ -21,13 +21,8 @@
 
 #include "keymanagerfactory.h"
 
-#ifdef DA_CONTEST
-#  ifdef DA_KEY_MANAGER
-#    include "crypto/dakeymanager.h"
-#  else
-#    error "dakeymanager.h is required to build a DA release"
-#    error "Contact andres.pagliano@lvklabs.com for support"
-#  endif
+#ifdef DA_KEY_MANAGER
+#  include "crypto/dakeymanager.h"
 #else
 #  include "crypto/defaultkeymanager.h"
 #endif
@@ -38,7 +33,7 @@
 
 Lvk::Crypto::KeyManager * Lvk::Crypto::KeyManagerFactory::create()
 {
-#ifdef DA_CONTEST
+#ifdef DA_KEY_MANAGER
     return new Crypto::DAKeyManager();
 #else
     return new Crypto::DefaultKeyManager();

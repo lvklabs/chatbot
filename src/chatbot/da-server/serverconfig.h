@@ -21,13 +21,8 @@
 #ifndef LVK_DAS_SERVERCONFIG_H
 #define LVK_DAS_SERVERCONFIG_H
 
-#ifdef DA_CONTEST
-#  ifdef DA_SERVER_CONFIG
-#    include "daserverconfig.h"
-#  else
-#    error "daserverconfig.h is required to build a DA release"
-#    error "Contact andres.pagliano@lvklabs.com for support"
-#  endif
+#ifdef DA_SERVER_CONFIG
+#  include "daserverconfig.h"
 #else
 #  include "nullserverconfig.h"
 #endif
