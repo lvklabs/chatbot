@@ -78,6 +78,11 @@ public:
     void clear();
 
     /**
+     * Log application launched
+     */
+    bool logAppLaunched();
+
+    /**
      * Log account verified
      */
     bool logAccountVerified(const QString &username, const QString &domain);

@@ -117,6 +117,8 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
 
 void Lvk::BE::AppFacade::init()
 {
+    m_rlogh.logAppLaunched();
+
     qRegisterMetaTypeStreamOperators<BE::RosterItem>("Lvk::BEk::RosterItem");
     qRegisterMetaTypeStreamOperators<BE::Roster>("Lvk::BEk::Roster");
 

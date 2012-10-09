@@ -100,11 +100,22 @@ Lvk::DAS::Gelf::Field::Field(const QPair<QString, QString> &p)
 
 QString Lvk::DAS::Gelf::Field::toString() const
 {
-    if (first.startsWith("_")) {
-        return QString("\"%1\" : \"%2\"").arg(first, second);
-    } else {
-        return QString("\"_%1\" : \"%2\"").arg(first, second);
+    QString key = first;
+
+    if (!key.startsWith("_")) {
+        key.prepend("_");
     }
+
+    bool isInt = false;
+    second.toInt(&isInt);
+
+    QString value = second;
+
+    if (!isInt) {
+        value = "\"" +  value + "\"";
+    }
+
+    return QString("\"%1\" : %2").arg(key, value);
 }
 
 //--------------------------------------------------------------------------------------------------

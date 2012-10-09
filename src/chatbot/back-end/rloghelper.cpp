@@ -120,6 +120,16 @@ void Lvk::BE::RlogHelper::clear()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::RlogHelper::logAppLaunched()
+{
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(RLOG_KEY_OS_TYPE, getOSType());
+
+    return remoteLog("App launched", fields, false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::BE::RlogHelper::logAccountVerified(const QString &username, const QString &domain)
 {
     DAS::RemoteLogger::FieldList fields;
@@ -158,7 +168,6 @@ bool Lvk::BE::RlogHelper::logDefaultMetrics()
 {
     // TODO complete metrics!
     DAS::RemoteLogger::FieldList fields;
-    fields.append(RLOG_KEY_OS_TYPE,             getOSType());
     fields.append(RLOG_KEY_RULE_COUNT,          getMetric(Stats::RuleDefCount));
     fields.append(RLOG_KEY_RULE_LEXICON,        getMetric(Stats::RuleLexiconSize));
     fields.append(RLOG_KEY_RULE_WORD_COUNT,     getMetric(Stats::RuleWordCount));
