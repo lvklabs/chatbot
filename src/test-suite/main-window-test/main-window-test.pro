@@ -112,6 +112,7 @@ HEADERS += \
     ../../chatbot/common/conversationwriter.h \
     ../../chatbot/common/conversationreader.h \
     ../../chatbot/common/logger.h \
+    ../../chatbot/common/crashhandler.h \
     ../../chatbot/da-server/remotelogger.h \
     ../../chatbot/da-server/nullremotelogger.h \
     ../../chatbot/da-server/rest.h \
@@ -181,6 +182,7 @@ SOURCES += \
     ../../chatbot/common/conversationreader.cpp \
     ../../chatbot/common/json.cpp \
     ../../chatbot/common/logger.cpp \
+    ../../chatbot/common/crashhandler.cpp \
     ../../chatbot/da-server/remoteloggerfactory.cpp \
     ../../chatbot/da-server/userauth.cpp \
     ../../chatbot/da-server/rest.cpp \

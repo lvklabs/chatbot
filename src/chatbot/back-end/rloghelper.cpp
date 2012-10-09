@@ -63,6 +63,7 @@ inline QString getInvervalCount()
 
 //--------------------------------------------------------------------------------------------------
 
+// TODO refactor duplicated code
 inline QString getOSType()
 {
 #ifdef Q_WS_X11

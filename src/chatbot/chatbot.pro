@@ -173,6 +173,7 @@ HEADERS += \
     common/conversationreader.h \
     common/logger.h \
     common/json.h \
+    common/crashhandler.h \
     crypto/cipher.h \
     crypto/keymanager.h \
     crypto/defaultkeymanager.h \
@@ -254,6 +255,7 @@ SOURCES += \
     common/conversationreader.cpp \
     common/logger.cpp \
     common/json.cpp \
+    common/crashhandler.cpp \
     crypto/cipher.cpp \
     crypto/keymanagerfactory.cpp \
     stats/statsmanager.cpp \
@@ -368,6 +370,8 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

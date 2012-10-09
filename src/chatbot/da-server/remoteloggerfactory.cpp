@@ -43,6 +43,17 @@ Lvk::DAS::RemoteLogger * Lvk::DAS::RemoteLoggerFactory::createFastLogger()
 
 //--------------------------------------------------------------------------------------------------
 
+Lvk::DAS::RemoteLogger * Lvk::DAS::RemoteLoggerFactory::createReliableLogger()
+{
+#ifdef GELF_STATS_SUPPORT
+    return new GraylogRemoteLogger(GraylogRemoteLogger::SyslogTCP);
+#else
+    return new NullRemoteLogger();
+#endif
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Lvk::DAS::RemoteLogger * Lvk::DAS::RemoteLoggerFactory::createSecureLogger()
 {
 #ifdef GELF_STATS_SUPPORT

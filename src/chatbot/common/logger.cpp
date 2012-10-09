@@ -77,6 +77,7 @@ inline QString chatbotLogFilename()
 
 //--------------------------------------------------------------------------------------------------
 
+// TODO refactor duplicated code
 inline QString getOSType()
 {
 #ifdef Q_WS_X11

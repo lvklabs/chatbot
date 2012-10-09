@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef LVK_DAS_REMOTELOGGERFACTORY_H
-#define LVK_DAS_REMOTELOGGERFACTORY_H
+#ifndef LVK_CMN_CRASHHANDLER_H
+#define LVK_CMN_CRASHHANDLER_H
 
-#include "da-server/remotelogger.h"
+#include <QString>
 
 namespace Lvk
 {
@@ -30,46 +30,45 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace DAS
+namespace Cmn
 {
 
 /// \ingroup Lvk
-/// \addtogroup DAS
+/// \addtogroup Cmn
 /// @{
 
 /**
- * \brief The RemoteLoggerFactory class provides a factory of remote loggers.
+ * \brief The CrashHandler class provides a crash handler for the application.
+ *
+ * If the application crashes the CrashHandler dumps information into a file. Next time
+ * the application launches it tries to send the dump to the logs server.
  */
-class RemoteLoggerFactory
+class CrashHandler
 {
 public:
 
     /**
-     * Constructs a remote logger that provides fast logging by using an unreliable channel.
-     * There is no guarantee of delivery.
+     * Initializes the crash handler
      */
-    RemoteLogger *createFastLogger();
+    static void init();
 
-    /**
-     * Constructs a remote logger that logs using a reliable channel.
-     */
-    RemoteLogger *createReliableLogger();
+private:
+    CrashHandler();
 
-    /**
-     * Constructs a remote logger that provides secure logging by using a reliable and
-     * encrypted channel.
-     */
-    RemoteLogger *createSecureLogger();
+    static void checkForCrash();
+    static void handler(int sig);
+
+    static QString m_crashFilename;
 };
 
 /// @}
 
-} // namespace DAS
+} // namespace Cmn
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_DAS_REMOTELOGGERFACTORY_H
+#endif // LVK_CMN_CRASHHANDLER_H
 

@@ -34,6 +34,7 @@
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
+#include "common/crashhandler.h"
 
 void makeDirStructure();
 void setLanguage(QApplication &app);
@@ -54,6 +55,9 @@ int main(int argc, char *argv[])
     Lvk::Cmn::Logger::init();
 
     makeDirStructure();
+
+    Lvk::Cmn::CrashHandler::init();
+
     setLanguage(app);
 
 #ifdef DA_CONTEST
