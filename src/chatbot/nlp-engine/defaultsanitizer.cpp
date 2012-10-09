@@ -44,7 +44,8 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
-    : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars), m_logEnabled(true)
+    : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars | RemoveBraces),
+      m_logEnabled(true)
 {
     initSets();
 }
@@ -93,6 +94,14 @@ void Lvk::Nlp::DefaultSanitizer::initSets()
     m_rSet.insert('c');
     m_rSet.insert('z');
     //m_rSet.insert('o');
+
+    // Braces to be removed
+    m_bracesSet.insert('{');
+    m_bracesSet.insert('}');
+    m_bracesSet.insert('[');
+    m_bracesSet.insert(']');
+    m_bracesSet.insert('(');
+    m_bracesSet.insert(')');
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -153,6 +162,17 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
 
             if (it != m_diacMap.constEnd()) {
                 cur = *it;
+            }
+        }
+
+        //-------------------------------------------------------------------------------
+        // Remove braces
+
+        if (m_options & RemoveBraces) {
+            append = !m_bracesSet.contains(cur);
+
+            if (!append) {
+                continue;
             }
         }
 

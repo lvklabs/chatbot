@@ -69,7 +69,12 @@ public:
         /**
          * Removes duplicated characters. Currently, this option is only well defined for Spanish.
          */
-        RemoveDupChars = 0x04
+        RemoveDupChars = 0x04,
+
+        /**
+         * Removes all braces (curly braces, square braces and parentheses)
+         */
+        RemoveBraces = 0x08
     };
 
     /**
@@ -100,6 +105,7 @@ private:
     unsigned m_options;
     QSet<QChar> m_rSet;
     QSet<QChar> m_punctSet;
+    QSet<QChar> m_bracesSet;
     QHash<QChar,QChar> m_diacMap;
     bool m_logEnabled;
 
