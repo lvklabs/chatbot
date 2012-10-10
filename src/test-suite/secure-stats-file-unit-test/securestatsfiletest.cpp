@@ -400,4 +400,4 @@ void SecureStatsFileTest::testNewIntervalAndHistory()
 
 QTEST_APPLESS_MAIN(SecureStatsFileTest)
 
-#include "tst_securestatsfiletest.moc"
+#include "securestatsfiletest.moc"

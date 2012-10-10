@@ -204,9 +204,9 @@ void StatsManagerTest::testFileCreationAndClear()
     }
 
     manager()->setFilename(STAT_FILENAME_1);
-    manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 1);
+    manager()->m_statsFile->setMetric(Stats::RuleWordCount, 1);
     manager()->setFilename(STAT_FILENAME_2);
-    manager()->m_statsFile->setMetric(Stats::HistoryChatbotDiffLines, 2);
+    manager()->m_statsFile->setMetric(Stats::RuleWordCount, 2);
 
     resetManager();
 
@@ -226,9 +226,9 @@ void StatsManagerTest::testFileCreationAndClear()
 
 void StatsManagerTest::testSetMetricsAndIntervals()
 {
-    const Stats::Metric m1 = Stats::LexiconSize;
-    const Stats::Metric m2 = Stats::HistoryChatbotDiffLines;
-    const Stats::Metric m3 = Stats::HistoryScoreContacts;
+    const Stats::Metric m1 = Stats::RuleLexiconSize;
+    const Stats::Metric m2 = Stats::RuleWordCount;
+    const Stats::Metric m3 = Stats::RuleDefCount;
     const Stats::Metric m4 = Stats::ConnectionTime; // cumulative
 
     const unsigned value1  = 10;
