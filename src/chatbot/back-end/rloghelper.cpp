@@ -117,6 +117,7 @@ void Lvk::BE::RlogHelper::clear()
 {
     m_username.clear();
     m_chatbotId.clear();
+    m_connectionStart = QDateTime();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -131,6 +132,15 @@ bool Lvk::BE::RlogHelper::logAppLaunched()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::RlogHelper::logAppClosed()
+{
+    DAS::RemoteLogger::FieldList fields;
+
+    return remoteLog("App closed", fields, false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::BE::RlogHelper::logAccountVerified(const QString &username, const QString &domain)
 {
     DAS::RemoteLogger::FieldList fields;
@@ -138,6 +148,28 @@ bool Lvk::BE::RlogHelper::logAccountVerified(const QString &username, const QStr
     fields.append(RLOG_KEY_DOMAIN,    domain);
 
     return remoteLog("Account Verified", fields, false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::RlogHelper::logChatbotConnected(bool connected)
+{
+    QString msg;
+    DAS::RemoteLogger::FieldList fields;
+
+    if (connected) {
+        msg = "Chatbot connected";
+        m_connectionStart = QDateTime::currentDateTime();
+    } else {
+        if (m_connectionStart.isValid()) {
+            uint duration = QDateTime::currentDateTime().toTime_t() - m_connectionStart.toTime_t();
+            fields.append(RLOG_KEY_CONNECTION_DUR, QString::number(duration));
+        }
+        msg = "Chatbot disconnected";
+        m_connectionStart = QDateTime();
+    }
+
+    return remoteLog(msg, fields, false);
 }
 
 //--------------------------------------------------------------------------------------------------

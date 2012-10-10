@@ -143,6 +143,8 @@ void Lvk::BE::AppFacade::init()
 
 Lvk::BE::AppFacade::~AppFacade()
 {
+    m_rlogh.logAppClosed();
+
     close();
 
     delete m_chatbot;
@@ -215,6 +217,8 @@ bool Lvk::BE::AppFacade::load(const QString &filename)
 
     if (loaded) {
         generalSetup();
+        m_rlogh.logAutoScore(bestScore());
+        m_rlogh.logDefaultMetrics();
     } else {
         close();
         setupChatbot();
@@ -726,7 +730,13 @@ void Lvk::BE::AppFacade::setupChatbot(ChatType type)
         m_chatbot->setHistoryFilename(getHistoryFilename());
 
         refreshEvasives();
-        connectChatbotSignals();
+
+        // FIXME add method to remap Chatbot error codes to AppFacade error codes
+        connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+        connect(m_chatbot, SIGNAL(connected()),    SLOT(onConnected()));
+        connect(m_chatbot, SIGNAL(disconnected()), SLOT(onDisconnected()));
+        connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
+                SLOT(onConversationEntry(Cmn::Conversation::Entry)));
     }
 }
 
@@ -740,23 +750,28 @@ void Lvk::BE::AppFacade::deleteCurrentChatbot()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::BE::AppFacade::connectChatbotSignals()
+void Lvk::BE::AppFacade::onConnected()
 {
-    connect(m_chatbot, SIGNAL(connected()),    SIGNAL(connected()));
-    connect(m_chatbot, SIGNAL(disconnected()), SIGNAL(disconnected()));
+    emit connected();
+    Stats::StatsManager::manager()->startTicking();
+    m_rlogh.logChatbotConnected(true);
+}
 
-    // FIXME add method to remap Chatbot error codes to AppFacade error codes
-    connect(m_chatbot, SIGNAL(error(int)),     SIGNAL(connectionError(int)));
+//--------------------------------------------------------------------------------------------------
 
-    connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
-            SIGNAL(newConversationEntry(Cmn::Conversation::Entry)));
+void Lvk::BE::AppFacade::onDisconnected()
+{
+    emit disconnected();
+    Stats::StatsManager::manager()->stopTicking();
+    m_rlogh.logChatbotConnected(false);
+}
 
-    connect(m_chatbot, SIGNAL(connected()),
-            Stats::StatsManager::manager(), SLOT(startTicking()));
-    connect(m_chatbot, SIGNAL(disconnected()),
-            Stats::StatsManager::manager(), SLOT(stopTicking()));
-    connect(m_chatbot, SIGNAL(newConversationEntry(Cmn::Conversation::Entry)),
-            Stats::StatsManager::manager(), SLOT(updateScoreWith(Cmn::Conversation::Entry)));
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::onConversationEntry(const Cmn::Conversation::Entry &entry)
+{
+    emit newConversationEntry(entry);
+    Stats::StatsManager::manager()->updateScoreWith(entry);
 }
 
 //--------------------------------------------------------------------------------------------------

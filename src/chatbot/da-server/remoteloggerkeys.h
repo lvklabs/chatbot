@@ -32,6 +32,7 @@
 #define RLOG_KEY_USERNAME           "username"
 #define RLOG_KEY_DOMAIN             "domain"
 #define RLOG_KEY_OS_TYPE            "os_type"
+#define RLOG_KEY_CONNECTION_DUR     "connection_duration"
 #define RLOG_KEY_RULE_COUNT         "rule_count"
 #define RLOG_KEY_RULE_POINTS        "rule_points"
 #define RLOG_KEY_RULE_LEXICON       "rule_lexicon_size"

@@ -413,6 +413,9 @@ signals:
     void scoreRemainingTime(int secs);
 
 private slots:
+    void onConnected();
+    void onDisconnected();
+    void onConversationEntry(const Cmn::Conversation::Entry &entry);
     void onAccountOk(const AccountVerifier::AccountInfo &info);
     void onAccountError(int err, const QString &msg);
 
@@ -445,7 +448,6 @@ private:
     void setupChatbot();
     void setupChatbot(ChatType type);
     void deleteCurrentChatbot();
-    void connectChatbotSignals();
     void setRoster(const Roster &roster);
     void updateStats();
 };

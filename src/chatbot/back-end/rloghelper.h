@@ -25,6 +25,7 @@
 #include "da-server/remotelogger.h"
 
 #include <QString>
+#include <QDateTime>
 
 namespace Lvk
 {
@@ -83,9 +84,19 @@ public:
     bool logAppLaunched();
 
     /**
+     * Log application closed
+     */
+    bool logAppClosed();
+
+    /**
      * Log account verified
      */
     bool logAccountVerified(const QString &username, const QString &domain);
+
+    /**
+     * Log chatbot connected or disconnected
+     */
+    bool logChatbotConnected(bool connected);
 
     /**
      * Log automatically triggered score \s
@@ -112,6 +123,7 @@ private:
     QString m_appVersion;
     QString m_username;
     QString m_chatbotId;
+    QDateTime m_connectionStart;
 
     bool remoteLog(const QString &msg, const DAS::RemoteLogger::FieldList &fields, bool secure);
 };
