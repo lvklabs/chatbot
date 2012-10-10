@@ -68,20 +68,20 @@ namespace
 
 inline void checkAppExpiration()
 {
-    Lvk::Cmn::Settings settings;
-    if (settings.value("Application/ApplicationExpires", true).toBool()) {
-        if (QDate::currentDate() > QDate(2012, 10, 10)) {
-
-            QString title = QObject::tr("Application demo has expired");
-            QString msg = QObject::tr("This application demo has expired. "
-                                      "Please download a new version.");
-
-            QMessageBox::critical(0, title, msg, QMessageBox::Ok);
-
-            qCritical("Application has expired. Exiting now!");
-            exit(0);
-        }
-    }
+//    Lvk::Cmn::Settings settings;
+//    if (settings.value("Application/ApplicationExpires", true).toBool()) {
+//        if (QDate::currentDate() > QDate(2012, 10, 10)) {
+//
+//            QString title = QObject::tr("Application demo has expired");
+//            QString msg = QObject::tr("This application demo has expired. "
+//                                      "Please download a new version.");
+//
+//            QMessageBox::critical(0, title, msg, QMessageBox::Ok);
+//
+//            qCritical("Application has expired. Exiting now!");
+//            exit(0);
+//        }
+//    }
 }
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

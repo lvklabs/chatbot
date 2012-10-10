@@ -130,22 +130,22 @@
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="247"/>
+        <location filename="../back-end/appfacade.cpp" line="249"/>
         <source>Greetings</source>
         <translation>Saludos</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="253"/>
+        <location filename="../back-end/appfacade.cpp" line="255"/>
         <source>Hello</source>
         <translation>Hola</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="254"/>
+        <location filename="../back-end/appfacade.cpp" line="256"/>
         <source>Hello!</source>
         <translation>Hola!</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="260"/>
+        <location filename="../back-end/appfacade.cpp" line="262"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
     </message>
@@ -609,7 +609,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Opciones avanzadas</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="652"/>
+        <location filename="../front-end/mainwindow.cpp" line="648"/>
         <source>New File</source>
         <translation>Nuevo Archivo</translation>
     </message>
@@ -618,28 +618,28 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">No se pudo guardar el archivo. Por favor verifique que tiene permisos de escritura.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="630"/>
+        <location filename="../front-end/mainwindow.cpp" line="626"/>
         <source>Save As...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="631"/>
+        <location filename="../front-end/mainwindow.cpp" line="627"/>
         <source>With this option you are creating a new chatbot. The new chatbot will not keep your current chat history and score.</source>
         <translation>Con esta opción estás creando un nuevo chatbot. 
 Este nuevo chatbot no mantendrá tu historial de conversaciones y puntaje actual.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="652"/>
+        <location filename="../front-end/mainwindow.cpp" line="648"/>
         <source>Could not create file. Please verify that you have write permissions or enough space.</source>
         <translation>No se pudo guardar el archivo. Por favor verifique que tiene permisos de escritura o espacio suficiente.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="683"/>
+        <location filename="../front-end/mainwindow.cpp" line="682"/>
         <source>Last file opened does not exist anymore: &apos;%1&apos;</source>
         <translation>El último archivo abierto ya no existe: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="684"/>
+        <location filename="../front-end/mainwindow.cpp" line="683"/>
         <source>Open last file</source>
         <translation>Abrir último archivo</translation>
     </message>
@@ -780,26 +780,26 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1977"/>
-        <location filename="../front-end/mainwindow.cpp" line="2017"/>
-        <location filename="../front-end/mainwindow.cpp" line="2022"/>
+        <location filename="../front-end/mainwindow.cpp" line="1978"/>
+        <location filename="../front-end/mainwindow.cpp" line="2018"/>
+        <location filename="../front-end/mainwindow.cpp" line="2023"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1978"/>
+        <location filename="../front-end/mainwindow.cpp" line="1979"/>
         <source>Before sending your score you need to verify your account.
 Please, go to the &apos;Connection&apos; tab and verify your account</source>
         <translation>Antes de enviar tu puntaje necesitás verificar tu cuenta.
 Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2018"/>
+        <location filename="../front-end/mainwindow.cpp" line="2019"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2023"/>
+        <location filename="../front-end/mainwindow.cpp" line="2024"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
@@ -808,17 +808,17 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation type="obsolete">Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2001"/>
+        <location filename="../front-end/mainwindow.cpp" line="2002"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2001"/>
+        <location filename="../front-end/mainwindow.cpp" line="2002"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2003"/>
+        <location filename="../front-end/mainwindow.cpp" line="2004"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -1233,12 +1233,12 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../front-end/welcomewidget.cpp" line="86"/>
+        <location filename="../front-end/welcomewidget.cpp" line="87"/>
         <source>Last file opened does not exist anymore: &apos;%1&apos;</source>
         <translation>El último archivo abierto ya no existe: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/welcomewidget.cpp" line="87"/>
+        <location filename="../front-end/welcomewidget.cpp" line="88"/>
         <source>Open last file</source>
         <translation>Abrir último archivo</translation>
     </message>
