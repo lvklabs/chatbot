@@ -895,6 +895,7 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
     curOpt.ignoreDupChars = nlpEngineOption(BE::AppFacade::RemoveDupChars);
     curOpt.lemmatizeSentence = nlpEngineOption(BE::AppFacade::LemmatizeSentence);
     curOpt.exactMatchSupport = nlpEngineOption(BE::AppFacade::ExactMatchSupport);
+    curOpt.preferCurCategory = nlpEngineOption(BE::AppFacade::PreferCurCategory);
 
     OptionsWindow optWindow(curOpt, this);
 
@@ -909,6 +910,9 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
         }
         if (newOpt.exactMatchSupport != curOpt.exactMatchSupport) {
             setNlpEngineOption(BE::AppFacade::ExactMatchSupport, newOpt.exactMatchSupport);
+        }
+        if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
+            setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
         }
     }
 }

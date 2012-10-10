@@ -212,7 +212,8 @@ public:
         RemoveDupChars    = 0x01,    ///< Remove duplicated characters
         LemmatizeSentence = 0x02,    ///< Lemmatize sentences
         SanitizePostLemma = 0x04,    ///< Sanitize post lemmatization
-        ExactMatchSupport = 0x08     ///< Enable exact match support
+        ExactMatchSupport = 0x08,    ///< Enable exact match support
+        PreferCurCategory = 0x10     ///< Prefer rules on the current category
     };
 
     /**

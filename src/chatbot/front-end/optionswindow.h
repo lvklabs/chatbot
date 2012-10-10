@@ -38,11 +38,15 @@ public:
      */
     struct Options
     {
-        Options() : lemmatizeSentence(false), ignoreDupChars(false), exactMatchSupport(false) { }
+        Options()
+            : lemmatizeSentence(false), ignoreDupChars(false),
+              exactMatchSupport(false), preferCurCategory(false)
+        { }
 
         bool lemmatizeSentence; ///< NLP engine lemmatizes sentences
         bool ignoreDupChars;    ///< NLP engine ignores duplicated characters
         bool exactMatchSupport; ///< NLP engine exact match support enabled
+        bool preferCurCategory; ///< NLP engine prefers rules on the current category
     };
 
     /**

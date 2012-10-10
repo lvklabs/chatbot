@@ -70,6 +70,13 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="preferCategCheckBox">
+         <property name="text">
+          <string>Prefer rules on the current category</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="generalVerticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

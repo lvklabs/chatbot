@@ -161,16 +161,22 @@ public:
     /**
      * \copydoc Engine::property()
      *
-     * HybridEngine only supports the property NLP_PROP_EXACT_MATCH with values \a true or \a false
-     * to enable or disable exact match support.
+     * HybridEngine supports two properties.
+     * NLP_PROP_EXACT_MATCH with values \a true or \a false to enable or disable exact match
+     * support. By default is false.
+     * NLP_PROP_PREFER_CUR_TOPIC with values \a true or \a false. If \a true rules on the current
+     * topic have higher priority. By default is false.
      */
     virtual QVariant property(const QString &name);
 
     /**
      * \copydoc Engine::setProperty()
      *
-     * HybridEngine only supports the property NLP_PROP_EXACT_MATCH with values \a true or \a false
-     * to enabled or disable exact match support.
+     * HybridEngine supports two properties.
+     * NLP_PROP_EXACT_MATCH with values \a true or \a false to enable or disable exact match
+     * support. By default is false.
+     * NLP_PROP_PREFER_CUR_TOPIC with values \a true or \a false. If \a true rules on the current
+     * topic have higher priority. By default is false.
      */
     virtual void setProperty(const QString &name, const QVariant &value);
 private:

@@ -192,12 +192,20 @@ public:
     virtual bool hasConditional(const QString &output);
 
     /**
-     * AimlEngine does not support properties. This method always a null QVariant.
+     * \copydoc Engine::property()
+     *
+     * AimlEngine supports only one property:
+     * NLP_PROP_PREFER_CUR_TOPIC with values \a true or \a false. If \a true rules on the current
+     * topic have higher priority. By default is false.
      */
     virtual QVariant property(const QString &name);
 
     /**
-     * AimlEngine does not support properties. This method does nothing.
+     * \copydoc Engine::setProperty()
+     *
+     * AimlEngine supports only one property:
+     * NLP_PROP_PREFER_CUR_TOPIC with values \a true or \a false. If \a true rules on the current
+     * topic have higher priority. By default is false.
      */
     virtual void setProperty(const QString &name, const QVariant &value);
 
@@ -215,6 +223,7 @@ private:
     ParsersMap                m_parsers;
     QMutex *m_mutex;
     bool m_dirty;
+    bool m_setTopics;
 
     void initLog();
 

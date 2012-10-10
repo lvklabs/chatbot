@@ -24,5 +24,6 @@
 // Common NLP engine properties
 
 #define NLP_PROP_EXACT_MATCH        "ExactMatch"    // Enable exact match support
+#define NLP_PROP_PREFER_CUR_TOPIC   "PrefCurTopic"  // Prefer rules on current topic
 
 #endif // _NLPPROPERTIES_H

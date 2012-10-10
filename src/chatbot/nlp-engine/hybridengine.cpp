@@ -589,6 +589,8 @@ QVariant Lvk::Nlp::HybridEngine::property(const QString &name)
         QMutexLocker locker(m_engineMutex);
 
         return m_emEngine ? QVariant(true) : QVariant(false);
+    } else if (name == NLP_PROP_PREFER_CUR_TOPIC) {
+        return AimlEngine::property(name);
     } else {
         return QVariant();
     }
@@ -611,6 +613,8 @@ void Lvk::Nlp::HybridEngine::setProperty(const QString &name, const QVariant &va
             delete m_emEngine;
             m_emEngine = 0;
         }
+    } else if (name == NLP_PROP_PREFER_CUR_TOPIC) {
+        AimlEngine::setProperty(name, value);
     }
 }
 

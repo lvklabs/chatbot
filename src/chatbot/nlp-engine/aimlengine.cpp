@@ -23,6 +23,7 @@
 #include "nlp-engine/rule.h"
 #include "nlp-engine/nullsanitizer.h"
 #include "nlp-engine/nulllemmatizer.h"
+#include "nlp-engine/nlpproperties.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
@@ -107,7 +108,8 @@ Lvk::Nlp::AimlEngine::AimlEngine()
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
-      m_dirty(false)
+      m_dirty(false),
+      m_setTopics(false)
 {
     initLog();
 }
@@ -120,7 +122,8 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *sanitizer)
       m_lemmatizer(new Nlp::NullLemmatizer()),
       m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
-      m_dirty(false)
+      m_dirty(false),
+      m_setTopics(false)
 {
     initLog();
 }
@@ -134,7 +137,8 @@ Lvk::Nlp::AimlEngine::AimlEngine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer
       m_lemmatizer(lemmatizer),
       m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
-      m_dirty(false)
+      m_dirty(false),
+      m_setTopics(false)
 {
     initLog();
 }
@@ -347,11 +351,15 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
                               "</category>")
                               .arg(catId, input, topic, randOuput);;
 
-        // Add category with topic
-        aiml += "<topic name=\"" + topic + "\">" + cat + "</topic>";
-
-        // Add category also with default topic as fallback mechanism
-        aiml += "<topic name=\"\">" + cat + "</topic>";
+        if (m_setTopics) {
+            // Add category with topic
+            aiml += "<topic name=\"" + topic + "\">" + cat + "</topic>";
+            // Add category also with default topic as fallback mechanism
+            aiml += "<topic name=\"\">" + cat + "</topic>";
+        } else {
+            // No topics
+            aiml += cat;
+        }
     }
 }
 
@@ -452,14 +460,31 @@ bool Lvk::Nlp::AimlEngine::hasConditional(const QString &/*output*/)
 
 //--------------------------------------------------------------------------------------------------
 
-QVariant Lvk::Nlp::AimlEngine::property(const QString &/*name*/)
+QVariant Lvk::Nlp::AimlEngine::property(const QString &name)
 {
-    return QVariant();
+    if (name == NLP_PROP_PREFER_CUR_TOPIC) {
+        return QVariant(m_setTopics);
+    } else {
+        return QVariant();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::AimlEngine::setProperty(const QString &/*name*/, const QVariant &/*value*/)
+void Lvk::Nlp::AimlEngine::setProperty(const QString &name, const QVariant &value)
 {
-    // nothing to do
+    if (name == NLP_PROP_PREFER_CUR_TOPIC) {
+        QMutexLocker locker(m_mutex);
+
+        if (value.toBool() == true && !m_setTopics) {
+            qDebug() << "AimlEngine: Enabled topics";
+            m_setTopics = true;
+            m_dirty = true;
+        }
+        if (value.toBool() == false && m_setTopics) {
+            qDebug() << "AimlEngine: Disabled topics";
+            m_setTopics = false;
+            m_dirty = true;
+        }
+    }
 }

@@ -1,6 +1,12 @@
-v0.26
- - Fixed bugs #27, #35
+v0.27
+ - Added checkbox in the options window to enable/disable higher
+   priority to rules in on the current 'topic'
+ - Improved stats & remote logging
 
+v0.26
+ - Added simple crash handler
+ - Fixed bugs #27, #35
+ 
 v0.25
  - Added verification of updates
  - Blocking chatbot connection and score upload if there is a critical

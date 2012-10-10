@@ -30,6 +30,7 @@
 #include "nlp-engine/aimlengine.h"
 #include "ProgramQ/aimlparser.h"
 #include "nlp-engine/rule.h"
+#include "nlp-engine/nlpproperties.h"
 #include "nlp-engine/defaultsanitizer.h"
 #include "nlp-engine/nullsanitizer.h"
 #include "nlp-engine/nulllemmatizer.h"
@@ -776,6 +777,8 @@ void TestAimlEngine::testMatchPriority()
 void TestAimlEngine::testMatchWithTopic()
 {
     setRules6(m_engine);
+
+    m_engine->setProperty(NLP_PROP_PREFER_CUR_TOPIC, true);
 
     Lvk::Nlp::Engine::MatchList matches;
     QString response;

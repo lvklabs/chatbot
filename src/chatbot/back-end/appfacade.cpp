@@ -569,6 +569,13 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
         m_nlpEngine->setProperty(NLP_PROP_EXACT_MATCH, false);
     }
 
+    if ((options & PreferCurCategory) && !(m_nlpOptions & PreferCurCategory)) {
+        m_nlpEngine->setProperty(NLP_PROP_PREFER_CUR_TOPIC, true);
+    }
+    if (!(options & PreferCurCategory) && (m_nlpOptions & PreferCurCategory)) {
+        m_nlpEngine->setProperty(NLP_PROP_PREFER_CUR_TOPIC, false);
+    }
+
     m_nlpOptions = options;
 
     if (m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt() != options) {
