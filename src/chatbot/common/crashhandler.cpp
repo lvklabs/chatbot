@@ -59,6 +59,7 @@ inline QString getOSType()
 //--------------------------------------------------------------------------------------------------
 
 QString Lvk::Cmn::CrashHandler::m_crashFilename = "";
+QString Lvk::Cmn::CrashHandler::m_username = "";
 
 //--------------------------------------------------------------------------------------------------
 
@@ -79,13 +80,13 @@ void Lvk::Cmn::CrashHandler::handler(int sig)
     QFile file(m_crashFilename);
 
     if (file.open(QFile::WriteOnly)) {
-        QString data = QString("%1 Chatbot %2 crashed. Handled signal %3. %4")
+        QString data = QString("%1 Chatbot %2 crashed. Signal: %3. OS: %4. User: %5. BT: %6")
                 .arg(QDateTime::currentDateTime().toString(Qt::ISODate))
                 .arg(APP_VERSION_STR)
                 .arg(sig)
-                .arg(getOSType());
-
-        // TODO add stack trace
+                .arg(getOSType())
+                .arg((m_username))
+                .arg(""); // TODO add backtrace
 
         file.write(data.toUtf8());
         file.close();
@@ -126,5 +127,12 @@ void Lvk::Cmn::CrashHandler::checkForCrash()
             qCritical() << "Could not read crash file" << m_crashFilename;
         }
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Cmn::CrashHandler::setUsername(const QString &username)
+{
+    m_username = username;
 }
 

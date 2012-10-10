@@ -31,6 +31,7 @@
 #include "nlp-engine/nlpproperties.h"
 #include "common/random.h"
 #include "common/globalstrings.h"
+#include "common/crashhandler.h"
 #include "stats/statsmanager.h"
 
 #include <QDateTime>
@@ -291,6 +292,8 @@ bool Lvk::BE::AppFacade::setDefaultNlpOptions()
 
 bool Lvk::BE::AppFacade::generalSetup()
 {
+    Cmn::CrashHandler::setUsername(m_rules.metadata(FILE_METADATA_USERNAME).toString());
+
     Stats::StatsManager::manager()->setFilename(getStatsFilename());
 
     m_rlogh.setChatbotId(m_rules.chatbotId());
@@ -366,6 +369,8 @@ void Lvk::BE::AppFacade::close()
     m_evasivesRule = 0;
 
     Stats::StatsManager::manager()->setFilename("");
+
+    Cmn::CrashHandler::setUsername("");
 }
 
 //--------------------------------------------------------------------------------------------------

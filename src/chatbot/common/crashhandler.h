@@ -52,6 +52,11 @@ public:
      */
     static void init();
 
+    /**
+     * Sets the current username
+     */
+    static void setUsername(const QString &username);
+
 private:
     CrashHandler();
 
@@ -59,6 +64,7 @@ private:
     static void handler(int sig);
 
     static QString m_crashFilename;
+    static QString m_username;
 };
 
 /// @}
