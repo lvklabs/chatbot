@@ -6,6 +6,9 @@
 #include <QtDebug>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QFile>
+#include <QDir>
+#include <QSslConfiguration>
 
 //--------------------------------------------------------------------------------------------------
 // Rest
@@ -58,9 +61,7 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
     QNetworkReply *reply = m_manager->get(request);
 
-    if (m_ignoreSslErrors) {
-        reply->ignoreSslErrors();
-    }
+    configureSsl(reply);
 
     connect(reply, SIGNAL(finished()), SLOT(onFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -69,6 +70,7 @@ bool Lvk::DAS::Rest::request(const QString &url)
 
     m_lastErr = QNetworkReply::NoError;
     m_reply = reply;
+    m_peerCertificateChain.clear();
 
     return true;
 }
@@ -93,6 +95,20 @@ void Lvk::DAS::Rest::setIgnoreSslErrors(bool ignore)
     m_ignoreSslErrors = ignore;
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+QList<QSslCertificate> Lvk::DAS::Rest::peerCertificateChain()
+{
+    QMutexLocker locker(m_replyMutex);
+
+    if (m_reply) {
+        return m_reply->sslConfiguration().peerCertificateChain();
+    } else {
+        return QList<QSslCertificate>();
+    }
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::DAS::Rest::onFinished()
@@ -107,6 +123,7 @@ void Lvk::DAS::Rest::onFinished()
         if (m_reply->error() == QNetworkReply::NoError) {
             resp = QString::fromUtf8(m_reply->readAll());
             unescape(resp);
+            m_peerCertificateChain = m_reply->sslConfiguration().peerCertificateChain();
         }
     }
 
@@ -154,5 +171,21 @@ void Lvk::DAS::Rest::unescape(QString &resp)
     int pos = 0;
     while ((pos = regex.indexIn(resp, pos)) != -1) {
         resp.replace(pos++, 6, QChar(regex.cap(1).right(4).toUShort(0, 16)));
+    }
+}
+
+void Lvk::DAS::Rest::configureSsl(QNetworkReply *reply)
+{
+    if (!m_ignoreSslErrors) {
+        QString cbCertsDir = QDir("./data/certs").absolutePath();
+        QList<QSslCertificate> cbCerts = QSslCertificate::fromPath(cbCertsDir + "/*", QSsl::Pem,
+                                                                   QRegExp::Wildcard);
+        QSslConfiguration conf = reply->sslConfiguration();
+        QList<QSslCertificate> certs;// = conf.caCertificates();
+        certs.append(cbCerts);
+        conf.setCaCertificates(certs);
+        reply->setSslConfiguration(conf);
+    } else {
+        reply->ignoreSslErrors();
     }
 }

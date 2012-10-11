@@ -35,7 +35,7 @@ Lvk::DAS::Updater::Updater()
     : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR)
 {
     // TODO QSslConfiguration::setLocalCertificate
-    m_rest->setIgnoreSslErrors(true);
+    //m_rest->setIgnoreSslErrors(true);
 
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -83,6 +83,11 @@ void Lvk::DAS::Updater::abort()
 void Lvk::DAS::Updater::onCfuResponse(const QString &resp)
 {
     qDebug() << "Updater: CFU response";
+
+    if (!verifyCertChain()) {
+        qCritical() << "Updater: Invalid certificate chain. Ignoring response.";
+        return;
+    }
 
     DAS::UpdateInfo info;
 
@@ -213,4 +218,67 @@ bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &
     info.setWhatsNew(whatsNew);
 
     return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+#define CA_CERT_ISSUER_NAME       "GeoTrust Global CA"
+#define IM_CERT_ISSUER_NAME       "RapidSSL CA"
+#define IM_CERT_SUBJECT_NAME      "www.daleaceptar.gob.ar"
+
+bool Lvk::DAS::Updater::verifyCertChain()
+{
+    bool valid = false;
+
+    QList<QSslCertificate> certChain = m_rest->peerCertificateChain();
+
+    try {
+        if (certChain.size() == 0) {
+            throw QString("Empty cert chain");
+        }
+        if (certChain.size() == 1) {
+            throw QString("No CA cert");
+        }
+
+        {
+            const QSslCertificate &cert = certChain[0];
+
+            qDebug() << cert.issuerInfo(QSslCertificate::CommonName);
+            qDebug() << cert.subjectInfo(QSslCertificate::CommonName);
+
+            if (!cert.isValid()) {
+                throw QString("Invalid peer's immediate cert");
+            }
+            if (cert.issuerInfo(QSslCertificate::CommonName) != IM_CERT_ISSUER_NAME) {
+                throw QString("wrong issuer name");
+            }
+            if (cert.subjectInfo(QSslCertificate::CommonName) != IM_CERT_SUBJECT_NAME) {
+                throw QString("wrong subect name");
+            }
+        }
+
+        {
+            const QSslCertificate &cert = certChain[1];
+
+            qDebug() << cert.issuerInfo(QSslCertificate::CommonName);
+            qDebug() << cert.subjectInfo(QSslCertificate::CommonName);
+
+            if (!cert.isValid()) {
+                throw QString("Invalid CA cert");
+            }
+            if (cert.issuerInfo(QSslCertificate::CommonName) != CA_CERT_ISSUER_NAME) {
+                throw QString("wrong CA issuer name");
+            }
+            if (cert.subjectInfo(QSslCertificate::CommonName) != IM_CERT_ISSUER_NAME) {
+                throw QString("wrong CA subect name");
+            }
+        }
+
+        valid = true;
+
+    } catch (const QString &err) {
+        qCritical() << "Updater: Invalid peer cert chain:" << err;
+    }
+
+    return valid;
 }

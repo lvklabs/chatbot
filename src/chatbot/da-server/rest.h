@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <QList>
 #include <QSslError>
+#include <QSslCertificate>
 
 class QNetworkAccessManager;
 class QMutex;
@@ -24,7 +25,7 @@ namespace DAS
 /// @{
 
 /**
- * \brief The Rest class provides methods to make REST requests
+ * \brief The Rest class provides a way to make REST requests
  */
 class Rest : public QObject
 {
@@ -41,6 +42,8 @@ public:
     virtual void abort();
 
     virtual void setIgnoreSslErrors(bool ignore);
+
+    virtual QList<QSslCertificate> peerCertificateChain();
 
 signals:
 
@@ -63,7 +66,9 @@ private:
     QNetworkReply *m_reply;
     QNetworkReply::NetworkError m_lastErr;
     bool m_ignoreSslErrors;
+    QList<QSslCertificate> m_peerCertificateChain;
 
+    void configureSsl(QNetworkReply *reply);
     void unescape(QString &resp);
 };
 

@@ -101,6 +101,7 @@ private:
     UpdateVersion m_curVersion;
 
 
+    bool verifyCertChain();
     bool parseResponse(UpdateInfo &info, const QString &response);
     bool parseVersion(UpdateInfo &info, const QString &strVer);
     bool parseUpdateNode(UpdateInfo &info, QDomNode &updateElem);
