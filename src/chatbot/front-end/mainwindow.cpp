@@ -198,6 +198,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     // test tab widgets
     ui->testConversationText->clear();
     ui->testInputText->clear();
+    ui->testInputText->clearRoster();
     ui->clearTestConvButton->setEnabled(false);
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
@@ -293,6 +294,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Test tab
     connect(ui->testInputText,         SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->testInputText,         SIGNAL(currentItemChanged()), SLOT(onTestTargetChanged()));
     connect(ui->clearTestConvButton,   SIGNAL(clicked()),       SLOT(onClearTestConvPressed()));
     connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));
 
@@ -753,6 +755,8 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
     if (success) {
         ui->chatHistory->setConversation(m_appFacade->chatHistory());
         ui->ruleInputWidget->setRoster(m_appFacade->roster());
+        ui->testInputText->setRoster(m_appFacade->roster());
+
         updateScore();
         onScoreRemainingTime(m_appFacade->scoreRemainingTime());
     } else {
@@ -1579,9 +1583,16 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     }
 
     QString input = ui->testInputText->text();
-    BE::AppFacade::MatchList matches;
+    QString target = ui->testInputText->currentItem().username;
 
-    QString response = m_appFacade->getResponse(input, matches);
+    BE::AppFacade::MatchList matches;
+    QString response;
+
+    if (target.isEmpty()) {
+        response = m_appFacade->getResponse(input, matches);
+    } else {
+        response = m_appFacade->getResponse(input, target, matches);
+    }
 
     qDebug() << "Test input:" << input << " Response:" << response << " Matches:" << matches.size();
 
@@ -1590,6 +1601,19 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     ui->clearTestConvButton->setEnabled(true);
 
     highlightMatchedRules(matches);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onTestTargetChanged()
+{
+    BE::RosterItem target = ui->testInputText->currentItem();
+
+    if (target.isNull()) {
+        ui->testLabel->setText(tr("Test:"));
+    } else {
+        ui->testLabel->setText(tr("Test as user ") + target.fullname + ":");
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1706,6 +1730,7 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
     qDebug() << "MainWindow: Verify Account Ok";
 
     ui->ruleInputWidget->setRoster(m_appFacade->roster());
+    ui->testInputText->setRoster(m_appFacade->roster());
 
     if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
         startEditMode();
@@ -1862,6 +1887,7 @@ void Lvk::FE::MainWindow::onConnectionOk()
     BE::Roster blackRoster = m_appFacade->blackRoster();
     ui->ruleInputWidget->setRoster(m_appFacade->roster());
     ui->rosterWidget->setRoster(roster, blackRoster);
+    ui->testInputText->setRoster(roster);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -198,7 +198,8 @@ HEADERS += \
     da-server/updateinfo.h \
     da-server/updateversion.h \
     da-server/serverconfig.h \
-    da-server/nullserverconfig.h
+    da-server/nullserverconfig.h \
+    front-end/testinputtext.h
 
 
 SOURCES += \
@@ -266,6 +267,7 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
+    front-end/testinputtext.cpp
 
 
 FORMS += \
@@ -370,6 +372,8 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

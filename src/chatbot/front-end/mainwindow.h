@@ -242,6 +242,7 @@ private slots:
     void onTeachButtonPressed();
     void onUndoButtonPressed();
     void onTestInputTextEntered();
+    void onTestTargetChanged();
     void onClearTestConvPressed();
     void onTestShowRule();
 

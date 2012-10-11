@@ -92,6 +92,24 @@ public:
     {
         return username < other.username;
     }
+
+    /**
+     * Returns true if the object is null, i.e. if the username and fullname are null. Otherwise;
+     * return false.
+     */
+    bool isNull()
+    {
+        return username.isNull() && fullname.isNull();
+    }
+
+    /**
+     * Clears the username and fullname
+     */
+    void clear()
+    {
+        username.clear();
+        fullname.clear();
+    }
 };
 
 /**

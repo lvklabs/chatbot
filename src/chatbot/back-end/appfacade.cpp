@@ -434,18 +434,17 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, MatchList &matches
 {
     QString response;
 
-    // Try with all targets
+    response = getResponse(input, "", matches);
 
-    foreach (const QString &target, m_targets) {
-        response = getResponse(input, target, matches);
-
-        if (!matches.isEmpty()) {
-            break;
-        }
-    }
-
+    // If no response, try with all targets
     if (matches.isEmpty()) {
-        response = getResponse(input, "", matches);
+        foreach (const QString &target, m_targets) {
+            response = getResponse(input, target, matches);
+
+            if (!matches.isEmpty()) {
+                break;
+            }
+        }
     }
 
     return response;
