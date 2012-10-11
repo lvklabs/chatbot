@@ -198,7 +198,11 @@ private:
 
     inline void serialize(QByteArray &data);
     inline bool deserialize(const QByteArray &data);
+    inline void appendHash(QByteArray &data);
+    inline void stripHash(QByteArray &data, QByteArray &hash);
+    inline bool verifyHash(const QByteArray &data, const QByteArray &hash);
     inline void setMetric(int col, unsigned value, bool cumulative = false);
+
 };
 
 /// @}

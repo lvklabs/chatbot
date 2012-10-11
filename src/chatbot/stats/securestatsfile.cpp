@@ -29,6 +29,7 @@
 #include <QMutexLocker>
 #include <QtDebug>
 #include <QDataStream>
+#include <QCryptographicHash>
 
 #include <memory>
 #include <cassert>
@@ -177,8 +178,12 @@ void Lvk::Stats::SecureStatsFile::load(const QString &filename)
 
         Crypto::Cipher(iv, key).decrypt(data);
 
-        if (!deserialize(data)) {
-            close();
+        QByteArray hash;
+        stripHash(data, hash);
+
+        if (!verifyHash(data, hash) || !deserialize(data)) {
+            qCritical() << "SecureStatsFile: Clearing tampered file" << filename;
+            clear();
         }
     } else if (file.exists()){
         qCritical() << "SecureStatsFile: Could not open" << filename;
@@ -207,6 +212,7 @@ void Lvk::Stats::SecureStatsFile::save()
         QByteArray data;
 
         serialize(data);
+        appendHash(data);
 
         Crypto::Cipher(iv, key).encrypt(data);
 
@@ -336,6 +342,38 @@ inline bool Lvk::Stats::SecureStatsFile::deserialize(const QByteArray &data)
     }
 
     return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline void Lvk::Stats::SecureStatsFile::appendHash(QByteArray &data)
+{
+    QCryptographicHash sha1(QCryptographicHash::Sha1);
+    sha1.addData(data);
+
+    data.append(sha1.result());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline void Lvk::Stats::SecureStatsFile::stripHash(QByteArray &data, QByteArray &hash)
+{
+    const int SHA1_DIGEST_LEN = 160/8;
+
+    if (data.size() >= SHA1_DIGEST_LEN) {
+        hash = data.right(SHA1_DIGEST_LEN);
+        data = data.left(data.size() - SHA1_DIGEST_LEN);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline bool Lvk::Stats::SecureStatsFile::verifyHash(const QByteArray &data, const QByteArray &hash)
+{
+    QCryptographicHash sha1(QCryptographicHash::Sha1);
+    sha1.addData(data);
+
+    return sha1.result() == hash;
 }
 
 //--------------------------------------------------------------------------------------------------
