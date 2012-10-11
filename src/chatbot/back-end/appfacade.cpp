@@ -763,8 +763,8 @@ void Lvk::BE::AppFacade::deleteCurrentChatbot()
 
 void Lvk::BE::AppFacade::onConnected()
 {
-    emit connected();
     Stats::StatsManager::manager()->startTicking();
+    emit connected();
     m_rlogh.logChatbotConnected(true);
 }
 
@@ -772,8 +772,8 @@ void Lvk::BE::AppFacade::onConnected()
 
 void Lvk::BE::AppFacade::onDisconnected()
 {
-    emit disconnected();
     Stats::StatsManager::manager()->stopTicking();
+    emit disconnected();
     m_rlogh.logChatbotConnected(false);
 }
 
@@ -781,8 +781,8 @@ void Lvk::BE::AppFacade::onDisconnected()
 
 void Lvk::BE::AppFacade::onConversationEntry(const Cmn::Conversation::Entry &entry)
 {
-    emit newConversationEntry(entry);
     Stats::StatsManager::manager()->updateScoreWith(entry);
+    emit newConversationEntry(entry);
 }
 
 //--------------------------------------------------------------------------------------------------
