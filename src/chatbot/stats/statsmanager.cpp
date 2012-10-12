@@ -80,6 +80,9 @@ void Lvk::Stats::StatsManager::setFilename(const QString &filename)
             m_statsFile->save();
         }
         m_statsFile->close();
+        m_elapsedTime = 0;
+        m_histStats.clear();
+        m_ruleStats.clear();
     }
 
     if (!filename.isEmpty()) {
@@ -115,6 +118,9 @@ void Lvk::Stats::StatsManager::clear()
     QMutexLocker locker(m_scoreMutex);
 
     m_statsFile->clear();
+    m_elapsedTime = 0;
+    m_histStats.clear();
+    m_ruleStats.clear();
 }
 
 //--------------------------------------------------------------------------------------------------

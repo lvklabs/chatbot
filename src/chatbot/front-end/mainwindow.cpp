@@ -1742,6 +1742,8 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
     if (!m_appFacade->username().isEmpty()) {
         QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
     }
+
+    updateScore();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1792,8 +1794,14 @@ void Lvk::FE::MainWindow::onChangeAccountPressed()
 
     if (!m_appFacade->username().isEmpty()) {
         QString title = tr("Change Account");
+#ifdef DA_CONTEST
+        QString msg   = tr("If you change your account you will lose your chatbot score and some"
+                           " rules might not work anymore.\n"
+                           "Are you sure you want to change your account?");
+#else
         QString msg   = tr("If you change your account some rules might not work anymore.\n"
                            "Are you sure you want to change your account?");
+#endif
 
         QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
 

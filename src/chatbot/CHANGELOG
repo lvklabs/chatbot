@@ -1,3 +1,8 @@
+v1.0
+ - User auth using HTTPS
+ - Disabled Gmail/Gtalk option for DA contest
+ - Clearing score and stats on user account change
+
 v0.27
  - Added checkbox in the options window to enable/disable higher
    priority to rules in on the current 'topic'

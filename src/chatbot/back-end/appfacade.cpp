@@ -662,6 +662,11 @@ void Lvk::BE::AppFacade::onAccountOk(const AccountVerifier::AccountInfo &info)
 {
     m_rlogh.logAccountVerified(info.username, info.type == BE::FbChat ? "facebook" : "gtalk");
 
+    // If account has changed, clear stats
+    if (!username().isEmpty()) {
+        Stats::StatsManager::manager()->clear();
+    }
+
     setChatType(info.type);
     setUsername(info.username);
     setChatUsername(info.chatUsername);

@@ -172,13 +172,18 @@
     <name>Lvk::DAS::UserAuth</name>
     <message>
         <location filename="../da-server/userauth.cpp" line="67"/>
-        <location filename="../da-server/userauth.cpp" line="111"/>
+        <location filename="../da-server/userauth.cpp" line="116"/>
         <source>Cannot connect to the server. Please try later.</source>
         <translation>No se pudo conectar al servidor. Por favor, revisá tu conexión a internet e intentá nuevamente.</translation>
     </message>
     <message>
-        <location filename="../da-server/userauth.cpp" line="97"/>
+        <location filename="../da-server/userauth.cpp" line="87"/>
+        <source>SSL handshake error. Please try later.</source>
+        <translation>Error de conexión SSL. Por favor intentá mas tarde.</translation>
+    </message>
+    <message>
         <location filename="../da-server/userauth.cpp" line="102"/>
+        <location filename="../da-server/userauth.cpp" line="107"/>
         <source>Unknown response from server. Please try later.</source>
         <translation>Hay un problema temporal en el servidor. Por favor, intentá mas tarde.</translation>
     </message>
@@ -790,26 +795,26 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2008"/>
-        <location filename="../front-end/mainwindow.cpp" line="2048"/>
-        <location filename="../front-end/mainwindow.cpp" line="2053"/>
+        <location filename="../front-end/mainwindow.cpp" line="2014"/>
+        <location filename="../front-end/mainwindow.cpp" line="2054"/>
+        <location filename="../front-end/mainwindow.cpp" line="2059"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2009"/>
+        <location filename="../front-end/mainwindow.cpp" line="2015"/>
         <source>Before sending your score you need to verify your account.
 Please, go to the &apos;Connection&apos; tab and verify your account</source>
         <translation>Antes de enviar tu puntaje necesitás verificar tu cuenta.
 Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2049"/>
+        <location filename="../front-end/mainwindow.cpp" line="2055"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2054"/>
+        <location filename="../front-end/mainwindow.cpp" line="2060"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
@@ -818,17 +823,17 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation type="obsolete">Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2032"/>
+        <location filename="../front-end/mainwindow.cpp" line="2038"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2032"/>
+        <location filename="../front-end/mainwindow.cpp" line="2038"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2034"/>
+        <location filename="../front-end/mainwindow.cpp" line="2040"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -855,7 +860,13 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation>Cambiar cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1795"/>
+        <location filename="../front-end/mainwindow.cpp" line="1796"/>
+        <source>If you change your account you will lose your chatbot score and some rules might not work anymore.
+Are you sure you want to change your account?</source>
+        <translation>Si cambiás tu cuenta perderás todos los puntos de tu chatbot y algunas reglas podrían dejar de funcionar. ¿Estás seguro de que deseas cambiar tu cuenta?</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="1800"/>
         <source>If you change your account some rules might not work anymore.
 Are you sure you want to change your account?</source>
         <translation>Si cambias tu cuenta algunas reglas podrían dejar de funcionar. ¿Estás seguro de que deseas cambiar tu cuenta?</translation>
@@ -1205,32 +1216,32 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>Lvk::FE::TestInputText</name>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="34"/>
+        <location filename="../front-end/testinputtext.cpp" line="49"/>
         <source>Any user</source>
         <translation>Cualquier usuario</translation>
     </message>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="66"/>
+        <location filename="../front-end/testinputtext.cpp" line="83"/>
         <source>Test as user...</source>
         <translation>Probar como usuario...</translation>
     </message>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="84"/>
+        <location filename="../front-end/testinputtext.cpp" line="101"/>
         <source>Select user</source>
         <translation>Seleccionar usuario</translation>
     </message>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="85"/>
+        <location filename="../front-end/testinputtext.cpp" line="102"/>
         <source>Select the user you want to emulate to test:</source>
         <translation>Seleccioná el usuario con el que deseas probar:</translation>
     </message>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="102"/>
+        <location filename="../front-end/testinputtext.cpp" line="119"/>
         <source>Invalid user</source>
         <translation>Usuario inválido</translation>
     </message>
     <message>
-        <location filename="../front-end/testinputtext.cpp" line="102"/>
+        <location filename="../front-end/testinputtext.cpp" line="119"/>
         <source>The selected user is invalid</source>
         <translation>El usuario selccionado no es válido</translation>
     </message>
