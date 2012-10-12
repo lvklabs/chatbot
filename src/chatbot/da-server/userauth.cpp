@@ -83,6 +83,11 @@ void Lvk::DAS::UserAuth::onRestResponse(const QString &response)
 {
     qDebug() << "UserAuth: Got response: " << response;
 
+    if (!verifyCertChain()) {
+        emit error(SSLHandshakeError, tr("SSL handshake error. Please try later."));
+        return;
+    }
+
     Cmn::Json::Object jresp;
     if (Cmn::Json().parse(response, jresp)) {
         if (jresp.contains(KEY_USERNAME)) {
@@ -132,5 +137,44 @@ void Lvk::DAS::UserAuth::handleAuthError(Cmn::Json::Object &jresp)
     int mappedCode = (code >= 1 && code <= 3) ? (1000 + code) : (UnknownSessionError + code);
 
     emit error(mappedCode, msg);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::DAS::UserAuth::verifyCertChain()
+{
+    // TODO duplicated code! Refactor!
+
+    bool valid = false;
+
+    QList<QSslCertificate> certChain = m_rest.peerCertificateChain();
+
+    try {
+        // TODO check if all this stuff is really necessary or just check the immediate
+        //      subject name
+
+        if (certChain.size() == 0) {
+            throw QString("Empty cert chain");
+        }
+
+        const QSslCertificate &cert = certChain[0];
+
+        if (!cert.isValid()) {
+            throw QString("Invalid peer's immediate cert");
+        }
+        if (cert.issuerInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
+            throw QString("wrong issuer name");
+        }
+        if (cert.subjectInfo(QSslCertificate::CommonName) != PEER_CERT_SUBJECT_NAME) {
+            throw QString("wrong subect name");
+        }
+
+        valid = true;
+
+    } catch (const QString &err) {
+        qCritical() << "UserAuth: Invalid peer cert chain:" << err;
+    }
+
+    return valid;
 }
 

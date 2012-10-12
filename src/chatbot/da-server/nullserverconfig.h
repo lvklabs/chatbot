@@ -21,6 +21,12 @@
 #ifndef LVK_DAS_NULLSERVERCONFIG_H
 #define LVK_DAS_NULLSERVERCONFIG_H
 
+// Certs -------------------------------------------------------------------------------------------
+
+#define CA1_CERT_ISSUER_NAME       ""
+#define CA2_CERT_ISSUER_NAME       ""
+#define PEER_CERT_SUBJECT_NAME     ""
+
 // Updater -----------------------------------------------------------------------------------------
 
 #define UPDATER_REST_API_CFU        "http://127.0.0.1/cfu"

@@ -64,6 +64,7 @@ public:
         UserNotRegistered = 1001,
         UserNotMigrated = 1002,
         TemporalSessionError = 1003,
+        SSLHandshakeError = 1004,
         UnknownResponseError = 1009,
         UnknownSessionError = 1010
     };
@@ -121,6 +122,7 @@ private:
 
     Rest m_rest;
 
+    bool verifyCertChain();
     void handleAuthOk(Cmn::Json::Object &jresp);
     void handleAuthError(Cmn::Json::Object &jresp);
 };

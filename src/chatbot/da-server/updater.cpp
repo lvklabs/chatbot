@@ -27,11 +27,6 @@
 #include <QtDebug>
 #include <QDomDocument>
 
-#define CA1_CERT_ISSUER_NAME       "GeoTrust Global CA"
-#define CA2_CERT_ISSUER_NAME       "RapidSSL CA"
-#define PEER_CERT_SUBJECT_NAME     "www.daleaceptar.gob.ar"
-
-
 //--------------------------------------------------------------------------------------------------
 // Updater
 //--------------------------------------------------------------------------------------------------
@@ -226,46 +221,30 @@ bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &
 
 bool Lvk::DAS::Updater::verifyCertChain()
 {
+    // TODO duplicated code! Refactor!
+
     bool valid = false;
 
     QList<QSslCertificate> certChain = m_rest->peerCertificateChain();
 
     try {
-        // TODO check if all this stuff is really necessary!
+        // TODO check if all this stuff is really necessary or just check the immediate
+        //      subject name
 
         if (certChain.size() == 0) {
             throw QString("Empty cert chain");
         }
-        if (certChain.size() == 1) {
-            throw QString("No CA cert");
+
+        const QSslCertificate &cert = certChain[0];
+
+        if (!cert.isValid()) {
+            throw QString("Invalid peer's immediate cert");
         }
-
-        {
-            const QSslCertificate &cert = certChain[0];
-
-            if (!cert.isValid()) {
-                throw QString("Invalid peer's immediate cert");
-            }
-            if (cert.issuerInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
-                throw QString("wrong issuer name");
-            }
-            if (cert.subjectInfo(QSslCertificate::CommonName) != PEER_CERT_SUBJECT_NAME) {
-                throw QString("wrong subect name");
-            }
+        if (cert.issuerInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
+            throw QString("wrong issuer name");
         }
-
-        {
-            const QSslCertificate &cert = certChain[1];
-
-            if (!cert.isValid()) {
-                throw QString("Invalid CA cert");
-            }
-            if (cert.issuerInfo(QSslCertificate::CommonName) != CA1_CERT_ISSUER_NAME) {
-                throw QString("wrong CA issuer name");
-            }
-            if (cert.subjectInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
-                throw QString("wrong CA subect name");
-            }
+        if (cert.subjectInfo(QSslCertificate::CommonName) != PEER_CERT_SUBJECT_NAME) {
+            throw QString("wrong subect name");
         }
 
         valid = true;
