@@ -131,4 +131,6 @@ void Lvk::FE::TestInputText::clearRoster()
     m_roster.clear();
     m_list.clear();
     m_currentItem.clear();
+
+    emit currentItemChanged();
 }
