@@ -27,6 +27,11 @@
 #include <QtDebug>
 #include <QDomDocument>
 
+#define CA1_CERT_ISSUER_NAME       "GeoTrust Global CA"
+#define CA2_CERT_ISSUER_NAME       "RapidSSL CA"
+#define PEER_CERT_SUBJECT_NAME     "www.daleaceptar.gob.ar"
+
+
 //--------------------------------------------------------------------------------------------------
 // Updater
 //--------------------------------------------------------------------------------------------------
@@ -34,9 +39,6 @@
 Lvk::DAS::Updater::Updater()
     : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR)
 {
-    // TODO QSslConfiguration::setLocalCertificate
-    //m_rest->setIgnoreSslErrors(true);
-
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
             SLOT(onCfuRerror(QNetworkReply::NetworkError)));
@@ -222,10 +224,6 @@ bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &
 
 //--------------------------------------------------------------------------------------------------
 
-#define CA_CERT_ISSUER_NAME       "GeoTrust Global CA"
-#define IM_CERT_ISSUER_NAME       "RapidSSL CA"
-#define IM_CERT_SUBJECT_NAME      "www.daleaceptar.gob.ar"
-
 bool Lvk::DAS::Updater::verifyCertChain()
 {
     bool valid = false;
@@ -233,6 +231,8 @@ bool Lvk::DAS::Updater::verifyCertChain()
     QList<QSslCertificate> certChain = m_rest->peerCertificateChain();
 
     try {
+        // TODO check if all this stuff is really necessary!
+
         if (certChain.size() == 0) {
             throw QString("Empty cert chain");
         }
@@ -243,16 +243,13 @@ bool Lvk::DAS::Updater::verifyCertChain()
         {
             const QSslCertificate &cert = certChain[0];
 
-            qDebug() << cert.issuerInfo(QSslCertificate::CommonName);
-            qDebug() << cert.subjectInfo(QSslCertificate::CommonName);
-
             if (!cert.isValid()) {
                 throw QString("Invalid peer's immediate cert");
             }
-            if (cert.issuerInfo(QSslCertificate::CommonName) != IM_CERT_ISSUER_NAME) {
+            if (cert.issuerInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
                 throw QString("wrong issuer name");
             }
-            if (cert.subjectInfo(QSslCertificate::CommonName) != IM_CERT_SUBJECT_NAME) {
+            if (cert.subjectInfo(QSslCertificate::CommonName) != PEER_CERT_SUBJECT_NAME) {
                 throw QString("wrong subect name");
             }
         }
@@ -260,16 +257,13 @@ bool Lvk::DAS::Updater::verifyCertChain()
         {
             const QSslCertificate &cert = certChain[1];
 
-            qDebug() << cert.issuerInfo(QSslCertificate::CommonName);
-            qDebug() << cert.subjectInfo(QSslCertificate::CommonName);
-
             if (!cert.isValid()) {
                 throw QString("Invalid CA cert");
             }
-            if (cert.issuerInfo(QSslCertificate::CommonName) != CA_CERT_ISSUER_NAME) {
+            if (cert.issuerInfo(QSslCertificate::CommonName) != CA1_CERT_ISSUER_NAME) {
                 throw QString("wrong CA issuer name");
             }
-            if (cert.subjectInfo(QSslCertificate::CommonName) != IM_CERT_ISSUER_NAME) {
+            if (cert.subjectInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
                 throw QString("wrong CA subect name");
             }
         }
