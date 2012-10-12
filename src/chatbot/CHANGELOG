@@ -5,6 +5,7 @@ v0.27
  - Improved security in SecureStatsFile by adding a hash signature
  - Verifying SSL handshake in Updater
  - Embedding CA Certs in binary file
+ - Added licences files in linux32 and win32 packages. Removed changelog.
 
 v0.26
  - Added simple crash handler

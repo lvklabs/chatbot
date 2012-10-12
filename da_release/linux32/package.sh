@@ -21,7 +21,7 @@ else
 
   cp -vR runtime/* $pkg_dir
   cp -v .build/chatbot $pkg_dir
-  cp -v ../../src/chatbot/CHANGELOG $pkg_dir/CHANGELOG
+#  cp -v ../../src/chatbot/CHANGELOG $pkg_dir/CHANGELOG
   cp -vR ../../src/chatbot/lang/*.qm $pkg_dir/lang
 
   strip $pkg_dir/chatbot
