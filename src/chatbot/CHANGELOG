@@ -2,6 +2,9 @@ v0.27
  - Added checkbox in the options window to enable/disable higher
    priority to rules in on the current 'topic'
  - Improved stats & remote logging
+ - Improved security in SecureStatsFile by adding a hash signature
+ - Verifying SSL handshake in Updater
+ - Embedding CA Certs in binary file
 
 v0.26
  - Added simple crash handler
