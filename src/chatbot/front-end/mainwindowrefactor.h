@@ -121,6 +121,7 @@ private:
     void updateTabsLayout(UiMode mode);
     void updateTabsIcons(UiMode mode);
 
+    inline bool gtalkEnabled();
     inline bool hasLastFile();
     inline QString username();
     inline QPixmap chatIcon();

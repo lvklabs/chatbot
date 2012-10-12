@@ -218,7 +218,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
+        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
         ui->verifyLaterButton->setVisible(false);
@@ -236,7 +236,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
+        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
         ui->verifyLaterButton->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
@@ -262,7 +262,7 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(true);
+        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
         ui->verifyLaterButton->setEnabled(true);
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
@@ -414,6 +414,17 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
 
 //--------------------------------------------------------------------------------------------------
 
+inline bool Lvk::FE::MainWindowRefactor::gtalkEnabled()
+{
+#ifdef DA_CONTEST
+    return false;
+#else
+    return true;
+#endif
+}
+
+//--------------------------------------------------------------------------------------------------
+
 inline bool Lvk::FE::MainWindowRefactor::hasLastFile()
 {
     return Cmn::Settings(Cmn::Settings::UserScope()).contains(SETTING_LAST_FILE);
@@ -429,7 +440,7 @@ inline QPixmap Lvk::FE::MainWindowRefactor::chatIcon()
 //--------------------------------------------------------------------------------------------------
 
 inline QString Lvk::FE::MainWindowRefactor::username()
+
 {
     return m_appFacade->username();
 }
-
