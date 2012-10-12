@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/certs">
+        <file alias="RapidSSLCA.pem">certs/RapidSSLCA.pem</file>
+        <file alias="GeoTrustGlobalCA.pem">certs/GeoTrustGlobalCA.pem</file>
+    </qresource>
+</RCC>

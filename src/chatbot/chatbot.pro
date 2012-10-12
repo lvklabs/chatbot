@@ -281,6 +281,7 @@ FORMS += \
     front-end/welcomewidget.ui
 
 RESOURCES += \
+    res/certs.qrc \
     res/$${ICON_THEME}_theme.qrc
 
 RC_FILE = \

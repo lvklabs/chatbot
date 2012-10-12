@@ -10,6 +10,25 @@
 #include <QDir>
 #include <QSslConfiguration>
 
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+inline void appendCertificate(const QString &filename, QList<QSslCertificate> &certs)
+{
+    QFile *f = new QFile(filename);
+    f->open(QFile::ReadOnly);
+    certs.append(QSslCertificate::fromDevice(f, QSsl::Pem));
+    delete f;
+}
+
+} // namespace
+
+
 //--------------------------------------------------------------------------------------------------
 // Rest
 //--------------------------------------------------------------------------------------------------
@@ -174,16 +193,19 @@ void Lvk::DAS::Rest::unescape(QString &resp)
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::DAS::Rest::configureSsl(QNetworkReply *reply)
 {
     if (!m_ignoreSslErrors) {
-        QString cbCertsDir = QDir("./data/certs").absolutePath();
-        QList<QSslCertificate> cbCerts = QSslCertificate::fromPath(cbCertsDir + "/*", QSsl::Pem,
-                                                                   QRegExp::Wildcard);
         QSslConfiguration conf = reply->sslConfiguration();
-        QList<QSslCertificate> certs;// = conf.caCertificates();
-        certs.append(cbCerts);
+        QList<QSslCertificate> certs = conf.caCertificates();
+
+        appendCertificate(":/certs/GeoTrustGlobalCA.pem", certs);
+        appendCertificate(":/certs/RapidSSLCA.pem", certs);
+
         conf.setCaCertificates(certs);
+
         reply->setSslConfiguration(conf);
     } else {
         reply->ignoreSslErrors();
