@@ -51,13 +51,19 @@ void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
         msg.append(tr("<p><b><span style=\"color:#ff0000\">This is a critical update!</span> "
                       "You cannot connect your chatbot, send your score or verify new accounts "
                       "until you update the program.</b></p>"));
-    } else {
-        msg.append(tr("<p>This new version fixes several bugs. We recommend you to update the "
-                      "application.</p>"));
     }
 
     if (info.whatsNew().size() > 0) {
         msg.append(tr("<p>What's new:<br/> - ") + info.whatsNew().join("<br/> - ") + "</p>");
+    }
+
+    msg.append(tr("</p>We recommend you to <a href=\"http://www.daleaceptar.gob.ar/cms/chat/"
+                  "descarga-chatbot/verifica-tu-descarga/#sha1\">verify your program</a> once"
+                  " it is downloaded. <a href=\"http://www.daleaceptar.gob.ar/cms/chat/"
+                  "descarga-chatbot/verifica-tu-descarga/\">What's this?</a></p>"));
+
+    if (!info.hash().isEmpty()) {
+        msg.append(QString(tr("<p>SHA-1 signature for this udpate is %1</p>")).arg(info.hash()));
     }
 
     setText(msg);

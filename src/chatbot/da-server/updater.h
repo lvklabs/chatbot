@@ -76,6 +76,12 @@ public:
      */
     void abort();
 
+    /**
+     * If \a ignore is true then SSL errors are ignored during the check for update process.
+     * By default are not ignored.
+     */
+    void setIgnoreSslErrors(bool ignore);
+
 signals:
 
     /**
@@ -99,6 +105,7 @@ private:
 
     Rest *m_rest;
     UpdateVersion m_curVersion;
+    bool m_verifySsl;
 
 
     bool verifyCertChain();

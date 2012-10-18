@@ -115,6 +115,16 @@ public:
     /**
      *
      */
+    void setHash(const QString &hash) { m_hash = hash; }
+
+    /**
+     *
+     */
+    const QString & hash() const { return m_hash; }
+
+    /**
+     *
+     */
     void clear()
     {
         m_version.clear();
@@ -122,6 +132,7 @@ public:
         m_whatsNew.clear();
         m_url.clear();
         m_date = QDate();
+        m_hash.clear();
     }
 
 private:
@@ -130,6 +141,7 @@ private:
     QStringList m_whatsNew;
     QString m_url;
     QDate m_date;
+    QString m_hash;
 };
 
 /// @}

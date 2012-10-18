@@ -76,31 +76,34 @@ void UpdaterUnitTest::testCase1_data()
     QTest::addColumn<QString>("url");
     QTest::addColumn<QDate>("date");
     QTest::addColumn<QStringList>("wn");
+    QTest::addColumn<QString>("hash");
 
     QTest::newRow("w1")  << QString("update1-wrong.xml") << "1.5"  << false
-                         << -1 << -1 << -1 << QString() << QDate() << QStringList();
+                         << -1 << -1 << -1 << QString() << QDate() << QStringList() << QString();
 
     QTest::newRow("w2")  << QString("update2-wrong.xml") << "1.0"  << false
-                         << -1 << -1 << -1 << QString() << QDate() << QStringList();
+                         << -1 << -1 << -1 << QString() << QDate() << QStringList() << QString();
 
     QTest::newRow("w3")  << QString("update3-wrong.xml") << "0.0"  << false
-                         << -1 << -1 << -1 << QString() << QDate() << QStringList();
+                         << -1 << -1 << -1 << QString() << QDate() << QStringList() << QString();
 
     QTest::newRow("ok1") << QString("update1.xml")         << "0.98" << true
                          << (int)DAS::UpdateInfo::Low      << 0 << 99 << URL_1 << DATE_2
-                         << QStringList();
+                         << QStringList() << QString();
 
     QTest::newRow("ok2") << QString("update2.xml")         << "1.1"  << false
                          << (int)DAS::UpdateInfo::Critical << 1 << 1 << URL_1 << DATE_2
-                         << QStringList();
+                         << QStringList() << QString();
 
     QTest::newRow("ok3") << QString("update3.xml")         << "1.2"  << true
                          << (int)DAS::UpdateInfo::Critical << 1 << 3 << URL_1 << DATE_1
-                         << (QStringList() << "Hi!");
+                         << (QStringList() << "Hi!")
+                         << QString("ce286df1e54f176ca76a8020a1ae3b464223fc0f");
 
     QTest::newRow("ok4") << QString("update4.xml")         << "1.9"  << true
                          << (int)DAS::UpdateInfo::Low      << 2 << 0 << URL_1 << DATE_1
-                         << (QStringList() << QString::fromWCharArray(L"áéíóúñ") << "Other string");
+                         << (QStringList() << QString::fromWCharArray(L"áéíóúñ") << "Other string")
+                         << QString();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -116,12 +119,14 @@ void UpdaterUnitTest::testCase1()
     QFETCH(QString, url);
     QFETCH(QDate, date);
     QFETCH(QStringList, wn);
+    QFETCH(QString, hash);
 
     RestMock *rest = new RestMock();
 
     QVERIFY(rest->setResponse(filename));
 
     DAS::Updater * updater = new DAS::Updater(rest);
+    updater->setIgnoreSslErrors(true);
     updater->m_curVersion = DAS::UpdateVersion(curVer);
     connect(updater, SIGNAL(noUpdate()),              SLOT(onNoUpdate()));
     connect(updater, SIGNAL(update(DAS::UpdateInfo)), SLOT(onUpdate(DAS::UpdateInfo)));
@@ -144,6 +149,7 @@ void UpdaterUnitTest::testCase1()
         QCOMPARE(date, m_info.date());
         QCOMPARE(wn.size(), m_info.whatsNew().size());
         QCOMPARE(wn, m_info.whatsNew());
+        QCOMPARE(hash, m_info.hash());
     }
 }
 

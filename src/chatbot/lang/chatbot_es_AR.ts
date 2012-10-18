@@ -1092,12 +1092,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>&lt;p&gt;&lt;b&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;¡Actualización crítica!&lt;/span&gt; No podrás conectar tu chatbot, enviar puntajes o verificar nuevas cuentas hasta que no actualices el programa.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="55"/>
         <source>&lt;p&gt;This new version fixes several bugs. We recommend you to update the application.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Esta nueva versión corrige varios errores. Recomendamos que actualices la aplicación para un mejor funcionamiento.&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Esta nueva versión corrige varios errores. Recomendamos que actualices la aplicación para un mejor funcionamiento.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="60"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="57"/>
         <source>&lt;p&gt;What&apos;s new:&lt;br/&gt; - </source>
         <translation>&lt;p&gt;¿Qué hay de nuevo?&lt;br/&gt; - </translation>
     </message>
@@ -1110,6 +1109,16 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../front-end/newupdatedialog.cpp" line="38"/>
         <source>Download Now!</source>
         <translation>¡Descargar Ahora!</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="60"/>
+        <source>&lt;/p&gt;We recommend you to &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verify your program&lt;/a&gt; once it is downloaded. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;What&apos;s this?&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;/p&gt;Una vez finalizada la descarga recomendamos &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verificar la firma SHA1&lt;/a&gt;. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;¿Qué es esto?&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="66"/>
+        <source>&lt;p&gt;SHA-1 signature for this udpate is %1&lt;/p&gt;</source>
+        <translation>&lt;p&gt;La firma SHA1 para esta descarga es %1&lt;/p&gt;</translation>
     </message>
 </context>
 <context>

@@ -32,7 +32,7 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::DAS::Updater::Updater()
-    : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR)
+    : m_rest(new DAS::Rest()), m_curVersion(APP_VERSION_STR), m_verifySsl(true)
 {
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -43,7 +43,7 @@ Lvk::DAS::Updater::Updater()
 
 
 Lvk::DAS::Updater::Updater(DAS::Rest *rest)
-    : m_rest(rest), m_curVersion(APP_VERSION_STR)
+    : m_rest(rest), m_curVersion(APP_VERSION_STR), m_verifySsl(true)
 {
     connect(m_rest, SIGNAL(response(QString)), SLOT(onCfuResponse(QString)));
     connect(m_rest, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -75,13 +75,21 @@ void Lvk::DAS::Updater::abort()
     m_rest->abort();
 }
 
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::DAS::Updater::setIgnoreSslErrors(bool ignore)
+{
+    m_verifySsl = !ignore;
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::DAS::Updater::onCfuResponse(const QString &resp)
 {
     qDebug() << "Updater: CFU response";
 
-    if (!verifyCertChain()) {
+    if (m_verifySsl && !verifyCertChain()) {
         qCritical() << "Updater: Invalid certificate chain. Ignoring response.";
         return;
     }
@@ -121,6 +129,7 @@ bool Lvk::DAS::Updater::parseResponse(Lvk::DAS::UpdateInfo &info, const QString 
           <date>28/10/2012</date>
           <critical>yes</critical>
           <url>http://lvklabs.com/builds/chatbot/chatbot-linux32-0.23.zip</url>
+          <hash>ce286df1e54f176ca76a8020a1ae3b464223fc0f</hash>
           <whatsnew>
             <li>Fixed bug 1</li>
             <li>Fixed bug 2</li>
@@ -179,6 +188,8 @@ bool Lvk::DAS::Updater::parseUpdateNode(Lvk::DAS::UpdateInfo &info, QDomNode &up
             url = true;
         } else if (name == "whatsnew") {
             parseWhatsNewNode(info, node);
+        } else if (name == "hash") {
+            info.setHash(value);
         } else {
             qWarning() << "Updater: parseUpdateNode: Unknown node" << name;
         }
