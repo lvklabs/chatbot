@@ -144,6 +144,14 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::currentScore()
 
     m_statsFile->setCurrentScore(score);
 
+    // The best score does not remember the best rule score. Best score rule must be always equal
+    // to the current rule score
+    Stats::Score best = m_statsFile->bestScore();
+    best.rules = score.rules;
+    best.total = best.conversations + best.contacts +  best.rules;
+
+    m_statsFile->setBestScore(best);
+
     setRuleMetrics();
 
     return score;
@@ -172,8 +180,8 @@ unsigned Lvk::Stats::StatsManager::intervals()
 
 void Lvk::Stats::StatsManager::updateBestScore()
 {
-    Score best = m_statsFile->bestScore();
     Score current = currentScore();
+    Score best = m_statsFile->bestScore();
 
     if (current.total > best.total) {
         best = current;

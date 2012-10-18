@@ -560,7 +560,7 @@ void StatsManagerTest::testBestScoreAndIntervals()
     Stats::Score s3(ruleTree1Score(), CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
 
     QVERIFY(manager()->currentScore() == s3);
-    QVERIFY(manager()->bestScore() == s2);
+    QVERIFY(manager()->bestScore() == s3);
 
     // Interval 4 -----------------------
 
@@ -569,7 +569,7 @@ void StatsManagerTest::testBestScoreAndIntervals()
     QVERIFY(manager()->currentScore().rules == s3.rules);
     QVERIFY(manager()->currentScore().contacts == s3.contacts);
     QVERIFY(manager()->currentScore().conversations == 0);
-    QVERIFY(manager()->bestScore() == s2);
+    QVERIFY(manager()->bestScore() == s3);
 
     resetManager();
     manager()->setFilename(STAT_FILENAME_1);
@@ -594,13 +594,13 @@ void StatsManagerTest::testBestScoreAndIntervals()
     QVERIFY(manager()->currentScore().conversations == 0);
     QVERIFY(manager()->bestScore() == s2);
 
-    manager()->updateScoreWith(root2);
+    manager()->updateScoreWith(root1);
 
     foreach (const Cmn::Conversation::Entry &e, conv3.entries()) {
         manager()->updateScoreWith(e);
     }
 
-    Stats::Score s5(ruleTree2Score(), CONV_LONG_CONT_SCORE + CONV_LONG2_CONT_SCORE, CONV_LONG2_CONV_SCORE);
+    Stats::Score s5(ruleTree1Score(), CONV_LONG_CONT_SCORE + CONV_LONG2_CONT_SCORE, CONV_LONG2_CONV_SCORE);
 
     if (manager()->currentScore() != s5) {
         qDebug() << " - Got:";
