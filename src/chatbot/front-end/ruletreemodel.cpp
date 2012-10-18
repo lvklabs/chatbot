@@ -359,10 +359,10 @@ QVariant Lvk::FE::RuleTreeModel::dataForItem(const BE::Rule *item, int column, i
     case Qt::DisplayRole:
         switch (item->type()) {
         case BE::Rule::OrdinaryRule:
-            return item->input().isEmpty() ? QString("") : item->input().first();
+            return item->input().isEmpty() ? QString("") : item->input().first().simplified();
         case BE::Rule::ContainerRule:
         case BE::Rule::EvasiveRule:
-            return item->name();
+            return item->name().simplified();
         default:
             return QVariant();
         }
