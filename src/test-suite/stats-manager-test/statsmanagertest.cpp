@@ -38,6 +38,7 @@ const int CONV_P = 1000; // Valid conversation points
 #define CONV_LONG2_FILENAME     "conv_long2.txt"
 #define CONV_INACT_FILENAME     "conv_inactive.txt"
 #define CONV_INTER_FILENAME     "conv_interfered.txt"
+#define CONV_REPT_FILENAME      "conv_lotrepeats.txt"
 
 const int CONV_SHORT_CONV_SCORE = 3 + 7;   // #conv diff lines + #lexicon
 const int CONV_SHORT_CONT_SCORE = 0;
@@ -49,6 +50,8 @@ const int CONV_INACT_CONV_SCORE = 25 + 30; // #conv diff lines + #lexicon
 const int CONV_INACT_CONT_SCORE = 0;
 const int CONV_INTER_CONV_SCORE = 15 + 17; // #conv diff lines + #lexicon
 const int CONV_INTER_CONT_SCORE = 0;
+const int CONV_REPT_CONV_SCORE = 2 + 7;    // #conv diff lines + #lexicon
+const int CONV_REPT_CONT_SCORE = 0;
 
 using namespace Lvk;
 
@@ -417,6 +420,9 @@ void StatsManagerTest::testScoreAlgorithm_data()
     Cmn::Conversation c_inter = readConversation(CONV_INTER_FILENAME);
     QVERIFY(!c_inter.isEmpty());
 
+    Cmn::Conversation c_rept  = readConversation(CONV_REPT_FILENAME);
+    QVERIFY(!c_rept.isEmpty());
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Cols & Rows
 
@@ -442,6 +448,7 @@ void StatsManagerTest::testScoreAlgorithm_data()
     QTest::newRow("cl")  << reinterpret_cast<BE::Rule *>(0) << c_long  << Stats::Score(0, CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
     QTest::newRow("cli") << reinterpret_cast<BE::Rule *>(0) << c_inact << Stats::Score(0, CONV_INACT_CONT_SCORE, CONV_INACT_CONV_SCORE);
     QTest::newRow("clI") << reinterpret_cast<BE::Rule *>(0) << c_inter << Stats::Score(0, CONV_INTER_CONT_SCORE, CONV_INTER_CONV_SCORE);
+    QTest::newRow("cr")  << reinterpret_cast<BE::Rule *>(0) << c_rept  << Stats::Score(0, CONV_REPT_CONT_SCORE, CONV_REPT_CONV_SCORE);
 
     QTest::newRow("m1") << root5a << c_long << Stats::Score(root5a_score, CONV_LONG_CONT_SCORE, CONV_LONG_CONV_SCORE);
     QTest::newRow("m2") << root5a << c_inact << Stats::Score(root5a_score, CONV_INACT_CONT_SCORE, CONV_INACT_CONV_SCORE);

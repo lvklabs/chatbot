@@ -54,7 +54,11 @@ void Lvk::Stats::HistoryStatsHelper::trackConversation(const Lvk::Cmn::Conversat
         m_deadConvDiffLinesCount += m_convDiffLines[user].size();
         m_convDiffLines[user].clear();
     } else {
-        info.entries = interfered ? 0 : info.entries + 1;
+        if (interfered) {
+            info.entries = 0;
+        } else if (!m_convDiffLines[user].contains(entry.response)) {
+            info.entries = info.entries + 1;
+        }
         info.interfered |= interfered;
     }
 
