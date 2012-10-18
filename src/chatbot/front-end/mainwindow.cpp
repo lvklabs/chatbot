@@ -625,10 +625,16 @@ void Lvk::FE::MainWindow::onSaveMenuTriggered()
 
 void Lvk::FE::MainWindow::onSaveAsMenuTriggered()
 {
-    QMessageBox::information(this, tr("Save As..."),
-                             tr("With this option you are creating a new chatbot. The new chatbot "
-                                "will not keep your current chat history and score."));
-    saveAsChanges();
+    QString title = tr("Save As...");
+    QString msg = tr("With this option you are creating a new chatbot. The new chatbot "
+                     "will not keep your current chat history and score.");
+
+    QMessageBox::StandardButton button =
+            QMessageBox::information(this, title, msg, QMessageBox::Ok, QMessageBox::Cancel);
+
+    if (button == QMessageBox::Ok) {
+        saveAsChanges();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
