@@ -1406,7 +1406,7 @@ void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
     // Refresh rule tree while user is typing
     if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
         QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
-        m_ruleTreeModel->setData(selectedIndex, ruleInput, Qt::EditRole);
+        m_ruleTreeModel->setData(selectedIndex, ruleInput.simplified(), Qt::EditRole);
     }
 }
 
