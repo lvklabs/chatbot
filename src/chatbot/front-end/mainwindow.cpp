@@ -728,7 +728,7 @@ bool Lvk::FE::MainWindow::saveAsChanges()
             teachRule(selectedRule());
         }
 
-        saved = m_appFacade->saveAs(m_filename);
+        saved = m_appFacade->saveAs(filename);
 
         if (saved) {
             setFilename(filename);
