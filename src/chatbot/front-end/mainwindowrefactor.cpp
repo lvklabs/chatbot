@@ -70,70 +70,9 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         ui->openLastChatbotButton->setVisible(hasLastFile());
         break;
 
-    // Edit rules tab //
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // TODO create widget to edit rules to simplify this mess!
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    case RuleSelectionEmptyUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        ui->teachRuleButton->setVisible(false);
-        ui->undoRuleButton->setVisible(false);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        break;
-
-    case EditCategoryUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(16777215);
-        ui->categoryNameLabel->setVisible(true);
-        ui->categoryNameTextEdit->setVisible(true);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(false);
-        ui->chatbotRepliesLabel->setVisible(false);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->teachRuleButton->setText(QObject::tr("Change name"));
-        break;
-
     case EditRuleUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(16777215);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(true);
-        ui->ruleOutputWidget->setVisible(true);
-        ui->chatbotRepliesLabel->setVisible(true);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(QObject::tr("Chatbot replies:"));
-        ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
-        break;
-
-    case EditEvasivesUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleOutputWidget->setMaximumHeight(150);
-        ui->categoryNameLabel->setVisible(false);
-        ui->categoryNameTextEdit->setVisible(false);
-        ui->ruleInputWidget->setVisible(false);
-        ui->ruleOutputWidget->setVisible(true);
-        ui->chatbotRepliesLabel->setVisible(true);
-        ui->teachRuleButton->setVisible(true);
-        ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
-        ui->chatbotRepliesLabel->setText(QObject::tr("If chatbot does not understand,"
-                                                     " it replies:"));
-        ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
+        ui->ruleEditWidget->setVisible(true);
         break;
 
     // Chat connection tab //

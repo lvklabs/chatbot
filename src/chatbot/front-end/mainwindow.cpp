@@ -177,10 +177,8 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->mainTabWidget->setCurrentIndex(0);
 
     // train tab widgets
-    // TODO clear ui->categoriesTree
-    ui->ruleInputWidget->clear();
-    ui->ruleOutputWidget->clear();
-    ui->ruleInputWidget->clearRoster();
+    ui->ruleEditWidget->clear();
+    ui->ruleEditWidget->clearRoster();
 
     // chat tab widgets
     //ui->fbChatRadio->setChecked(true);
@@ -272,21 +270,13 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
     connect(ui->addRuleButton,         SIGNAL(clicked()),   SLOT(onAddRuleButtonClicked()));
     connect(ui->rmItemButton,          SIGNAL(clicked()),   SLOT(onRemoveButtonClicked()));
-    connect(ui->teachRuleButton,       SIGNAL(clicked()),   SLOT(onTeachButtonPressed()));
-    connect(ui->undoRuleButton,        SIGNAL(clicked()),   SLOT(onUndoButtonPressed()));
     connect(ui->actionAddEmptyRule,    SIGNAL(triggered()), SLOT(onAddRuleButtonClicked()));
     connect(ui->actionAddVarRule,      SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
     connect(ui->actionAddCondRule,     SIGNAL(triggered()), SLOT(onAddCondRuleAction()));
-    connect(ui->ruleInputWidget,       SIGNAL(inputVariantsEdited()),
-            SLOT(onRuleEdited()));
-    connect(ui->ruleOutputWidget,      SIGNAL(outputTextEdited()),
-            SLOT(onRuleEdited()));
-    connect(ui->categoryNameTextEdit,  SIGNAL(textEdited(QString)),
+    connect(ui->ruleEditWidget,        SIGNAL(teachRule()), SLOT(onTeachRule()));
+    connect(ui->ruleEditWidget,        SIGNAL(undoRule()), SLOT(onUndoRule()));
+    connect(ui->ruleEditWidget,        SIGNAL(ruleInputEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
-    connect(ui->ruleInputWidget,       SIGNAL(inputTextEdited(QString)),
-            SLOT(onRuleInputEdited(QString)));
-    connect(ui->ruleInputWidget,       SIGNAL(targetTextEdited(QString)),
-            SLOT(onRuleTargetEdited(QString)));
     connect(ui->centralSplitter,       SIGNAL(splitterMoved(int,int)),
             SLOT(onSplitterMoved(int,int)));
     connect(ui->teachTabsplitter,      SIGNAL(splitterMoved(int,int)),
@@ -760,7 +750,7 @@ bool Lvk::FE::MainWindow::load(const QString &filename)
 
     if (success) {
         ui->chatHistory->setConversation(m_appFacade->chatHistory());
-        ui->ruleInputWidget->setRoster(m_appFacade->roster());
+        ui->ruleEditWidget->setRoster(m_appFacade->roster());
         ui->testInputText->setRoster(m_appFacade->roster());
 
         updateScore();
@@ -1034,11 +1024,11 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::addRuleWithDialog(const QStringList &tmplIn
 
             onRuleAdded();
 
-            if (tmplInput.size() > 0 || tmplOutput.size() > 0) {
-                onRuleEdited();
-            }
+//            if (tmplInput.size() > 0 || tmplOutput.size() > 0) {
+//                onRuleEdited();
+//            }
 
-            ui->ruleInputWidget->setFocusOnInput();
+            ui->ruleEditWidget->setFocusOnInput();
         } else {
             QString title = tr("Internal error");
             QString text = tr("The rule could not be added because of an internal error");
@@ -1255,7 +1245,7 @@ void Lvk::FE::MainWindow::onTeachFromHistory(const QString &msg)
 
         if (appended) {
             selectRule(rule);
-            ui->ruleOutputWidget->setFocus();
+            ui->ruleEditWidget->setFocusOnOutput();
         } else {
             delete rule;
         }
@@ -1329,36 +1319,8 @@ void Lvk::FE::MainWindow::onRuleSelectionChanged(const QItemSelection &selected,
 
 void Lvk::FE::MainWindow::showRuleOnWidget(const BE::Rule *rule)
 {
-    // TODO Create a RuleWidget class that contains nameTextEdit, inputWidget and outputWidget.
-    //      Define a method setRule(Rule*) that does this job.
-
-    if (!rule) {
-        setUiMode(FE::RuleSelectionEmptyUiMode);
-        ui->categoryNameLabel->clear();
-        ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->clear();
-    } else if (rule->type() == BE::Rule::OrdinaryRule) {
-        setUiMode(FE::EditRuleUiMode);
-        ui->categoryNameTextEdit->clear();
-        ui->ruleInputWidget->setTargets(rule->target());
-        ui->ruleInputWidget->setInput(rule->input());
-        ui->ruleOutputWidget->setOutput(rule->output());
-    } else if (rule->type() == BE::Rule::EvasiveRule) {
-        setUiMode(FE::EditEvasivesUiMode);
-        ui->categoryNameTextEdit->clear();
-        ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->setOutput(rule->output());
-    } else if (rule->type() == BE::Rule::ContainerRule) {
-        setUiMode(FE::EditCategoryUiMode);
-        ui->categoryNameTextEdit->setText(rule->name());
-        ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->clear();
-    } else {
-        setUiMode(FE::RuleSelectionEmptyUiMode);
-        ui->categoryNameLabel->clear();
-        ui->ruleInputWidget->clear();
-        ui->ruleOutputWidget->clear();
-    }
+    ui->ruleEditWidget->setRule(rule);
+    setUiMode(FE::EditRuleUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1399,22 +1361,13 @@ void Lvk::FE::MainWindow::startEditMode()
 // Rule edition & undo
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleInputEdited(const QString &ruleInput)
+void Lvk::FE::MainWindow::onRuleInputEdited(const QString &input)
 {
-    onRuleEdited();
-
     // Refresh rule tree while user is typing
     if (!m_ruleTreeSelectionModel->selectedIndexes().isEmpty()) {
         QModelIndex selectedIndex = m_ruleTreeSelectionModel->selectedIndexes().first();
-        m_ruleTreeModel->setData(selectedIndex, ruleInput.simplified(), Qt::EditRole);
+        m_ruleTreeModel->setData(selectedIndex, input.simplified(), Qt::EditRole);
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onRuleTargetEdited(const QString &/*ruleInput*/)
-{
-    onRuleEdited();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1426,40 +1379,20 @@ void Lvk::FE::MainWindow::onRuleAdded()
     if (selRule) {
         m_ruleAdded = true;
 
-        ui->undoRuleButton->setEnabled(true);
+//        ui->undoRuleButton->setEnabled(true);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleEdited()
-{
-    const BE::Rule *selRule = selectedRule();
-
-    if (selRule && !m_ruleEdited) {
-        m_ruleEdited = true;
-
-        m_ruleBackup.setStatus(selRule->status());
-        m_ruleBackup.setName(selRule->name());
-        m_ruleBackup.setTarget(selRule->target());
-        m_ruleBackup.setInput(selRule->input());
-        m_ruleBackup.setOutput(selRule->output());
-
-        ui->teachRuleButton->setEnabled(true);
-        ui->undoRuleButton->setEnabled(true);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onTeachButtonPressed()
+void Lvk::FE::MainWindow::onTeachRule()
 {
     teachRule(selectedRule());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onUndoButtonPressed()
+void Lvk::FE::MainWindow::onUndoRule()
 {
     undoRule(selectedRule());
 }
@@ -1505,23 +1438,14 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     if (!rule) {
         return;
     }
-    if (m_ruleEdited || m_ruleAdded) {
-        if (rule->type() == BE::Rule::OrdinaryRule) {
-            rule->setTarget(ui->ruleInputWidget->targets());
-            rule->setInput(ui->ruleInputWidget->input());
-            rule->setOutput(ui->ruleOutputWidget->output());
-        } else if (rule->type() == BE::Rule::EvasiveRule) {
-            rule->setOutput(ui->ruleOutputWidget->output());
-        } else if (rule->type() == BE::Rule::ContainerRule) {
-            rule->setName(ui->categoryNameTextEdit->text());
-        }
-    }
+
+    rule->setName(ui->ruleEditWidget->name());
+    rule->setTarget(ui->ruleEditWidget->targets());
+    rule->setInput(ui->ruleEditWidget->input());
+    rule->setOutput(ui->ruleEditWidget->output());
 
     m_ruleEdited = false;
     m_ruleAdded = false;
-
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
 
     m_appFacade->refreshNlpEngine();
     m_appFacade->save();
@@ -1547,35 +1471,12 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
             m_ruleTreeModel->removeRow(index.row(), index.parent());
         }
     } else if (m_ruleEdited) {
-        // Refresh rule IO widgets
-        if (rule->type() == BE::Rule::OrdinaryRule) {
-            ui->ruleInputWidget->setTargets(m_ruleBackup.target());
-            ui->ruleInputWidget->setInput(m_ruleBackup.input());
-            ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
-        } else if (rule->type() == BE::Rule::EvasiveRule) {
-            ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
-        } else if (rule->type() == BE::Rule::ContainerRule) {
-            ui->categoryNameTextEdit->setText(m_ruleBackup.name());
-        }
-
-        // Refresh rule tree
-        if (rule->type() == BE::Rule::OrdinaryRule) {
-            QString ruleName = m_ruleBackup.input().isEmpty() ? "" : m_ruleBackup.input().first();
-            m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
-                                     QVariant(ruleName), Qt::EditRole);
-        } else if (rule->type() == BE::Rule::EvasiveRule) {
-            // Nothing to do
-        } else if (rule->type() == BE::Rule::ContainerRule) {
-            m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule),
-                                     QVariant(m_ruleBackup.name()), Qt::EditRole);
-        }
+        m_ruleTreeModel->setData(m_ruleTreeModel->indexFromItem(rule), ui->ruleEditWidget->name(),
+                                 Qt::EditRole);
     }
 
     m_ruleAdded = false;
     m_ruleEdited = false;
-
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1735,7 +1636,7 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
 {
     qDebug() << "MainWindow: Verify Account Ok";
 
-    ui->ruleInputWidget->setRoster(m_appFacade->roster());
+    ui->ruleEditWidget->setRoster(m_appFacade->roster());
     ui->testInputText->setRoster(m_appFacade->roster());
 
     if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
@@ -1899,7 +1800,8 @@ void Lvk::FE::MainWindow::onConnectionOk()
 
     BE::Roster roster = m_appFacade->roster();
     BE::Roster blackRoster = m_appFacade->blackRoster();
-    ui->ruleInputWidget->setRoster(m_appFacade->roster());
+
+    ui->ruleEditWidget->setRoster(roster);
     ui->rosterWidget->setRoster(roster, blackRoster);
     ui->testInputText->setRoster(roster);
 }

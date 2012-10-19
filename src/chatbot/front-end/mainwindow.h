@@ -135,7 +135,6 @@ private:
     QItemSelectionModel     *m_ruleTreeSelectionModel;
     bool                     m_ruleEdited;
     bool                     m_ruleAdded;
-    BE::Rule                 m_ruleBackup;
     QString                  m_filename;
     ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
@@ -231,16 +230,11 @@ private slots:
     void onRemovedAllHistory();
     void onRemovedHistory(const QDate &date, const QString &username);
 
-    void onRuleInputEdited(const QString &ruleInput);
-    void onRuleTargetEdited(const QString &ruleInput);
-    //void onRuleInputEditingFinished();
-    //void onRuleOutputEditingFinished();
+    void onRuleInputEdited(const QString &input);
     void onRuleAdded();
-    void onRuleEdited();
-    void onRuleSelectionChanged(const QItemSelection &selected,
-                                    const QItemSelection &deselected);
-    void onTeachButtonPressed();
-    void onUndoButtonPressed();
+    void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onTeachRule();
+    void onUndoRule();
     void onTestInputTextEntered();
     void onTestTargetChanged();
     void onClearTestConvPressed();
