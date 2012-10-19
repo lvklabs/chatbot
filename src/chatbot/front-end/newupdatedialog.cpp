@@ -24,27 +24,51 @@
 
 #include <QDesktopServices>
 #include <QUrl>
+#include <QPushButton>
+#include <QLabel>
+#include <QLayout>
+#include <QTimer>
 
 //--------------------------------------------------------------------------------------------------
 // NewUpdateDialog
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::NewUpdateDialog::NewUpdateDialog(const DAS::UpdateInfo &info, QWidget *parent)
-    : QMessageBox(parent), m_url(info.url())
+    : QDialog(parent), m_url(info.url()), m_label(new QLabel(this)), m_downloadAccepted(false)
 {
+    setModal(true);
+    setMinimumWidth(600);
+    setMaximumWidth(600);
     setWindowTitle(tr("New Update"));
     setUpdateInfo(info);
-    addButton(tr("Later"), QMessageBox::RejectRole);
-    addButton(tr("Download Now!"), QMessageBox::AcceptRole);
 
-    connect(this, SIGNAL(accepted()), SLOT(onAccepted()));
+    m_label->setWordWrap(true);
+
+    QGridLayout *layout = new QGridLayout(this);
+    setLayout(layout);
+
+    m_later = new QPushButton(tr("Later"), this);
+    m_download = new QPushButton(tr("Download Now!"), this);
+    m_download->setDefault(true);
+
+    QSpacerItem *vspacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    QSpacerItem *hspacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    layout->addWidget(m_label,    0, 0, 1, 3);
+    layout->addItem(vspacer,      1, 0, 1, 3);
+    layout->addItem(hspacer,      2, 0);
+    layout->addWidget(m_later,    2, 1);
+    layout->addWidget(m_download, 2, 2);
+
+    connect(m_download, SIGNAL(clicked()), SLOT(onAccepted()));
+    connect(m_later,    SIGNAL(clicked()), SLOT(onRejected()));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
 {
-    QString msg = QString(tr("<p><b>New update - Chatbot %1</b></p>"))
+    QString msg = QString(tr("<p><b>New update: Chatbot %1</b></p>"))
             .arg(info.version().toString());
 
     if (info.severity() == DAS::UpdateInfo::Critical) {
@@ -52,6 +76,7 @@ void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
                       "You cannot connect your chatbot, send your score or verify new accounts "
                       "until you update the program.</b></p>"));
     }
+
 
     if (info.whatsNew().size() > 0) {
         msg.append(tr("<p>What's new:<br/> - ") + info.whatsNew().join("<br/> - ") + "</p>");
@@ -66,14 +91,39 @@ void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
         msg.append(QString(tr("<p>SHA-1 signature for this udpate is %1</p>")).arg(info.hash()));
     }
 
-    setText(msg);
-
+    m_label->setText(msg);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::NewUpdateDialog::onAccepted()
 {
-    QDesktopServices::openUrl(QUrl(m_url));
+    if (!m_downloadAccepted) {
+        QDesktopServices::openUrl(QUrl(m_url));
+        m_downloadAccepted = true;
+        m_download->setText(tr("Downloading..."));
+        m_download->setEnabled(false);
+        QTimer::singleShot(3000, this, SLOT(onTimeout()));
+        m_later->hide();
+    } else {
+        setResult(QDialog::Accepted);
+        close();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::NewUpdateDialog::onRejected()
+{
+    setResult(QDialog::Rejected);
+    close();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::NewUpdateDialog::onTimeout()
+{
+    m_download->setText(tr("Continue"));
+    m_download->setEnabled(true);
 }
 

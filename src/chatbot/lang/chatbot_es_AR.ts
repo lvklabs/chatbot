@@ -657,7 +657,7 @@ Este nuevo chatbot no mantendrá tu historial de conversaciones y puntaje actual
     <message>
         <location filename="../front-end/mainwindow.cpp" line="876"/>
         <source>&lt;p&gt;&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;/p&gt;&lt;p&gt;Developed by LVK in conjuntion with FaMAF - UNC for the Manuel Sadosky Foundation&lt;/p&gt;&lt;a href=&quot;http://%4&quot;&gt;www.lvklabs.com&lt;/a&gt;&lt;br/&gt;&lt;a href=&quot;http://www.famaf.unc.edu.ar/&quot;&gt;www.famaf.unc.edu.ar&lt;/a&gt;&lt;br/&gt;&lt;a href=&quot;http://www.fundacionsadosky.org.ar&quot;&gt;www.fundacionsadosky.org.ar&lt;/a&gt;&lt;br/&gt;&lt;p&gt;Chatbot is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Chatbot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;/p&gt;
+        <translation>&lt;p&gt;&lt;b&gt;%1 %2&lt;/b&gt;&lt;br/&gt;Rev: %3&lt;/p&gt;
 &lt;p&gt;El programa Chatbot es la herramienta a través de la cual se participa de la categoría &quot;Chat&quot; del &lt;a href=&quot;http://www.daleaceptar.gob.ar/&quot;&gt;Desafío Dale Aceptar, la revancha&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Este programa fue encomendado por la &lt;a href=&quot;http://www.fundacionsadosky.org.ar&quot;&gt;Fundación Sadosky&lt;/a&gt; a la &lt;a href=&quot;http://www.famaf.unc.edu.ar&quot;&gt;Facultad de Matemática, Astronomía y Física (FaMAF)&lt;/a&gt; de la Universidad Nacional de Córdoba y desarrollado por el &lt;a href=&quot;http://pln.famaf.unc.edu.ar/es&quot;&gt;Grupo de Procesamiento de Lenguaje Natural de FaMAF&lt;/a&gt; en colaboración con la empresa &lt;a href=&quot;http://%4&quot;&gt;LVK&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Chatbot es software libre. Puede redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU según es publicada por la Free Software Foundation, bien de la versión 2 de dicha Licencia o bien (según su elección) de cualquier versión posterior.&lt;/p&gt;
@@ -1067,7 +1067,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>Lvk::FE::NewUpdateDialog</name>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="35"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="42"/>
         <source>New Update</source>
         <translation>Nueva actualización</translation>
     </message>
@@ -1076,7 +1076,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">&lt;p&gt;&lt;b&gt;Nueva actualización %1&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="47"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="69"/>
         <source>&lt;p&gt;&lt;b&gt;New update - Chatbot %1&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Nueva Actualización - Chatbot %1&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
@@ -1085,7 +1085,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;&lt;b&gt;¡Actualizacion crítica! No podés conectar tu chatbot o enviar tu puntaje hasta que no actualices el programa.&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="51"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="73"/>
         <source>&lt;p&gt;&lt;b&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;This is a critical update!&lt;/span&gt; You cannot connect your chatbot, send your score or verify new accounts until you update the program.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;¡Actualización crítica!&lt;/span&gt; No podrás conectar tu chatbot, enviar puntajes o verificar nuevas cuentas hasta que no actualices el programa.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
@@ -1094,29 +1094,39 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">&lt;p&gt;Esta nueva versión corrige varios errores. Recomendamos que actualices la aplicación para un mejor funcionamiento.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="57"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="79"/>
         <source>&lt;p&gt;What&apos;s new:&lt;br/&gt; - </source>
         <translation>&lt;p&gt;¿Qué hay de nuevo?&lt;br/&gt; - </translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="37"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="50"/>
         <source>Later</source>
         <translation>Mas tarde</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="38"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="51"/>
         <source>Download Now!</source>
         <translation>¡Descargar Ahora!</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="60"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="82"/>
         <source>&lt;/p&gt;We recommend you to &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verify your program&lt;/a&gt; once it is downloaded. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;What&apos;s this?&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;/p&gt;Una vez finalizada la descarga recomendamos &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verificar la firma SHA1&lt;/a&gt;. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;¿Qué es esto?&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="66"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="88"/>
         <source>&lt;p&gt;SHA-1 signature for this udpate is %1&lt;/p&gt;</source>
         <translation>&lt;p&gt;La firma SHA1 para esta descarga es %1&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="101"/>
+        <source>Downloading...</source>
+        <translation>Comenzando descarga...</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="123"/>
+        <source>Continue</source>
+        <translation>Continuar</translation>
     </message>
 </context>
 <context>

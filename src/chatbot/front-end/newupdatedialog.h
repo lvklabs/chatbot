@@ -23,7 +23,9 @@
 #define LVK_FE_NEWUPDATEDIALOG_H
 
 #include <QObject>
-#include <QMessageBox>
+#include <QDialog>
+
+class QLabel;
 
 namespace Lvk
 {
@@ -46,7 +48,7 @@ namespace FE
 /**
  * \brief The NewUpdateDialog class provides a dialog that displays information about a new update
  */
-class NewUpdateDialog : public QMessageBox
+class NewUpdateDialog : public QDialog
 {
     Q_OBJECT
 
@@ -59,10 +61,16 @@ public:
     NewUpdateDialog(const DAS::UpdateInfo &info, QWidget *parent = 0);
 
 private slots:
+    void onRejected();
     void onAccepted();
+    void onTimeout();
 
 private:
     QString m_url;
+    QLabel *m_label;
+    QPushButton *m_later;
+    QPushButton *m_download;
+    bool m_downloadAccepted;
 
     void setUpdateInfo(const DAS::UpdateInfo &info);
 };
