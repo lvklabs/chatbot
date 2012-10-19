@@ -314,10 +314,11 @@ da_contest {
     SOURCES +=
     LIBS +=
 
-    exists (da-server/daserverconfig.h) {
-        DEFINES += DA_SERVER_CONFIG
-        HEADERS += da-server/daserverconfig.h
-    }
+    ### Disabled DA server for unstable releases ###
+    #exists (da-server/daserverconfig.h) {
+    #    DEFINES += DA_SERVER_CONFIG
+    #    HEADERS += da-server/daserverconfig.h
+    #}
 
     exists (crypto/dakeymanager.h) {
         DEFINES += DA_KEY_MANAGER
