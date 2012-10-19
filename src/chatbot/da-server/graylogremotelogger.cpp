@@ -102,7 +102,7 @@ inline int sendTcpMessage(const QByteArray &data, const QString &host, unsigned 
 
         tcpSocket.connectToHost(QHostAddress(host), port);
 
-        if (!tcpSocket.waitForConnected()) {
+        if (!tcpSocket.waitForConnected(6000)) {
             throw 1;
         }
 
