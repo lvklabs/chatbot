@@ -121,13 +121,6 @@ private:
     MainWindow(MainWindow&);
     MainWindow& operator=(MainWindow&);
 
-    enum ConnectionStatus {
-        DisconnectedFromChat,
-        ConnectingToChat,
-        ConnectedToChat,
-        ConnectionError
-    };
-
     Ui::MainWindow          *ui;
     BE::AppFacade           *m_appFacade;
     MainWindowRefactor       m_refactor;
@@ -136,7 +129,6 @@ private:
     bool                     m_ruleEdited;
     bool                     m_ruleAdded;
     QString                  m_filename;
-    ConnectionStatus         m_connectionStatus;
     TinyScoreWidget         *m_tinyScore;
 
     void setupUi();
@@ -191,9 +183,6 @@ private:
     QString getRuleDisplayName(const QModelIndex &index) const;
     QString getRuleDisplayName(const BE::Rule *rule) const;
 
-    void updateBlackList();
-
-    inline BE::ChatType uiChatSelected();
     inline QString canonicAccount();
 
     bool hasUnsavedChanges();
@@ -206,11 +195,6 @@ private:
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
     bool nlpEngineOption(BE::AppFacade::NlpEngineOption option);
 
-    void verifyAccount();
-    void verifyBlockedForUpdate(const DAS::UpdateInfo &info);
-
-    void connectChatbot();
-    void connectBlockedForUpdate(const DAS::UpdateInfo &info);
     void uploadScore();
 
     void updateScore();
@@ -240,19 +224,15 @@ private slots:
     void onClearTestConvPressed();
     void onTestShowRule();
 
-    void onVerifyAccountPressed();
     void onVerifyAccountOk();
     void onVerifyAccountError(int err, const QString &msg);
     void onVerifyAccountSkipped();
-    void onChangeAccountPressed();
-    void onCancelChAccountPressed();
+    void onVerifyAccountCanceled();
 
-    void onConnectPressed();
-    void onDisconnectPressed();
     void onConnectionOk();
     void onConnectionError(int err);
     void onDisconnection();
-    void onRosterSelectChanged();
+    void onRosterSelChanged();
 
     void onNewChatConversation(const Cmn::Conversation::Entry &entry);
 

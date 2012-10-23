@@ -23,6 +23,8 @@
 
 #ifdef DA_SERVER_CONFIG
 #  include "daserverconfig.h"
+#elif defined(DA_DEV_SERVER_CONFIG)
+#  include "dadevserverconfig.h"
 #else
 #  include "nullserverconfig.h"
 #endif

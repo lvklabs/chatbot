@@ -128,6 +128,10 @@ HEADERS += \
     front-end/sendscoredialog.h \
     front-end/newupdatedialog.h \
     front-end/updateexecutor.h \
+    front-end/testinputtext.h \
+    front-end/ruleeditwidget.h \
+    front-end/connectionwidget.h \
+    front-end/memberfunctor.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -199,8 +203,6 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
-    front-end/testinputtext.h \
-    front-end/ruleeditwidget.h
 
 
 SOURCES += \
@@ -227,6 +229,9 @@ SOURCES += \
     front-end/mainwindowrefactor.cpp \
     front-end/sendscoredialog.cpp \
     front-end/newupdatedialog.cpp \
+    front-end/testinputtext.cpp \
+    front-end/ruleeditwidget.cpp \
+    front-end/connectionwidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -268,8 +273,6 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
-    front-end/testinputtext.cpp \
-    front-end/ruleeditwidget.cpp
 
 
 FORMS += \
@@ -281,7 +284,8 @@ FORMS += \
     front-end/detailsdialog.ui \
     front-end/optionswindow.ui \
     front-end/welcomewidget.ui \
-    front-end/ruleeditwidget.ui
+    front-end/ruleeditwidget.ui \
+    front-end/connectionwidget.ui
 
 RESOURCES += \
     res/certs.qrc \
@@ -322,6 +326,11 @@ da_contest {
     #    DEFINES += DA_SERVER_CONFIG
     #    HEADERS += da-server/daserverconfig.h
     #}
+
+    exists (da-server/dadevserverconfig.h) {
+        DEFINES += DA_DEV_SERVER_CONFIG
+        HEADERS += da-server/dadevserverconfig.h
+    }
 
     exists (crypto/dakeymanager.h) {
         DEFINES += DA_KEY_MANAGER
@@ -377,6 +386,10 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
+
 
 
 

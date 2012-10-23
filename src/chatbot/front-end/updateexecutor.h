@@ -35,15 +35,12 @@ namespace Lvk
 namespace FE
 {
 
-class MainWindow;
-
 /// \ingroup Lvk
 /// \addtogroup FE
 /// @{
 
 /**
- * \brief The UpdateExecutor class executes members in a given object depending on the availability
- *        of updates.
+ * \brief The UpdateExecutor class executes a functor depending on the availability of updates.
  */
 class UpdateExecutor : public QObject
 {
@@ -51,29 +48,59 @@ class UpdateExecutor : public QObject
 
 public:
 
-    typedef void (MainWindow::*Memb1)(const DAS::UpdateInfo &info); ///< Member executed on update
-    typedef void (MainWindow::*Memb2)();                    ///< Member executed on no update
-    typedef bool (*Pred)(const DAS::UpdateInfo &info);      ///< Predicate
+    /**
+     * Functor abstract interface
+     */
+    class Functor
+    {
+    public:
+        /**
+         * Functor executed on no update
+         */
+        virtual void operator()() = 0;
+
+        /**
+         * Functor executed on update
+         */
+        virtual void operator()(DAS::UpdateInfo info) = 0;
+
+        /**
+         * Destroys the object
+         */
+        virtual ~Functor() { }
+    };
+
+    /**
+     * Predicate over DAS::UpdateInfo
+     */
+    typedef bool (*Pred)(const DAS::UpdateInfo &info);
+
 
     /**
      * Constructs a UpdateExecutor object
      */
     UpdateExecutor(QObject *parent = 0)
-        : QObject(parent), m_obj(0), m_memb1(0), m_memb2(0), m_pred(0), m_delete(false)
+        : QObject(parent), m_f(0), m_pred(0), m_delete(false)
     {
         connect(&m_updater, SIGNAL(noUpdate()), SLOT(onNoUpdate()));
         connect(&m_updater, SIGNAL(update(DAS::UpdateInfo)), SLOT(onUpdate(DAS::UpdateInfo)));
     }
 
     /**
-     * Executes member \a memb1 in object \a obj if there is an update and predicate \a pred
-     * is true. Otherwise executes \a memb2. \a memb2 and \a pred can be null.
+     * Destroys the object and the functor given.
      */
-    void execute(MainWindow *obj, Memb1 memb1, Memb2 memb2 = 0, Pred pred = 0)
+    ~UpdateExecutor()
     {
-        m_obj = obj;
-        m_memb1 = memb1;
-        m_memb2 = memb2;
+        delete m_f;
+    }
+
+    /**
+     * Executes functor \a f() if there is an update and predicate \a pred
+     * is true. Otherwise executes functor \a f(DAS::UpdateInfo). \a pred can be null.
+     */
+    void execute(Functor *f, Pred pred = 0)
+    {
+        m_f = f;
         m_pred = pred;
         m_updater.checkForUpdate();
     }
@@ -91,41 +118,21 @@ public:
      \code
         UpdateExecutor *e = new UpdateExecutor();
         e->autoDelete();
-        e->execute(obj, memb1, memb2);
+        e->execute(f, pred);
      \endcode
      */
-    static void exec(MainWindow *obj, Memb1 memb1, Memb2 memb2 = 0, Pred pred = 0)
+    static void exec(Functor *f, Pred pred = 0)
     {
         UpdateExecutor *e = new UpdateExecutor();
         e->autoDelete();
-        e->execute(obj, memb1, memb2, pred);
-    }
-
-    /**
-     * This predicate returns true if if the given update has critical severity.
-     * Otherwise; returns false.
-     */
-    static bool isCritical(const DAS::UpdateInfo &info)
-    {
-        return info.severity() == DAS::UpdateInfo::Critical;
-    }
-
-    /**
-     * This predicate returns true if if the given update has low severity.
-     * Otherwise; returns false.
-     */
-    static bool isLow(const DAS::UpdateInfo &info)
-    {
-        return info.severity() == DAS::UpdateInfo::Low;
+        e->execute(f, pred);
     }
 
 private slots:
 
     void onNoUpdate()
     {
-        if (m_memb2) {
-            (m_obj->*m_memb2)();
-        }
+        (*m_f)();
 
         if (m_delete) {
             deleteLater();
@@ -135,9 +142,9 @@ private slots:
     void onUpdate(const DAS::UpdateInfo &info)
     {
         if (!m_pred || m_pred(info)) {
-            (m_obj->*m_memb1)(info);
-        } else if (m_memb2) {
-            (m_obj->*m_memb2)();
+            (*m_f)(info);
+        } else {
+            (*m_f)();
         }
 
         if (m_delete) {
@@ -146,14 +153,30 @@ private slots:
     }
 
 private:
-
-    MainWindow *m_obj;
-    Memb1 m_memb1;
-    Memb2 m_memb2;
+    Functor *m_f;
     Pred m_pred;
     DAS::Updater m_updater;
     bool m_delete;
 };
+
+/**
+ * This predicate returns true if if the given update has critical severity.
+ * Otherwise; returns false.
+ */
+inline bool isCritical(const DAS::UpdateInfo &info)
+{
+    return info.severity() == DAS::UpdateInfo::Critical;
+}
+
+/**
+ * This predicate returns true if if the given update has low severity.
+ * Otherwise; returns false.
+ */
+inline bool isLow(const DAS::UpdateInfo &info)
+{
+    return info.severity() == DAS::UpdateInfo::Low;
+}
+
 
 /// @}
 

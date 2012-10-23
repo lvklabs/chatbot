@@ -30,6 +30,7 @@
 #include "front-end/filedialog.h"
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
+#include "front-end/memberfunctor.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -101,7 +102,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_ruleTreeModel(0),
     m_ruleEdited(false),
     m_ruleAdded(false),
-    m_connectionStatus(DisconnectedFromChat),
     m_tinyScore(0)
 {
     qDebug() << "Setting up main window...";
@@ -114,7 +114,7 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
 
     qDebug() << "Main window created!";
 
-    FE::UpdateExecutor::exec(this, &MainWindow::onUpdate);
+    FE::UpdateExecutor::exec(new FE::MemberFunctor<MainWindow>(this, &MainWindow::onUpdate));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -132,6 +132,11 @@ Lvk::FE::MainWindow::~MainWindow()
 void Lvk::FE::MainWindow::setupUi()
 {
     ui->setupUi(this);
+
+    ui->connectionWidget->setAppFacade(m_appFacade);
+    ui->connectionWidget->setVerifyMode(false);
+    ui->verificationWidget->setAppFacade(m_appFacade);
+    ui->verificationWidget->setVerifyMode(true);
 
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
@@ -170,25 +175,24 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
         initWithFile("");
     }
 
+    m_appFacade->disconnectFromChat();
+
     m_ruleEdited = false;
     m_ruleAdded = false;
 
     // reset active tabs
     ui->mainTabWidget->setCurrentIndex(0);
 
+    // verify tab widgets
+    ui->verificationWidget->clear();
+    ui->verificationWidget->setVerifyMode(true);
+
     // train tab widgets
     ui->ruleEditWidget->clear();
     ui->ruleEditWidget->clearRoster();
 
-    // chat tab widgets
-    //ui->fbChatRadio->setChecked(true);
-    ui->rosterWidget->clear();
-    m_connectionStatus = DisconnectedFromChat;
-    m_appFacade->disconnectFromChat();
-
-    setUiMode(FE::ChatDisconnectedUiMode);
-    //ui->usernameText->clear();
-    ui->passwordText->clear();
+    // connect tab widgets
+    ui->connectionWidget->clear();
 
     // conversation tab widgets
     ui->chatHistory->clear();
@@ -259,12 +263,13 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->openChatbotButton,     SIGNAL(clicked()),   SLOT(onOpenMenuTriggered()));
     connect(ui->openLastChatbotButton, SIGNAL(clicked()),   SLOT(onOpenLastFileMenuTriggered()));
     connect(ui->createChatbotButton,   SIGNAL(clicked()),   SLOT(onNewMenuTriggered()));
-    connect(ui->verifyAccountButton,   SIGNAL(clicked()),   SLOT(onVerifyAccountPressed()));
-    connect(ui->passwordText_v,        SIGNAL(returnPressed()),
-            SLOT(onVerifyAccountPressed()));
-    connect(m_appFacade,               SIGNAL(accountOk()), SLOT(onVerifyAccountOk()));
-    connect(m_appFacade,               SIGNAL(accountError(int, QString)),
-            SLOT(onVerifyAccountError(int, QString)));
+
+    // verification tab
+    connect(ui->verificationWidget,    SIGNAL(accountOk()), SLOT(onVerifyAccountOk()));
+    connect(ui->verificationWidget,    SIGNAL(verificationSkipped()),
+            SLOT(onVerifyAccountSkipped()));
+    connect(ui->verificationWidget,    SIGNAL(verificationCanceled()),
+            SLOT(onVerifyAccountCanceled()));
 
     // Edit rules tabs
     connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
@@ -274,7 +279,7 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->actionAddVarRule,      SIGNAL(triggered()), SLOT(onAddVarRuleAction()));
     connect(ui->actionAddCondRule,     SIGNAL(triggered()), SLOT(onAddCondRuleAction()));
     connect(ui->ruleEditWidget,        SIGNAL(teachRule()), SLOT(onTeachRule()));
-    connect(ui->ruleEditWidget,        SIGNAL(undoRule()), SLOT(onUndoRule()));
+    connect(ui->ruleEditWidget,        SIGNAL(undoRule()),  SLOT(onUndoRule()));
     connect(ui->ruleEditWidget,        SIGNAL(ruleInputEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
     connect(ui->centralSplitter,       SIGNAL(splitterMoved(int,int)),
@@ -289,19 +294,15 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));
 
     // Chat connetion tab
-    connect(ui->connectButton,         SIGNAL(clicked()),       SLOT(onConnectPressed()));
-    connect(ui->disconnectButton,      SIGNAL(clicked()),       SLOT(onDisconnectPressed()));
-    connect(m_appFacade,               SIGNAL(connected()),     SLOT(onConnectionOk()));
-    connect(m_appFacade,               SIGNAL(disconnected()),  SLOT(onDisconnection()));
-    connect(m_appFacade,               SIGNAL(connectionError(int)),
+    connect(ui->connectionWidget,      SIGNAL(connected()),     SLOT(onConnectionOk()));
+    connect(ui->connectionWidget,      SIGNAL(disconnected()),  SLOT(onDisconnection()));
+    connect(ui->connectionWidget,      SIGNAL(connectionError(int)),
             SLOT(onConnectionError(int)));
-    connect(ui->changeAccountButton,   SIGNAL(clicked()),       SLOT(onChangeAccountPressed()));
-    connect(ui->verifyLaterButton,     SIGNAL(clicked()),       SLOT(onVerifyAccountSkipped()));
-    connect(ui->cancelChAccountButton, SIGNAL(clicked()),       SLOT(onCancelChAccountPressed()));
-    connect(ui->passwordText,          SIGNAL(returnPressed()), ui->connectButton, SLOT(click()));
-    connect(ui->rosterWidget,          SIGNAL(selectionChanged()),
-            SLOT(onRosterSelectChanged()));
-
+    connect(ui->connectionWidget,      SIGNAL(rosterSelectionChanged()),
+            SLOT(onRosterSelChanged()));
+    connect(ui->connectionWidget,      SIGNAL(accountOk()),     SLOT(onVerifyAccountOk()));
+    connect(ui->connectionWidget,      SIGNAL(accountError(int, QString)),
+            SLOT(onVerifyAccountError(int, QString)));
 
     // Conversation history tab
     connect(ui->chatHistory,          SIGNAL(teachRule(QString)),SLOT(onTeachFromHistory(QString)));
@@ -1351,7 +1352,7 @@ void Lvk::FE::MainWindow::selectRule(const BE::Rule *rule)
 
 void Lvk::FE::MainWindow::startEditMode()
 {
-    setUiMode(FE::ChatDisconnectedUiMode);
+    ui->connectionWidget->refresh();
     setUiMode(FE::EditRuleUiMode);
     selectFirstRule();
     updateScore();
@@ -1567,71 +1568,6 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 // Verify account
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onVerifyAccountPressed()
-{
-    QString title;
-    QString errMsg;
-
-    QString username = ui->usernameText_v->text();
-
-    if (username.isEmpty()) {
-        title = tr("Invalid username");
-        errMsg = tr("Please provide a username");
-    }
-
-    // To connect to a facebook chat we need the facebook username. We cannot connect using the
-    // user's email. The 'Dale Aceptar' verification mechanism provide us of the facebook
-    // username so this check only makes sense for non-'Dale Aceptar' versions because
-    #ifndef DA_CONTEST
-    if (uiChatSelected() == BE::FbChat && username.contains("@") &&
-               !username.contains("@facebook.com")) {
-        title = tr("Invalid username");
-        errMsg = tr("To connect you need to provide your Facebook username instead of your "
-                    "email.<br/><br/>You don't have or remember your username? "
-                    "<a href=\"http://www.facebook.com/username\">Click here</a>");
-    }
-    #endif
-
-    if (errMsg.isEmpty()) {
-        setUiMode(FE::VerifyingAccountUiMode);
-
-    #ifdef DA_CONTEST
-        UpdateExecutor::exec(this, &MainWindow::verifyBlockedForUpdate, &MainWindow::verifyAccount,
-                             &UpdateExecutor::isCritical);
-    #else
-        verifyAccount();
-    #endif
-    } else {
-        QMessageBox::information(this, title, errMsg);
-
-        ui->usernameText_v->setFocus();
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::verifyAccount()
-{
-    qDebug() << "MainWindow: Verifying Account...";
-    QString username = ui->usernameText_v->text();
-    QString password = ui->passwordText_v->text();
-    m_appFacade->verifyAccount(uiChatSelected(), username, password);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::verifyBlockedForUpdate(const DAS::UpdateInfo &info)
-{
-    if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
-        setUiMode(FE::VerifyAccountUiMode);
-    } else {
-        setUiMode(FE::ChangeAccountUiMode);
-    }
-    onUpdate(info);
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::FE::MainWindow::onVerifyAccountOk()
 {
     qDebug() << "MainWindow: Verify Account Ok";
@@ -1641,14 +1577,9 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
 
     if (m_refactor.uiTabsLayout() == FE::VerifyAccountTabsLayout) {
         startEditMode();
-    } else {
-        setUiMode(FE::ChatDisconnectedUiMode);
     }
 
-    // Check if verication was not skipped!
-    if (!m_appFacade->username().isEmpty()) {
-        QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
-    }
+    QMessageBox::information(this, tr("Account verified"), tr("Account verified!"));
 
     updateScore();
 }
@@ -1658,8 +1589,6 @@ void Lvk::FE::MainWindow::onVerifyAccountOk()
 void Lvk::FE::MainWindow::onVerifyAccountError(int err, const QString &msg_)
 {
     qDebug() << "MainWindow: Verify Account Error" << err;
-
-    setUiMode(FE::VerifyAccountFailedUiMode);
 
     QString title;
     QString msg = msg_;
@@ -1685,152 +1614,50 @@ void Lvk::FE::MainWindow::onVerifyAccountSkipped()
 {
     qDebug() << "MainWindow: Verify Account Skipped";
 
-    ui->fbChatRadio_v->setChecked(true);
-    ui->usernameText_v->setText("");
-    ui->passwordText_v->setText("");
-
-    onVerifyAccountOk();
+    startEditMode();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onChangeAccountPressed()
-{
-    ui->usernameText_v->clear();
-    ui->passwordText_v->clear();
-
-    if (!m_appFacade->username().isEmpty()) {
-        QString title = tr("Change Account");
-#ifdef DA_CONTEST
-        QString msg   = tr("If you change your account you will lose your chatbot score and some"
-                           " rules might not work anymore.\n"
-                           "Are you sure you want to change your account?");
-#else
-        QString msg   = tr("If you change your account some rules might not work anymore.\n"
-                           "Are you sure you want to change your account?");
-#endif
-
-        QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
-
-        if (QMessageBox::question(this, title, msg, buttons) == QMessageBox::Yes) {
-            setUiMode(FE::ChangeAccountUiMode);
-        }
-    } else {
-        setUiMode(FE::ChangeAccountUiMode);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onCancelChAccountPressed()
+void Lvk::FE::MainWindow::onVerifyAccountCanceled()
 {
     qDebug() << "MainWindow: Verify Account Canceled";
 
-    m_appFacade->cancelVerifyAccount();
-
-    if (m_refactor.uiTabsLayout() == VerifyAccountTabsLayout) {
-        setFilename("");
-        setUiMode(FE::WelcomeTabUiMode);
-    } else {
-        setUiMode(FE::ChatDisconnectedUiMode);
-    }
+    setUiMode(FE::WelcomeTabUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
 // Chat connection
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onConnectPressed()
-{
-    if (m_connectionStatus == DisconnectedFromChat || m_connectionStatus == ConnectionError) {
-        qDebug() << "MainWindow: Connecting chatbot...";
-
-        m_connectionStatus =  ConnectingToChat;
-        setUiMode(FE::ChatConnectingUiMode);
-
-    #ifdef DA_CONTEST
-        FE::UpdateExecutor::exec(this, &MainWindow::connectBlockedForUpdate,
-                                 &MainWindow::connectChatbot, &UpdateExecutor::isCritical);
-    #else
-        connectChatbot();
-    #endif
-
-    } else if (m_connectionStatus == ConnectingToChat) {
-        qDebug() << "MainWindow: Aborting chatbot connection...";
-        onDisconnectPressed();
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::connectChatbot()
-{
-    m_appFacade->connectToChat(ui->passwordText->text());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::connectBlockedForUpdate(const DAS::UpdateInfo &info)
-{
-    onDisconnection();
-    onUpdate(info);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::onDisconnectPressed()
-{
-    if (m_connectionStatus == ConnectedToChat || m_connectionStatus == ConnectingToChat) {
-        qDebug() << "MainWindow: Disconnecting chatbot...";
-
-        m_appFacade->disconnectFromChat();
-        m_connectionStatus = DisconnectedFromChat;
-        setUiMode(FE::ChatDisconnectedUiMode);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::FE::MainWindow::onConnectionOk()
 {
     qDebug() << "MainWindow: Chatbot connection OK";
 
-    m_connectionStatus = ConnectedToChat;
-    setUiMode(FE::ChatConnectionOkUiMode);
-
     BE::Roster roster = m_appFacade->roster();
-    BE::Roster blackRoster = m_appFacade->blackRoster();
 
     ui->ruleEditWidget->setRoster(roster);
-    ui->rosterWidget->setRoster(roster, blackRoster);
     ui->testInputText->setRoster(roster);
+
+    m_refactor.setConnectionTabIcon(true);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onConnectionError(int err)
 {
-    if (m_connectionStatus != DisconnectedFromChat) {
-        qDebug() << "MainWindow: Chatbot connection error" << err;
+    qDebug() << "MainWindow: Chatbot connection error" << err;
 
-        m_connectionStatus = ConnectionError;
-
-        if (err != BE::AppFacade::SSLNotSupportedError) {
-            setUiMode(FE::ChatConnectionFailedUiMode);
-        } else {
-            setUiMode(FE::ChatConnectionSSLFailedUiMode);
-        }
-    }
+    m_refactor.setConnectionTabIcon(false);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::MainWindow::onDisconnection()
 {
-    qDebug() << "MainWindow: Chatbot disconnected";
+    qDebug() << "MainWindow: Chatbot disconnection";
 
-    m_connectionStatus = DisconnectedFromChat;
-    setUiMode(FE::ChatDisconnectedUiMode);
+    m_refactor.setConnectionTabIcon(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1844,24 +1671,9 @@ void Lvk::FE::MainWindow::onNewChatConversation(const Cmn::Conversation::Entry &
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRosterSelectChanged()
+void Lvk::FE::MainWindow::onRosterSelChanged()
 {
-    updateBlackList();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindow::updateBlackList()
-{
-    BE::Roster blackList = ui->rosterWidget->uncheckedRoster();
-    m_appFacade->setBlackRoster(blackList);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline Lvk::BE::ChatType Lvk::FE::MainWindow::uiChatSelected()
-{
-    return ui->gtalkChatRadio_v->isChecked() ? BE::GTalkChat : BE::FbChat;
+    m_appFacade->setBlackRoster(ui->connectionWidget->uncheckedRoster());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1930,8 +1742,11 @@ void Lvk::FE::MainWindow::onUploadScore()
         const BE::Rule *root = m_appFacade->rootRule();
 
         if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
-            UpdateExecutor::exec(this, &MainWindow::uploadBlockedForUpdate,
-                                 &MainWindow::uploadScore, &UpdateExecutor::isCritical);
+            FE::MemberFunctor<MainWindow> *f = new FE::MemberFunctor<MainWindow>(this,
+                                &MainWindow::uploadBlockedForUpdate,
+                                &MainWindow::uploadScore);
+
+            UpdateExecutor::exec(f, isCritical);
         }
     }
 }
@@ -1987,5 +1802,6 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
+
 
 

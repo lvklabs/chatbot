@@ -22,21 +22,17 @@
 #include "mainwindowrefactor.h"
 #include "ui_mainwindow.h"
 #include "back-end/appfacade.h"
-#include "common/globalstrings.h"
 #include "common/settings.h"
+#include "common/globalstrings.h"
 #include "common/settingskeys.h"
 
-#include <QIcon>
-#include <QPixmap>
-#include <QString>
 
 //--------------------------------------------------------------------------------------------------
 // MainWindowRefactor
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::MainWindowRefactor::MainWindowRefactor(Ui::MainWindow *ui, BE::AppFacade *appFacade)
-    : ui(ui), m_appFacade(appFacade), m_mode(NullMode), m_tabsLayout(NullLayout),
-      m_fbIcon(FB_ICON_FILE), m_gIcon(GMAIL_ICON_FILE)
+    : ui(ui), m_appFacade(appFacade), m_mode(NullMode), m_tabsLayout(NullLayout)
 {
 }
 
@@ -52,7 +48,6 @@ Lvk::FE::UiMode Lvk::FE::MainWindowRefactor::uiMode()
 void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
 {
     updateTabsLayout(mode);
-    updateTabsIcons(mode);
 
     // Set up tabs ///////////////////////////////////////
 
@@ -62,181 +57,26 @@ void Lvk::FE::MainWindowRefactor::setUiMode(FE::UiMode mode)
         // nothing to do
         break;
 
-    // init tab //
-
-    case WelcomeTabUiMode:
+     case WelcomeTabUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
-        ui->initStackWidget->setCurrentIndex(0);
         ui->openLastChatbotButton->setVisible(hasLastFile());
         break;
 
     case EditRuleUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->teachTab);
-        ui->ruleEditWidget->setVisible(true);
         break;
 
-    // Chat connection tab //
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // TODO create a connection widget to simplify this mess!
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    case ChatDisconnectedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->curUsernameLabel->setText(username().isEmpty() ? QObject::tr("(None)") : username());
-        ui->chatTypeIcon->setPixmap(chatIcon());
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(QObject::tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(QObject::tr("Disconnected"));
-        ui->connectionStatusLabel->setStyleSheet("color:gray");
-        ui->rosterWidget->clear();
-        // If verification was skipped
-        ui->connectButton->setEnabled(!username().isEmpty());
-        ui->passwordText->setEnabled(!username().isEmpty());
-        //ui->chatTypeIcon->setVisible(!username().isEmpty());
-        ui->chatTypeIcon->setVisible(false);
-        break;
-
-    case ChatConnectingUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(false);
-        ui->changeAccountButton->setEnabled(false);
-        ui->connectButton->setText(QObject::tr("Cancel connection"));
-        ui->connectionProgressBar->setVisible(true);
-        ui->connectionStatusLabel->setText(QObject::tr("Connecting..."));
-        ui->connectionStatusLabel->setStyleSheet("");
-        break;
-
-    case ChatConnectionFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(QObject::tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(QObject::tr("Connection error. Please verify your"
-                                                       " username and password."));
-        ui->connectionStatusLabel->setStyleSheet("color:red");
-        break;
-
-    case ChatConnectionSSLFailedUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(0);
-        ui->passwordText->setEnabled(true);
-        ui->changeAccountButton->setEnabled(true);
-        ui->connectButton->setText(QObject::tr("Connect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(QObject::tr("Connection error. You system does not"
-                                                       " support secure connections."));
-        ui->connectionStatusLabel->setStyleSheet("color:red");
-        break;
-
-    case ChatConnectionOkUiMode:
-        ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(1);
-        ui->disconnectButton->setText(QObject::tr("Disconnect ") + username());
-        ui->disconnectButton->setIcon(chatIcon());
-        // Not visible anymore:
-        ui->passwordText->setEnabled(false);
-        ui->connectButton->setText(QObject::tr("Disconnect"));
-        ui->connectionProgressBar->setVisible(false);
-        ui->connectionStatusLabel->setText(QObject::tr("Connection sucessful!"));
-        ui->connectionStatusLabel->setStyleSheet("color:green");
-        break;
-
+    case ConnectionUiMode:
     case ChangeAccountUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->connectTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(QObject::tr("Please insert your username and password"
-                                                        " and press \"Verify account\" button."));
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(false);
-        ui->passwordText->setText("");
         break;
 
     case VerifyAccountUiMode:
         ui->mainTabWidget->setCurrentWidget(ui->welcomeTab);
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(QObject::tr("To create a chatbot you need a Facebook"
-                                                        " or Gmail account.\nPlease insert your"
-                                                        " username and password and press "
-                                                        "\"Verify account\" button."));
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(true);
-        ui->passwordText->setText("");
-        break;
-
-    case VerifyingAccountUiMode:
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyAccountButton->setEnabled(false);
-        ui->usernameText_v->setEnabled(false);
-        ui->passwordText_v->setEnabled(false);
-        ui->fbChatRadio_v->setEnabled(false);
-        ui->gtalkChatRadio_v->setEnabled(false);
-        ui->verifyLaterButton->setEnabled(false);
-        ui->connectionProgressBar_v->setVisible(true);
-        ui->connectionStatusLabel_v->setVisible(true);
-        break;
-
-    case VerifyAccountFailedUiMode:
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
         break;
     }
 
     m_mode = mode;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::MainWindowRefactor::updateTabsIcons(UiMode mode)
-{
-    int connectTabIdx = ui->mainTabWidget->indexOf(ui->connectTab);
-
-    switch (mode) {
-    case ChatDisconnectedUiMode:
-    case ChatConnectingUiMode:
-    case ChatConnectionFailedUiMode:
-    case ChatConnectionSSLFailedUiMode:
-    case ChangeAccountUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_DISCONNEC_ICON_FILE));
-        break;
-    case ChatConnectionOkUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon(STATUS_CONNECTED_ICON_FILE));
-        break;
-    case VerifyAccountUiMode:
-    case VerifyingAccountUiMode:
-    case VerifyAccountFailedUiMode:
-        ui->mainTabWidget->setTabIcon(connectTabIdx, QIcon());
-        break;
-    default:
-        // nothing to do
-        break;
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -259,10 +99,6 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
     case VerifyAccountUiMode:
         visibleTabs = VerifyAccountTabsLayout;
         break;
-    case VerifyingAccountUiMode:
-    case VerifyAccountFailedUiMode:
-        visibleTabs = m_tabsLayout; // Keep layout!
-        break;
     default:
         visibleTabs = TeachTabsLayout;
         break;
@@ -280,19 +116,13 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(false);
             ui->actionOptions->setEnabled(false);
 
-            ui->welcomeTab->setVisible(true);
-            ui->teachTab->setVisible(false);
-            ui->testTab->setVisible(false);
-            ui->connectTab->setVisible(false);
-            ui->conversationsTab->setVisible(false);
-            ui->scoreTab->setVisible(false);
-
             ui->mainTabWidget->addTab(ui->welcomeTab, QObject::tr("Init"));
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->testTab);
             ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
+            ui->mainTabWidget->removePage(ui->verificationTab);
             break;
 
         case VerifyAccountUiMode:
@@ -302,24 +132,13 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(false);
             ui->actionOptions->setEnabled(false);
 
-            ui->welcomeTab->setVisible(false);
-            ui->teachTab->setVisible(false);
-            ui->testTab->setVisible(false);
-            ui->connectTab->setVisible(true);
-            ui->conversationsTab->setVisible(false);
-            ui->scoreTab->setVisible(false);
-
-            ui->mainTabWidget->addTab(ui->connectTab, QObject::tr("Verify account"));
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->removePage(ui->testTab);
+            ui->mainTabWidget->removePage(ui->connectTab);
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
-            break;
-
-        case VerifyingAccountUiMode:
-        case VerifyAccountFailedUiMode:
-            // Nothing to do
+            ui->mainTabWidget->addTab(ui->verificationTab, QObject::tr("Verify account"));
             break;
 
         default:
@@ -329,15 +148,6 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(true);
             ui->actionOptions->setEnabled(true);
 
-            ui->welcomeTab->setVisible(false);
-            ui->teachTab->setVisible(true);
-            ui->testTab->setVisible(true);
-            ui->connectTab->setVisible(true);
-            ui->conversationsTab->setVisible(true);
-        #ifdef DA_CONTEST
-            ui->scoreTab->setVisible(true);
-        #endif
-
             ui->mainTabWidget->removePage(ui->welcomeTab);
             ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("Teach"));
             ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("Test your chatbot"));
@@ -346,21 +156,15 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
         #ifdef DA_CONTEST
             ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("Score"));
         #endif
+            ui->mainTabWidget->removePage(ui->verificationTab);
             break;
         }
+
+        // Tabs icons must be reseted
+        setConnectionTabIcon(m_appFacade->isConnected());
     }
 }
 
-//--------------------------------------------------------------------------------------------------
-
-inline bool Lvk::FE::MainWindowRefactor::gtalkEnabled()
-{
-#ifdef DA_CONTEST
-    return false;
-#else
-    return true;
-#endif
-}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -371,15 +175,12 @@ inline bool Lvk::FE::MainWindowRefactor::hasLastFile()
 
 //--------------------------------------------------------------------------------------------------
 
-inline QPixmap Lvk::FE::MainWindowRefactor::chatIcon()
+void Lvk::FE::MainWindowRefactor::setConnectionTabIcon(bool connected)
 {
-    return m_appFacade->chatType() == BE::FbChat ? m_fbIcon : m_gIcon;
+    int connectTabIdx = ui->mainTabWidget->indexOf(ui->connectTab);
+    QIcon icon = connected ? QIcon(STATUS_CONNECTED_ICON_FILE) : QIcon(STATUS_DISCONNEC_ICON_FILE);
+
+    ui->mainTabWidget->setTabIcon(connectTabIdx, icon);
 }
 
-//--------------------------------------------------------------------------------------------------
 
-inline QString Lvk::FE::MainWindowRefactor::username()
-
-{
-    return m_appFacade->username();
-}

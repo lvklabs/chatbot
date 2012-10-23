@@ -55,15 +55,9 @@ enum UiMode
     NullMode,
     WelcomeTabUiMode,
     VerifyAccountUiMode,
-    VerifyingAccountUiMode,
-    VerifyAccountFailedUiMode,
     ChangeAccountUiMode,
     EditRuleUiMode,
-    ChatDisconnectedUiMode,
-    ChatConnectingUiMode,
-    ChatConnectionFailedUiMode,
-    ChatConnectionSSLFailedUiMode,
-    ChatConnectionOkUiMode
+    ConnectionUiMode
 };
 
 /**
@@ -106,17 +100,19 @@ public:
      */
     UiTabsLayout uiTabsLayout();
 
+    /**
+     * Updates connection status icon located in the connection tab
+     */
+    void setConnectionTabIcon(bool connected);
+
 private:
 
     Ui::MainWindow *ui;
     BE::AppFacade  *m_appFacade;
     UiMode          m_mode;
     UiTabsLayout    m_tabsLayout;
-    QPixmap         m_fbIcon;
-    QPixmap         m_gIcon;
 
     void updateTabsLayout(UiMode mode);
-    void updateTabsIcons(UiMode mode);
 
     inline bool gtalkEnabled();
     inline bool hasLastFile();
