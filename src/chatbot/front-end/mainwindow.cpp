@@ -267,6 +267,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onVerifyAccountSkipped()));
     connect(ui->verificationWidget,    SIGNAL(verificationCanceled()),
             SLOT(onVerifyAccountCanceled()));
+    connect(ui->verificationWidget,      SIGNAL(accountError(int, QString)),
+            SLOT(onVerifyAccountError(int, QString)));
 
     // Edit rules tabs
     connect(ui->addCategoryButton,     SIGNAL(clicked()),   SLOT(onAddCategoryButtonClicked()));
@@ -297,8 +299,8 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onConnectionError(int)));
     connect(ui->connectionWidget,      SIGNAL(rosterSelectionChanged()),
             SLOT(onRosterSelChanged()));
-    connect(ui->connectionWidget,      SIGNAL(accountOk()),     SLOT(onVerifyAccountOk()));
-    connect(ui->connectionWidget,      SIGNAL(accountError(int, QString)),
+    connect(ui->connectionWidget,      SIGNAL(accountChanged()),     SLOT(onVerifyAccountOk()));
+    connect(ui->connectionWidget,      SIGNAL(changeAccountError(int, QString)),
             SLOT(onVerifyAccountError(int, QString)));
 
     // Conversation history tab

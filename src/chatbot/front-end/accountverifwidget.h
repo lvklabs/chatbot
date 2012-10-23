@@ -64,6 +64,12 @@ public:
      */
     void clear();
 
+    /**
+     * If \a allowed is true, the verification process can be skipped. Otherwise cannot.
+     * By default is allowed.
+     */
+    void setSkipAllowed(bool allowed);
+
 signals:
 
     /**

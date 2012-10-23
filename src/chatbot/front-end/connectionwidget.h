@@ -83,19 +83,14 @@ public:
 signals:
 
     /**
-     * \copydoc BE::AppFacade::accountOk
+     *
      */
-    void accountOk();
+    void accountChanged();
 
     /**
-     * This signal es emited whenever the user cancels the account verification process
+     *
      */
-    void verificationCanceled();
-
-    /**
-     * \copydoc BE::AppFacade::accountError
-     */
-    void accountError(int err, const QString &msg);
+    void changeAccountError(int err, const QString &msg);
 
     /**
      * \copydoc BE::AppFacade::connected
@@ -125,12 +120,9 @@ signals:
     void rosterSelectionChanged();
 
 private slots:
-    void onVerifyPressed();
     void onAccountOk();
-    void onAccountError(int err, const QString &msg);
+    void onChangeCanceled();
     void onChangeAccountPressed();
-    void onCancelChAccountPressed();
-
     void onConnectPressed();
     void onDisconnectPressed();
     void onConnectionOk();
@@ -140,14 +132,12 @@ private slots:
 private:
     enum UiMode
     {
-        ChangingAccountUiMode,
-        ChangeAccountFailedUiMode,
-        ChangeAccountUiMode,
         DisconnectedUiMode,
         ConnectingUiMode,
         ConnectionFailedUiMode,
         ConnectionSSLFailedUiMode,
-        ConnectionOkUiMode
+        ConnectionOkUiMode,
+        ChangeAccountUiMode
     };
 
     enum ConnectionStatus {
@@ -166,13 +156,9 @@ private:
     QPixmap               m_gIcon;
 
     void connectSignals();
-    void verifyAccount();
-    void verifyBlockedForUpdate(const DAS::UpdateInfo &info);
     void connectChatbot();
     void connectBlockedForUpdate(const DAS::UpdateInfo &info);
     void setUiMode(UiMode mode);
-    BE::ChatType chatTypeSelected();
-    bool gtalkEnabled();
     QPixmap chatIcon();
     QString username();
 };

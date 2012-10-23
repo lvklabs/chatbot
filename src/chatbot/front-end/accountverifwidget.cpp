@@ -219,7 +219,6 @@ void Lvk::FE::AccountVerifWidget::setUiMode(Lvk::FE::AccountVerifWidget::UiMode 
     m_uiMode = mode;
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 inline bool Lvk::FE::AccountVerifWidget::gtalkEnabled() const
@@ -240,4 +239,11 @@ void Lvk::FE::AccountVerifWidget::clear()
     ui->usernameText->clear();
 
     setUiMode(VerifyAccountUiMode);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AccountVerifWidget::setSkipAllowed(bool allowed)
+{
+    ui->verifyLaterButton->setVisible(allowed);
 }
