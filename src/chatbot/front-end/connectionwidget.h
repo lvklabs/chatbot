@@ -62,11 +62,6 @@ public:
     /**
      *
      */
-    void setVerifyMode(bool verify);
-
-    /**
-     *
-     */
     const Lvk::BE::Roster & roster();
 
     /**
@@ -91,11 +86,6 @@ signals:
      * \copydoc BE::AppFacade::accountOk
      */
     void accountOk();
-
-    /**
-     * This signal es emited whenever the user skips the account verification process
-     */
-    void verificationSkipped();
 
     /**
      * This signal es emited whenever the user cancels the account verification process
@@ -138,7 +128,6 @@ private slots:
     void onVerifyPressed();
     void onAccountOk();
     void onAccountError(int err, const QString &msg);
-    void onVerifyAccountSkipped();
     void onChangeAccountPressed();
     void onCancelChAccountPressed();
 
@@ -151,9 +140,8 @@ private slots:
 private:
     enum UiMode
     {
-        VerifyAccountUiMode,
-        VerifyingAccountUiMode,
-        VerifyAccountFailedUiMode,
+        ChangingAccountUiMode,
+        ChangeAccountFailedUiMode,
         ChangeAccountUiMode,
         DisconnectedUiMode,
         ConnectingUiMode,
@@ -176,8 +164,6 @@ private:
     UiMode                m_uiMode;
     QPixmap               m_fbIcon;
     QPixmap               m_gIcon;
-    bool                  m_verify;
-
 
     void connectSignals();
     void verifyAccount();

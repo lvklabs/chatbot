@@ -629,7 +629,7 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
-          <widget class="Lvk::FE::ConnectionWidget" name="verificationWidget" native="true"/>
+          <widget class="Lvk::FE::AccountVerifWidget" name="verificationWidget" native="true"/>
          </item>
         </layout>
        </widget>
@@ -794,6 +794,12 @@
    <class>Lvk::FE::ConnectionWidget</class>
    <extends>QWidget</extends>
    <header>front-end/connectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::AccountVerifWidget</class>
+   <extends>QWidget</extends>
+   <header>front-end/accountverifwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -203,6 +203,7 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
+    front-end/accountverifwidget.h
 
 
 SOURCES += \
@@ -273,6 +274,7 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
+    front-end/accountverifwidget.cpp
 
 
 FORMS += \
@@ -285,7 +287,8 @@ FORMS += \
     front-end/optionswindow.ui \
     front-end/welcomewidget.ui \
     front-end/ruleeditwidget.ui \
-    front-end/connectionwidget.ui
+    front-end/connectionwidget.ui \
+    front-end/accountverifwidget.ui
 
 RESOURCES += \
     res/certs.qrc \
@@ -386,6 +389,9 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

@@ -134,9 +134,7 @@ void Lvk::FE::MainWindow::setupUi()
     ui->setupUi(this);
 
     ui->connectionWidget->setAppFacade(m_appFacade);
-    ui->connectionWidget->setVerifyMode(false);
     ui->verificationWidget->setAppFacade(m_appFacade);
-    ui->verificationWidget->setVerifyMode(true);
 
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
@@ -185,7 +183,6 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // verify tab widgets
     ui->verificationWidget->clear();
-    ui->verificationWidget->setVerifyMode(true);
 
     // train tab widgets
     ui->ruleEditWidget->clear();

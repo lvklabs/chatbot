@@ -15,7 +15,7 @@
 Lvk::FE::ConnectionWidget::ConnectionWidget(QWidget *parent)
     : QWidget(parent), ui(new Ui::ConnectionWidget), m_appFacade(0),
       m_connectionStatus(DisconnectedFromChat), m_uiMode(DisconnectedUiMode),
-      m_fbIcon(FB_ICON_FILE), m_gIcon(GMAIL_ICON_FILE), m_verify(false)
+      m_fbIcon(FB_ICON_FILE), m_gIcon(GMAIL_ICON_FILE)
 {
     ui->setupUi(this);
 
@@ -39,7 +39,6 @@ void Lvk::FE::ConnectionWidget::connectSignals()
     connect(ui->connectButton,         SIGNAL(clicked()),       SLOT(onConnectPressed()));
     connect(ui->disconnectButton,      SIGNAL(clicked()),       SLOT(onDisconnectPressed()));
     connect(ui->changeAccountButton,   SIGNAL(clicked()),       SLOT(onChangeAccountPressed()));
-    connect(ui->verifyLaterButton,     SIGNAL(clicked()),       SLOT(onVerifyAccountSkipped()));
     connect(ui->cancelChAccountButton, SIGNAL(clicked()),       SLOT(onCancelChAccountPressed()));
 
     connect(ui->passwordText_v,        SIGNAL(returnPressed()), SLOT(onVerifyPressed()));
@@ -92,7 +91,7 @@ void Lvk::FE::ConnectionWidget::onVerifyPressed()
     #endif
 
     if (errMsg.isEmpty()) {
-        setUiMode(VerifyingAccountUiMode);
+        setUiMode(ChangingAccountUiMode);
 
     #ifdef DA_CONTEST
         FE::MemberFunctor<ConnectionWidget> *f = new FE::MemberFunctor<ConnectionWidget>(this,
@@ -128,7 +127,7 @@ void Lvk::FE::ConnectionWidget::verifyAccount()
 
 void Lvk::FE::ConnectionWidget::verifyBlockedForUpdate(const DAS::UpdateInfo &info)
 {
-    m_uiMode == m_verify ? setUiMode(VerifyAccountUiMode) : setUiMode(ChangeAccountUiMode);
+    setUiMode(ChangeAccountUiMode);
 
     emit blockedForUpdate(info);
 }
@@ -150,24 +149,9 @@ void Lvk::FE::ConnectionWidget::onAccountError(int err, const QString &msg)
 {
     qDebug() << "ConnectionWidget: Verify Account Error" << err << msg;
 
-    setUiMode(VerifyAccountFailedUiMode);
+    setUiMode(ChangeAccountFailedUiMode);
 
     emit accountError(err, msg);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::ConnectionWidget::onVerifyAccountSkipped()
-{
-    qDebug() << "ConnectionWidget: Verify Account Skipped";
-
-    ui->fbChatRadio_v->setChecked(true);
-    ui->usernameText_v->setText("");
-    ui->passwordText_v->setText("");
-
-    setUiMode(DisconnectedUiMode);
-
-    emit verificationSkipped();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -208,20 +192,12 @@ void Lvk::FE::ConnectionWidget::onCancelChAccountPressed()
 
     m_appFacade->cancelVerifyAccount();
 
-    if (m_verify) {
-        if (m_uiMode == VerifyingAccountUiMode) {
-            setUiMode(VerifyAccountUiMode);
-        } else {
-            setUiMode(VerifyAccountUiMode);
-            emit verificationCanceled();
-        }
+
+    if (m_uiMode == ChangingAccountUiMode) {
+        setUiMode(ChangeAccountUiMode);
     } else {
-        if (m_uiMode == VerifyingAccountUiMode) {
-            setUiMode(ChangeAccountUiMode);
-        } else {
-            setUiMode(DisconnectedUiMode);
-            emit verificationCanceled();
-        }
+        setUiMode(DisconnectedUiMode);
+        emit verificationCanceled();
     }
 }
 
@@ -406,8 +382,6 @@ void Lvk::FE::ConnectionWidget::setUiMode(Lvk::FE::ConnectionWidget::UiMode mode
 
     case ChangeAccountUiMode:
         ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(QObject::tr("Please insert your username and password"
-                                                        " and press \"Verify account\" button."));
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
@@ -415,47 +389,25 @@ void Lvk::FE::ConnectionWidget::setUiMode(Lvk::FE::ConnectionWidget::UiMode mode
         ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
         ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(false);
         ui->passwordText->setText("");
         break;
 
-    case VerifyAccountUiMode:
-        ui->connectToChatStackWidget->setCurrentIndex(2);
-        ui->verifyExplanationLabel->setText(QObject::tr("To create a chatbot you need a Facebook"
-                                                        " or Gmail account.\nPlease insert your"
-                                                        " username and password and press "
-                                                        "\"Verify account\" button."));
-        ui->verifyAccountButton->setEnabled(true);
-        ui->usernameText_v->setEnabled(true);
-        ui->passwordText_v->setEnabled(true);
-        ui->fbChatRadio_v->setEnabled(true);
-        ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
-        ui->connectionStatusLabel_v->setVisible(false);
-        ui->verifyLaterButton->setVisible(true);
-        ui->passwordText->setText("");
-        break;
-
-    case VerifyingAccountUiMode:
+    case ChangingAccountUiMode:
         ui->verifyAccountButton->setEnabled(false);
         ui->usernameText_v->setEnabled(false);
         ui->passwordText_v->setEnabled(false);
         ui->fbChatRadio_v->setEnabled(false);
         ui->gtalkChatRadio_v->setEnabled(false);
-        ui->verifyLaterButton->setEnabled(false);
         ui->connectionProgressBar_v->setVisible(true);
         ui->connectionStatusLabel_v->setVisible(true);
         break;
 
-    case VerifyAccountFailedUiMode:
+    case ChangeAccountFailedUiMode:
         ui->verifyAccountButton->setEnabled(true);
         ui->usernameText_v->setEnabled(true);
         ui->passwordText_v->setEnabled(true);
         ui->fbChatRadio_v->setEnabled(true);
         ui->gtalkChatRadio_v->setEnabled(gtalkEnabled());
-        ui->verifyLaterButton->setEnabled(true);
-        ui->connectionProgressBar_v->setVisible(false);
         ui->connectionStatusLabel_v->setVisible(false);
         break;
     }
@@ -507,7 +459,6 @@ void Lvk::FE::ConnectionWidget::clear()
     ui->usernameText_v->clear();
 
     m_connectionStatus = DisconnectedFromChat;
-    m_verify = false;
 
     setUiMode(DisconnectedUiMode);
 }
@@ -531,19 +482,4 @@ const Lvk::BE::Roster & Lvk::FE::ConnectionWidget::roster()
 Lvk::BE::Roster  Lvk::FE::ConnectionWidget::uncheckedRoster()
 {
     return ui->rosterWidget->uncheckedRoster();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::ConnectionWidget::setVerifyMode(bool verify)
-{
-    if (m_verify != verify) {
-        m_verify = verify;
-
-        if (m_verify) {
-            setUiMode(VerifyAccountUiMode);
-        } else {
-            setUiMode(DisconnectedUiMode);
-        }
-    }
 }
