@@ -260,6 +260,11 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
     ParsersMap::iterator it = m_parsers.find(target);
     if (it != m_parsers.end()) {
         response = (*it)->getResponse(normInput, categoriesId);
+
+        // An empty response is considered not valid
+        if (response.isEmpty()) {
+            categoriesId.clear();
+        }
     }
 
     QStringList responses;

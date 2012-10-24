@@ -200,6 +200,19 @@ private:
 #define FRMD_OUTPUT_9d                      "talleres? Nooo"
 #define FRMD_OUTPUT_9e                      "Me gustaba..."
 
+#define RULE_10_ID                          10
+#define RULE_10_INPUT_1                     "Viste la peli [pelicula]?"
+#define RULE_10_INPUT_2                     "Viste la pelicula [pelicula]?"
+#define RULE_10_OUTPUT_1                    "{if [pelicula] = Kill Bill} Si esta muy buena!"\
+                                            "{if [pelicula] = Kill Bill 2} Si esta tan buena como la 1"
+
+#define USER_INPUT_10a                      "viste la peli kill bill?"
+#define USER_INPUT_10b                      "viste la pelicula kill bill 2?"
+#define USER_INPUT_10c                      "viste la pelicula Pulp Fiction?"
+#define FRMD_OUTPUT_10a                     "Si esta muy buena!"
+#define FRMD_OUTPUT_10b                     "Si esta tan buena como la 1"
+
+//--------------------------------------------------------------------------------------------------
 
 TestHybridEngine::TestHybridEngine()
     : m_engine(new Lvk::Nlp::HybridEngine()), m_ruleSet(0)
@@ -242,6 +255,10 @@ void TestHybridEngine::setRules1()
     rules << Lvk::Nlp::Rule(RULE_9_ID,
                             QStringList() << RULE_9_INPUT_1,
                             QStringList() << RULE_9_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_10_ID,
+                            QStringList() << RULE_10_INPUT_1 << RULE_10_INPUT_2,
+                            QStringList() << RULE_10_OUTPUT_1);
 
     m_engine->setRules(rules);
     m_ruleSet = 1;
@@ -310,6 +327,10 @@ void TestHybridEngine::testEngineSyntaticSugar_data()
     QTest::newRow("Elif cond 3")   << USER_INPUT_9c << FRMD_OUTPUT_9c  << RULE_9_ID << 0;
     QTest::newRow("Elif cond 4")   << USER_INPUT_9d << FRMD_OUTPUT_9d  << RULE_9_ID << 0;
     QTest::newRow("Elif cond 5")   << USER_INPUT_9e << FRMD_OUTPUT_9e  << RULE_9_ID << 0;
+
+    QTest::newRow("no else 1")     << USER_INPUT_10a << FRMD_OUTPUT_10a << RULE_10_ID << 0;
+    QTest::newRow("no else 2")     << USER_INPUT_10b << FRMD_OUTPUT_10b << RULE_10_ID << 1;
+    QTest::newRow("no else 3")     << USER_INPUT_10c << QString()       << 0          << 0;
 
     // Not supported
     //QTest::newRow("Mix * sh Var")  << USER_INPUT_5  << FRMD_OUTPUT_5   << RULE_5_ID << 0;

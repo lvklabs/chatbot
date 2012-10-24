@@ -430,6 +430,8 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
      * For each output, convert strings like:
      *    {if [VarName] = football}
      *       Yes I like [VarName]
+     *    {if [VarName] = soccer}
+     *       Yeap
      *    {else}
      *       No, I don't
      *
@@ -475,6 +477,7 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
         }
 
         // If could not parse If-Else
+
         if (newOutput.isEmpty()) {
             newOutput = output;
         }
@@ -482,22 +485,17 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
         // Parse Variables
 
         pos = 0;
-        while (pos != -1) {
-            pos = m_varNameRegex.indexIn(output, pos);
+        while ( (pos = m_varNameRegex.indexIn(output, pos)) != -1) {
+            QString varName = m_varNameRegex.cap(1);
 
-            if (pos != -1) {
-                QString varName = m_varNameRegex.cap(1);
-
-                if (varName == ctx.varName) {
-                    newOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
-                } else {
-                    newOutput.replace("[" + varName + "]", "<get name=\"" + varName + "\" />",
-                                      Qt::CaseInsensitive);
-                }
-
-                pos++;
+            if (varName == ctx.varName) {
+                newOutput.replace("[" + varName + "]", "<star/>", Qt::CaseInsensitive);
+            } else {
+                newOutput.replace("[" + varName + "]", "<get name=\"" + varName + "\" />",
+                                  Qt::CaseInsensitive);
             }
 
+            pos++;
         }
 
         if (!ctx.varName.isNull()) {
