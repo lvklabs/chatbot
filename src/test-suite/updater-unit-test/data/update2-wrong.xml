@@ -2,5 +2,6 @@
 <update>
   <version>0.99</version>
   <date>28/10/2012</date>
-  <critical>no</critical>
+  <critical>yes</critical>
+  <lastcritical>0.99</lastcritical>
 </update> 

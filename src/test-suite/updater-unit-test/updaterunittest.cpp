@@ -104,6 +104,12 @@ void UpdaterUnitTest::testCase1_data()
                          << (int)DAS::UpdateInfo::Low      << 2 << 0 << URL_1 << DATE_1
                          << (QStringList() << QString::fromWCharArray(L"áéíóúñ") << "Other string")
                          << QString();
+
+    QTest::newRow("ok5") << QString("update5.xml")         << "1.2"  << true
+                         << (int)DAS::UpdateInfo::Critical << 1 << 3 << URL_1 << DATE_1
+                         << (QStringList() << "Some stuff 2" << "Some stuff 3")
+                         << QString("ce286df1e54f176ca76a8020a1ae3b464223fc0f");
+
 }
 
 //--------------------------------------------------------------------------------------------------
