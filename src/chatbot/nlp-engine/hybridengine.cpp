@@ -87,9 +87,8 @@ void sanitize(QString &s)
 //
 
 #define VAR_NAME_REGEX  "\\[([A-Za-z_]+)\\]"
-#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}" "([^{]+)"
+#define IF_REGEX        "\\{\\s*if\\s*" VAR_NAME_REGEX "\\s*=\\s*([^}]+)\\}([^{]+)(.*)"
 #define ELSE_REGEX      "\\{\\s*else\\s*\\}(.+)"
-#define IF_ELSE_REGEX   IF_REGEX ELSE_REGEX
 
 #define KEYWORD_REGEX   "\\*\\*\\s*$"
 #define REGEX_REGEX     "[+*]"
@@ -139,18 +138,17 @@ void Lvk::Nlp::HybridEngine::initRegexs()
     QString localizedIfRegex = QString(IF_REGEX)
             .replace("if", QObject::tr("if"));
 
-    QString localizedIfElseRegex  = QString(IF_ELSE_REGEX)
-            .replace("if", QObject::tr("if"))
+    QString localizedElseRegex  = QString(ELSE_REGEX)
             .replace("else", QObject::tr("else"));
 
     m_varNameRegex = QRegExp(VAR_NAME_REGEX);
     m_ifRegex = QRegExp(localizedIfRegex);
-    m_ifElseRegex = QRegExp(localizedIfElseRegex);
+    m_elseRegex = QRegExp(localizedElseRegex);
     m_keywordRegex = QRegExp(KEYWORD_REGEX);
 
     m_varNameRegex.setCaseSensitive(false);
     m_ifRegex.setCaseSensitive(false);
-    m_ifElseRegex.setCaseSensitive(false);
+    m_elseRegex.setCaseSensitive(false);
     m_keywordRegex.setCaseSensitive(false);
 }
 
@@ -301,7 +299,7 @@ bool Lvk::Nlp::HybridEngine::hasRegexOp(const QString &input)
 
 bool Lvk::Nlp::HybridEngine::hasConditional(const QString &output)
 {
-    return m_ifElseRegex.indexIn(output) != -1 || m_ifRegex.indexIn(output) != -1;
+    return m_ifRegex.indexIn(output) != -1;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -451,33 +449,34 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
 
         sanitize(output);
 
-        QString newOutput = output;
-        int pos;
-
         // Parse If-Else
 
-        pos = m_ifElseRegex.indexIn(output);
-        if (pos != -1) {
-            newOutput = QString("<condition>"
-                                "<li name=\"%1\" value=\"%2\">%3</li>"
-                                "<li>%4</li>"
-                                "</condition>")
-                                   .arg(m_ifElseRegex.cap(1))
-                                   .arg(normalize(m_ifElseRegex.cap(2)).trimmed())
-                                   .arg(m_ifElseRegex.cap(3).trimmed())
-                                   .arg(m_ifElseRegex.cap(4).trimmed());
-        } else {
-            // Parse If
+        QString newOutput;
+        QString tail = output;
+        int pos = 0;
 
-            pos = m_ifRegex.indexIn(output);
-            if (pos != -1) {
-                newOutput = QString("<condition>"
-                                    "<li name=\"%1\" value=\"%2\">%3</li>"
-                                    "</condition>")
-                                       .arg(m_ifRegex.cap(1))
-                                       .arg(normalize(m_ifRegex.cap(2)).trimmed())
-                                       .arg(m_ifRegex.cap(3).trimmed());
+        while ( (pos = m_ifRegex.indexIn(tail)) != -1 ) {
+            if (newOutput.isEmpty()) {
+                newOutput += "<condition>";
             }
+            newOutput += QString("<li name=\"%1\" value=\"%2\">%3</li>")
+                                   .arg(m_ifRegex.cap(1))
+                                   .arg(normalize(m_ifRegex.cap(2)).trimmed())
+                                   .arg(m_ifRegex.cap(3).trimmed());
+
+            tail = m_ifRegex.cap(4);
+        }
+
+        if (!newOutput.isEmpty()) {
+            if ( (pos = m_elseRegex.indexIn(tail)) != -1 ) {
+                newOutput += QString("<li>%1</li>").arg(m_elseRegex.cap(1).trimmed());
+            }
+            newOutput += "</condition>";
+        }
+
+        // If could not parse If-Else
+        if (newOutput.isEmpty()) {
+            newOutput = output;
         }
 
         // Parse Variables
