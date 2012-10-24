@@ -53,15 +53,24 @@ public:
 
     void setRoster(const BE::Roster &roster);
 
+    void clear();
+
     void clearRoster();
+
+    void clearHistory();
+
+    void clearAll();
 
     BE::RosterItem currentItem();
 
 signals:
     void currentItemChanged();
 
+    void testInputEntered();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void onSimulateUser();
@@ -71,7 +80,9 @@ private:
     BE::Roster m_roster;
     BE::RosterItem m_currentItem;
     QStringList m_list;
-
+    QStringList m_history;
+    int m_histIndex;
+    QString m_tmpCurrent;
 };
 
 /// @}

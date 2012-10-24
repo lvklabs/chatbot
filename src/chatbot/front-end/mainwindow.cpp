@@ -178,9 +178,8 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // train tab widgets
     // TODO clear ui->categoriesTree
-    ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
-    ui->ruleInputWidget->clearRoster();
+    ui->ruleInputWidget->clearAll();
 
     // chat tab widgets
     //ui->fbChatRadio->setChecked(true);
@@ -197,8 +196,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // test tab widgets
     ui->testConversationText->clear();
-    ui->testInputText->clear();
-    ui->testInputText->clearRoster();
+    ui->testInputText->clearAll();
     ui->clearTestConvButton->setEnabled(false);
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
@@ -293,7 +291,7 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onSplitterMoved(int,int)));
 
     // Test tab
-    connect(ui->testInputText,         SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->testInputText,         SIGNAL(testInputEntered()), SLOT(onTestInputTextEntered()));
     connect(ui->testInputText,         SIGNAL(currentItemChanged()), SLOT(onTestTargetChanged()));
     connect(ui->clearTestConvButton,   SIGNAL(clicked()),       SLOT(onClearTestConvPressed()));
     connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));

@@ -262,6 +262,14 @@ void Lvk::FE::RuleInputWidget::clearRoster()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::RuleInputWidget::clearAll()
+{
+    clear();
+    clearRoster();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleInputWidget::setFocusOnInput()
 {
     m_input->setFocus();

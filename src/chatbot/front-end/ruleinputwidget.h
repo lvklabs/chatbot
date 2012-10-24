@@ -76,6 +76,8 @@ public:
 
     void clearRoster();
 
+    void clearAll();
+
     void setFocusOnInput();
 
     void setFocusOnInputVariants();

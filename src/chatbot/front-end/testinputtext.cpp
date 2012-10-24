@@ -46,9 +46,9 @@ inline bool fullnameComp(const Lvk::BE::RosterItem &i1, const Lvk::BE::RosterIte
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::TestInputText::TestInputText(QWidget *parent)
-    : QLineEdit(parent), m_anyUser(tr("Any user"))
+    : QLineEdit(parent), m_anyUser(tr("Any user")), m_histIndex(0)
 {
-    m_list.append(m_anyUser);
+    clearAll();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -94,6 +94,52 @@ void Lvk::FE::TestInputText::contextMenuEvent(QContextMenuEvent *event)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::TestInputText::keyPressEvent(QKeyEvent *event)
+{
+    QLineEdit::keyPressEvent(event);
+
+    QString t = text();
+    QString tt = text().trimmed();
+
+    // console-like history
+
+    switch (event->key()) {
+
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        if (!tt.isEmpty()) {
+            if (m_history.size() == 0 || m_history.last() != tt) {
+                m_history.append(tt);
+            }
+        }
+        if (!t.isEmpty()) {
+            m_histIndex = m_history.size();
+            emit testInputEntered();
+        }
+        break;
+
+    case Qt::Key_Up:
+        if (m_histIndex > 0) {
+            if (m_histIndex == m_history.size()) {
+                m_tmpCurrent = t;
+            }
+            setText(m_history[--m_histIndex]);
+        }
+        break;
+
+    case Qt::Key_Down:
+        if (m_histIndex < m_history.size() - 1) {
+            setText(m_history[++m_histIndex]);
+        } else if (m_histIndex == m_history.size() - 1) {
+            ++m_histIndex;
+            setText(m_tmpCurrent);
+        }
+        break;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::TestInputText::onSimulateUser()
 {
     bool ok;
@@ -126,11 +172,39 @@ void Lvk::FE::TestInputText::onSimulateUser()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::TestInputText::clear()
+{
+    QLineEdit::clear();
+    m_tmpCurrent.clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::TestInputText::clearRoster()
 {
     m_roster.clear();
     m_list.clear();
     m_currentItem.clear();
 
+    m_list.append(m_anyUser);
+
     emit currentItemChanged();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::TestInputText::clearHistory()
+{
+    m_tmpCurrent.clear();
+    m_history.clear();
+    m_histIndex = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::TestInputText::clearAll()
+{
+    clear();
+    clearRoster();
+    clearHistory();
 }
