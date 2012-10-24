@@ -99,7 +99,7 @@ inline void init(maco** p, const ConfigFilesMap &configFiles)
     opt.QuantitiesDetection   = true;
     opt.NumbersDetection      = true;
     opt.AffixAnalysis         = true;
-    opt.DatesDetection        = true;
+    //opt.DatesDetection        = true;
     opt.PunctuationDetection  = true;
     opt.MultiwordsDetection   = true;
     opt.ProbabilityFile       = configFiles[KEY_PROBS_FILE];
