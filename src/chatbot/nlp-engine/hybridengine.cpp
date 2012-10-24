@@ -463,7 +463,7 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
                                 "<li>%4</li>"
                                 "</condition>")
                                    .arg(m_ifElseRegex.cap(1))
-                                   .arg(m_ifElseRegex.cap(2).trimmed())
+                                   .arg(normalize(m_ifElseRegex.cap(2)).trimmed())
                                    .arg(m_ifElseRegex.cap(3).trimmed())
                                    .arg(m_ifElseRegex.cap(4).trimmed());
         } else {
@@ -475,7 +475,7 @@ void Lvk::Nlp::HybridEngine::convertOutputList(QStringList &outputList, Converti
                                     "<li name=\"%1\" value=\"%2\">%3</li>"
                                     "</condition>")
                                        .arg(m_ifRegex.cap(1))
-                                       .arg(m_ifRegex.cap(2).trimmed())
+                                       .arg(normalize(m_ifRegex.cap(2)).trimmed())
                                        .arg(m_ifRegex.cap(3).trimmed());
             }
         }
