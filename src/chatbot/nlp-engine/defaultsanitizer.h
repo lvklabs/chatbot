@@ -74,7 +74,12 @@ public:
         /**
          * Removes all braces (curly braces, square braces and parentheses)
          */
-        RemoveBraces = 0x08
+        RemoveBraces = 0x08,
+
+        /**
+         * Removes double quotes
+         */
+        RemoveDoubleQuotes = 0x10
     };
 
     /**

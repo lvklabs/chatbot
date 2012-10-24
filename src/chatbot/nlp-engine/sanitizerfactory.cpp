@@ -29,7 +29,8 @@
 Lvk::Nlp::Sanitizer * Lvk::Nlp::SanitizerFactory::createPreSanitizer()
 {
     return new DefaultSanitizer(DefaultSanitizer::RemoveDupChars |
-                                DefaultSanitizer::RemoveBraces);
+                                DefaultSanitizer::RemoveBraces |
+                                DefaultSanitizer::RemoveDoubleQuotes);
 }
 
 //--------------------------------------------------------------------------------------------------
