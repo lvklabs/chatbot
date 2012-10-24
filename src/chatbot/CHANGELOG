@@ -1,5 +1,6 @@
 v1.2
  - Fixed bugs: github#11, github#22, github#24, github#25
+ - Added support for nested "if" conditionals
  - Changed the Update XML format: Replaced element "critical" by "latestcritical"
    and added a "version" attribute to "what's new" items
 
