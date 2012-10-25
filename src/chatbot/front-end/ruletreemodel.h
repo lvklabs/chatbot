@@ -221,6 +221,8 @@ public:
 
 protected:
 
+    QMimeData * mimeData(const QModelIndexList & indexes) const;
+
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
                       const QModelIndex & parent);
 

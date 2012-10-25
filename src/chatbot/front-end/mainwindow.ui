@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -254,7 +254,7 @@
                 <bool>true</bool>
                </property>
                <property name="dragDropMode">
-                <enum>QAbstractItemView::InternalMove</enum>
+                <enum>QAbstractItemView::DragDrop</enum>
                </property>
                <property name="defaultDropAction">
                 <enum>Qt::MoveAction</enum>

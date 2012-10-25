@@ -213,7 +213,7 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 Qt::DropActions Lvk::FE::RuleTreeModel::supportedDropActions() const
 {
 #ifndef DRAG_AND_DROP_DISABLED
-    return /*Qt::CopyAction |*/ Qt::MoveAction;
+    return Qt::CopyAction | Qt::MoveAction;
 #else
     return Qt::IgnoreAction;
 #endif
@@ -501,9 +501,26 @@ void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData */*data*/, Qt::DropAction /*action*/,
+bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/,
                                           int /*row*/, int /*column*/, const QModelIndex&/*parent*/)
 {
-    return false;
+    qDebug(data->data("key"));
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QMimeData * Lvk::FE::RuleTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    if (indexes.isEmpty()) {
+        return 0;
+    }
+
+    QMimeData *mime = new QMimeData();
+
+    mime->setData("key", "Hola");
+
+    return mime;
 }
 
