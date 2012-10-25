@@ -14,7 +14,12 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH += ../../chatbot/
+THIRD_PARTY_PATH      = $$PWD/../../third-party
+OPENSSL_BASE_PATH     = $$THIRD_PARTY_PATH/openssl
+OPENSSL_INCLUDE_PATH  = $$OPENSSL_BASE_PATH/include
+OPENSSL_LIB_PATH      = $$OPENSSL_BASE_PATH/lib
+
+INCLUDEPATH += ../../chatbot/ $$OPENSSL_INCLUDE_PATH
 
 SOURCES += \
     cipherunittest.cpp \
@@ -25,5 +30,5 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 DEFINES += OPENSSL_SUPPORT
 
-LIBS += -lcrypto
+LIBS += -L$$OPENSSL_LIB_PATH -lcrypto
 
