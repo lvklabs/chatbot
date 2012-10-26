@@ -27,6 +27,8 @@
 #include <QDataStream>
 #include <QtDebug>
 
+#define MIME_RULE_DATA  "rule_data"
+
 
 //--------------------------------------------------------------------------------------------------
 // Constructors & Destructors
@@ -213,7 +215,7 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
 Qt::DropActions Lvk::FE::RuleTreeModel::supportedDropActions() const
 {
 #ifndef DRAG_AND_DROP_DISABLED
-    return Qt::CopyAction | Qt::MoveAction;
+    return /*Qt::CopyAction |*/ Qt::MoveAction;
 #else
     return Qt::IgnoreAction;
 #endif
@@ -501,26 +503,85 @@ void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/,
-                                          int /*row*/, int /*column*/, const QModelIndex&/*parent*/)
+bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                          int row, int col, const QModelIndex& parent)
 {
-    qDebug(data->data("key"));
+    qDebug() << "RuleTreeModel: dropped data at " << row << col << parent.row();
 
-    return true;
+    // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
+    // custom data to the proper item
+    QAbstractItemModel::dropMimeData(data, action, row, col, parent);
+
+    bool handled = false;
+
+    if (data) {
+        BE::Rule *item = 0;
+
+        // When row and column are -1 it means that it is up to the model to decide where to place
+        // the data. In a tree this occur when data is dropped on a parent. By default trees
+        // will append the data to the parent
+        if (row == -1 && col == -1) {
+            BE::Rule *parentItem = itemFromIndex(parent);
+            if (parentItem && parentItem->childCount() > 0) {
+                item = parentItem->child(parentItem->childCount() - 1);
+            }
+        } else {
+            item = itemFromIndex(index(row, col, parent));
+        }
+
+        if (item) {
+            QByteArray ruleData = data->data(MIME_RULE_DATA);
+
+            if (!ruleData.isEmpty()) {
+                QDataStream ds(ruleData);
+                ds >> *item;
+
+                handled = (ds.status() == QDataStream::Ok);
+            }
+        }
+    }
+
+    qDebug() << "RuleTreeModel: dropped data handled with status" << handled;
+
+    return handled;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 QMimeData * Lvk::FE::RuleTreeModel::mimeData(const QModelIndexList &indexes) const
 {
-    if (indexes.isEmpty()) {
-        return 0;
+    QMimeData *data = QAbstractItemModel::mimeData(indexes);
+
+    if (!indexes.isEmpty()) {
+
+        if (!data) {
+            data = new QMimeData(); // CHECK Who deletes this data?
+        }
+
+        // We only support one item
+        if (indexes.size() > 1) {
+            qWarning("RuleTreeModel: Dragging two or more items is not supported!");
+        }
+
+        QModelIndex index = indexes.first();
+
+        qDebug() << "RuleTreeModel: dragging item " << index.row() << index.column()
+                 << index.parent().row();
+
+        const BE::Rule *item = itemFromIndex(index);
+
+        if (item) {
+            QByteArray ruleData;
+
+            {
+                QDataStream ds(&ruleData, QIODevice::WriteOnly);
+                ds << *item;
+            }
+
+            data->setData(MIME_RULE_DATA, ruleData);
+        }
     }
 
-    QMimeData *mime = new QMimeData();
-
-    mime->setData("key", "Hola");
-
-    return mime;
+    return data;
 }
 

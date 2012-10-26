@@ -182,6 +182,8 @@ private:
     void teachRule(BE::Rule *rule);
     void undoRule(BE::Rule *rule);
     void handleRuleEdited(BE::Rule *rule);
+    void ruleEditFinished();
+
     void highlightMatchedRules(const BE::AppFacade::MatchList &matches);
 
     void undoRuleEdited(BE::Rule *rule);

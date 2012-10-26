@@ -170,7 +170,10 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
         initWithFile("");
     }
 
-    m_ruleEdited = false;
+    if (m_ruleEdited) {
+        m_ruleEdited = false;
+        ruleEditFinished();
+    }
     m_ruleAdded = false;
 
     // reset active tabs
@@ -1437,14 +1440,15 @@ void Lvk::FE::MainWindow::onRuleEdited()
     if (selRule && !m_ruleEdited) {
         m_ruleEdited = true;
 
+        ui->teachRuleButton->setEnabled(true);
+        ui->undoRuleButton->setEnabled(true);
+        ui->categoriesTree->setDragEnabled(false);
+
         m_ruleBackup.setStatus(selRule->status());
         m_ruleBackup.setName(selRule->name());
         m_ruleBackup.setTarget(selRule->target());
         m_ruleBackup.setInput(selRule->input());
         m_ruleBackup.setOutput(selRule->output());
-
-        ui->teachRuleButton->setEnabled(true);
-        ui->undoRuleButton->setEnabled(true);
     }
 }
 
@@ -1515,11 +1519,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
         }
     }
 
-    m_ruleEdited = false;
-    m_ruleAdded = false;
-
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
+    ruleEditFinished();
 
     m_appFacade->refreshNlpEngine();
     m_appFacade->save();
@@ -1569,11 +1569,19 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
         }
     }
 
+    ruleEditFinished();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::ruleEditFinished()
+{
     m_ruleAdded = false;
     m_ruleEdited = false;
 
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
+    ui->categoriesTree->setDragEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------
