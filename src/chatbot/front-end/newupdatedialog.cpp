@@ -43,6 +43,7 @@ Lvk::FE::NewUpdateDialog::NewUpdateDialog(const DAS::UpdateInfo &info, QWidget *
     setUpdateInfo(info);
 
     m_label->setWordWrap(true);
+    m_label->setOpenExternalLinks(true);
 
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
