@@ -54,6 +54,20 @@ inline QString getBareJid(const QString &from)
     return from.split("/").at(0);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+inline QString normalizeUser(const QString &user)
+{
+    return user.toLower();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline QString normalizeDomain(const QString &domain)
+{
+    return domain.toLower();
+}
+
 } // namespace
 
 
@@ -136,18 +150,22 @@ void Lvk::CA::XmppChatbot::connectSignals()
 void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &passwd,
                                            const QString &domain)
 {
-    m_user = user;
-    m_domain = domain;
+    m_user = normalizeUser(user);
+    m_domain = normalizeDomain(domain);
 
 //    QXmppConfiguration conf;
-//    conf.setDomain(domain);
-//    conf.setUser(user);
+//    conf.setDomain(m_domain);
+//    conf.setUser(m_user);
 //    conf.setPassword(passwd);
 //    conf.setResource("");
 //    conf.setAutoAcceptSubscriptions(true);
 //    m_xmppClient->connectToServer(conf);
 
-    m_xmppClient->connectToServer(user + "@" + domain, passwd);
+    QString jid = m_user + "@" + m_domain;
+
+    qDebug() << "XmppChatbot: Connecting with jid:" << jid;
+
+    m_xmppClient->connectToServer(jid, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -473,5 +491,6 @@ void Lvk::CA::XmppChatbot::onOnlineStateChanged(bool isOnline)
         }
     }
 }
+
 
 
