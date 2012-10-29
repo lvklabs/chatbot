@@ -252,6 +252,7 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
 
     if (norm) {
         normalize(normInput);
+        normInput.remove('&'); // Ignore &
     }
 
     QString response;
@@ -260,6 +261,11 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
     ParsersMap::iterator it = m_parsers.find(target);
     if (it != m_parsers.end()) {
         response = (*it)->getResponse(normInput, categoriesId);
+
+        // An empty response is considered not valid
+        if (response.isEmpty()) {
+            categoriesId.clear();
+        }
     }
 
     QStringList responses;
@@ -333,12 +339,15 @@ void Lvk::Nlp::AimlEngine::buildAiml(QString &aiml, const Rule &rule)
 
         QString input = inputs[i].trimmed();
         normalize(input);
+        escape(input);
 
         QString randOuput;
         buildAimlRandOutput(randOuput, rule.output());
+        escape(randOuput);
 
         QString topic = rule.topic();
         topic.remove('"');
+        escape(topic);
 
         // build category AIML string
         QString cat = QString("<category>"
@@ -398,6 +407,14 @@ void Lvk::Nlp::AimlEngine::normalize(QString &input)
     input = m_preSanitizer->sanitize(input);
     input = m_lemmatizer->lemmatize(input);
     input = m_postSanitizer->sanitize(input);
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::escape(QString &str)
+{
+    str.replace('&', "&amp;");
 }
 
 //--------------------------------------------------------------------------------------------------

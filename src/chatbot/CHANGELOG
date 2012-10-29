@@ -1,3 +1,10 @@
+v1.2
+ - Fixed bugs: github#11, github#22, github#24, github#25
+ - Added support for nested "if" conditionals
+ - Console-like history in the 'Test' tab
+ - Changed the Update XML format: Replaced element "critical" by "latestcritical"
+   and added a "version" attribute to "what's new" items
+
 v1.1
  - Fixed bugs: github#13, github#14, github#17, github#19, github#20
  - Displaying file hash in the new update dialog

@@ -127,7 +127,7 @@ bool Lvk::DAS::Updater::parseResponse(Lvk::DAS::UpdateInfo &info, const QString 
         <update>
           <version>1.1</version>
           <date>28/10/2012</date>
-          <critical>yes</critical>
+          <lastcritical>1.2</lastcritical>
           <url>http://lvklabs.com/builds/chatbot/chatbot-linux32-0.23.zip</url>
           <hash>ce286df1e54f176ca76a8020a1ae3b464223fc0f</hash>
           <whatsnew>
@@ -181,7 +181,9 @@ bool Lvk::DAS::Updater::parseUpdateNode(Lvk::DAS::UpdateInfo &info, QDomNode &up
             info.setDate(QDate::fromString(value, "dd/MM/yyyy"));
             date = info.date().isValid();
         } else if (name == "critical") {
-            info.setSeverity(value == "yes" ? UpdateInfo::Critical : UpdateInfo::Low);
+            // Deprecated. Nothing to do.
+        } else if (name == "lastcritical") {
+            parseLastCritical(info, value);
             severity = true;
         } else if (name == "url") {
             info.setUrl(value);
@@ -200,6 +202,19 @@ bool Lvk::DAS::Updater::parseUpdateNode(Lvk::DAS::UpdateInfo &info, QDomNode &up
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::DAS::Updater::parseLastCritical(DAS::UpdateInfo &info, const QString &strVer)
+{
+    if (!strVer.isEmpty() && m_curVersion < DAS::UpdateVersion(strVer)) {
+        info.setSeverity(UpdateInfo::Critical);
+    } else {
+        info.setSeverity(UpdateInfo::Low);
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &wnNode)
 {
     QStringList whatsNew;
@@ -213,10 +228,15 @@ bool Lvk::DAS::Updater::parseWhatsNewNode(Lvk::DAS::UpdateInfo &info, QDomNode &
 
         QString name = node.nodeName().toLower();
         QString value = node.childNodes().at(0).nodeValue().trimmed();
+        QString strVer = node.attributes().namedItem("version").nodeValue().trimmed();
 
         if (name == "li") {
             if (!value.isEmpty()) {
-                whatsNew.append(value);
+                // Show only those what's-new items that are newer than the current version.
+                // If no version set, we assume newer.
+                if (strVer.isEmpty() || m_curVersion < DAS::UpdateVersion(strVer)) {
+                    whatsNew.append(value);
+                }
             }
         } else {
             qCritical() << "Updater: parseWhatsNewNode: Unknown node" << name;
@@ -266,3 +286,4 @@ bool Lvk::DAS::Updater::verifyCertChain()
 
     return valid;
 }
+

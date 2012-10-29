@@ -189,6 +189,10 @@ TestAimlEngine::TestAimlEngine()
 #define RULE_16_INPUT_1                     "\"Hello\""
 #define RULE_16_OUTPUT_1                    "Hi!"
 
+#define RULE_17_ID                          17
+#define RULE_17_INPUT_1                     "J & J"
+#define RULE_17_OUTPUT_1                    "J & J ????????"
+
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
@@ -217,6 +221,7 @@ TestAimlEngine::TestAimlEngine()
 #define USER_INPUT_10c                      "Great! :-)"
 #define USER_INPUT_10d                      "Great :-)"
 #define USER_INPUT_10e                      "Great"
+#define USER_INPUT_17                       "J & J"
 
 
 //--------------------------------------------------------------------------------------------------
@@ -245,6 +250,10 @@ void TestAimlEngine::setRules1(Lvk::Nlp::AimlEngine *engine)
     rules << Lvk::Nlp::Rule(RULE_5_ID,
                             QStringList() << RULE_5_INPUT_1,
                             QStringList() << RULE_5_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_17_ID,
+                            QStringList() << RULE_17_INPUT_1,
+                            QStringList() << RULE_17_OUTPUT_1);
 
     engine->setRules(rules);
 }
@@ -565,22 +574,23 @@ void TestAimlEngine::testMatchWithSingleOutput_data()
     QTest::addColumn<int>("ruleId");
     QTest::addColumn<int>("ruleInputNumber");
 
-    QTest::newRow("AIML 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
-    QTest::newRow("AIML 2")  << USER_INPUT_1b << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
-    QTest::newRow("AIML 3")  << USER_INPUT_1c << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
-    QTest::newRow("AIML 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1 << RULE_1_ID << 1;
-    QTest::newRow("AIML 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1 << RULE_2_ID << 0;
-    QTest::newRow("AIML 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1 << RULE_2_ID << 0;
-    QTest::newRow("AIML 7")  << USER_INPUT_5  << RULE_1_OUTPUT_1 << RULE_1_ID << 2;
-    QTest::newRow("AIML 8")  << USER_INPUT_6  << RULE_1_OUTPUT_1 << RULE_1_ID << 2;
-    QTest::newRow("AIML 9")  << USER_INPUT_7a << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
-    QTest::newRow("AIML 10") << USER_INPUT_7b << RULE_3_OUTPUT_1 << RULE_3_ID << 1;
-    QTest::newRow("AIML 11") << USER_INPUT_7c << RULE_3_OUTPUT_1 << RULE_3_ID << 2;
-    QTest::newRow("AIML 12") << USER_INPUT_7d << RULE_3_OUTPUT_1 << RULE_3_ID << 3;
-    QTest::newRow("AIML 13") << USER_INPUT_8a << RULE_5_OUTPUT_1 << RULE_5_ID << 0;
-    QTest::newRow("AIML 14") << USER_INPUT_8b << QString()       << 0 << 0;
-    QTest::newRow("AIML 15") << USER_INPUT_1d << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
-    QTest::newRow("AIML 16") << USER_INPUT_1e << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
+    QTest::newRow("AIML 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
+    QTest::newRow("AIML 2")  << USER_INPUT_1b << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
+    QTest::newRow("AIML 3")  << USER_INPUT_1c << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
+    QTest::newRow("AIML 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1  << RULE_1_ID << 1;
+    QTest::newRow("AIML 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
+    QTest::newRow("AIML 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
+    QTest::newRow("AIML 7")  << USER_INPUT_5  << RULE_1_OUTPUT_1  << RULE_1_ID << 2;
+    QTest::newRow("AIML 8")  << USER_INPUT_6  << RULE_1_OUTPUT_1  << RULE_1_ID << 2;
+    QTest::newRow("AIML 9")  << USER_INPUT_7a << RULE_3_OUTPUT_1  << RULE_3_ID << 0;
+    QTest::newRow("AIML 10") << USER_INPUT_7b << RULE_3_OUTPUT_1  << RULE_3_ID << 1;
+    QTest::newRow("AIML 11") << USER_INPUT_7c << RULE_3_OUTPUT_1  << RULE_3_ID << 2;
+    QTest::newRow("AIML 12") << USER_INPUT_7d << RULE_3_OUTPUT_1  << RULE_3_ID << 3;
+    QTest::newRow("AIML 13") << USER_INPUT_8a << RULE_5_OUTPUT_1  << RULE_5_ID << 0;
+    QTest::newRow("AIML 14") << USER_INPUT_8b << QString()        << 0 << 0;
+    QTest::newRow("AIML 15") << USER_INPUT_1d << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
+    QTest::newRow("AIML 16") << USER_INPUT_1e << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
+    QTest::newRow("AIML 17") << USER_INPUT_17 << RULE_17_OUTPUT_1 << RULE_17_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

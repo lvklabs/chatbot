@@ -185,8 +185,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->verificationWidget->clear();
 
     // train tab widgets
-    ui->ruleEditWidget->clear();
-    ui->ruleEditWidget->clearRoster();
+    ui->ruleEditWidget->clearAll();
 
     // connect tab widgets
     ui->connectionWidget->clear();

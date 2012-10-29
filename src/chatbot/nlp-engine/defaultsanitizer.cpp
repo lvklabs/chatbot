@@ -177,6 +177,17 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         }
 
         //-------------------------------------------------------------------------------
+        // Remove double quotes
+
+        if (m_options & RemoveDoubleQuotes) {
+            append = cur != '"';
+
+            if (!append) {
+                continue;
+            }
+        }
+
+        //-------------------------------------------------------------------------------
 
         szStr.append(cur);
     }

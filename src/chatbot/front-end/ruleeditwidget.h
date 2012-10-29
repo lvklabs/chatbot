@@ -87,6 +87,11 @@ public:
     void clearRoster();
 
     /**
+     *  Clears the widget, including the roster.
+     */
+    void clearAll();
+
+    /**
      * Sets the focus on the input widget
      */
     void setFocusOnInput();
@@ -95,6 +100,7 @@ public:
      * Sets the focus on the output widget
      */
     void setFocusOnOutput();
+
 
 signals:
     void teachRule();

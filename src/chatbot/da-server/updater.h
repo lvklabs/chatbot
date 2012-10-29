@@ -112,6 +112,7 @@ private:
     bool parseResponse(UpdateInfo &info, const QString &response);
     bool parseVersion(UpdateInfo &info, const QString &strVer);
     bool parseUpdateNode(UpdateInfo &info, QDomNode &updateElem);
+    bool parseLastCritical(UpdateInfo &info, const QString &strVer);
     bool parseWhatsNewNode(UpdateInfo &info, QDomNode &wnNode);
 };
 

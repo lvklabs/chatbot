@@ -2,6 +2,7 @@
 <update>
   <version>0.99</version>
   <date>18/01/2011</date>
-  <critical>no</critical>
+  <critical>yes</critical>
+  <lastcritical>0.98</lastcritical>
   <url>http://lvklabs.com/builds/chatbot/chatbot-linux32-0.23.zip</url>
 </update> 

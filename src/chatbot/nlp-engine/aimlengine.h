@@ -209,6 +209,39 @@ public:
      */
     virtual void setProperty(const QString &name, const QVariant &value);
 
+protected:
+
+    /**
+     * Normalizes the given string \a str
+     */
+    void normalize(QString &str);
+
+    /**
+     * Normalizes the given string \a str and returns a new string
+     */
+    QString normalize(const QString &str)
+    {
+        QString tmp = str;
+        normalize(tmp);
+        return tmp;
+    }
+
+    /**
+     * Normalizes the all the strings in list \a l
+     */
+    void normalize(QStringList &l);
+
+
+    /**
+     * Normalizes the given list \a l and returns a new list
+     */
+    QStringList normalize(const QStringList &l)
+    {
+        QStringList tmp = l;
+        normalize(tmp);
+        return tmp;
+    }
+
 private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);
@@ -234,8 +267,7 @@ private:
     void buildAiml(QString &aiml, const QString &target);
     void buildAiml(QString &aiml, const Rule &rule);
     void buildAimlRandOutput(QString &aiml,const QStringList &output) const;
-    void normalize(QString &input);
-    void normalize(QStringList &inputList);
+    void escape(QString & str);
 };
 
 /// @}

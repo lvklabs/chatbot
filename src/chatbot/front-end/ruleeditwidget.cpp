@@ -83,7 +83,6 @@ void Lvk::FE::RuleEditWidget::clear()
     ui->undoRuleButton->setEnabled(false);
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::RuleEditWidget::setRoster(const BE::Roster &roster)
@@ -96,6 +95,14 @@ void Lvk::FE::RuleEditWidget::setRoster(const BE::Roster &roster)
 void Lvk::FE::RuleEditWidget::clearRoster()
 {
     ui->ruleInputWidget->clearRoster();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleEditWidget::clearAll()
+{
+    clear();
+    clearRoster();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -256,3 +263,4 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         break;
     }
 }
+

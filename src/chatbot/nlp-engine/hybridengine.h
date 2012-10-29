@@ -201,8 +201,8 @@ private:
     Engine *m_emEngine;
 
     QRegExp m_varNameRegex;
-    QRegExp m_ifElseRegex;
     QRegExp m_ifRegex;
+    QRegExp m_elseRegex;
     QRegExp m_keywordRegex;
 
     RuleIndexRemap m_indexRemap;
