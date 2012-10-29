@@ -98,7 +98,7 @@ void setLanguage(QApplication &app)
 
     /* Chatbot specific strings */
     QTranslator *chatbotTranslator = new QTranslator();
-    chatbotTranslator->load(langPath + "chatbot_" + lang + ".qm");
+    chatbotTranslator->load(langPath + "chatbot2_" + lang + ".qm");
     app.installTranslator(chatbotTranslator);
 }
 

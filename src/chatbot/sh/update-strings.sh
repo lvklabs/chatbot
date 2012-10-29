@@ -41,8 +41,8 @@ fi
 set -e
 
 `echo $lupdate_bin` $main_project_pro
-`echo $linguist_bin` $project_dir/lang/chatbot_es_AR.ts
-`echo $lrelease_bin` $project_dir/lang/chatbot_es_AR.ts
+`echo $linguist_bin` $project_dir/lang/chatbot2_es_AR.ts
+`echo $lrelease_bin` $project_dir/lang/chatbot2_es_AR.ts
 rm -f $project_dir/../chatbot-build-desktop-*/qrc_resources.*
 
 

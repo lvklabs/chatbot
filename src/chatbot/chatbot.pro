@@ -298,7 +298,7 @@ RC_FILE = \
     res/chatbot.rc
 
 TRANSLATIONS = \
-    lang/chatbot_es_AR.ts
+    lang/chatbot2_es_AR.ts
 
 OTHER_FILES += \
     res/chatbot.rc
