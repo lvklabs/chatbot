@@ -1,3 +1,6 @@
+v1.3
+ - Fixed bug: github#26
+
 v1.2
  - Fixed bugs: github#11, github#22, github#24, github#25
  - Added support for nested "if" conditionals
