@@ -198,16 +198,25 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
         return 0;
     }
 
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/;
+
+    if (m_isUserCheckable) {
+        flags |= Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
+    }
+
 #ifndef DRAG_AND_DROP_DISABLED
     const BE::Rule *item = itemFromIndex(index);
+
+    if (item->type() == BE::Rule::OrdinaryRule) {
+        flags |= Qt::ItemIsDragEnabled;
+    }
+
+    if (item->type() == BE::Rule::ContainerRule) {
+        flags |= Qt::ItemIsDropEnabled;
+    }
 #endif
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/
-#ifndef DRAG_AND_DROP_DISABLED
-            | (item->type() == BE::Rule::OrdinaryRule ? Qt::ItemIsDragEnabled : Qt::NoItemFlags)
-            | (item->type() == BE::Rule::ContainerRule ? Qt::ItemIsDropEnabled : Qt::NoItemFlags)
-#endif
-            | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags);
+    return flags;
 }
 
 //--------------------------------------------------------------------------------------------------
