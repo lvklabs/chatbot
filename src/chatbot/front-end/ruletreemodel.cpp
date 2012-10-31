@@ -205,13 +205,11 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
     }
 
 #ifndef DRAG_AND_DROP_DISABLED
+    flags |= Qt::ItemIsDragEnabled;
+
     const BE::Rule *item = itemFromIndex(index);
 
-    if (item->type() == BE::Rule::OrdinaryRule) {
-        flags |= Qt::ItemIsDragEnabled;
-    }
-
-    if (item->type() == BE::Rule::ContainerRule) {
+    if (item->type() == BE::Rule::ContainerRule || item == m_rootRule) {
         flags |= Qt::ItemIsDropEnabled;
     }
 #endif
@@ -517,42 +515,65 @@ bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction 
 {
     qDebug() << "RuleTreeModel: dropped data at " << row << col << parent.row();
 
+    if (!data) {
+        qDebug() << "RuleTreeModel: dropped null data";
+        return false;
+    }
+
+    QByteArray ruleData = data->data(MIME_RULE_DATA);
+
+    if (ruleData.isNull()) {
+        qDebug() << "RuleTreeModel: dropped null rule data";
+        return false;
+    }
+
+    QDataStream ds(ruleData);
+
+    int ruleType;
+    ds >> ruleType;
+
+    BE::Rule *parentItem = itemFromIndex(parent);
+
+    // Ordinary items cannot be dropped on the root rule
+    if (ruleType == BE::Rule::OrdinaryRule && parentItem == m_rootRule) {
+        qDebug() << "RuleTreeModel: Drop not allowed 1";
+        return false;
+    }
+
+    // Container and evasives can only be dropped on the
+    if (ruleType != BE::Rule::OrdinaryRule && parentItem != m_rootRule) {
+        qDebug() << "RuleTreeModel: Drop not allowed 2";
+        return false;
+    }
+
     // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
     // custom data to the proper item
     QAbstractItemModel::dropMimeData(data, action, row, col, parent);
 
-    bool handled = false;
+    BE::Rule *destItem = 0;
 
-    if (data) {
-        BE::Rule *item = 0;
-
-        // When row and column are -1 it means that it is up to the model to decide where to place
-        // the data. In a tree this occur when data is dropped on a parent. By default trees
-        // will append the data to the parent
-        if (row == -1 && col == -1) {
-            BE::Rule *parentItem = itemFromIndex(parent);
-            if (parentItem && parentItem->childCount() > 0) {
-                item = parentItem->child(parentItem->childCount() - 1);
-            }
-        } else {
-            item = itemFromIndex(index(row, col, parent));
+    // When row and column are -1 it means that it is up to the model to decide where to place
+    // the data. In a tree this occur when data is dropped on a parent. By default trees
+    // will append the data to the parent
+    if (row == -1 && col == -1) {
+        if (parentItem && parentItem->childCount() > 0) {
+            destItem = parentItem->child(parentItem->childCount() - 1);
         }
-
-        if (item) {
-            QByteArray ruleData = data->data(MIME_RULE_DATA);
-
-            if (!ruleData.isEmpty()) {
-                QDataStream ds(ruleData);
-                ds >> *item;
-
-                handled = (ds.status() == QDataStream::Ok);
-            }
-        }
+    } else {
+        destItem = itemFromIndex(index(row, col, parent));
     }
 
-    qDebug() << "RuleTreeModel: dropped data handled with status" << handled;
+    bool dropOK = false;
 
-    return handled;
+    if (destItem) {
+        ds >> *destItem;
+
+        dropOK = (ds.status() == QDataStream::Ok);
+    }
+
+    qDebug() << "RuleTreeModel: dropped data handled with status" << dropOK;
+
+    return dropOK;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -584,6 +605,7 @@ QMimeData * Lvk::FE::RuleTreeModel::mimeData(const QModelIndexList &indexes) con
 
             {
                 QDataStream ds(&ruleData, QIODevice::WriteOnly);
+                ds << static_cast<int>(item->type());
                 ds << *item;
             }
 
