@@ -54,40 +54,6 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 
-//--------------------------------------------------------------------------------------------------
-// Non-member helpers
-//--------------------------------------------------------------------------------------------------
-
-namespace
-{
-
-//--------------------------------------------------------------------------------------------------
-// Check if chatbot has expired
-//
-// TODO remove this for version 1.0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-inline void checkAppExpiration()
-{
-//    Lvk::Cmn::Settings settings;
-//    if (settings.value("Application/ApplicationExpires", true).toBool()) {
-//        if (QDate::currentDate() > QDate(2012, 10, 10)) {
-//
-//            QString title = QObject::tr("Application demo has expired");
-//            QString msg = QObject::tr("This application demo has expired. "
-//                                      "Please download a new version.");
-//
-//            QMessageBox::critical(0, title, msg, QMessageBox::Ok);
-//
-//            qCritical("Application has expired. Exiting now!");
-//            exit(0);
-//        }
-//    }
-}
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-} // namespace
-
 
 //--------------------------------------------------------------------------------------------------
 // Constructors, destructor and init methods
@@ -105,8 +71,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_tinyScore(0)
 {
     qDebug() << "Setting up main window...";
-
-    checkAppExpiration();
 
     setupUi();
 
