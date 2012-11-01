@@ -182,6 +182,8 @@ private:
     void teachRule(BE::Rule *rule);
     void undoRule(BE::Rule *rule);
     void handleRuleEdited(BE::Rule *rule);
+    void ruleEditFinished();
+
     void highlightMatchedRules(const BE::AppFacade::MatchList &matches);
 
     void undoRuleEdited(BE::Rule *rule);
@@ -237,8 +239,9 @@ private slots:
     //void onRuleOutputEditingFinished();
     void onRuleAdded();
     void onRuleEdited();
-    void onRuleSelectionChanged(const QItemSelection &selected,
-                                    const QItemSelection &deselected);
+    void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onRuleDropFinished(bool accepted);
+
     void onTeachButtonPressed();
     void onUndoButtonPressed();
     void onTestInputTextEntered();

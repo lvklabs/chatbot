@@ -219,7 +219,18 @@ public:
 
     void notifyDataChanged();  // FIXME refactor to remove this!
 
+
+signals:
+
+    /**
+     * This signal is emited whenever a drag and drop operation finishes. \a accepted is true
+     * if the drop operation was accepted, otherwise \a is false.
+     */
+    void dropFinished(bool accepted);
+
 protected:
+
+    QMimeData * mimeData(const QModelIndexList & indexes) const;
 
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
                       const QModelIndex & parent);

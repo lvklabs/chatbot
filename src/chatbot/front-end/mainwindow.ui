@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -258,6 +258,9 @@
                </property>
                <property name="defaultDropAction">
                 <enum>Qt::MoveAction</enum>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
                </property>
                <attribute name="headerVisible">
                 <bool>false</bool>

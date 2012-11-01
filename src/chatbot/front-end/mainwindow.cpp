@@ -170,7 +170,10 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
         initWithFile("");
     }
 
-    m_ruleEdited = false;
+    if (m_ruleEdited) {
+        m_ruleEdited = false;
+        ruleEditFinished();
+    }
     m_ruleAdded = false;
 
     // reset active tabs
@@ -232,6 +235,8 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
     ui->categoriesTree->setModel(m_ruleTreeModel);
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
+    connect(m_ruleTreeModel, SIGNAL(dropFinished(bool)), SLOT(onRuleDropFinished(bool)));
 
     connect(m_ruleTreeSelectionModel,
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -1437,14 +1442,15 @@ void Lvk::FE::MainWindow::onRuleEdited()
     if (selRule && !m_ruleEdited) {
         m_ruleEdited = true;
 
+        ui->teachRuleButton->setEnabled(true);
+        ui->undoRuleButton->setEnabled(true);
+        ui->categoriesTree->setDragEnabled(false);
+
         m_ruleBackup.setStatus(selRule->status());
         m_ruleBackup.setName(selRule->name());
         m_ruleBackup.setTarget(selRule->target());
         m_ruleBackup.setInput(selRule->input());
         m_ruleBackup.setOutput(selRule->output());
-
-        ui->teachRuleButton->setEnabled(true);
-        ui->undoRuleButton->setEnabled(true);
     }
 }
 
@@ -1515,11 +1521,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
         }
     }
 
-    m_ruleEdited = false;
-    m_ruleAdded = false;
-
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
+    ruleEditFinished();
 
     m_appFacade->refreshNlpEngine();
     m_appFacade->save();
@@ -1569,11 +1571,29 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
         }
     }
 
+    ruleEditFinished();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::ruleEditFinished()
+{
     m_ruleAdded = false;
     m_ruleEdited = false;
 
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
+    ui->categoriesTree->setDragEnabled(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRuleDropFinished(bool accepted)
+{
+    if (accepted) {
+        qDebug() << "Rule drop accepted, refreshing NLP engine...";
+        m_appFacade->refreshNlpEngine();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
