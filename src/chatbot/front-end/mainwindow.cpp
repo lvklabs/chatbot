@@ -101,10 +101,7 @@ void Lvk::FE::MainWindow::setupUi()
     ui->curScoreWidget->setUploadVisible(false);
 
     m_tinyScore = new TinyScoreWidget(ui->mainTabWidget);
-
-#ifndef DA_CONTEST
     m_tinyScore->setVisible(false);
-#endif
 
     clear();
 
@@ -329,6 +326,7 @@ void Lvk::FE::MainWindow::selectFirstRule()
 bool Lvk::FE::MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
+    case QEvent::Show:
     case QEvent::WindowStateChange:
     case QEvent::Resize:
     case QEvent::WindowActivate:
@@ -1991,9 +1989,15 @@ void Lvk::FE::MainWindow::updateScore()
 
 void Lvk::FE::MainWindow::updateTinyScorePos()
 {
+#ifdef DA_CONTEST
+    if (!m_tinyScore->isVisible()) {
+        m_tinyScore->setVisible(true);
+    }
+
     if (m_tinyScore) {
         m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, -2);
     }
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
