@@ -1967,6 +1967,10 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
         connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
                 SLOT(onCurrentTabChanged(QWidget*)));
     }
+
+    if (tab == ui->testTab) {
+        ui->testInputText->setFocus();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
