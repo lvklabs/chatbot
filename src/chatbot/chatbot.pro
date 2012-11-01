@@ -105,6 +105,7 @@ INCLUDEPATH += \
 
 HEADERS += \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    main/windowbootstrap.h \
     front-end/mainwindow.h \
     front-end/ruletreemodel.h \
     front-end/ruleoutputwidget.h \
@@ -128,6 +129,7 @@ HEADERS += \
     front-end/sendscoredialog.h \
     front-end/newupdatedialog.h \
     front-end/updateexecutor.h \
+    front-end/testinputtext.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -199,12 +201,11 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
-    front-end/testinputtext.h
 
 
 SOURCES += \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
-    main.cpp \
+    main/main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
     front-end/ruleoutputwidget.cpp \
@@ -226,6 +227,7 @@ SOURCES += \
     front-end/mainwindowrefactor.cpp \
     front-end/sendscoredialog.cpp \
     front-end/newupdatedialog.cpp \
+    front-end/testinputtext.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -267,7 +269,6 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
-    front-end/testinputtext.cpp
 
 
 FORMS += \
@@ -373,6 +374,9 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
+
 
 
 

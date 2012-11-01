@@ -1,3 +1,8 @@
+v.14
+ - Added support to drag & drop of rules and categories
+ - Added support to open a chatbot file by command line
+ - Fixed bug: github#27
+
 v1.3
  - Fixed bug: github#26
 

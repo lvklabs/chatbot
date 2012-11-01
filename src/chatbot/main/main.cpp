@@ -24,12 +24,7 @@
 #include <QDir>
 #include <QDebug>
 
-#ifdef DA_CONTEST
-# include "front-end/welcomewidget.h"
-#else
-# include "front-end/mainwindow.h"
-#endif
-
+#include "main/windowbootstrap.h"
 #include "common/version.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
@@ -39,6 +34,7 @@
 void makeDirStructure();
 void setLanguage(QApplication &app);
 void makeDir(const QString &name);
+void showWindow(int argc, char *argv[]);
 
 //--------------------------------------------------------------------------------------------------
 // main
@@ -52,6 +48,8 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    QDir::setCurrent(QApplication::applicationDirPath());
+
     Lvk::Cmn::Logger::init();
 
     makeDirStructure();
@@ -60,13 +58,7 @@ int main(int argc, char *argv[])
 
     setLanguage(app);
 
-#ifdef DA_CONTEST
-    Lvk::FE::WelcomeWidget w;
-#else
-    Lvk::FE::MainWindow w;
-#endif
-
-    w.show();
+    WindowBootstrap wb(argc, argv);
 
     return app.exec();
 }
@@ -128,4 +120,6 @@ void makeDir(const QString &name)
         }
     }
 }
+
+
 
