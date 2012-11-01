@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -321,6 +321,9 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="toolTip">
+                  <string>Undo changes</string>
+                 </property>
                  <property name="text">
                   <string>Undo changes</string>
                  </property>
@@ -352,6 +355,9 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Teach rule to the chatbot (Ctrl+S)</string>
                  </property>
                  <property name="text">
                   <string>Teach rule to the chatbot</string>
@@ -403,7 +409,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add category</string>
+              <string>Add category (Ctrl+Shift+A)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -431,7 +437,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add rule</string>
+              <string>Add rule (Ctrl+A)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -462,7 +468,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Remove rule or category</string>
+              <string>Remove rule or category (Ctrl+R)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -591,6 +597,9 @@
                </item>
                <item row="2" column="0">
                 <widget class="QToolButton" name="showRuleDefButton">
+                 <property name="toolTip">
+                  <string>Show definition (Ctrl+D)</string>
+                 </property>
                  <property name="text">
                   <string>Show definition</string>
                  </property>

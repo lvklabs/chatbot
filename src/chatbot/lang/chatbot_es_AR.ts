@@ -793,26 +793,26 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2008"/>
-        <location filename="../front-end/mainwindow.cpp" line="2048"/>
-        <location filename="../front-end/mainwindow.cpp" line="2053"/>
+        <location filename="../front-end/mainwindow.cpp" line="2012"/>
+        <location filename="../front-end/mainwindow.cpp" line="2052"/>
+        <location filename="../front-end/mainwindow.cpp" line="2057"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2009"/>
+        <location filename="../front-end/mainwindow.cpp" line="2013"/>
         <source>Before sending your score you need to verify your account.
 Please, go to the &apos;Connection&apos; tab and verify your account</source>
         <translation>Antes de enviar tu puntaje necesitás verificar tu cuenta.
 Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2049"/>
+        <location filename="../front-end/mainwindow.cpp" line="2053"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2054"/>
+        <location filename="../front-end/mainwindow.cpp" line="2058"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
@@ -821,17 +821,17 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation type="obsolete">Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2032"/>
+        <location filename="../front-end/mainwindow.cpp" line="2036"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2032"/>
+        <location filename="../front-end/mainwindow.cpp" line="2036"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="2034"/>
+        <location filename="../front-end/mainwindow.cpp" line="2038"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -1322,7 +1322,7 @@ Tiempo restante: %3</translation>
     <name>MainWindow</name>
     <message>
         <location filename="../front-end/mainwindow.ui" line="20"/>
-        <location filename="../front-end/mainwindow.ui" line="1395"/>
+        <location filename="../front-end/mainwindow.ui" line="1404"/>
         <source>Chatbot</source>
         <translation>Chatbot</translation>
     </message>
@@ -1352,27 +1352,24 @@ Tiempo restante: %3</translation>
         <translation>Enseñar reglas</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="434"/>
         <source>Add rule</source>
-        <translation>Agregar regla</translation>
+        <translation type="obsolete">Agregar regla</translation>
     </message>
     <message>
         <source>Remove rule</source>
         <translation type="obsolete">Borrar regla</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="406"/>
         <source>Add category</source>
-        <translation>Agregar categoría</translation>
+        <translation type="obsolete">Agregar categoría</translation>
     </message>
     <message>
         <source>Remove Category</source>
         <translation type="obsolete">Borrar categoría</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="465"/>
         <source>Remove rule or category</source>
-        <translation>Borrar regla o categoría</translation>
+        <translation type="obsolete">Borrar regla o categoría</translation>
     </message>
     <message>
         <source>If user writes:</source>
@@ -1388,7 +1385,7 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">O cualquiera de las variantes:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="955"/>
+        <location filename="../front-end/mainwindow.ui" line="964"/>
         <source>Connect</source>
         <oldsource>Connect with chat</oldsource>
         <translation>Conexión</translation>
@@ -1398,7 +1395,7 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Conectar con chat:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1127"/>
+        <location filename="../front-end/mainwindow.ui" line="1136"/>
         <source> Facebook</source>
         <oldsource>Facebook</oldsource>
         <translation> Facebook</translation>
@@ -1409,11 +1406,12 @@ Tiempo restante: %3</translation>
     </message>
     <message>
         <location filename="../front-end/mainwindow.ui" line="325"/>
+        <location filename="../front-end/mainwindow.ui" line="328"/>
         <source>Undo changes</source>
         <translation>Deshacer cambios</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="357"/>
+        <location filename="../front-end/mainwindow.ui" line="363"/>
         <source>Teach rule to the chatbot</source>
         <translation>Enseñar regla al chatbot</translation>
     </message>
@@ -1423,23 +1421,23 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Cambiar cuenta...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="800"/>
+        <location filename="../front-end/mainwindow.ui" line="809"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1117"/>
+        <location filename="../front-end/mainwindow.ui" line="1126"/>
         <source>Chatbot type:</source>
         <translation>Tipo de chatbot:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1147"/>
+        <location filename="../front-end/mainwindow.ui" line="1156"/>
         <source> Gmail or Google Talk</source>
         <translation> Gmail o Google Talk</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="816"/>
-        <location filename="../front-end/mainwindow.ui" line="1180"/>
+        <location filename="../front-end/mainwindow.ui" line="825"/>
+        <location filename="../front-end/mainwindow.ui" line="1189"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
@@ -1448,13 +1446,13 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">¡Bienvenido! ¿Qué querés hacer?</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="875"/>
+        <location filename="../front-end/mainwindow.ui" line="884"/>
         <source>Change user...</source>
         <translation>Cambiar usuario...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="916"/>
-        <location filename="../front-end/mainwindow.ui" line="1197"/>
+        <location filename="../front-end/mainwindow.ui" line="925"/>
+        <location filename="../front-end/mainwindow.ui" line="1206"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
@@ -1463,17 +1461,17 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Conectando...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="778"/>
+        <location filename="../front-end/mainwindow.ui" line="787"/>
         <source>Status:</source>
         <translation>Estado:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1049"/>
+        <location filename="../front-end/mainwindow.ui" line="1058"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="997"/>
+        <location filename="../front-end/mainwindow.ui" line="1006"/>
         <source>Select the users the Chatbot can talk to:</source>
         <translation>Seleccioná los usuarios que pueden conversar con el chatbot:</translation>
     </message>
@@ -1482,29 +1480,29 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Todos los usuarios</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1235"/>
+        <location filename="../front-end/mainwindow.ui" line="1244"/>
         <source>Verify account</source>
         <translation>Verificar cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1315"/>
+        <location filename="../front-end/mainwindow.ui" line="1324"/>
         <source>Verifying...</source>
         <translation>Verificando...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1080"/>
+        <location filename="../front-end/mainwindow.ui" line="1089"/>
         <source>To create a chatbot you need a Facebook or Gmail account.
 Please insert your username and password and press &quot;Verify account&quot; button.</source>
         <translation>Para crear un chatbot es necesario una cuenta de Facebook o Gmail.
 Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Verificar cuenta&quot; para que podamos verificar que los datos sean correctos.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1353"/>
+        <location filename="../front-end/mainwindow.ui" line="1362"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="653"/>
+        <location filename="../front-end/mainwindow.ui" line="662"/>
         <source>Conversations</source>
         <translation>Conversaciones</translation>
     </message>
@@ -1525,7 +1523,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Ignorar conjugación</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="515"/>
+        <location filename="../front-end/mainwindow.ui" line="521"/>
         <source>Clean test conversation</source>
         <translation>Limpiar conversación de prueba</translation>
     </message>
@@ -1538,17 +1536,17 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Ignorar caracteres duplicados</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="582"/>
+        <location filename="../front-end/mainwindow.ui" line="588"/>
         <source>Rule used to reply:</source>
         <translation>Regla usada para responder:</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="595"/>
+        <location filename="../front-end/mainwindow.ui" line="604"/>
         <source>Show definition</source>
         <translation>Mostrar definición</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="637"/>
+        <location filename="../front-end/mainwindow.ui" line="646"/>
         <source>Transformations applied:</source>
         <translation>Transformaciones aplicadas:</translation>
     </message>
@@ -1557,7 +1555,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Verificar más tarde</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="670"/>
+        <location filename="../front-end/mainwindow.ui" line="679"/>
         <source>Score</source>
         <translation>Puntos</translation>
     </message>
@@ -1567,144 +1565,169 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>¿Qué querés hacer?</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="338"/>
+        <location filename="../front-end/mainwindow.ui" line="341"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="419"/>
+        <location filename="../front-end/mainwindow.ui" line="360"/>
+        <source>Teach rule to the chatbot (Ctrl+S)</source>
+        <translation>Enseñar regla al chatbot (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="412"/>
+        <source>Add category (Ctrl+Shift+A)</source>
+        <translation>Agregar categoría (Ctrl+Shift+A)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="425"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="447"/>
+        <location filename="../front-end/mainwindow.ui" line="440"/>
+        <source>Add rule (Ctrl+A)</source>
+        <translation>Agregar regla (Ctrl+A)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="453"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="478"/>
+        <location filename="../front-end/mainwindow.ui" line="471"/>
+        <source>Remove rule or category (Ctrl+R)</source>
+        <translation>Borrar regla o categoría (Ctrl+R)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="484"/>
         <source>Ctrl+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="608"/>
+        <location filename="../front-end/mainwindow.ui" line="601"/>
+        <source>Show definition (Ctrl+D)</source>
+        <translation>Mostrar definición (Ctrl+D)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="617"/>
         <source>Ctrl+D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="685"/>
+        <location filename="../front-end/mainwindow.ui" line="694"/>
         <source>Current Score</source>
         <translation>Puntos actuales</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="717"/>
+        <location filename="../front-end/mainwindow.ui" line="726"/>
         <source>Best Score</source>
         <translation>Puntaje Record</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="747"/>
+        <location filename="../front-end/mainwindow.ui" line="756"/>
         <source>Connection</source>
         <translation>Conexión</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="872"/>
+        <location filename="../front-end/mainwindow.ui" line="881"/>
         <source>Change user</source>
         <translation>Cambiar usuario</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1258"/>
+        <location filename="../front-end/mainwindow.ui" line="1267"/>
         <source>Verify later</source>
         <translation>Verificar más tarde</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1415"/>
+        <location filename="../front-end/mainwindow.ui" line="1424"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1418"/>
+        <location filename="../front-end/mainwindow.ui" line="1427"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1423"/>
-        <location filename="../front-end/mainwindow.ui" line="1436"/>
+        <location filename="../front-end/mainwindow.ui" line="1432"/>
+        <location filename="../front-end/mainwindow.ui" line="1445"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1428"/>
-        <location filename="../front-end/mainwindow.ui" line="1431"/>
+        <location filename="../front-end/mainwindow.ui" line="1437"/>
+        <location filename="../front-end/mainwindow.ui" line="1440"/>
         <source>About Chatbot...</source>
         <translation>Acerca de Chatbot...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1441"/>
+        <location filename="../front-end/mainwindow.ui" line="1450"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1444"/>
+        <location filename="../front-end/mainwindow.ui" line="1453"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1449"/>
+        <location filename="../front-end/mainwindow.ui" line="1458"/>
         <source>Save as...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1452"/>
+        <location filename="../front-end/mainwindow.ui" line="1461"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1457"/>
+        <location filename="../front-end/mainwindow.ui" line="1466"/>
         <source>Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1460"/>
+        <location filename="../front-end/mainwindow.ui" line="1469"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1465"/>
+        <location filename="../front-end/mainwindow.ui" line="1474"/>
         <source>New</source>
         <translation>Nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1468"/>
+        <location filename="../front-end/mainwindow.ui" line="1477"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1473"/>
+        <location filename="../front-end/mainwindow.ui" line="1482"/>
         <source>Import rules...</source>
         <translation>Importar Reglas...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1478"/>
+        <location filename="../front-end/mainwindow.ui" line="1487"/>
         <source>Export rules...</source>
         <translation>Exportar Reglas...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1483"/>
+        <location filename="../front-end/mainwindow.ui" line="1492"/>
         <source>Add empty rule</source>
         <translation>Agregar regla vacía</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1488"/>
+        <location filename="../front-end/mainwindow.ui" line="1497"/>
         <source>Add rule with conditional</source>
         <translation>Agregar regla condicional</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1493"/>
+        <location filename="../front-end/mainwindow.ui" line="1502"/>
         <source>Add rule with variable</source>
         <translation>Agregar regla con variable</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="1498"/>
+        <location filename="../front-end/mainwindow.ui" line="1507"/>
         <source>Options...</source>
         <translation>Opciones...</translation>
     </message>
@@ -1717,7 +1740,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">La ayuda se muestra acá mientras el usuario mueve el mouse sobre los contoles</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="504"/>
+        <location filename="../front-end/mainwindow.ui" line="510"/>
         <source>Test your chatbot</source>
         <translation>Probá tu chatbot</translation>
     </message>
@@ -1726,12 +1749,12 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="518"/>
+        <location filename="../front-end/mainwindow.ui" line="524"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="563"/>
+        <location filename="../front-end/mainwindow.ui" line="569"/>
         <source>Test:</source>
         <translation>Prueba:</translation>
     </message>
