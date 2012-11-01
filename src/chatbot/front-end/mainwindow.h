@@ -239,8 +239,9 @@ private slots:
     //void onRuleOutputEditingFinished();
     void onRuleAdded();
     void onRuleEdited();
-    void onRuleSelectionChanged(const QItemSelection &selected,
-                                    const QItemSelection &deselected);
+    void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onRuleDropFinished(bool accepted);
+
     void onTeachButtonPressed();
     void onUndoButtonPressed();
     void onTestInputTextEntered();

@@ -563,17 +563,19 @@ bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction 
         destItem = itemFromIndex(index(row, col, parent));
     }
 
-    bool dropOK = false;
+    bool dropOk = false;
 
     if (destItem) {
         ds >> *destItem;
 
-        dropOK = (ds.status() == QDataStream::Ok);
+        dropOk = (ds.status() == QDataStream::Ok);
     }
 
-    qDebug() << "RuleTreeModel: dropped data handled with status" << dropOK;
+    qDebug() << "RuleTreeModel: dropped data handled with status" << dropOk;
 
-    return dropOK;
+    emit dropFinished(dropOk);
+
+    return dropOk;
 }
 
 //--------------------------------------------------------------------------------------------------

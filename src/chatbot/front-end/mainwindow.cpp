@@ -236,6 +236,8 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     ui->categoriesTree->setModel(m_ruleTreeModel);
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
+    connect(m_ruleTreeModel, SIGNAL(dropFinished(bool)), SLOT(onRuleDropFinished(bool)));
+
     connect(m_ruleTreeSelectionModel,
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(onRuleSelectionChanged(QItemSelection,QItemSelection)));
@@ -1582,6 +1584,16 @@ void Lvk::FE::MainWindow::ruleEditFinished()
     ui->teachRuleButton->setEnabled(false);
     ui->undoRuleButton->setEnabled(false);
     ui->categoriesTree->setDragEnabled(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRuleDropFinished(bool accepted)
+{
+    if (accepted) {
+        qDebug() << "Rule drop accepted, refreshing NLP engine...";
+        m_appFacade->refreshNlpEngine();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
