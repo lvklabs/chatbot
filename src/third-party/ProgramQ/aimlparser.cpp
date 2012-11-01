@@ -158,7 +158,10 @@ bool Node::match(QStringList::const_iterator input, const QStringList &inputWord
             capturedThatTexts.clear();
             capturedTopicTexts.clear();
             if ( (!(*leaf)->that.isEmpty() && !exactMatch((*leaf)->that, currentThat, capturedThatTexts)) ||
-                    (!(*leaf)->topic.isEmpty() && !exactMatch((*leaf)->topic, currentTopic, capturedTopicTexts)) )
+                 // start lvk - Force match with current topic, if no match retry without topic
+                 (!exactMatch((*leaf)->topic, currentTopic, capturedTopicTexts)) )
+                //(!(*leaf)->topic.isEmpty() && !exactMatch((*leaf)->topic, currentTopic, capturedTopicTexts)) )
+                // end lvk
                 continue;
             return true;
         }
@@ -651,6 +654,9 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
     QStringList capturedTexts, capturedThatTexts, capturedTopicTexts;
     QString curTopic = _parameterValue["topic"];
     normalizeString(curTopic);
+
+    _logStream << "::Current Topic: " << curTopic;
+
     Leaf *leaf = NULL;
     QString result("");
     QStringList sentences = QStringList::split(QRegExp("[\\.\\?!,;\\x061f]"), input);
@@ -667,8 +673,19 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
         QStringList::ConstIterator it = inputWords.begin();
 
         if (!_root.match(it, inputWords, _thatList.count() && _thatList[0].count() ?
-            _thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, categoriesId, &leaf))
-            return "Internal Error!";
+            _thatList[0][0] : QString(""), curTopic, capturedThatTexts, capturedTopicTexts, categoriesId, &leaf)) {
+
+            // start lvk - force match with current topic, if no match retry without topic
+            if (curTopic.isEmpty()) {
+            // end lvk
+                return "Internal Error!";
+            // start lvk - force match with current topic, if no match retry without topic
+            } else {
+                _parameterValue["topic"] = "";
+                return getResponse(input, categoriesId, srai);
+            }
+            // end lvk
+        }
 
         Node *parentNode = leaf->parent;
         QString matchedPattern = parentNode->word;
