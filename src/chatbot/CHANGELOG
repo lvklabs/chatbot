@@ -1,6 +1,7 @@
 v1.4
  - Added support to drag & drop of rules and categories
  - Added support to open a chatbot file by command line
+ - Added several shortcuts to switch tabs, add rules, etc.
  - Fixed bugs: github#27, github#18
 
 v1.3
