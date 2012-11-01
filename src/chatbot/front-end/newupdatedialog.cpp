@@ -24,7 +24,10 @@
 
 #include <QDesktopServices>
 #include <QUrl>
+#include <QApplication>
+#include <QClipboard>
 #include <QPushButton>
+#include <QToolButton>
 #include <QLabel>
 #include <QLayout>
 #include <QTimer>
@@ -34,35 +37,57 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::NewUpdateDialog::NewUpdateDialog(const DAS::UpdateInfo &info, QWidget *parent)
-    : QDialog(parent), m_url(info.url()), m_label(new QLabel(this)), m_downloadAccepted(false)
+    : QDialog(parent), m_url(info.url()), m_downloadAccepted(false)
 {
     setModal(true);
     setMinimumWidth(600);
     setMaximumWidth(600);
     setWindowTitle(tr("New Update"));
-    setUpdateInfo(info);
 
+    m_label = new QLabel(this);
     m_label->setWordWrap(true);
     m_label->setOpenExternalLinks(true);
 
-    QGridLayout *layout = new QGridLayout(this);
-    setLayout(layout);
+    m_hash = new QLabel(this);
+    m_hash->setTextInteractionFlags(m_label->textInteractionFlags() | Qt::TextSelectableByMouse);
+    m_hash->setCursor(QCursor(Qt::IBeamCursor));
+
+    m_copy = new QToolButton(this);
+    m_copy->setAutoRaise(true);
+    m_copy->setIcon(QIcon(":/icons/copy.png"));
+    m_copy->setToolTip(tr("Copy signature"));
 
     m_later = new QPushButton(tr("Later"), this);
+
     m_download = new QPushButton(tr("Download Now!"), this);
     m_download->setDefault(true);
+    m_download->setFocus();
+
+    QGridLayout *mainLayout = new QGridLayout(this);
+    setLayout(mainLayout);
+
+    QHBoxLayout *hashLayout = new QHBoxLayout();
 
     QSpacerItem *vspacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     QSpacerItem *hspacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    layout->addWidget(m_label,    0, 0, 1, 3);
-    layout->addItem(vspacer,      1, 0, 1, 3);
-    layout->addItem(hspacer,      2, 0);
-    layout->addWidget(m_later,    2, 1);
-    layout->addWidget(m_download, 2, 2);
+    mainLayout->addWidget (m_label,    0, 0, 1, 3);
+    mainLayout->addLayout (hashLayout, 1, 0, 1, 3);
+    mainLayout->addItem   (vspacer,    2, 0, 1, 3);
+    mainLayout->addItem   (hspacer,    3, 0);
+    mainLayout->addWidget (m_later,    3, 1);
+    mainLayout->addWidget (m_download, 3, 2);
+
+    hashLayout->setMargin(0);
+    hashLayout->addWidget(m_hash);
+    hashLayout->addWidget(m_copy);
+    hashLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
     connect(m_download, SIGNAL(clicked()), SLOT(onAccepted()));
     connect(m_later,    SIGNAL(clicked()), SLOT(onRejected()));
+    connect(m_copy,     SIGNAL(clicked()), SLOT(onCopyHash()));
+
+    setUpdateInfo(info);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -89,10 +114,18 @@ void Lvk::FE::NewUpdateDialog::setUpdateInfo(const DAS::UpdateInfo &info)
                   "descarga-chatbot/verifica-tu-descarga/\">What's this?</a></p>"));
 
     if (!info.hash().isEmpty()) {
-        msg.append(QString(tr("<p>SHA-1 signature for this udpate is %1</p>")).arg(info.hash()));
+        msg.append(tr("<p>SHA-1 signature for this udpate is:</p>"));
     }
 
     m_label->setText(msg);
+
+    if (!info.hash().isEmpty()) {
+        m_hash->setText(info.hash());
+    } else {
+        m_hash->setVisible(false);
+        m_copy->setVisible(false);
+    }
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -126,5 +159,12 @@ void Lvk::FE::NewUpdateDialog::onTimeout()
 {
     m_download->setText(tr("Continue"));
     m_download->setEnabled(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::NewUpdateDialog::onCopyHash()
+{
+    QApplication::clipboard()->setText(m_hash->text());
 }
 

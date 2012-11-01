@@ -31,6 +31,7 @@
         <file alias="cancel.png">chatbot_theme/cancel.png</file>
         <file alias="status_connected.png">chatbot_theme/status_connected.png</file>
         <file alias="status_disconnected.png">chatbot_theme/status_disconnected.png</file>
+        <file alias="copy.png">chatbot_theme/copy.png</file>
     </qresource>
     <qresource prefix="/bg">
         <file alias="welcome.png">chatbot_theme/welcome_bg.png</file>

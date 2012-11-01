@@ -1067,7 +1067,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>Lvk::FE::NewUpdateDialog</name>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="42"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="45"/>
         <source>New Update</source>
         <translation>Nueva actualización</translation>
     </message>
@@ -1084,7 +1084,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;&lt;b&gt;¡Actualizacion crítica! No podés conectar tu chatbot o enviar tu puntaje hasta que no actualices el programa.&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="76"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="101"/>
         <source>&lt;p&gt;&lt;b&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;This is a critical update!&lt;/span&gt; You cannot connect your chatbot, send your score or verify new accounts until you update the program.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;¡Actualización crítica!&lt;/span&gt; No podrás conectar tu chatbot, enviar puntajes o verificar nuevas cuentas hasta que no actualices el programa.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
@@ -1093,42 +1093,51 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">&lt;p&gt;Esta nueva versión corrige varios errores. Recomendamos que actualices la aplicación para un mejor funcionamiento.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="83"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="108"/>
         <source>&lt;p&gt;What&apos;s new:&lt;br/&gt; - </source>
         <translation>&lt;p&gt;¿Qué hay de nuevo?&lt;br/&gt; - </translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="51"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="60"/>
         <source>Later</source>
         <translation>Más tarde</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="52"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="58"/>
+        <source>Copy signature</source>
+        <translation>Copiar firma</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="62"/>
         <source>Download Now!</source>
         <translation>¡Descargar ahora!</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="72"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="97"/>
         <source>&lt;p&gt;&lt;b&gt;New update: Chatbot %1&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Nueva Actualización: Chatbot %1&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="86"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="111"/>
         <source>&lt;/p&gt;We recommend you to &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verify your program&lt;/a&gt; once it is downloaded. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;What&apos;s this?&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;/p&gt;Una vez finalizada la descarga recomendamos &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/#sha1&quot;&gt;verificar la firma SHA1&lt;/a&gt;. &lt;a href=&quot;http://www.daleaceptar.gob.ar/cms/chat/descarga-chatbot/verifica-tu-descarga/&quot;&gt;¿Qué es esto?&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="92"/>
-        <source>&lt;p&gt;SHA-1 signature for this udpate is %1&lt;/p&gt;</source>
-        <translation>&lt;p&gt;La firma SHA1 para esta descarga es %1&lt;/p&gt;</translation>
+        <location filename="../front-end/newupdatedialog.cpp" line="117"/>
+        <source>&lt;p&gt;SHA-1 signature for this udpate is:&lt;/p&gt;</source>
+        <translation>&lt;p&gt;La firma SHA1 para esta descarga es:&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="105"/>
+        <source>&lt;p&gt;SHA-1 signature for this udpate is %1&lt;/p&gt;</source>
+        <translation type="obsolete">&lt;p&gt;La firma SHA1 para esta descarga es %1&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/newupdatedialog.cpp" line="138"/>
         <source>Downloading...</source>
         <translation>Comenzando descarga...</translation>
     </message>
     <message>
-        <location filename="../front-end/newupdatedialog.cpp" line="127"/>
+        <location filename="../front-end/newupdatedialog.cpp" line="160"/>
         <source>Continue</source>
         <translation>Continuar</translation>
     </message>
