@@ -149,12 +149,12 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionOptions->setEnabled(true);
 
             ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("Teach"));
-            ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("Test your chatbot"));
-            ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("Connection"));
-            ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("Conversations"));
+            ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("T&each"));
+            ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("&Test your chatbot"));
+            ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("&Connection"));
+            ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("C&onversations"));
         #ifdef DA_CONTEST
-            ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("Score"));
+            ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("&Score"));
         #endif
             ui->mainTabWidget->removePage(ui->verificationTab);
             break;

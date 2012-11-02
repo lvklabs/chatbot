@@ -26,6 +26,8 @@
 #include <QDialog>
 
 class QLabel;
+class QToolButton;
+class QPushButton;
 
 namespace Lvk
 {
@@ -64,12 +66,15 @@ private slots:
     void onRejected();
     void onAccepted();
     void onTimeout();
+    void onCopyHash();
 
 private:
     QString m_url;
     QLabel *m_label;
+    QLabel *m_hash;
     QPushButton *m_later;
     QPushButton *m_download;
+    QToolButton *m_copy;
     bool m_downloadAccepted;
 
     void setUpdateInfo(const DAS::UpdateInfo &info);

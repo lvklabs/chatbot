@@ -33,6 +33,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QSysInfo>
+#include <QCoreApplication>
 
 #define DEBUG_STR            "Debug: "
 #define WARNING_STR          "Warning: "
@@ -96,7 +97,8 @@ inline QString getOSType()
 // Logger
 //--------------------------------------------------------------------------------------------------
 
-QFile *Lvk::Cmn::Logger::m_logFile = 0;
+QFile * Lvk::Cmn::Logger::m_logFile = 0;
+QString Lvk::Cmn::Logger::m_strPid;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -105,6 +107,8 @@ void Lvk::Cmn::Logger::init()
     if (m_logFile) {
         return; // Already initialized
     }
+
+    m_strPid = QString::number(QCoreApplication::applicationPid());
 
     QString logFilename = chatbotLogFilename();
 
@@ -161,6 +165,8 @@ void Lvk::Cmn::Logger::rotateLog(const QString &logFilename, qint64 maxSize)
 void Lvk::Cmn::Logger::msgHandler(QtMsgType type, const char *msg)
 {
     m_logFile->write(QDateTime::currentDateTime().toString(DATE_TIME_LOG_FORMAT).toUtf8());
+    m_logFile->write(" ");
+    m_logFile->write(m_strPid);
     m_logFile->write(" ");
 
     switch (type) {

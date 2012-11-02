@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>6</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -246,7 +246,7 @@
            <widget class="QWidget" name="verticalLayoutWidget">
             <layout class="QVBoxLayout" name="categoryTreeLayout">
              <item>
-              <widget class="QTreeView" name="categoriesTree">
+              <widget class="Lvk::FE::RuleTreeView" name="categoriesTree">
                <property name="mouseTracking">
                 <bool>true</bool>
                </property>
@@ -258,6 +258,9 @@
                </property>
                <property name="defaultDropAction">
                 <enum>Qt::MoveAction</enum>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
                </property>
                <attribute name="headerVisible">
                 <bool>false</bool>
@@ -286,7 +289,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add category</string>
+              <string>Add category (Ctrl+Shift+A)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -297,6 +300,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="shortcut">
+              <string>Ctrl+Shift+A</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
@@ -311,7 +317,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add rule</string>
+              <string>Add rule (Ctrl+A)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -322,6 +328,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="shortcut">
+              <string>Ctrl+A</string>
              </property>
              <property name="popupMode">
               <enum>QToolButton::MenuButtonPopup</enum>
@@ -339,7 +348,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Remove rule or category</string>
+              <string>Remove rule or category (Ctrl+R)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -350,6 +359,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="shortcut">
+              <string>Ctrl+R</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
@@ -465,6 +477,9 @@
                </item>
                <item row="2" column="0">
                 <widget class="QToolButton" name="showRuleDefButton">
+                 <property name="toolTip">
+                  <string>Show definition (Ctrl+D)</string>
+                 </property>
                  <property name="text">
                   <string>Show definition</string>
                  </property>
@@ -477,6 +492,9 @@
                    <width>24</width>
                    <height>24</height>
                   </size>
+                 </property>
+                 <property name="shortcut">
+                  <string>Ctrl+D</string>
                  </property>
                  <property name="toolButtonStyle">
                   <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -644,7 +662,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>27</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">
@@ -801,6 +819,9 @@
    <extends>QWidget</extends>
    <header>front-end/accountverifwidget.h</header>
    <container>1</container>
+   <class>Lvk::FE::RuleTreeView</class>
+   <extends>QTreeView</extends>
+   <header>front-end/ruletreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

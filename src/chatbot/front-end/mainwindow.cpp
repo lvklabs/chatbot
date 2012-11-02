@@ -55,40 +55,6 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 
-//--------------------------------------------------------------------------------------------------
-// Non-member helpers
-//--------------------------------------------------------------------------------------------------
-
-namespace
-{
-
-//--------------------------------------------------------------------------------------------------
-// Check if chatbot has expired
-//
-// TODO remove this for version 1.0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-inline void checkAppExpiration()
-{
-//    Lvk::Cmn::Settings settings;
-//    if (settings.value("Application/ApplicationExpires", true).toBool()) {
-//        if (QDate::currentDate() > QDate(2012, 10, 10)) {
-//
-//            QString title = QObject::tr("Application demo has expired");
-//            QString msg = QObject::tr("This application demo has expired. "
-//                                      "Please download a new version.");
-//
-//            QMessageBox::critical(0, title, msg, QMessageBox::Ok);
-//
-//            qCritical("Application has expired. Exiting now!");
-//            exit(0);
-//        }
-//    }
-}
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-} // namespace
-
 
 //--------------------------------------------------------------------------------------------------
 // Constructors, destructor and init methods
@@ -105,8 +71,6 @@ Lvk::FE::MainWindow::MainWindow(QWidget *parent) :
     m_tinyScore(0)
 {
     qDebug() << "Setting up main window...";
-
-    checkAppExpiration();
 
     setupUi();
 
@@ -140,10 +104,7 @@ void Lvk::FE::MainWindow::setupUi()
     ui->curScoreWidget->setUploadVisible(false);
 
     m_tinyScore = new TinyScoreWidget(ui->mainTabWidget);
-
-#ifndef DA_CONTEST
     m_tinyScore->setVisible(false);
-#endif
 
     clear();
 
@@ -175,7 +136,10 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     m_appFacade->disconnectFromChat();
 
-    m_ruleEdited = false;
+    if (m_ruleEdited) {
+        m_ruleEdited = false;
+        ruleEditFinished();
+    }
     m_ruleAdded = false;
 
     // reset active tabs
@@ -195,8 +159,7 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
 
     // test tab widgets
     ui->testConversationText->clear();
-    ui->testInputText->clear();
-    ui->testInputText->clearRoster();
+    ui->testInputText->clearAll();
     ui->clearTestConvButton->setEnabled(false);
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
@@ -232,6 +195,8 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
     ui->categoriesTree->setModel(m_ruleTreeModel);
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
+    connect(m_ruleTreeModel, SIGNAL(dropFinished(bool)), SLOT(onRuleDropFinished(bool)));
 
     connect(m_ruleTreeSelectionModel,
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -278,6 +243,7 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(ui->actionAddCondRule,     SIGNAL(triggered()), SLOT(onAddCondRuleAction()));
     connect(ui->ruleEditWidget,        SIGNAL(teachRule()), SLOT(onTeachRule()));
     connect(ui->ruleEditWidget,        SIGNAL(undoRule()),  SLOT(onUndoRule()));
+    connect(ui->ruleEditWidget,        SIGNAL(ruleEdited()),SLOT(onRuleEdited()));
     connect(ui->ruleEditWidget,        SIGNAL(ruleInputEdited(QString)),
             SLOT(onRuleInputEdited(QString)));
     connect(ui->centralSplitter,       SIGNAL(splitterMoved(int,int)),
@@ -286,7 +252,7 @@ void Lvk::FE::MainWindow::connectSignals()
             SLOT(onSplitterMoved(int,int)));
 
     // Test tab
-    connect(ui->testInputText,         SIGNAL(returnPressed()), SLOT(onTestInputTextEntered()));
+    connect(ui->testInputText,         SIGNAL(testInputEntered()), SLOT(onTestInputTextEntered()));
     connect(ui->testInputText,         SIGNAL(currentItemChanged()), SLOT(onTestTargetChanged()));
     connect(ui->clearTestConvButton,   SIGNAL(clicked()),       SLOT(onClearTestConvPressed()));
     connect(ui->showRuleDefButton,     SIGNAL(clicked()),       SLOT(onTestShowRule()));
@@ -351,6 +317,7 @@ void Lvk::FE::MainWindow::selectFirstRule()
 bool Lvk::FE::MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
+    case QEvent::Show:
     case QEvent::WindowStateChange:
     case QEvent::Resize:
     case QEvent::WindowActivate:
@@ -1384,6 +1351,15 @@ void Lvk::FE::MainWindow::onRuleAdded()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::MainWindow::onRuleEdited()
+{
+    m_ruleEdited = true;
+
+    ui->categoriesTree->setDragEnabled(false);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::MainWindow::onTeachRule()
 {
     teachRule(selectedRule());
@@ -1443,8 +1419,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     rule->setInput(ui->ruleEditWidget->input());
     rule->setOutput(ui->ruleEditWidget->output());
 
-    m_ruleEdited = false;
-    m_ruleAdded = false;
+    ruleEditFinished();
 
     m_appFacade->refreshNlpEngine();
     m_appFacade->save();
@@ -1474,8 +1449,26 @@ void Lvk::FE::MainWindow::undoRule(BE::Rule *rule)
                                  Qt::EditRole);
     }
 
+    ruleEditFinished();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::ruleEditFinished()
+{
     m_ruleAdded = false;
     m_ruleEdited = false;
+    ui->categoriesTree->setDragEnabled(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onRuleDropFinished(bool accepted)
+{
+    if (accepted) {
+        qDebug() << "Rule drop accepted, refreshing NLP engine...";
+        m_appFacade->refreshNlpEngine();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1699,6 +1692,10 @@ void Lvk::FE::MainWindow::onCurrentTabChanged(QWidget *tab)
         connect(ui->mainTabWidget, SIGNAL(currentChanged(QWidget*)),
                 SLOT(onCurrentTabChanged(QWidget*)));
     }
+
+    if (tab == ui->testTab) {
+        ui->testInputText->setFocus();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1721,9 +1718,15 @@ void Lvk::FE::MainWindow::updateScore()
 
 void Lvk::FE::MainWindow::updateTinyScorePos()
 {
+#ifdef DA_CONTEST
+    if (!m_tinyScore->isVisible()) {
+        m_tinyScore->setVisible(true);
+    }
+
     if (m_tinyScore) {
         m_tinyScore->move(ui->mainTabWidget->width() - m_tinyScore->width() - 5, -2);
     }
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------

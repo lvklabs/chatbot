@@ -13,7 +13,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    DRAG_AND_DROP_DISABLED  # Drag and drop not working
+    #DRAG_AND_DROP_DISABLED
 
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
@@ -105,8 +105,10 @@ INCLUDEPATH += \
 
 HEADERS += \
     $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
+    main/windowbootstrap.h \
     front-end/mainwindow.h \
     front-end/ruletreemodel.h \
+    front-end/ruletreeview.h \
     front-end/ruleoutputwidget.h \
     front-end/ruleinputwidget.h \
     front-end/testconversationwidget.h \
@@ -208,9 +210,10 @@ HEADERS += \
 
 SOURCES += \
     $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
-    main.cpp \
+    main/main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
+    front-end/ruletreeview.cpp \
     front-end/ruleoutputwidget.cpp \
     front-end/ruleinputwidget.cpp \
     front-end/testconversationwidget.cpp \

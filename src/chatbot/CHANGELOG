@@ -1,3 +1,13 @@
+v1.4
+ - Added support to drag & drop rules and categories
+ - Added support to open a chatbot file by command line
+ - Added several shortcuts to switch tabs, add rules, etc.
+ - Allowing to copy hash signature in the update dialog.
+ - Fixed bugs: github#27, github#18
+
+v1.3
+ - Fixed bug: github#26
+
 v1.2
  - Fixed bugs: github#11, github#22, github#24, github#25
  - Added support for nested "if" conditionals

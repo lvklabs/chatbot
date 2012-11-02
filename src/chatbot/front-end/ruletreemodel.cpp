@@ -26,6 +26,10 @@
 #include <QMimeData>
 #include <QDataStream>
 #include <QtDebug>
+#include <QEvent>
+#include <QDropEvent>
+
+#define MIME_RULE_DATA  "rule_data"
 
 
 //--------------------------------------------------------------------------------------------------
@@ -33,7 +37,10 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleTreeModel::RuleTreeModel(BE::Rule *rootRule, QObject *parent)
-    : QAbstractItemModel(parent), m_rootRule(rootRule), m_isUserCheckable(false)
+    : QAbstractItemModel(parent),
+      m_rootRule(rootRule),
+      m_isUserCheckable(false),
+      m_dropAccepted(false)
 {
 }
 
@@ -196,16 +203,23 @@ Qt::ItemFlags Lvk::FE::RuleTreeModel::flags(const QModelIndex &index) const
         return 0;
     }
 
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/;
+
+    if (m_isUserCheckable) {
+        flags |= Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
+    }
+
 #ifndef DRAG_AND_DROP_DISABLED
+    flags |= Qt::ItemIsDragEnabled;
+
     const BE::Rule *item = itemFromIndex(index);
+
+    if (item->type() == BE::Rule::ContainerRule || item == m_rootRule) {
+        flags |= Qt::ItemIsDropEnabled;
+    }
 #endif
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/
-#ifndef DRAG_AND_DROP_DISABLED
-            | (item->type() == BE::Rule::OrdinaryRule ? Qt::ItemIsDragEnabled : Qt::NoItemFlags)
-            | (item->type() == BE::Rule::ContainerRule ? Qt::ItemIsDropEnabled : Qt::NoItemFlags)
-#endif
-            | (m_isUserCheckable ? Qt::ItemIsUserCheckable | Qt::ItemIsTristate : Qt::NoItemFlags);
+    return flags;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -501,9 +515,120 @@ void Lvk::FE::RuleTreeModel::setCheckState(BE::Rule *item, Qt::CheckState state)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData */*data*/, Qt::DropAction /*action*/,
-                                          int /*row*/, int /*column*/, const QModelIndex&/*parent*/)
+bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                          int row, int col, const QModelIndex& parent)
 {
-    return false;
+    qDebug() << "RuleTreeModel: dropped data at " << row << col << parent.row();
+
+    bool dropAccepted = false;
+
+    try {
+        if (!data) {
+            throw QString("RuleTreeModel: dropped null data");
+        }
+
+        QByteArray ruleData = data->data(MIME_RULE_DATA);
+
+        if (ruleData.isNull()) {
+            throw QString("RuleTreeModel: dropped null rule data");
+        }
+
+        QDataStream ds(ruleData);
+
+        int ruleType;
+        ds >> ruleType;
+
+        BE::Rule *parentItem = itemFromIndex(parent);
+
+        // Ordinary items cannot be dropped on the root rule
+        if (ruleType == BE::Rule::OrdinaryRule && parentItem == m_rootRule) {
+            throw QString("RuleTreeModel: Drop not allowed type #1");
+        }
+
+        // Container and evasives can only be dropped on the root rule
+        if (ruleType != BE::Rule::OrdinaryRule && parentItem != m_rootRule) {
+            throw QString("RuleTreeModel: Drop not allowed type #2");
+        }
+
+        // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
+        // custom data to the proper item
+        QAbstractItemModel::dropMimeData(data, action, row, col, parent);
+
+        BE::Rule *destItem = 0;
+
+        // When row and column are -1 it means that it is up to the model to decide where to place
+        // the data. In a tree this occur when data is dropped on a parent. By default trees
+        // will append the data to the parent
+        if (row == -1 && col == -1) {
+            if (parentItem && parentItem->childCount() > 0) {
+                destItem = parentItem->child(parentItem->childCount() - 1);
+            }
+        } else {
+            destItem = itemFromIndex(index(row, col, parent));
+        }
+
+        if (destItem) {
+            ds >> *destItem;
+
+            dropAccepted = (ds.status() == QDataStream::Ok);
+        }
+
+        qDebug() << "RuleTreeModel: dropped data handled with status" << dropAccepted;
+    } catch (QString &err) {
+        qDebug() << err;
+    }
+
+    m_dropAccepted = dropAccepted;
+
+    emit dropFinished(dropAccepted);
+
+    return dropAccepted;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+QMimeData * Lvk::FE::RuleTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *data = QAbstractItemModel::mimeData(indexes);
+
+    if (!indexes.isEmpty()) {
+
+        if (!data) {
+            data = new QMimeData(); // CHECK Who deletes this data?
+        }
+
+        // We only support one item
+        if (indexes.size() > 1) {
+            qWarning("RuleTreeModel: Dragging two or more items is not supported!");
+        }
+
+        QModelIndex index = indexes.first();
+
+        qDebug() << "RuleTreeModel: dragging item " << index.row() << index.column()
+                 << index.parent().row();
+
+        const BE::Rule *item = itemFromIndex(index);
+
+        if (item) {
+            QByteArray ruleData;
+
+            {
+                QDataStream ds(&ruleData, QIODevice::WriteOnly);
+                ds << static_cast<int>(item->type());
+                ds << *item;
+            }
+
+            data->setData(MIME_RULE_DATA, ruleData);
+        }
+    }
+
+    return data;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+// FIXME Workaround for Qt Bug. See RuleTreeView::dropEvent()
+bool Lvk::FE::RuleTreeModel::dropAccepted()
+{
+    return m_dropAccepted;
+}
