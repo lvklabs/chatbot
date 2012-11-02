@@ -77,6 +77,7 @@ private:
     static void msgHandler(QtMsgType type, const char *msg);
 
     static QFile *m_logFile;
+    static QString m_strPid;
 };
 
 /// @}
