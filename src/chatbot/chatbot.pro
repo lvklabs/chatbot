@@ -108,6 +108,7 @@ HEADERS += \
     main/windowbootstrap.h \
     front-end/mainwindow.h \
     front-end/ruletreemodel.h \
+    front-end/ruletreeview.h \
     front-end/ruleoutputwidget.h \
     front-end/ruleinputwidget.h \
     front-end/testconversationwidget.h \
@@ -208,6 +209,7 @@ SOURCES += \
     main/main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
+    front-end/ruletreeview.cpp \
     front-end/ruleoutputwidget.cpp \
     front-end/ruleinputwidget.cpp \
     front-end/testconversationwidget.cpp \

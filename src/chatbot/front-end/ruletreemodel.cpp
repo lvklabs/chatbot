@@ -26,6 +26,8 @@
 #include <QMimeData>
 #include <QDataStream>
 #include <QtDebug>
+#include <QEvent>
+#include <QDropEvent>
 
 #define MIME_RULE_DATA  "rule_data"
 
@@ -35,7 +37,10 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleTreeModel::RuleTreeModel(BE::Rule *rootRule, QObject *parent)
-    : QAbstractItemModel(parent), m_rootRule(rootRule), m_isUserCheckable(false)
+    : QAbstractItemModel(parent),
+      m_rootRule(rootRule),
+      m_isUserCheckable(false),
+      m_dropAccepted(false)
 {
 }
 
@@ -515,67 +520,69 @@ bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction 
 {
     qDebug() << "RuleTreeModel: dropped data at " << row << col << parent.row();
 
-    if (!data) {
-        qDebug() << "RuleTreeModel: dropped null data";
-        return false;
-    }
+    bool dropAccepted = false;
 
-    QByteArray ruleData = data->data(MIME_RULE_DATA);
-
-    if (ruleData.isNull()) {
-        qDebug() << "RuleTreeModel: dropped null rule data";
-        return false;
-    }
-
-    QDataStream ds(ruleData);
-
-    int ruleType;
-    ds >> ruleType;
-
-    BE::Rule *parentItem = itemFromIndex(parent);
-
-    // Ordinary items cannot be dropped on the root rule
-    if (ruleType == BE::Rule::OrdinaryRule && parentItem == m_rootRule) {
-        qDebug() << "RuleTreeModel: Drop not allowed 1";
-        return false;
-    }
-
-    // Container and evasives can only be dropped on the
-    if (ruleType != BE::Rule::OrdinaryRule && parentItem != m_rootRule) {
-        qDebug() << "RuleTreeModel: Drop not allowed 2";
-        return false;
-    }
-
-    // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
-    // custom data to the proper item
-    QAbstractItemModel::dropMimeData(data, action, row, col, parent);
-
-    BE::Rule *destItem = 0;
-
-    // When row and column are -1 it means that it is up to the model to decide where to place
-    // the data. In a tree this occur when data is dropped on a parent. By default trees
-    // will append the data to the parent
-    if (row == -1 && col == -1) {
-        if (parentItem && parentItem->childCount() > 0) {
-            destItem = parentItem->child(parentItem->childCount() - 1);
+    try {
+        if (!data) {
+            throw QString("RuleTreeModel: dropped null data");
         }
-    } else {
-        destItem = itemFromIndex(index(row, col, parent));
+
+        QByteArray ruleData = data->data(MIME_RULE_DATA);
+
+        if (ruleData.isNull()) {
+            throw QString("RuleTreeModel: dropped null rule data");
+        }
+
+        QDataStream ds(ruleData);
+
+        int ruleType;
+        ds >> ruleType;
+
+        BE::Rule *parentItem = itemFromIndex(parent);
+
+        // Ordinary items cannot be dropped on the root rule
+        if (ruleType == BE::Rule::OrdinaryRule && parentItem == m_rootRule) {
+            throw QString("RuleTreeModel: Drop not allowed type #1");
+        }
+
+        // Container and evasives can only be dropped on the root rule
+        if (ruleType != BE::Rule::OrdinaryRule && parentItem != m_rootRule) {
+            throw QString("RuleTreeModel: Drop not allowed type #2");
+        }
+
+        // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
+        // custom data to the proper item
+        QAbstractItemModel::dropMimeData(data, action, row, col, parent);
+
+        BE::Rule *destItem = 0;
+
+        // When row and column are -1 it means that it is up to the model to decide where to place
+        // the data. In a tree this occur when data is dropped on a parent. By default trees
+        // will append the data to the parent
+        if (row == -1 && col == -1) {
+            if (parentItem && parentItem->childCount() > 0) {
+                destItem = parentItem->child(parentItem->childCount() - 1);
+            }
+        } else {
+            destItem = itemFromIndex(index(row, col, parent));
+        }
+
+        if (destItem) {
+            ds >> *destItem;
+
+            dropAccepted = (ds.status() == QDataStream::Ok);
+        }
+
+        qDebug() << "RuleTreeModel: dropped data handled with status" << dropAccepted;
+    } catch (QString &err) {
+        qDebug() << err;
     }
 
-    bool dropOk = false;
+    m_dropAccepted = dropAccepted;
 
-    if (destItem) {
-        ds >> *destItem;
+    emit dropFinished(dropAccepted);
 
-        dropOk = (ds.status() == QDataStream::Ok);
-    }
-
-    qDebug() << "RuleTreeModel: dropped data handled with status" << dropOk;
-
-    emit dropFinished(dropOk);
-
-    return dropOk;
+    return dropAccepted;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -618,3 +625,10 @@ QMimeData * Lvk::FE::RuleTreeModel::mimeData(const QModelIndexList &indexes) con
     return data;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+// FIXME Workaround for Qt Bug. See RuleTreeView::dropEvent()
+bool Lvk::FE::RuleTreeModel::dropAccepted()
+{
+    return m_dropAccepted;
+}

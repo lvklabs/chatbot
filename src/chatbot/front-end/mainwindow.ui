@@ -246,7 +246,7 @@
            <widget class="QWidget" name="verticalLayoutWidget">
             <layout class="QVBoxLayout" name="categoryTreeLayout">
              <item>
-              <widget class="QTreeView" name="categoriesTree">
+              <widget class="Lvk::FE::RuleTreeView" name="categoriesTree">
                <property name="mouseTracking">
                 <bool>true</bool>
                </property>
@@ -1396,7 +1396,7 @@ Please insert your username and password and press &quot;Verify account&quot; bu
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>27</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">
@@ -1552,6 +1552,11 @@ Please insert your username and password and press &quot;Verify account&quot; bu
    <class>Lvk::FE::TestInputText</class>
    <extends>QLineEdit</extends>
    <header>front-end/testinputtext.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::RuleTreeView</class>
+   <extends>QTreeView</extends>
+   <header>front-end/ruletreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

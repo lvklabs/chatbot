@@ -215,10 +215,11 @@ public:
      */
     bool isUserCheckable();
 
-    void notifyDataAboutToChange(); // FIXME refactor to remove this!
+    void notifyDataAboutToChange(); // TODO refactor to remove this!
 
-    void notifyDataChanged();  // FIXME refactor to remove this!
+    void notifyDataChanged();  // TODO refactor to remove this!
 
+    bool dropAccepted(); // FIXME Workaround for Qt Bug. See RuleTreeView::dropEvent()
 
 signals:
 
@@ -251,6 +252,7 @@ private:
 
     BE::Rule *m_rootRule;
     bool m_isUserCheckable;
+    bool m_dropAccepted;
 };
 
 /// @}
