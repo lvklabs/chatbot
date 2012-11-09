@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -409,7 +409,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add category (Ctrl+Shift+A)</string>
+              <string>Add category (Ctrl+E)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -422,7 +422,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+Shift+A</string>
+              <string>Ctrl+E</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
@@ -437,7 +437,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add rule (Ctrl+A)</string>
+              <string>Add rule (Ctrl+R)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -450,7 +450,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+A</string>
+              <string>Ctrl+R</string>
              </property>
              <property name="popupMode">
               <enum>QToolButton::MenuButtonPopup</enum>
@@ -468,7 +468,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Remove rule or category (Ctrl+R)</string>
+              <string>Remove rule or category (Ctrl+D)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -481,7 +481,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+R</string>
+              <string>Ctrl+D</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
