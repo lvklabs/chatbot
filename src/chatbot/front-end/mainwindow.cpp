@@ -197,7 +197,9 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     ui->categoriesTree->setModel(m_ruleTreeModel);
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
-    connect(m_ruleTreeModel, SIGNAL(dropFinished(bool)), SLOT(onRuleDropFinished(bool)));
+    connect(m_ruleTreeModel,
+            SIGNAL(rowsRemoved(QModelIndex, int, int)),
+            SLOT(onRulesRemoved(QModelIndex, int, int)));
 
     connect(m_ruleTreeSelectionModel,
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -1084,10 +1086,7 @@ bool Lvk::FE::MainWindow::removeSelectedRuleWithDialog()
        if (msg.exec() == QMessageBox::Yes) {
             removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
 
-            if (removed) {
-                m_appFacade->refreshNlpEngine();
-                updateScore();
-            } else {
+            if (!removed) {
                 dialogTitle = tr("Internal error");
                 dialogText = tr("The rule/category could not be removed because of an internal"
                                 " error");
@@ -1550,12 +1549,16 @@ void Lvk::FE::MainWindow::ruleEditFinished()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleDropFinished(bool accepted)
+void Lvk::FE::MainWindow::onRulesRemoved(const QModelIndex &parent, int first, int last)
 {
-    if (accepted) {
-        qDebug() << "Rule drop accepted, refreshing NLP engine...";
-        m_appFacade->refreshNlpEngine();
-    }
+    // This slot is called when the user removes a rule or when there was a drag & drop action
+    qDebug() << "MainWindow: Rows removed:" << parent.row() << first << last;
+    qDebug() << "MainWindow: Refreshing NLP engine...";
+
+    m_appFacade->refreshNlpEngine();
+
+    updateScore();
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2075,5 +2078,6 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
+
 
 

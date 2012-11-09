@@ -221,14 +221,6 @@ public:
 
     bool dropAccepted(); // FIXME Workaround for Qt Bug. See RuleTreeView::dropEvent()
 
-signals:
-
-    /**
-     * This signal is emited whenever a drag and drop operation finishes. \a accepted is true
-     * if the drop operation was accepted, otherwise \a is false.
-     */
-    void dropFinished(bool accepted);
-
 protected:
 
     QMimeData * mimeData(const QModelIndexList & indexes) const;

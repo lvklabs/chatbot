@@ -240,7 +240,7 @@ private slots:
     void onRuleAdded();
     void onRuleEdited();
     void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-    void onRuleDropFinished(bool accepted);
+    void onRulesRemoved(const QModelIndex &parent, int first, int last);
 
     void onTeachButtonPressed();
     void onUndoButtonPressed();

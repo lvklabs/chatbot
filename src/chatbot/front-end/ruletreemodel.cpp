@@ -552,7 +552,9 @@ bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction 
 
         // QAbstractItemModel::dropMimeData will do most of the work, we just need to add our
         // custom data to the proper item
-        QAbstractItemModel::dropMimeData(data, action, row, col, parent);
+        if (!QAbstractItemModel::dropMimeData(data, action, row, col, parent)) {
+            throw QString("RuleTreeModel: QAbstractItemModel::dropMimeData failed");
+        }
 
         BE::Rule *destItem = 0;
 
@@ -579,8 +581,6 @@ bool Lvk::FE::RuleTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction 
     }
 
     m_dropAccepted = dropAccepted;
-
-    emit dropFinished(dropAccepted);
 
     return dropAccepted;
 }

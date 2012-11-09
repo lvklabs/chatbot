@@ -215,6 +215,9 @@ void Lvk::Nlp::HybridEngine::convert(Nlp::RuleList &newRules, const Nlp::RuleLis
 
 void Lvk::Nlp::HybridEngine::convertToAiml(Nlp::Rule &newRule, const Nlp::Rule &rule)
 {
+    qDebug() << "HybridEngine: Converting to AIML rule:" << rule.id() << rule.topic()
+             << rule.target() << rule.input() << rule.output();
+
     ConvertionContext ctx;
     ctx.inputIdx = 0;
     ctx.rule = rule;
