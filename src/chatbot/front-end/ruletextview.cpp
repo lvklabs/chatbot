@@ -84,8 +84,10 @@ inline QString ruleToHtml(const Lvk::BE::Rule *rule, int n)
     if (!rule) {
         return "";
     } else if (rule->type() == Lvk::BE::Rule::OrdinaryRule) {
-        return QString(QObject::tr("<b>If user writes:</b><br/>%1<br/><br/>"
-                                   "<b>Chatbot replies:</b><br/>%2"))
+        return QString(QObject::tr("<b>Category:</b><br/>%1<br/><br/>"
+                                   "<b>If user writes:</b><br/>%2<br/>"
+                                   "<b>Chatbot replies:</b><br/>%3"))
+                .arg(SEP_1 + (rule->parent() ? rule->parent()->name() : ""))
                 .arg(hljoin(rule->input(), n))
                 .arg(hljoin(rule->output(), -1)); // TODO highlight output
     } else if (rule->type() == Lvk::BE::Rule::ContainerRule) {
