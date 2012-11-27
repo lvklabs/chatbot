@@ -30,6 +30,7 @@
 #include "front-end/filedialog.h"
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
+#include "front-end/uploaderprogressdialog.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -40,6 +41,7 @@
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
 #include "da-server/updater.h"
+#include "da-server/contestdatauploader.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -2018,11 +2020,10 @@ void Lvk::FE::MainWindow::onUploadScore()
         QMessageBox::critical(this, title, message);
     } else {
         Stats::Score best = m_appFacade->bestScore();
-        const BE::Rule *root = m_appFacade->rootRule();
 
-        if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
+        if (FE::SendScoreDialog(best, m_filename, this).exec() == QDialog::Accepted) {
             UpdateExecutor::exec(this, &MainWindow::uploadBlockedForUpdate,
-                                 &MainWindow::uploadScore, &UpdateExecutor::isCritical);
+                                 &MainWindow::uploadContestData, &UpdateExecutor::isCritical);
         }
     }
 }
@@ -2049,18 +2050,13 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::uploadScore()
+void Lvk::FE::MainWindow::uploadContestData()
 {
-    if (!m_appFacade->uploadBestScore()) {
-        QString title = tr("Upload score");
-        QString message = tr("Could not upload score. Please, check your internet "
-                             "connection and try again");
-        QMessageBox::critical(this, title, message);
-    } else {
-        QString title = tr("Upload score");
-        QString message = tr("Score uploaded successfully!");
-        QMessageBox::information(this, title, message);
-    }
+    Lvk::FE::UploaderProgressDialog dialog(m_filename, m_appFacade->username(), this);
+
+    int rc = dialog.exec();
+
+    qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2078,6 +2074,7 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
+
 
 
 

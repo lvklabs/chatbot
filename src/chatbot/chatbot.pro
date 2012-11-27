@@ -63,6 +63,7 @@ HEADERS += \
     front-end/newupdatedialog.h \
     front-end/updateexecutor.h \
     front-end/testinputtext.h \
+    front-end/uploaderprogressdialog.h \
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -134,6 +135,7 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
+    da-server/contestdatauploader.h \
 
 
 SOURCES += \
@@ -161,6 +163,7 @@ SOURCES += \
     front-end/sendscoredialog.cpp \
     front-end/newupdatedialog.cpp \
     front-end/testinputtext.cpp \
+    front-end/uploaderprogressdialog.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -202,6 +205,7 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
+    da-server/contestdatauploader.cpp \
 
 
 FORMS += \
@@ -281,6 +285,8 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+
 
 
 

@@ -3,11 +3,6 @@
 CONFIG  += gelf_stats openssl qssh
 DEFINES += DA_CONTEST
 INCLUDEPATH +=
-HEADERS += \
-    da-server/sftpuploader.h \
-    da-server/fileuploader.h
-SOURCES += \
-    da-server/sftpuploader.cpp
 LIBS +=
 
 unix:!mac{
@@ -55,6 +50,9 @@ qssh {
     SOURCES +=
     LIBS += -L$$QSSH_LIB_PATH $$QSSH_LIBS
 }
+
+
+
 
 
 

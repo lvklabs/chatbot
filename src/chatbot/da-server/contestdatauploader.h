@@ -19,12 +19,11 @@
  *
  */
 
-#ifndef LVK_DAS_SFTPUPLOADER_H
-#define LVK_DAS_SFTPUPLOADER_H
+#ifndef LVK_DAS_CONTESTDATAUPLOADER_H
+#define LVK_DAS_CONTESTDATAUPLOADER_H
 
 #include <QObject>
 
-#include "fileuploader.h"
 #include "qssh/sftpchannel.h"
 #include "qssh/sshconnection.h"
 
@@ -44,30 +43,45 @@ namespace DAS
 /// @{
 
 /**
- * \brief The SftpUploader class provides an SFTP file uploader
+ * \brief The ContestDataUploader class provides an SFTP file uploader
  */
-class SftpUploader : public FileUploader
+class ContestDataUploader : public QObject
 {
     Q_OBJECT
 
 public:
 
     /**
-     * Constructs a SftpUploader object
+     * Constructs a ContestDataUploader object
      */
-    SftpUploader();
+    ContestDataUploader();
 
     /**
      * Destroys the object and closes any connection
      */
-    ~SftpUploader();
+    ~ContestDataUploader();
 
     /**
      * \copydoc FileUploader::upload
      */
     virtual void upload(const QString &filename, const QString &username);
 
+
+    enum Status
+    {
+        Success,
+        ConnectionError,
+        ChannelError,
+        SecureLogError,
+        UploadInProgressError
+    };
+
 signals:
+
+    /**
+     * This signal is emitted whenever the upload has finished. If the upload was success
+     */
+    void finished(DAS::ContestDataUploader::Status status);
 
 private slots:
     void onConnected();
@@ -87,6 +101,7 @@ private:
     void initFilenames(const QString &filename, const QString &username);
     void getConnectionParams(QSsh::SshConnectionParameters &params);
     void parseDestination(const QString &dest);
+    void finish(Status status);
     void close();
 };
 
@@ -99,4 +114,4 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_DAS_SFTPUPLOADER_H
+#endif // LVK_DAS_CONTESTDATAUPLOADER_H

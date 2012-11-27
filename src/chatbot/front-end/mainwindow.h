@@ -214,7 +214,7 @@ private:
 
     void connectChatbot();
     void connectBlockedForUpdate(const DAS::UpdateInfo &info);
-    void uploadScore();
+    void uploadContestData();
 
     void updateScore();
     void uploadBlockedForUpdate(const DAS::UpdateInfo &info);
