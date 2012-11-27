@@ -1,4 +1,4 @@
-CHATBOT
+Chatbot
 =======
 
 Chatbot is an open source platform for high-school students. 
@@ -11,7 +11,7 @@ between industrial, scientific and technological spheres.
 
 To compile the application see:  
 
- - src/chatbot/README
+ * src/chatbot/README
 
 Directory structure:
 
