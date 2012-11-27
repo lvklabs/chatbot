@@ -19,10 +19,13 @@
  *
  */
 
-#ifndef LVK_CRYPTO_KEYMANAGER_H
-#define LVK_CRYPTO_KEYMANAGER_H
+#ifndef LVK_DAS_FILEUPLOADER_H
+#define LVK_DAS_FILEUPLOADER_H
 
-#include <QByteArray>
+#include <QObject>
+
+class QString;
+
 
 namespace Lvk
 {
@@ -30,57 +33,40 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Crypto
+namespace DAS
 {
 
 /// \ingroup Lvk
-/// \addtogroup Crypto
+/// \addtogroup DAS
 /// @{
 
 /**
- * \brief The KeyManager class provides access to the cryptographic keys required by the
- *        application
+ * \brief The FileUploader class provides the interface for all file uploaders.
+ *
+ * File uploaders are used to send files the the 'Dale Aceptar' file server
  */
-class KeyManager
+class FileUploader : public QObject
 {
+    Q_OBJECT
+
 public:
 
     /**
-     * Key Roles
+     * Uploads \a filename to the 'Dale Aceptar' file server whose owner is \a username
      */
-    enum Role
-    {
-        DefaultRole,
-        LocalStatsRole,
-        RemoteLoggerRole,
-        AuthServerRole,
-        FileServerRole
-    };
+    virtual void upload(const QString &filename, const QString &username) = 0;
 
-    /**
-     * Destroys the object
-     */
-    virtual ~KeyManager() { }
+signals:
 
-    /**
-     * Returns the key for the given \a role
-     */
-    virtual QByteArray getKey(Role role) = 0;
-
-    /**
-     * Returns the initialization vector for the given \a role
-     */
-    virtual QByteArray getIV(Role role) = 0;
 };
 
 /// @}
 
-} // namespace Crypto
+} // namespace DAS
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CRYPTO_KEYMANAGER_H
-
+#endif // LVK_DAS_FILEUPLOADER_H
