@@ -267,6 +267,11 @@ public:
     void setUsername(const QString &username);
 
     /**
+     * Returns the chatbot ID. The chatbot ID is a unique string for each chatbot file.
+     */
+    QString chatbotId() const;
+
+    /**
      * Connection error
      */
     enum ConnectionError {
@@ -360,11 +365,6 @@ public:
      * Returns the best score for the chatbot
      */
     Stats::Score bestScore();
-
-    /**
-     * Uploads the best score to the server.
-     */
-    bool uploadBestScore();
 
     /**
      * Returns the number of remaining seconds to start a new score interval.

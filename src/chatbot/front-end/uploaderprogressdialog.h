@@ -24,6 +24,7 @@
 
 #include <QProgressDialog>
 
+#include "stats/score.h"
 #include "da-server/contestdatauploader.h"
 
 namespace Lvk
@@ -57,6 +58,7 @@ public:
      * Constructs an UploaderProgressDialog widget which is a child of \a parent.
      */
     explicit UploaderProgressDialog(const QString &filename, const QString &username,
+                                    const QString &chatbotId, const Stats::Score &score,
                                     QWidget *parent = 0);
 
     /**
@@ -78,6 +80,8 @@ private:
     DAS::ContestDataUploader *m_uploader;
     QString m_username;
     QString m_filename;
+    QString m_chatbotId;
+    Stats::Score m_score;
 };
 
 /// @}

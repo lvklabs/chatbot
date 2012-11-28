@@ -21,7 +21,10 @@
 
 #include "da-server/contestdatauploader.h"
 #include "da-server/serverconfig.h"
+#include "da-server/remoteloggerfactory.h"
+#include "da-server/remoteloggerkeys.h"
 #include "crypto/keymanagerfactory.h"
+#include "common/version.h"
 
 #include <QtDebug>
 #include <QFileInfo>
@@ -53,7 +56,8 @@ Lvk::DAS::ContestDataUploader::~ContestDataUploader()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QString &username)
+void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QString &username,
+                                           const QString &chatbotId, const Stats::Score &score)
 {
     QMutexLocker locker(m_mutex);
 
@@ -64,6 +68,9 @@ void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QStrin
     }
 
     m_inProgress = true;
+    m_username = username;
+    m_chatbotId = chatbotId;
+    m_score = score;
 
     initFilenames(filename, username);
 
@@ -183,9 +190,33 @@ void Lvk::DAS::ContestDataUploader::onOpfinished(QSsh::SftpJobId job, const QStr
 
     qDebug() << "ContestDataUploader: Finished job #" << job << ":" << (success ? "Success" : err);
 
-    // TODO log score with encryption
+    if (success) {
+        if (sendScore()) {
+            finish(Success);
+        } else {
+            finish(SecureLogError);
+        }
+    } else {
+        finish(ChannelError);
+    }
+}
 
-    finish(success ? Success : ChannelError);
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::DAS::ContestDataUploader::sendScore()
+{
+    DAS::RemoteLogger::FieldList fields;
+    fields.append(RLOG_KEY_APP_VERSION,    APP_VERSION_STR);
+    fields.append(RLOG_KEY_CHATBOT_ID,     m_chatbotId);
+    fields.append(RLOG_KEY_USER_ID,        m_username);
+    fields.append(RLOG_KEY_RULES_SCORE,    QString::number(m_score.rules));
+    fields.append(RLOG_KEY_CONV_SCORE,     QString::number(m_score.conversations));
+    fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(m_score.contacts));
+    fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(m_score.total));
+
+    std::auto_ptr<DAS::RemoteLogger> secureLogger(DAS::RemoteLoggerFactory().createSecureLogger());
+
+    return secureLogger->log("Manually uploaded score", fields) == 0;
 }
 
 //--------------------------------------------------------------------------------------------------

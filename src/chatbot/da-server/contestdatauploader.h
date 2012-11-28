@@ -24,6 +24,7 @@
 
 #include <QObject>
 
+#include "stats/score.h"
 #include "qssh/sftpchannel.h"
 #include "qssh/sshconnection.h"
 
@@ -64,7 +65,8 @@ public:
     /**
      * \copydoc FileUploader::upload
      */
-    virtual void upload(const QString &filename, const QString &username);
+    virtual void upload(const QString &filename, const QString &username, const QString &chatbotId,
+                        const Stats::Score &score);
 
 
     enum Status
@@ -95,12 +97,16 @@ private:
     bool m_inProgress;
     QString m_localFilename;
     QString m_remoteFilename;
+    QString m_username;
+    QString m_chatbotId;
+    Stats::Score m_score;
     QSsh::SftpChannel::Ptr m_channel;
     QSsh::SshConnection *m_connection;
 
     void initFilenames(const QString &filename, const QString &username);
     void getConnectionParams(QSsh::SshConnectionParameters &params);
     void parseDestination(const QString &dest);
+    bool sendScore();
     void finish(Status status);
     void close();
 };

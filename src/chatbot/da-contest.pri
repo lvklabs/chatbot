@@ -46,8 +46,10 @@ openssl {
 qssh {
     DEFINES += QSSH_SUPPORT
     INCLUDEPATH += $$QSSH_INCLUDE_PATH
-    HEADERS +=
-    SOURCES +=
+    HEADERS += da-server/contestdatauploader.h \
+        front-end/uploaderprogressdialog.h
+    SOURCES += da-server/contestdatauploader.cpp \
+            front-end/uploaderprogressdialog.cpp
     LIBS += -L$$QSSH_LIB_PATH $$QSSH_LIBS
 }
 

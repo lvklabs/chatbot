@@ -413,7 +413,7 @@ Lvk::BE::Rule * Lvk::BE::ChatbotRulesFile::findEvasivesRule()
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::ChatbotRulesFile::chatbotId()
+QString Lvk::BE::ChatbotRulesFile::chatbotId() const
 {
     return m_chatbotId;
 }

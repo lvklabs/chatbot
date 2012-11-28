@@ -30,11 +30,15 @@
 
 Lvk::FE::UploaderProgressDialog::UploaderProgressDialog(const QString &filename,
                                                         const QString &username,
+                                                        const QString &chatbotId,
+                                                        const Stats::Score &score,
                                                         QWidget *parent)
     : QProgressDialog(tr("Uploading..."), tr("Cancel"), 0, 0, parent),
       m_uploader(new DAS::ContestDataUploader()),
       m_username(username),
-      m_filename(filename)
+      m_filename(filename),
+      m_chatbotId(chatbotId),
+      m_score(score)
 {
     connect(m_uploader,
             SIGNAL(finished(DAS::ContestDataUploader::Status)),
@@ -81,6 +85,6 @@ int Lvk::FE::UploaderProgressDialog::exec()
 
 void Lvk::FE::UploaderProgressDialog::startUpload()
 {
-    m_uploader->upload(m_filename, m_username);
+    m_uploader->upload(m_filename, m_username, m_chatbotId, m_score);
 }
 
