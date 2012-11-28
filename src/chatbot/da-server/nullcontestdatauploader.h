@@ -19,10 +19,12 @@
  *
  */
 
-#ifndef LVK_DAS_CONTESTDATAUPLOADER_H
-#define LVK_DAS_CONTESTDATAUPLOADER_H
+#ifndef LVK_DAS_NULLCONTESTDATAUPLOADER_H
+#define LVK_DAS_NULLCONTESTDATAUPLOADER_H
 
 #include <QObject>
+
+#include "da-server/contestdatauploader.h"
 
 namespace Lvk
 {
@@ -40,40 +42,18 @@ struct ContestData;
 /// @{
 
 /**
- * \brief The ContestDataUploader class provides the interface for contest data uploaders
+ * \brief The NullContestDataUploader class provides an uploader that does nothing
  */
-class ContestDataUploader : public QObject
+class NullContestDataUploader : public ContestDataUploader
 {
     Q_OBJECT
 
 public:
 
     /**
-     * Uploads \a data to the 'Data Aceptar' server. Emits finished() when the upload
-     * finishes
+     * \copydoc ContestDataUploader::upload()
      */
-    virtual void upload(const ContestData &data) = 0;
-
-
-    /**
-     * Upload status
-     */
-    enum Status
-    {
-        Success,
-        ConnectionError,
-        ChannelError,
-        SecureLogError,
-        UploadInProgressError
-    };
-
-signals:
-
-    /**
-     * This signal is emitted whenever the upload has finished
-     */
-    void finished(DAS::ContestDataUploader::Status status);
-
+    virtual void upload(const ContestData &/*data*/) { }
 };
 
 /// @}
@@ -85,4 +65,4 @@ signals:
 } // namespace Lvk
 
 
-#endif // LVK_DAS_CONTESTDATAUPLOADER_H
+#endif // LVK_DAS_NULLCONTESTDATAUPLOADER_H

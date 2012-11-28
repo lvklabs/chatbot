@@ -42,7 +42,7 @@ namespace FE
 
 /**
  * \brief The UploaderProgressDialog class provides a progress dialog that invokes a
- * ContestDataUploader.
+ * SftpContestDataUploader.
  *
  * Calling exec() starts the upload and the progress dialog is displayed while the
  * upload is in progress. Once finished the dialog is closed and exec() returns zero if the

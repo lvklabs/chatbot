@@ -19,7 +19,7 @@
  *
  */
 
-#include "da-server/contestdatauploader.h"
+#include "da-server/sftpcontestdatauploader.h"
 #include "da-server/serverconfig.h"
 #include "da-server/remoteloggerfactory.h"
 #include "da-server/remoteloggerkeys.h"
@@ -35,19 +35,19 @@
 
 
 //--------------------------------------------------------------------------------------------------
-// ContestDataUploader
+// SftpContestDataUploader
 //--------------------------------------------------------------------------------------------------
 
-Lvk::DAS::ContestDataUploader::ContestDataUploader()
+Lvk::DAS::SftpContestDataUploader::SftpContestDataUploader()
     : m_mutex(new QMutex(QMutex::Recursive)), m_inProgress(false), m_connection(0)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::DAS::ContestDataUploader::~ContestDataUploader()
+Lvk::DAS::SftpContestDataUploader::~SftpContestDataUploader()
 {
-    qDebug() << "ContestDataUploader: destroyed";
+    qDebug() << "SftpContestDataUploader: destroyed";
 
     close();
 
@@ -56,7 +56,7 @@ Lvk::DAS::ContestDataUploader::~ContestDataUploader()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::upload(const DAS::ContestData &data)
+void Lvk::DAS::SftpContestDataUploader::upload(const DAS::ContestData &data)
 {
     QMutexLocker locker(m_mutex);
 
@@ -79,14 +79,14 @@ void Lvk::DAS::ContestDataUploader::upload(const DAS::ContestData &data)
     connect(m_connection, SIGNAL(connected()), SLOT(onConnected()));
     connect(m_connection, SIGNAL(error(QSsh::SshError)), SLOT(onConnectionError(QSsh::SshError)));
 
-    qDebug() << "ContestDataUploader: Connecting to host...";
+    qDebug() << "SftpContestDataUploader: Connecting to host...";
 
     m_connection->connectToHost();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::initFilenames()
+void Lvk::DAS::SftpContestDataUploader::initFilenames()
 {
     QFileInfo info(m_data.filename);
 
@@ -99,7 +99,7 @@ void Lvk::DAS::ContestDataUploader::initFilenames()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::getConnectionParams(QSsh::SshConnectionParameters &params)
+void Lvk::DAS::SftpContestDataUploader::getConnectionParams(QSsh::SshConnectionParameters &params)
 {
     std::auto_ptr<Crypto::KeyManager> keyMgr(Crypto::KeyManagerFactory().create());
     QString passwd = QString::fromUtf8(keyMgr->getKey(Crypto::KeyManager::FileServerRole));
@@ -114,10 +114,10 @@ void Lvk::DAS::ContestDataUploader::getConnectionParams(QSsh::SshConnectionParam
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::onConnected()
+void Lvk::DAS::SftpContestDataUploader::onConnected()
 {
-    qDebug() << "ContestDataUploader: Connected";
-    qDebug() << "ContestDataUploader: Creating SFTP channel...";
+    qDebug() << "SftpContestDataUploader: Connected";
+    qDebug() << "SftpContestDataUploader: Creating SFTP channel...";
 
     QMutexLocker locker(m_mutex);
 
@@ -134,7 +134,7 @@ void Lvk::DAS::ContestDataUploader::onConnected()
         m_channel->initialize();
 
     } else {
-        qDebug() << "ContestDataUploader: Error null channel";
+        qDebug() << "SftpContestDataUploader: Error null channel";
 
         finish(ConnectionError);
     }
@@ -142,19 +142,19 @@ void Lvk::DAS::ContestDataUploader::onConnected()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::onConnectionError(QSsh::SshError err)
+void Lvk::DAS::SftpContestDataUploader::onConnectionError(QSsh::SshError err)
 {
-    qDebug() << "ContestDataUploader: Connection error" << err;
+    qDebug() << "SftpContestDataUploader: Connection error" << err;
 
     finish(ConnectionError);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::onChannelInitialized()
+void Lvk::DAS::SftpContestDataUploader::onChannelInitialized()
 {
-    qDebug() << "ContestDataUploader: Channel Initialized";
-    qDebug() << "ContestDataUploader: Uploading" << m_localFilename << "->" << m_remoteFilename;
+    qDebug() << "SftpContestDataUploader: Channel Initialized";
+    qDebug() << "SftpContestDataUploader: Uploading" << m_localFilename << "->" << m_remoteFilename;
 
     QMutexLocker locker(m_mutex);
 
@@ -162,9 +162,9 @@ void Lvk::DAS::ContestDataUploader::onChannelInitialized()
                                                 QSsh::SftpOverwriteExisting);
 
     if (job != QSsh::SftpInvalidJob) {
-        qDebug() << "ContestDataUploader: Started job #" << job;
+        qDebug() << "SftpContestDataUploader: Started job #" << job;
     } else {
-        qDebug() << "ContestDataUploader: Invalid Job";
+        qDebug() << "SftpContestDataUploader: Invalid Job";
 
         finish(ChannelError);
     }
@@ -172,20 +172,20 @@ void Lvk::DAS::ContestDataUploader::onChannelInitialized()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::onChannelError(const QString &err)
+void Lvk::DAS::SftpContestDataUploader::onChannelError(const QString &err)
 {
-    qDebug() << "ContestDataUploader: Error: " << err;
+    qDebug() << "SftpContestDataUploader: Error: " << err;
 
     finish(ChannelError);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::onOpfinished(QSsh::SftpJobId job, const QString &err)
+void Lvk::DAS::SftpContestDataUploader::onOpfinished(QSsh::SftpJobId job, const QString &err)
 {
     bool success = err.isEmpty();
 
-    qDebug() << "ContestDataUploader: Finished job #" << job << ":" << (success ? "Success" : err);
+    qDebug() << "SftpContestDataUploader: Finished job #" << job << ":" << (success ? "Success" : err);
 
     if (success) {
         if (sendScore()) {
@@ -200,7 +200,7 @@ void Lvk::DAS::ContestDataUploader::onOpfinished(QSsh::SftpJobId job, const QStr
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::DAS::ContestDataUploader::sendScore()
+bool Lvk::DAS::SftpContestDataUploader::sendScore()
 {
     DAS::RemoteLogger::FieldList fields;
     fields.append(RLOG_KEY_APP_VERSION,    APP_VERSION_STR);
@@ -218,7 +218,7 @@ bool Lvk::DAS::ContestDataUploader::sendScore()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::finish(Status status)
+void Lvk::DAS::SftpContestDataUploader::finish(Status status)
 {
     close();
 
@@ -227,11 +227,11 @@ void Lvk::DAS::ContestDataUploader::finish(Status status)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::close()
+void Lvk::DAS::SftpContestDataUploader::close()
 {
     QMutexLocker locker(m_mutex);
 
-    qDebug() << "ContestDataUploader: Closed";
+    qDebug() << "SftpContestDataUploader: Closed";
 
     if (m_inProgress) {
         m_inProgress = false;

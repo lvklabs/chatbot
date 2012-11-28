@@ -30,6 +30,7 @@
 #include "front-end/filedialog.h"
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
+#include "front-end/uploaderprogressdialog.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -40,12 +41,8 @@
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
 #include "da-server/updater.h"
+#include "da-server/contestdata.h"
 #include "ui_mainwindow.h"
-
-#ifdef DA_CONTEST
-#  include "front-end/uploaderprogressdialog.h"
-#  include "da-server/contestdata.h"
-#endif
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -2055,7 +2052,6 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
 void Lvk::FE::MainWindow::uploadContestData()
 {
-#ifdef DA_CONTEST
     DAS::ContestData data;
     data.filename = m_filename;
     data.username = m_appFacade->username();
@@ -2067,7 +2063,6 @@ void Lvk::FE::MainWindow::uploadContestData()
     int rc = dialog.exec();
 
     qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
-#endif
 }
 
 //--------------------------------------------------------------------------------------------------

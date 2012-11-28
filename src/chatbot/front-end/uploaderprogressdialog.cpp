@@ -19,7 +19,8 @@
  *
  */
 
-#include "uploaderprogressdialog.h"
+#include "front-end/uploaderprogressdialog.h"
+#include "da-server/datauploaderfactory.h"
 
 #include <QMessageBox>
 #include <QTimer>
@@ -31,7 +32,7 @@
 Lvk::FE::UploaderProgressDialog::UploaderProgressDialog(const DAS::ContestData &data,
                                                         QWidget *parent)
     : QProgressDialog(tr("Uploading..."), tr("Cancel"), 0, 0, parent),
-      m_uploader(new DAS::ContestDataUploader()),
+      m_uploader(DAS::DataUploaderFactory().createUploader()),
       m_data(data)
 {
     connect(m_uploader,
@@ -57,7 +58,7 @@ void Lvk::FE::UploaderProgressDialog::onUploadFinished(DAS::ContestDataUploader:
         QString message = tr("Score uploaded successfully!");
         QMessageBox::information(this, title, message);
     } else {
-        QString title = tr("Upload score");
+        QString title = tr(" Error ") + QString::number(status);
         QString message = tr("Could not upload score. Please, check your internet "
                              "connection and try again");
         QMessageBox::critical(this, title, message);
