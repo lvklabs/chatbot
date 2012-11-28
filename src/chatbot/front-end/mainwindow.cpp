@@ -30,9 +30,6 @@
 #include "front-end/filedialog.h"
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
-#ifdef DA_CONTEST
-#  include "front-end/uploaderprogressdialog.h"
-#endif
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -44,6 +41,11 @@
 #include "common/globalstrings.h"
 #include "da-server/updater.h"
 #include "ui_mainwindow.h"
+
+#ifdef DA_CONTEST
+#  include "front-end/uploaderprogressdialog.h"
+#  include "da-server/contestdata.h"
+#endif
 
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -2054,8 +2056,13 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 void Lvk::FE::MainWindow::uploadContestData()
 {
 #ifdef DA_CONTEST
-    Lvk::FE::UploaderProgressDialog dialog(m_filename, m_appFacade->username(),
-                                           m_appFacade->chatbotId(), m_appFacade->bestScore(), this);
+    DAS::ContestData data;
+    data.filename = m_filename;
+    data.username = m_appFacade->username();
+    data.chatbotId = m_appFacade->chatbotId();
+    data.bestScore = m_appFacade->bestScore();
+
+    FE::UploaderProgressDialog dialog(data, this);
 
     int rc = dialog.exec();
 

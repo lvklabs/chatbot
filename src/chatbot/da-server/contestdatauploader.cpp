@@ -56,8 +56,7 @@ Lvk::DAS::ContestDataUploader::~ContestDataUploader()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QString &username,
-                                           const QString &chatbotId, const Stats::Score &score)
+void Lvk::DAS::ContestDataUploader::upload(const DAS::ContestData &data)
 {
     QMutexLocker locker(m_mutex);
 
@@ -68,11 +67,9 @@ void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QStrin
     }
 
     m_inProgress = true;
-    m_username = username;
-    m_chatbotId = chatbotId;
-    m_score = score;
+    m_data = data;
 
-    initFilenames(filename, username);
+    initFilenames();
 
     QSsh::SshConnectionParameters params;
     getConnectionParams(params);
@@ -89,15 +86,15 @@ void Lvk::DAS::ContestDataUploader::upload(const QString &filename, const QStrin
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::DAS::ContestDataUploader::initFilenames(const QString &filename, const QString &username)
+void Lvk::DAS::ContestDataUploader::initFilenames()
 {
-    QFileInfo info(filename);
+    QFileInfo info(m_data.filename);
 
     m_localFilename = info.canonicalFilePath();
 
-    m_remoteFilename = QString("%1/%2_%3_%4").arg(FILE_SERVER_DEST_PATH,
-                                                  QDateTime::currentDateTime().toString(Qt::ISODate),
-                                                  username, info.fileName());
+    m_remoteFilename = QString("%1/%2_%3_%4")
+            .arg(FILE_SERVER_DEST_PATH, QDateTime::currentDateTime().toString(Qt::ISODate),
+                 m_data.username, info.fileName());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -207,12 +204,12 @@ bool Lvk::DAS::ContestDataUploader::sendScore()
 {
     DAS::RemoteLogger::FieldList fields;
     fields.append(RLOG_KEY_APP_VERSION,    APP_VERSION_STR);
-    fields.append(RLOG_KEY_CHATBOT_ID,     m_chatbotId);
-    fields.append(RLOG_KEY_USER_ID,        m_username);
-    fields.append(RLOG_KEY_RULES_SCORE,    QString::number(m_score.rules));
-    fields.append(RLOG_KEY_CONV_SCORE,     QString::number(m_score.conversations));
-    fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(m_score.contacts));
-    fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(m_score.total));
+    fields.append(RLOG_KEY_CHATBOT_ID,     m_data.chatbotId);
+    fields.append(RLOG_KEY_USER_ID,        m_data.username);
+    fields.append(RLOG_KEY_RULES_SCORE,    QString::number(m_data.bestScore.rules));
+    fields.append(RLOG_KEY_CONV_SCORE,     QString::number(m_data.bestScore.conversations));
+    fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(m_data.bestScore.contacts));
+    fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(m_data.bestScore.total));
 
     std::auto_ptr<DAS::RemoteLogger> secureLogger(DAS::RemoteLoggerFactory().createSecureLogger());
 

@@ -134,6 +134,7 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
+    da-server/contestdata.h
 
 
 SOURCES += \
@@ -201,7 +202,7 @@ SOURCES += \
     da-server/remoteloggerfactory.cpp \
     da-server/rest.cpp \
     da-server/userauth.cpp \
-    da-server/updater.cpp \
+    da-server/updater.cpp
 
 
 FORMS += \
@@ -281,6 +282,7 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
 
 
 
