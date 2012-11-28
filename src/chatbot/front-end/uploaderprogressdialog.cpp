@@ -52,12 +52,15 @@ Lvk::FE::UploaderProgressDialog::~UploaderProgressDialog()
 void Lvk::FE::UploaderProgressDialog::onUploadFinished(DAS::ContestDataUploader::Status status)
 {
     //hide();
+    setRange(0,100);
 
     if (status == DAS::ContestDataUploader::Success) {
+        setValue(100);
         QString title = tr("Upload score");
         QString message = tr("Score uploaded successfully!");
         QMessageBox::information(this, title, message);
     } else {
+        setValue(0);
         QString title = tr(" Error ") + QString::number(status);
         QString message = tr("Could not upload score. Please, check your internet "
                              "connection and try again");
