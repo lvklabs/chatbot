@@ -58,6 +58,7 @@ void Lvk::DAS::UserAuth::authenticate(const QString &email)
     QString passwd = QString::fromUtf8(keyMgr->getKey(Crypto::KeyManager::AuthServerRole));
 
     if (passwd.size() > 0) {
+        passwd.prepend("chatbot:");
         passwd.append("@");
     }
 
