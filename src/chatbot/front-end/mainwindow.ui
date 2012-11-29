@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -289,7 +289,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add category (Ctrl+Shift+A)</string>
+              <string>Add category (Ctrl+E)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -302,7 +302,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+Shift+A</string>
+              <string>Ctrl+E</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
@@ -317,7 +317,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Add rule (Ctrl+A)</string>
+              <string>Add rule (Ctrl+R)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -330,7 +330,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+A</string>
+              <string>Ctrl+R</string>
              </property>
              <property name="popupMode">
               <enum>QToolButton::MenuButtonPopup</enum>
@@ -348,7 +348,7 @@
               </font>
              </property>
              <property name="toolTip">
-              <string>Remove rule or category (Ctrl+R)</string>
+              <string>Remove rule or category (Ctrl+D)</string>
              </property>
              <property name="icon">
               <iconset resource="../res/chatbot_theme.qrc">
@@ -361,7 +361,7 @@
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+R</string>
+              <string>Ctrl+D</string>
              </property>
              <property name="autoRaise">
               <bool>true</bool>
@@ -470,6 +470,12 @@
               <layout class="QGridLayout" name="gridLayout_11">
                <item row="1" column="0">
                 <widget class="Lvk::FE::RuleTextView" name="ruleView">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -515,7 +521,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>10</height>
                </size>
               </property>
              </spacer>
@@ -662,7 +668,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuChatbot">
@@ -815,13 +821,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Lvk::FE::AccountVerifWidget</class>
-   <extends>QWidget</extends>
-   <header>front-end/accountverifwidget.h</header>
-   <container>1</container>
    <class>Lvk::FE::RuleTreeView</class>
    <extends>QTreeView</extends>
    <header>front-end/ruletreeview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::AccountVerifWidget</class>
+   <extends>QWidget</extends>
+   <header>front-end/accountverifwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

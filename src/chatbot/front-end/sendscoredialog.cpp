@@ -23,21 +23,25 @@
 #include "stats/score.h"
 #include "back-end/rule.h"
 
+#include <QFile>
+#include <QDebug>
+
 //--------------------------------------------------------------------------------------------------
 // SendScoreDialog
 //--------------------------------------------------------------------------------------------------
 
-Lvk::FE::SendScoreDialog::SendScoreDialog(const Stats::Score &s, const BE::Rule *root,
+Lvk::FE::SendScoreDialog::SendScoreDialog(const Stats::Score &s, const QString &rulesFile,
                                           QWidget *parent)
     : DetailsDialog(QObject::tr("Send score? This will also send your rule definitions."),
                     QObject::tr("See what I'm sending."),
-                    getSendScoreDetails(s, root), parent)
+                    getSendScoreDetails(s, rulesFile), parent)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::FE::SendScoreDialog::getSendScoreDetails(const Stats::Score &s, const BE::Rule *root)
+QString Lvk::FE::SendScoreDialog::getSendScoreDetails(const Stats::Score &s,
+                                                      const QString &rulesFile)
 {
     QString details;
 
@@ -47,24 +51,28 @@ QString Lvk::FE::SendScoreDialog::getSendScoreDetails(const Stats::Score &s, con
                                             QString::number(s.rules),
                                             QString::number(s.total));
 
-    // Append rule definitions with custom format (it's not important)
-    BE::Rule::const_iterator it;
-    for (it = root->begin(); it != root->end(); ++it) {
-        const BE::Rule *rule = *it;
-        if (rule == root) {
-            continue;
+
+    // Append file contents.
+    QFile file(rulesFile);
+
+    if (file.open(QFile::ReadOnly)) {
+        qDebug() << "SendScoreDialog: Reading rules file" << rulesFile;
+
+        const int BUF_SIZE = 1024*10;
+        char buf[BUF_SIZE];
+        int len = 0;
+
+        while ( (len = file.readLine(buf, BUF_SIZE)) > 0 ) {
+            for (int i = 0; i < len; ++i) {
+                char c = buf[i];
+                if (c > 0) {
+                    details += c;
+                }
+            }
         }
-        switch (rule->type()) {
-        case BE::Rule::OrdinaryRule:
-            details += "   " + rule->input().join(",") + " ==> " + rule->output().join(",") + "\n";
-            break;
-        case BE::Rule::ContainerRule:
-            details += "[[" + rule->name() + "]]\n";
-            break;
-        case BE::Rule::EvasiveRule:
-            details += "[[_]]\n" + rule->output().join(",") + "\n";
-            break;
-        }
+    } else {
+        qCritical() << "SendScoreDialog: Could not read rules file" << rulesFile;
+        details += tr("[Error: Could not read rules file]");
     }
 
     return details;

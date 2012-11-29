@@ -197,7 +197,7 @@ private:
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
     bool nlpEngineOption(BE::AppFacade::NlpEngineOption option);
 
-    void uploadScore();
+    void uploadContestData();
 
     void updateScore();
     void uploadBlockedForUpdate(const DAS::UpdateInfo &info);
@@ -220,9 +220,10 @@ private slots:
     void onRuleAdded();
     void onRuleEdited();
     void onRuleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-    void onRuleDropFinished(bool accepted);
     void onTeachRule();
     void onUndoRule();
+    void onRulesRemoved(const QModelIndex &parent, int first, int last);
+
     void onTestInputTextEntered();
     void onTestTargetChanged();
     void onClearTestConvPressed();

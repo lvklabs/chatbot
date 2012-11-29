@@ -184,19 +184,6 @@ bool Lvk::BE::RlogHelper::logAutoScore(const Stats::Score &s)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::BE::RlogHelper::logManualScore(const Stats::Score &s)
-{
-    DAS::RemoteLogger::FieldList fields;
-    fields.append(RLOG_KEY_APP_VERSION,    m_appVersion);
-    fields.append(RLOG_KEY_CHATBOT_ID,     m_chatbotId);
-    fields.append(RLOG_KEY_USER_ID,        m_username);
-    append(fields, s);
-
-    return m_secureLogger->log("Manually uploaded score", fields) == 0;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool Lvk::BE::RlogHelper::logDefaultMetrics()
 {
     // TODO complete metrics!

@@ -643,6 +643,13 @@ void Lvk::BE::AppFacade::setUsername(const QString &username)
 
 //--------------------------------------------------------------------------------------------------
 
+QString Lvk::BE::AppFacade::chatbotId() const
+{
+    return m_rules.chatbotId();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::BE::AppFacade::verifyAccount(Lvk::BE::ChatType type, const QString &user,
                                        const QString &passwd)
 {
@@ -894,15 +901,4 @@ int Lvk::BE::AppFacade::scoreRemainingTime() const
     return Stats::StatsManager::manager()->scoreRemainingTime();
 }
 
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::BE::AppFacade::uploadBestScore()
-{
-    if (!username().isEmpty()) {
-        return m_rlogh.logManualScore(bestScore());
-    } else {
-        qCritical() << "Cannot upload score without username";
-        return false;
-    }
-}
 

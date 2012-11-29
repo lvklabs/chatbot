@@ -57,13 +57,12 @@ class SendScoreDialog : public DetailsDialog
 
 public:
     /**
-     * Constructs a SendScoreDialog with best score \s and provides details of the rules being sent
-     * from \a root.
+     * Constructs a SendScoreDialog with the given score \a s and chatbot rules file \a rulesFile.
      */
-    explicit SendScoreDialog(const Stats::Score &s, const BE::Rule *root, QWidget *parent = 0);
+    explicit SendScoreDialog(const Stats::Score &s, const QString &rulesFile, QWidget *parent = 0);
 
 private:
-    QString getSendScoreDetails(const Stats::Score &s, const BE::Rule *root);
+    QString getSendScoreDetails(const Stats::Score &s, const QString &rulesFile);
 };
 
 /// @}

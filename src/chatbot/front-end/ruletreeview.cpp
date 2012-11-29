@@ -25,13 +25,11 @@ void Lvk::FE::RuleTreeView::dropEvent(QDropEvent *event)
     // https://bugreports.qt-project.org/browse/QTBUG-26229
     // The workaround is taken from:
     // http://www.qtcentre.org/threads/49819-Refuse-from-removing-row-in-Model-after-unsuccessful-drop
-    #ifdef WIN32
     if (RuleTreeModel *m = dynamic_cast<RuleTreeModel *>(model())) {
         if (!m->dropAccepted()) {
             event->setDropAction(Qt::IgnoreAction);
         }
     }
-    #endif
     // End workaround
     ////////////////////////////////////////////////////////////////////
 }

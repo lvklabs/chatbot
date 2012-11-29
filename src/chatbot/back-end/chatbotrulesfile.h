@@ -146,7 +146,7 @@ public:
     /**
      * Returns the chatbot ID. The chatbot ID is a unique string for each chatbot file.
      */
-    QString chatbotId();
+    QString chatbotId() const;
 
     /**
      * Returns the next rule ID. The first valid rule ID is 1 and 0 is the null ID.

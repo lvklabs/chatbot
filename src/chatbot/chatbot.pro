@@ -3,8 +3,7 @@ TARGET = chatbot
 QT += \
     gui \
     xml \
-    network \
-    qt3support  #required for ProgramQ
+    network
 
 TEMPLATE = app
 
@@ -13,98 +12,31 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    #DRAG_AND_DROP_DISABLED
+    DRAG_AND_DROP_DISABLED
 
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
 # - gnome  : Gnome-like icon theme
 ICON_THEME = chatbot
 
-# Chatbot config options are:
+# Required config options are:
+# - qxmpp
+# - programq
+# Optional config options are:
 # - freeling  : Enable freeling lemmatizer
 # - gelf_stats: Enable Graylog statistics on remote server
 # - openssl   : Enable cryptographic security with openssl
 win32 {
-    CONFIG  += freeling
+    CONFIG  += qxmpp programq freeling
 } else:mac {
-    CONFIG  +=
+    CONFIG  += qxmpp programq
 } else {
-    CONFIG  += freeling
+    CONFIG  += qxmpp programq freeling
 }
 
-PROJECT_PATH          = $$PWD
-
-# Paths to third party libraries
-THIRD_PARTY_PATH      = $$PWD/../third-party
-
-# ProgramQ - Mandatory
-PRGRAMQ_BASE_PATH     = $$THIRD_PARTY_PATH/ProgramQ
-PRGRAMQ_INCLUDE_PATH  = $$PRGRAMQ_BASE_PATH
-PRGRAMQ_SRC_PATH      = $$PRGRAMQ_BASE_PATH
-
-# QXmpp - Mandatory
-QXMPP_BASE_PATH       = $$THIRD_PARTY_PATH/QXmpp
-QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include
-QXMPP_LIB_PATH        = $$QXMPP_BASE_PATH/lib
-
-# Freeling - Optional
-FREELING_BASE_PATH    = $$THIRD_PARTY_PATH/Freeling
-FREELING_INCLUDE_PATH = $$FREELING_BASE_PATH/include
-FREELING_LIB_PATH     = $$FREELING_BASE_PATH/lib
-
-# Zlib - Optional
-ZLIB_BASE_PATH        = $$THIRD_PARTY_PATH/zlib
-ZLIB_INCLUDE_PATH     = $$ZLIB_BASE_PATH/include
-ZLIB_LIB_PATH         = $$ZLIB_BASE_PATH/lib
-
-# OpenSSL - Optional
-OPENSSL_BASE_PATH     = $$THIRD_PARTY_PATH/openssl
-OPENSSL_INCLUDE_PATH  = $$OPENSSL_BASE_PATH/include
-OPENSSL_LIB_PATH      = $$OPENSSL_BASE_PATH/lib
-
-
-CONFIG(debug, debug|release) {
-    win32 {
-        QXMPP_LIBS         = -lqxmpp_win32_d
-        FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
-        ZLIB_LIBS          = -lz_win32
-        OPENSSL_LIBS       = -lcrypto_win32 -lgdi32
-    } else:mac {
-        QXMPP_LIBS         = -lqxmpp_mac_d
-        FREELING_LIBS      = # TODO compile freeling for Mac
-        ZLIB_LIBS          = # TODO compile zlib for Mac
-        OPENSSL_LIBS       = # TODO compile openssl for Mac
-    } else {
-        QXMPP_LIBS         = -lqxmpp_d
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
-        ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -lcrypto
-    }
-} else {
-    win32 {
-        QXMPP_LIBS         = -lqxmpp_win32
-        FREELING_LIBS      = -lmorfo_win32 -lfries_win32 -lomlet_win32 -lpcre_win32
-        ZLIB_LIBS          = -lz_win32
-        OPENSSL_LIBS       = -lcrypto_win32 -lgdi32
-    } else:mac {
-        QXMPP_LIBS         = -lqxmpp_mac
-        FREELING_LIBS      = # TODO compile freeling for Mac
-        ZLIB_LIBS          = # TODO compile zlib for Mac
-        OPENSSL_LIBS       = # TODO compile openssl for Mac
-    } else {
-        QXMPP_LIBS         = -lqxmpp
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
-        ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -lcrypto
-    }
-}
-
-INCLUDEPATH += \
-    $$THIRD_PARTY_PATH \
-    $$QXMPP_INCLUDE_PATH
+PROJECT_PATH = $$PWD
 
 HEADERS += \
-    $$PRGRAMQ_INCLUDE_PATH/aimlparser.h \
     main/windowbootstrap.h \
     front-end/mainwindow.h \
     front-end/ruletreemodel.h \
@@ -134,6 +66,8 @@ HEADERS += \
     front-end/ruleeditwidget.h \
     front-end/connectionwidget.h \
     front-end/memberfunctor.h \
+    front-end/uploaderprogressdialog.h \
+    front-end/accountverifwidget.h\
     back-end/appfacade.h \
     back-end/rule.h \
     back-end/roster.h \
@@ -205,11 +139,12 @@ HEADERS += \
     da-server/updateversion.h \
     da-server/serverconfig.h \
     da-server/nullserverconfig.h \
-    front-end/accountverifwidget.h
-
+    da-server/contestdata.h \
+    da-server/contestdatauploader.h \
+    da-server/nullcontestdatauploader.h \
+    da-server/datauploaderfactory.h
 
 SOURCES += \
-    $$PRGRAMQ_SRC_PATH/aimlparser.cpp \
     main/main.cpp \
     front-end/mainwindow.cpp \
     front-end/ruletreemodel.cpp \
@@ -236,6 +171,8 @@ SOURCES += \
     front-end/testinputtext.cpp \
     front-end/ruleeditwidget.cpp \
     front-end/connectionwidget.cpp \
+    front-end/uploaderprogressdialog.cpp \
+    front-end/accountverifwidget.cpp \
     back-end/appfacade.cpp \
     back-end/rule.cpp \
     back-end/chatbotrulesfile.cpp \
@@ -277,7 +214,7 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
-    front-end/accountverifwidget.cpp
+    da-server/datauploaderfactory.cpp
 
 
 FORMS += \
@@ -306,8 +243,23 @@ TRANSLATIONS = \
 OTHER_FILES += \
     res/chatbot.rc
 
-LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 
+# Third-party ###############################
+
+include(3rd-party.pri)
+
+INCLUDEPATH += $$THIRD_PARTY_PATH
+
+qxmpp {
+    INCLUDEPATH += $$QXMPP_INCLUDE_PATH
+    LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
+}
+
+programq {
+    QT += qt3support
+    HEADERS += $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
+    SOURCES += $$PRGRAMQ_SRC_PATH/aimlparser.cpp
+}
 
 # Freeling support
 freeling {
@@ -318,58 +270,11 @@ freeling {
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 
-# Config options required for "Dale Aceptar" contest
+
+# 'Dale Aceptar' contest ###################
+
 da_contest {
-    CONFIG  += gelf_stats openssl
-    DEFINES += DA_CONTEST
-    INCLUDEPATH +=
-    HEADERS +=
-    SOURCES +=
-    LIBS +=
-
-    ### Disabled DA server for unstable releases ###
-    #exists (da-server/daserverconfig.h) {
-    #    DEFINES += DA_SERVER_CONFIG
-    #    HEADERS += da-server/daserverconfig.h
-    #}
-
-    exists (da-server/dadevserverconfig.h) {
-        DEFINES += DA_DEV_SERVER_CONFIG
-        HEADERS += da-server/dadevserverconfig.h
-    }
-
-    exists (crypto/dakeymanager.h) {
-        DEFINES += DA_KEY_MANAGER
-        HEADERS += crypto/dakeymanager.h
-        SOURCES += crypto/dakeymanager.cpp
-    }
-
-    gelf_stats {
-        DEFINES += GELF_STATS_SUPPORT
-        INCLUDEPATH += $$ZLIB_INCLUDE_PATH
-        HEADERS += da-server/zlibhelper.h \
-            da-server/graylogremotelogger.h \
-            da-server/gelf.h \
-            da-server/syslog.h
-        SOURCES += da-server/zlibhelper.cpp \
-            da-server/graylogremotelogger.cpp \
-            da-server/gelf.cpp \
-            da-server/syslog.cpp
-        LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
-    }
-
-    openssl {
-        DEFINES += OPENSSL_SUPPORT
-        INCLUDEPATH += $$OPENSSL_INCLUDE_PATH
-        HEADERS +=
-        SOURCES +=
-        LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
-    }
-
-    unix:!mac{
-      QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN\''
-      QMAKE_LFLAGS_RPATH=
-    }
+    include(da-contest.pri)
 }
 
 
@@ -392,54 +297,3 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

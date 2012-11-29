@@ -31,6 +31,7 @@
 #include "front-end/newupdatedialog.h"
 #include "front-end/updateexecutor.h"
 #include "front-end/memberfunctor.h"
+#include "front-end/uploaderprogressdialog.h"
 #include "back-end/appfacade.h"
 #include "back-end/rule.h"
 #include "back-end/roster.h"
@@ -41,6 +42,7 @@
 #include "common/settingskeys.h"
 #include "common/globalstrings.h"
 #include "da-server/updater.h"
+#include "da-server/contestdata.h"
 #include "ui_mainwindow.h"
 
 #include <QStandardItemModel>
@@ -196,7 +198,9 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     ui->categoriesTree->setModel(m_ruleTreeModel);
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
-    connect(m_ruleTreeModel, SIGNAL(dropFinished(bool)), SLOT(onRuleDropFinished(bool)));
+    connect(m_ruleTreeModel,
+            SIGNAL(rowsRemoved(QModelIndex, int, int)),
+            SLOT(onRulesRemoved(QModelIndex, int, int)));
 
     connect(m_ruleTreeSelectionModel,
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -1075,10 +1079,7 @@ bool Lvk::FE::MainWindow::removeSelectedRuleWithDialog()
        if (msg.exec() == QMessageBox::Yes) {
             removed = m_ruleTreeModel->removeRow(selectedIndex.row(), selectedIndex.parent());
 
-            if (removed) {
-                m_appFacade->refreshNlpEngine();
-                updateScore();
-            } else {
+            if (!removed) {
                 dialogTitle = tr("Internal error");
                 dialogText = tr("The rule/category could not be removed because of an internal"
                                 " error");
@@ -1463,12 +1464,16 @@ void Lvk::FE::MainWindow::ruleEditFinished()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::onRuleDropFinished(bool accepted)
+void Lvk::FE::MainWindow::onRulesRemoved(const QModelIndex &parent, int first, int last)
 {
-    if (accepted) {
-        qDebug() << "Rule drop accepted, refreshing NLP engine...";
-        m_appFacade->refreshNlpEngine();
-    }
+    // This slot is called when the user removes a rule or when there was a drag & drop action
+    qDebug() << "MainWindow: Rows removed:" << parent.row() << first << last;
+    qDebug() << "MainWindow: Refreshing NLP engine...";
+
+    m_appFacade->refreshNlpEngine();
+
+    updateScore();
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1740,12 +1745,11 @@ void Lvk::FE::MainWindow::onUploadScore()
         QMessageBox::critical(this, title, message);
     } else {
         Stats::Score best = m_appFacade->bestScore();
-        const BE::Rule *root = m_appFacade->rootRule();
 
-        if (FE::SendScoreDialog(best, root, this).exec() == QDialog::Accepted) {
+        if (FE::SendScoreDialog(best, m_filename, this).exec() == QDialog::Accepted) {
             FE::MemberFunctor<MainWindow> *f = new FE::MemberFunctor<MainWindow>(this,
                                 &MainWindow::uploadBlockedForUpdate,
-                                &MainWindow::uploadScore);
+                                &MainWindow::uploadContestData);
 
             UpdateExecutor::exec(f, isCritical);
         }
@@ -1774,18 +1778,19 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::MainWindow::uploadScore()
+void Lvk::FE::MainWindow::uploadContestData()
 {
-    if (!m_appFacade->uploadBestScore()) {
-        QString title = tr("Upload score");
-        QString message = tr("Could not upload score. Please, check your internet "
-                             "connection and try again");
-        QMessageBox::critical(this, title, message);
-    } else {
-        QString title = tr("Upload score");
-        QString message = tr("Score uploaded successfully!");
-        QMessageBox::information(this, title, message);
-    }
+    DAS::ContestData data;
+    data.filename = m_filename;
+    data.username = m_appFacade->username();
+    data.chatbotId = m_appFacade->chatbotId();
+    data.bestScore = m_appFacade->bestScore();
+
+    FE::UploaderProgressDialog dialog(data, this);
+
+    int rc = dialog.exec();
+
+    qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1803,6 +1808,3 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
-
-
-

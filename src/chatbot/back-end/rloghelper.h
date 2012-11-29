@@ -106,11 +106,6 @@ public:
     /**
      * Log manually triggered score \s
      */
-    bool logManualScore(const Stats::Score &s);
-
-    /**
-     * Log manually triggered score \s
-     */
     bool logDefaultMetrics();
 
 private:

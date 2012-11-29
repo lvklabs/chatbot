@@ -53,7 +53,8 @@ public:
         DefaultRole,
         LocalStatsRole,
         RemoteLoggerRole,
-        AuthServerRole
+        AuthServerRole,
+        FileServerRole
     };
 
     /**
