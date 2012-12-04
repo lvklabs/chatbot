@@ -2026,6 +2026,8 @@ void Lvk::FE::MainWindow::onUploadScore()
         if (FE::SendScoreDialog(best, m_filename, this).exec() == QDialog::Accepted) {
             UpdateExecutor::exec(this, &MainWindow::uploadBlockedForUpdate,
                                  &MainWindow::uploadContestData, &UpdateExecutor::isCritical);
+        } else {
+            ui->bestScoreWidget->setUploadEnabled(true);
         }
     }
 }
