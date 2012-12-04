@@ -33,7 +33,7 @@
 Lvk::FE::SendScoreDialog::SendScoreDialog(const Stats::Score &s, const QString &rulesFile,
                                           QWidget *parent)
     : DetailsDialog(QObject::tr("Send score? This will also send your rule definitions."),
-                    QObject::tr("See what I'm sending."),
+                    "", //QObject::tr("See what I'm sending."), // Link disabled
                     getSendScoreDetails(s, rulesFile), parent)
 {
 }

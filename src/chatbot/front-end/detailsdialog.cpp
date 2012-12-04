@@ -34,7 +34,14 @@ Lvk::FE::DetailsDialog::DetailsDialog(const QString &msg, const QString &linkMsg
     ui->detailsLabel->setVisible(false);
     ui->detailsText->setVisible(false);
     ui->icon->setPixmap(questionPix);
-    ui->label->setText(QString("%1<br/><a href=\"#\">%2</a>").arg(msg, linkMsg));
+
+    QString labelText = msg;
+
+    if (!linkMsg.isEmpty()) {
+        labelText.append(QString("<br/><a href=\"#\">%1</a>").arg(linkMsg));
+    }
+
+    ui->label->setText(labelText);
 
     alignCenter(DIALOG_INIT_W, DIALOG_INIT_H);
 
