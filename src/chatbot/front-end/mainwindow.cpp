@@ -2021,6 +2021,8 @@ void Lvk::FE::MainWindow::onUploadScore()
     } else {
         Stats::Score best = m_appFacade->bestScore();
 
+        ui->bestScoreWidget->setUploadEnabled(false);
+
         if (FE::SendScoreDialog(best, m_filename, this).exec() == QDialog::Accepted) {
             UpdateExecutor::exec(this, &MainWindow::uploadBlockedForUpdate,
                                  &MainWindow::uploadContestData, &UpdateExecutor::isCritical);
@@ -2069,6 +2071,8 @@ void Lvk::FE::MainWindow::uploadContestData()
                               tr("Could not create file for upload. Please verify that you have "
                                  "enough space in you hard disk."));
     }
+
+    ui->bestScoreWidget->setUploadEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2076,6 +2080,8 @@ void Lvk::FE::MainWindow::uploadContestData()
 void Lvk::FE::MainWindow::uploadBlockedForUpdate(const DAS::UpdateInfo &info)
 {
     onUpdate(info);
+
+    ui->bestScoreWidget->setUploadEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -77,11 +77,17 @@ void Lvk::FE::ScoreWidget::setScore(const Stats::Score &score)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ScoreWidget::setUploadEnabled(bool enabled)
+{
+    ui->uploadButton->setEnabled(enabled);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::ScoreWidget::setUploadVisible(bool visible)
 {
     ui->uploadButton->setVisible(visible);
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
