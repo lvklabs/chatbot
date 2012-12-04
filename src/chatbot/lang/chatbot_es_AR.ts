@@ -130,22 +130,22 @@
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="254"/>
+        <location filename="../back-end/appfacade.cpp" line="249"/>
         <source>Greetings</source>
         <translation>Saludos</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="260"/>
+        <location filename="../back-end/appfacade.cpp" line="255"/>
         <source>Hello</source>
         <translation>Hola</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="261"/>
+        <location filename="../back-end/appfacade.cpp" line="256"/>
         <source>Hello!</source>
         <translation>Hola!</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="267"/>
+        <location filename="../back-end/appfacade.cpp" line="262"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
     </message>
@@ -171,19 +171,19 @@
 <context>
     <name>Lvk::DAS::UserAuth</name>
     <message>
-        <location filename="../da-server/userauth.cpp" line="67"/>
-        <location filename="../da-server/userauth.cpp" line="116"/>
+        <location filename="../da-server/userauth.cpp" line="68"/>
+        <location filename="../da-server/userauth.cpp" line="117"/>
         <source>Cannot connect to the server. Please try later.</source>
         <translation>No se pudo conectar al servidor. Por favor, revisá tu conexión a internet e intentá nuevamente.</translation>
     </message>
     <message>
-        <location filename="../da-server/userauth.cpp" line="87"/>
+        <location filename="../da-server/userauth.cpp" line="88"/>
         <source>SSL handshake error. Please try later.</source>
         <translation>Error de conexión SSL. Por favor intentá mas tarde.</translation>
     </message>
     <message>
-        <location filename="../da-server/userauth.cpp" line="102"/>
-        <location filename="../da-server/userauth.cpp" line="107"/>
+        <location filename="../da-server/userauth.cpp" line="103"/>
+        <location filename="../da-server/userauth.cpp" line="108"/>
         <source>Unknown response from server. Please try later.</source>
         <translation>Hay un problema temporal en el servidor. Por favor, intentá mas tarde.</translation>
     </message>
@@ -789,6 +789,20 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras.</translation>
     </message>
     <message>
+        <location filename="../front-end/mainwindow.cpp" line="2068"/>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.cpp" line="2069"/>
+        <source>Could not create file for upload. Please verify that you have enough space in you hard disk.</source>
+        <translation>No se pudo crear el archivo que necesita ser enviado. Por favor, revisá si tenés espacio libre en tu disco duro.</translation>
+    </message>
+    <message>
+        <source>Could not create file for upload. Please verify that you have enough space in you hard disk</source>
+        <translation type="obsolete">No se pudo crear el archivo para ser enviado. Por favor, revisá si tenés espacio libre en tu disco duro</translation>
+    </message>
+    <message>
         <source>Score: </source>
         <translation type="obsolete">Puntos: </translation>
     </message>
@@ -1324,22 +1338,22 @@ Tiempo restante: %3</translation>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../front-end/uploaderprogressdialog.cpp" line="57"/>
+        <location filename="../front-end/uploaderprogressdialog.cpp" line="59"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/uploaderprogressdialog.cpp" line="58"/>
+        <location filename="../front-end/uploaderprogressdialog.cpp" line="60"/>
         <source>Score uploaded successfully!</source>
         <translation>¡Su puntaje ha sido enviado!</translation>
     </message>
     <message>
-        <location filename="../front-end/uploaderprogressdialog.cpp" line="61"/>
+        <location filename="../front-end/uploaderprogressdialog.cpp" line="64"/>
         <source> Error </source>
         <translation> Error </translation>
     </message>
     <message>
-        <location filename="../front-end/uploaderprogressdialog.cpp" line="62"/>
+        <location filename="../front-end/uploaderprogressdialog.cpp" line="65"/>
         <source>Could not upload score. Please, check your internet connection and try again</source>
         <translation>No se pudo enviar su puntaje. Por favor, revise su conexión a internet e intente de nuevo</translation>
     </message>
@@ -2288,9 +2302,8 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>¿Enviar puntos? También se enviarán las reglas que has definido.</translation>
     </message>
     <message>
-        <location filename="../front-end/sendscoredialog.cpp" line="36"/>
         <source>See what I&apos;m sending.</source>
-        <translation>Ver que estoy enviando.</translation>
+        <translation type="obsolete">Ver que estoy enviando.</translation>
     </message>
 </context>
 <context>
