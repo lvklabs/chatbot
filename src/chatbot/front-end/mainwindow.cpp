@@ -2058,11 +2058,17 @@ void Lvk::FE::MainWindow::uploadContestData()
     data.chatbotId = m_appFacade->chatbotId();
     data.bestScore = m_appFacade->bestScore();
 
-    FE::UploaderProgressDialog dialog(data, this);
+    if (!data.filename.isEmpty()) {
+        FE::UploaderProgressDialog dialog(data, this);
 
-    int rc = dialog.exec();
+        int rc = dialog.exec();
 
-    qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
+        qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
+    } else {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Could not create file for upload. Please verify that you have "
+                                 "enough space in you hard disk."));
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
