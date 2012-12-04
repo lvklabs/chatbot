@@ -2053,7 +2053,7 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 void Lvk::FE::MainWindow::uploadContestData()
 {
     DAS::ContestData data;
-    data.filename = m_filename;
+    data.filename = m_appFacade->getTempFileForUpload();
     data.username = m_appFacade->username();
     data.chatbotId = m_appFacade->chatbotId();
     data.bestScore = m_appFacade->bestScore();

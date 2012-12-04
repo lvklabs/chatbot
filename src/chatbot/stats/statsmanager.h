@@ -125,6 +125,11 @@ public:
     Score bestScore();
 
     /**
+     * Returns the list of contacts that have scored.
+     */
+    QSet<QString> scoreContacts();
+
+    /**
      * Returns the amount of score intervals that have elapsed.
      */
     unsigned intervals();

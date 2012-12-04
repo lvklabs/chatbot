@@ -168,6 +168,12 @@ Lvk::Stats::Score Lvk::Stats::StatsManager::bestScore()
     return m_statsFile->bestScore();
 }
 
+//--------------------------------------------------------------------------------------------------
+
+QSet<QString> Lvk::Stats::StatsManager::scoreContacts()
+{
+    return m_statsFile->contacts();
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -296,3 +302,4 @@ void Lvk::Stats::StatsManager::setRuleMetrics()
     m_statsFile->setMetric(Stats::VarRuleCount,     m_ruleStats.variableRules());
     m_statsFile->setMetric(Stats::CondRuleCount,    m_ruleStats.conditionalRules());
 }
+
