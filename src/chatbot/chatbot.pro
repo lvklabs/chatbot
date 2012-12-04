@@ -12,7 +12,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    DRAG_AND_DROP_DISABLED
+    #DRAG_AND_DROP_DISABLED
 
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
