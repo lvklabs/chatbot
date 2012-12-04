@@ -24,6 +24,8 @@
 #include "back-end/aiadapter.h"
 #include "back-end/rloghelper.h"
 #include "back-end/chatbotfactory.h"
+#include "back-end/filemetadata.h"
+#include "back-end/chatbottempfile.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
@@ -40,13 +42,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-
-#define FILE_METADATA_CHAT_TYPE           "chat_type"
-#define FILE_METADATA_USERNAME            "username"
-#define FILE_METADATA_CHAT_USERNAME       "chat_username"
-#define FILE_METADATA_NLP_OPTIONS         "nlp_options"
-#define FILE_METADATA_ROSTER              "roster"
-#define FILE_METADATA_BLACK_ROSTER        "black_roster"
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -905,60 +900,7 @@ int Lvk::BE::AppFacade::scoreRemainingTime() const
 
 QString Lvk::BE::AppFacade::getTempFileForUpload()
 {
-    // TODO refactor
-    //
-    // Create a new temporal chatbot rules file equal to the current file but replace the full
-    // roster with only those contacts that have scored
-
-    QString tmpFile;
-
-    try {
-        if (m_rules.filename().isEmpty()) {
-            throw QString("Empty chatbot rules filename");
-        }
-
-        int retry = 0;
-        int MAX_RETRIES = 1000;
-
-        do {
-            tmpFile = QDir::tempPath() + QDir::separator() + "chatbot" + QString::number(retry);
-
-            if (QFile::exists(tmpFile) && !QFile::remove(tmpFile)) {
-                qWarning() << "AppFacade: Cannot remove temp file" << tmpFile;
-            }
-        } while (!QFile::copy(m_rules.filename(), tmpFile) && ++retry < MAX_RETRIES);
-
-        if (retry >= MAX_RETRIES) {
-            throw QString("Retries exceded");
-        }
-
-        BE::ChatbotRulesFile rules;
-
-        if (!rules.load(tmpFile)) {
-            throw QString("Cannot load temp rules file");
-        }
-
-        BE::Roster scoreRoster;
-        QSet<QString> scoreContacts = Stats::StatsManager::manager()->scoreContacts();
-
-        foreach(const QString& c, scoreContacts) {
-            scoreRoster.append(BE::RosterItem(c, QString()));
-        }
-
-        rules.setMetadata(FILE_METADATA_ROSTER,       QVariant::fromValue(scoreRoster));
-        rules.setMetadata(FILE_METADATA_BLACK_ROSTER, QVariant::fromValue(BE::Roster()));
-
-        if (!rules.save()) {
-            throw QString("Cannot save changes in temp rules file");
-        }
-
-    } catch (const QString &err) {
-        qCritical() << "AppFacade: Cannot create temp file:" << err;
-
-        tmpFile.clear();
-    }
-
-    return tmpFile;
+    return BE::ChatbotTempFile().getTempFileForUpload(m_rules.filename());
 }
 
 

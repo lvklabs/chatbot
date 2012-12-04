@@ -74,6 +74,8 @@ HEADERS += \
     back-end/accountverifier.h \
     back-end/chattype.h \
     back-end/chatbotfactory.h \
+    back-end/chatbottempfile.h \
+    back-end/filemetadata.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/hybridengine.h \
@@ -173,6 +175,7 @@ SOURCES += \
     back-end/rloghelper.cpp \
     back-end/accountverifier.cpp \
     back-end/chatbotfactory.cpp \
+    back-end/chatbottempfile.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/hybridengine.cpp \

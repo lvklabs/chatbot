@@ -372,9 +372,9 @@ public:
     int scoreRemainingTime() const;
 
     /**
-     * Returns a temporal chatbot rules file without sensible data to be upload. Currently,
-     * "without sensible data" means that clears the roster and keeps only those
-     * contacts that have scored.
+     * Returns the name of a temporal rules file without sensible data to be upload.
+     * Currently, "without sensible data" means that clears the roster and keeps only those
+     * contacts that have scored. If an error occurs, returns an empty string.
      */
     QString getTempFileForUpload();
 
