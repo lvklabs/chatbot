@@ -4,7 +4,7 @@ v1.4
  - Added several shortcuts to switch tabs, add rules, etc.
  - Allowing to copy hash signature in the update dialog.
  - Upload score dialog sends chatbot rules using SFTP
- - Fixed bugs: github#27, github#18, github#10
+ - Fixed bugs: github#33, github#31, github#27, github#18, github#10
 
 v1.3
  - Fixed bug: github#26
