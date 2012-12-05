@@ -172,8 +172,18 @@ QString Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input)
     QString output = input.trimmed();
 
     if (m_flInit) {
-        if (!output.endsWith(".")) {
-            output.append("."); // Required for split(), otherwise returns an empty list
+        if (!output.endsWith(" .")) {
+            output.append(" .");
+
+            // Required for split() to mark the end of the sentence, otherwise returns an empty
+            // list and waits for more input.
+            //
+            // We need to append " ." instead of just "." because inputs like "Hi A" splits into:
+            // "Hi", "A."
+            // Freeling gets confused and thinks that "A." is an abbrevation, should split into:
+            // "Hi", "A", "."
+            //
+            // For more details see https://github.com/lvklabs/chatbot/issues/33
         }
 
         std::list<word> lw;
