@@ -618,4 +618,20 @@ void Lvk::Nlp::HybridEngine::setProperty(const QString &name, const QVariant &va
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::HybridEngine::clear()
+{
+    QMutexLocker locker(m_engineMutex);
+
+    AimlEngine::clear();
+
+    m_rules.clear();
+    m_indexRemap.clear();
+
+    if (m_emEngine) {
+        m_emEngine->clear();
+    }
+}
+
 

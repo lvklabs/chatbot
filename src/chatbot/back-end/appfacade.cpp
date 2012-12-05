@@ -348,7 +348,7 @@ void Lvk::BE::AppFacade::close()
     }
 
     if (m_nlpEngine) {
-        m_nlpEngine->setRules(Nlp::RuleList());
+        m_nlpEngine->clear();
     }
 
     if (m_chatbot) {
@@ -425,30 +425,8 @@ QStringList Lvk::BE::AppFacade::getEvasives() const
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::AppFacade::getResponse(const QString &input, MatchList &matches) const
-{
-    QString response;
-
-    response = getResponse(input, "", matches);
-
-    // If no response, try with all targets
-    if (matches.isEmpty()) {
-        foreach (const QString &target, m_targets) {
-            response = getResponse(input, target, matches);
-
-            if (!matches.isEmpty()) {
-                break;
-            }
-        }
-    }
-
-    return response;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &target,
-                                      MatchList &matches) const
+                                        MatchList &matches) const
 {
     matches.clear();
     QString response;

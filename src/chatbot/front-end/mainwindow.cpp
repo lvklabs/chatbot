@@ -1580,8 +1580,10 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString response;
 
     if (target.isEmpty()) {
-        response = m_appFacade->getResponse(input, matches);
+        response = m_appFacade->getResponse(input, "[ChatbotTest]", matches);
     } else {
+        // FIXME if target is currently talking with the chatbot, we can change the current topic,
+        // it's not very likely but possible.
         response = m_appFacade->getResponse(input, target, matches);
     }
 

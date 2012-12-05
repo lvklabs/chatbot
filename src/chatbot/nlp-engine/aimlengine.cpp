@@ -220,7 +220,7 @@ QString Lvk::Nlp::AimlEngine::getResponse(const QString &input, const QString &t
 
 QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchList &matches)
 {
-    return getAllResponses(input, ANY_USER, matches, true);
+    return _getAllResponses(input, ANY_USER, matches);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -228,14 +228,14 @@ QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, MatchLis
 QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input, const QString &target,
                                                   MatchList &matches)
 {
-    return getAllResponses(input, target, matches, true);
+    return _getAllResponses(input, target, matches);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
-                                                         const QString &target,
-                                                         MatchList &matches, bool norm)
+inline QStringList Lvk::Nlp::AimlEngine::_getAllResponses(const QString &input,
+                                                          const QString &target,
+                                                          MatchList &matches)
 {
     QMutexLocker locker(m_mutex);
 
@@ -249,36 +249,51 @@ inline QStringList Lvk::Nlp::AimlEngine::getAllResponses(const QString &input,
              << "and target" << target << "...";
 
     QString normInput = input;
+    normalize(normInput);
+    normInput.remove('&'); // Ignore &
 
-    if (norm) {
-        normalize(normInput);
-        normInput.remove('&'); // Ignore &
+    QStringList responses = getAllResponsesWithParser(normInput, target, matches, target);
+
+    // No response found with the given target, fallback to rules with any user
+    if (responses.isEmpty() && target != ANY_USER) {
+        responses = getAllResponsesWithParser(normInput, target, matches, ANY_USER);
     }
 
+    qDebug() << "AimlEngine: Responses found: " << responses;
+
+    return responses;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QStringList Lvk::Nlp::AimlEngine::getAllResponsesWithParser(const QString &normInput,
+                                                            const QString &target,
+                                                            Engine::MatchList &matches,
+                                                            const QString &parserName)
+{
+    QStringList responses;
     QString response;
     QList<long> categoriesId;
 
-    ParsersMap::iterator it = m_parsers.find(target);
+    ParsersMap::iterator it = m_parsers.find(parserName);
+
     if (it != m_parsers.end()) {
+        // We keep the topic for each target, otherwise the Chatbot will confuse topics
+        // if it's talking with two or more people at the same time
+        (*it)->setTopic(m_topics[target]);
         response = (*it)->getResponse(normInput, categoriesId);
+        m_topics[target] = (*it)->topic();
 
         // An empty response is considered not valid
         if (response.isEmpty()) {
             categoriesId.clear();
         }
+
+        if (response != "Internal Error!" && categoriesId.size() > 0) { // FIXME harcoded string
+            responses.append(response);
+            convert(matches, categoriesId);
+        }
     }
-
-    QStringList responses;
-
-    if (response != "Internal Error!" && categoriesId.size() > 0) { // FIXME harcoded string
-        responses.append(response);
-        convert(matches, categoriesId);
-    } else if (target != ANY_USER) {
-        // No response found with the given target, fallback to rules with any user:
-        return getAllResponses(normInput, ANY_USER, matches, false);
-    }
-
-    qDebug() << "AimlEngine: Responses found: " << responses;
 
     return responses;
 }
@@ -505,3 +520,16 @@ void Lvk::Nlp::AimlEngine::setProperty(const QString &name, const QVariant &valu
         }
     }
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::AimlEngine::clear()
+{
+    QMutexLocker locker(m_mutex);
+
+    m_dirty = true;
+    m_rules.clear();
+    m_parsers.clear();
+    m_topics.clear();
+}
+

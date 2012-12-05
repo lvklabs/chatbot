@@ -242,11 +242,17 @@ protected:
         return tmp;
     }
 
+    /**
+     * \copydoc Engine::clear()
+     */
+    virtual void clear();
+
 private:
     AimlEngine(AimlEngine&);
     AimlEngine& operator=(AimlEngine&);
 
     typedef QHash<QString, QSharedPointer<AIMLParser> > ParsersMap;
+    typedef QHash<QString, QString> TopicsMap;
 
     RuleList m_rules;
     std::auto_ptr<Sanitizer>  m_preSanitizer;
@@ -254,14 +260,18 @@ private:
     std::auto_ptr<Lemmatizer> m_lemmatizer;
     std::auto_ptr<QFile>      m_logFile;
     ParsersMap                m_parsers;
+    TopicsMap                 m_topics;
     QMutex *m_mutex;
     bool m_dirty;
     bool m_setTopics;
 
     void initLog();
 
-    inline QStringList getAllResponses(const QString &input, const QString &target,
-                                       MatchList &matches, bool norm);
+    inline QStringList _getAllResponses(const QString &input, const QString &target,
+                                        MatchList &matches);
+
+    inline QStringList getAllResponsesWithParser(const QString &normInput, const QString &target,
+                                                 MatchList &matches, const QString &parserName);
 
     void refreshAiml();
     void buildAiml(QString &aiml, const QString &target);
