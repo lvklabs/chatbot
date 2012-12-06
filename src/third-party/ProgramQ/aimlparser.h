@@ -100,6 +100,10 @@ public:
 
   void displayTree();
 
+  // lvk extension: set/get current topic
+  QString topic();
+  void setTopic(const QString &topic);
+
 private:
 
   QString resolveNode(QDomNode* node, QList<long> &categoriesId,

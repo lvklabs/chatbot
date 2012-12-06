@@ -22,6 +22,7 @@
 #include "front-end/sendscoredialog.h"
 #include "stats/score.h"
 #include "back-end/rule.h"
+#include "common/version.h"
 
 #include <QFile>
 #include <QDebug>
@@ -33,9 +34,10 @@
 Lvk::FE::SendScoreDialog::SendScoreDialog(const Stats::Score &s, const QString &rulesFile,
                                           QWidget *parent)
     : DetailsDialog(QObject::tr("Send score? This will also send your rule definitions."),
-                    QObject::tr("See what I'm sending."),
+                    "", //QObject::tr("See what I'm sending."), // Link disabled
                     getSendScoreDetails(s, rulesFile), parent)
 {
+    setWindowTitle(APP_NAME);
 }
 
 //--------------------------------------------------------------------------------------------------

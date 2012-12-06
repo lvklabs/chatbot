@@ -159,6 +159,12 @@ public:
      * Sets \a value to property \a name
      */
     virtual void setProperty(const QString &name, const QVariant &value) = 0;
+
+    /**
+     * Clears the engine state. Properties are not considered part of the state, so they are not
+     * cleared.
+     */
+    virtual void clear() = 0;
 };
 
 /// @}

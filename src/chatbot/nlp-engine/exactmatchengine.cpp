@@ -200,3 +200,10 @@ void Lvk::Nlp::ExactMatchEngine::setProperty(const QString &/*name*/, const QVar
     // Nothing to do
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ExactMatchEngine::clear()
+{
+    m_rules.clear();
+}
+

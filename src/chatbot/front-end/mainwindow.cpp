@@ -1493,8 +1493,10 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString response;
 
     if (target.isEmpty()) {
-        response = m_appFacade->getResponse(input, matches);
+        response = m_appFacade->getResponse(input, "[ChatbotTest]", matches);
     } else {
+        // FIXME if target is currently talking with the chatbot, we can change the current topic,
+        // it's not very likely but possible.
         response = m_appFacade->getResponse(input, target, matches);
     }
 
@@ -1746,12 +1748,16 @@ void Lvk::FE::MainWindow::onUploadScore()
     } else {
         Stats::Score best = m_appFacade->bestScore();
 
+        ui->bestScoreWidget->setUploadEnabled(false);
+
         if (FE::SendScoreDialog(best, m_filename, this).exec() == QDialog::Accepted) {
             FE::MemberFunctor<MainWindow> *f = new FE::MemberFunctor<MainWindow>(this,
                                 &MainWindow::uploadBlockedForUpdate,
                                 &MainWindow::uploadContestData);
 
             UpdateExecutor::exec(f, isCritical);
+        } else {
+            ui->bestScoreWidget->setUploadEnabled(true);
         }
     }
 }
@@ -1781,16 +1787,24 @@ void Lvk::FE::MainWindow::onScoreRemainingTime(int secs)
 void Lvk::FE::MainWindow::uploadContestData()
 {
     DAS::ContestData data;
-    data.filename = m_filename;
+    data.filename = m_appFacade->getTempFileForUpload();
     data.username = m_appFacade->username();
     data.chatbotId = m_appFacade->chatbotId();
     data.bestScore = m_appFacade->bestScore();
 
-    FE::UploaderProgressDialog dialog(data, this);
+    if (!data.filename.isEmpty()) {
+        FE::UploaderProgressDialog dialog(data, this);
 
-    int rc = dialog.exec();
+        int rc = dialog.exec();
 
-    qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
+        qDebug() << "MainWindow::uploadContestData() finished with code" << rc;
+    } else {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Could not create file for upload. Please verify that you have "
+                                 "enough space in you hard disk."));
+    }
+
+    ui->bestScoreWidget->setUploadEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1798,6 +1812,8 @@ void Lvk::FE::MainWindow::uploadContestData()
 void Lvk::FE::MainWindow::uploadBlockedForUpdate(const DAS::UpdateInfo &info)
 {
     onUpdate(info);
+
+    ui->bestScoreWidget->setUploadEnabled(true);
 }
 
 //--------------------------------------------------------------------------------------------------

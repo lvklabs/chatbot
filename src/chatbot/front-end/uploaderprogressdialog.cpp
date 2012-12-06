@@ -20,6 +20,7 @@
  */
 
 #include "front-end/uploaderprogressdialog.h"
+#include "common/version.h"
 #include "da-server/datauploaderfactory.h"
 
 #include <QMessageBox>
@@ -38,6 +39,8 @@ Lvk::FE::UploaderProgressDialog::UploaderProgressDialog(const DAS::ContestData &
     connect(m_uploader,
             SIGNAL(finished(DAS::ContestDataUploader::Status)),
             SLOT(onUploadFinished(DAS::ContestDataUploader::Status)));
+
+    setWindowTitle(APP_NAME);
 }
 
 //--------------------------------------------------------------------------------------------------

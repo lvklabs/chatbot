@@ -179,6 +179,12 @@ public:
      * topic have higher priority. By default is false.
      */
     virtual void setProperty(const QString &name, const QVariant &value);
+
+    /**
+     * \copydoc Engine::clear()
+     */
+    virtual void clear();
+
 private:
 
     struct ConvertionContext

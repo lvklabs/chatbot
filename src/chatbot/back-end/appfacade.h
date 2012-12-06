@@ -190,16 +190,6 @@ public:
     QString getResponse(const QString &input, const QString &target, MatchList &matches) const;
 
     /**
-     * Gets a response for the given \a input ignoring target rules.
-     *
-     * Returns the response if there is a match and \a matches contains
-     * the list of rules and inputs that has matched. If the list contains two or more
-     * objects it means there was recursion. Otherwise; returns an empty string and \a matches
-     * is empty.
-     */
-    QString getResponse(const QString &input, MatchList &matches) const;
-
-    /**
      * Refreshes the NLP engine. Invoke this method if the root rule or any other child rule has
      * been changed.
      */
@@ -370,6 +360,13 @@ public:
      * Returns the number of remaining seconds to start a new score interval.
      */
     int scoreRemainingTime() const;
+
+    /**
+     * Returns the name of a temporal rules file without sensible data to be upload.
+     * Currently, "without sensible data" means that clears the roster and keeps only those
+     * contacts that have scored. If an error occurs, returns an empty string.
+     */
+    QString getTempFileForUpload();
 
 signals:
 

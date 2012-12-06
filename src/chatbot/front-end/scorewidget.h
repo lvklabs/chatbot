@@ -68,6 +68,11 @@ public:
     void setScore(const Stats::Score &score);
 
     /**
+     * Sets if the upload button is enabled or not. By default is enabled.
+     */
+    void setUploadEnabled(bool enabled);
+
+    /**
      * Sets if the upload button is visible or not. By default is visible.
      */
     void setUploadVisible(bool visible);

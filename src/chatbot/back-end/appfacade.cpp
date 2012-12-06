@@ -24,6 +24,8 @@
 #include "back-end/aiadapter.h"
 #include "back-end/rloghelper.h"
 #include "back-end/chatbotfactory.h"
+#include "back-end/filemetadata.h"
+#include "back-end/chatbottempfile.h"
 #include "nlp-engine/rule.h"
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/sanitizerfactory.h"
@@ -40,13 +42,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-
-#define FILE_METADATA_CHAT_TYPE           "chat_type"
-#define FILE_METADATA_USERNAME            "username"
-#define FILE_METADATA_CHAT_USERNAME       "chat_username"
-#define FILE_METADATA_NLP_OPTIONS         "nlp_options"
-#define FILE_METADATA_ROSTER              "roster"
-#define FILE_METADATA_BLACK_ROSTER        "black_roster"
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -353,7 +348,7 @@ void Lvk::BE::AppFacade::close()
     }
 
     if (m_nlpEngine) {
-        m_nlpEngine->setRules(Nlp::RuleList());
+        m_nlpEngine->clear();
     }
 
     if (m_chatbot) {
@@ -430,30 +425,8 @@ QStringList Lvk::BE::AppFacade::getEvasives() const
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::BE::AppFacade::getResponse(const QString &input, MatchList &matches) const
-{
-    QString response;
-
-    response = getResponse(input, "", matches);
-
-    // If no response, try with all targets
-    if (matches.isEmpty()) {
-        foreach (const QString &target, m_targets) {
-            response = getResponse(input, target, matches);
-
-            if (!matches.isEmpty()) {
-                break;
-            }
-        }
-    }
-
-    return response;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &target,
-                                      MatchList &matches) const
+                                        MatchList &matches) const
 {
     matches.clear();
     QString response;
@@ -899,6 +872,13 @@ Lvk::Stats::Score Lvk::BE::AppFacade::bestScore()
 int Lvk::BE::AppFacade::scoreRemainingTime() const
 {
     return Stats::StatsManager::manager()->scoreRemainingTime();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::BE::AppFacade::getTempFileForUpload()
+{
+    return BE::ChatbotTempFile().getTempFileForUpload(m_rules.filename());
 }
 
 

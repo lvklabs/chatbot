@@ -12,7 +12,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 DEFINES +=  \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
-    DRAG_AND_DROP_DISABLED
+    #DRAG_AND_DROP_DISABLED
 
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
@@ -78,6 +78,8 @@ HEADERS += \
     back-end/accountverifier.h \
     back-end/chattype.h \
     back-end/chatbotfactory.h \
+    back-end/chatbottempfile.h \
+    back-end/filemetadata.h \
     nlp-engine/exactmatchengine.h \
     nlp-engine/aimlengine.h \
     nlp-engine/hybridengine.h \
@@ -180,6 +182,7 @@ SOURCES += \
     back-end/rloghelper.cpp \
     back-end/accountverifier.cpp \
     back-end/chatbotfactory.cpp \
+    back-end/chatbottempfile.cpp \
     nlp-engine/exactmatchengine.cpp \
     nlp-engine/aimlengine.cpp \
     nlp-engine/hybridengine.cpp \

@@ -749,3 +749,13 @@ QString AIMLParser::getResponse(QString input, QList<long> &categoriesId, const 
 
     return result;
 }
+
+QString AIMLParser::topic()
+{
+    return _parameterValue["topic"];
+}
+
+void AIMLParser::setTopic(const QString &topic)
+{
+    _parameterValue["topic"] = topic;
+}

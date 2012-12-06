@@ -92,9 +92,9 @@ void Lvk::DAS::SftpContestDataUploader::initFilenames()
 
     m_localFilename = info.canonicalFilePath();
 
-    m_remoteFilename = QString("%1/%2_%3_%4_%5")
+    m_remoteFilename = QString("%1/%2_%3_%4.crf")
             .arg(FILE_SERVER_DEST_PATH, QDateTime::currentDateTime().toString(Qt::ISODate),
-                 m_data.username, m_data.chatbotId, info.fileName());
+                 m_data.username, m_data.chatbotId);
 }
 
 //--------------------------------------------------------------------------------------------------

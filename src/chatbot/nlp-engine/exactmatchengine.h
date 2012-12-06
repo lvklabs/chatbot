@@ -131,6 +131,11 @@ public:
      */
     virtual void setProperty(const QString &name, const QVariant &value);
 
+    /**
+     * \copydoc Engine::clear()
+     */
+    virtual void clear();
+
 private:
 
     RuleList m_rules;
