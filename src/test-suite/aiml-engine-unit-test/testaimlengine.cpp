@@ -193,6 +193,18 @@ TestAimlEngine::TestAimlEngine()
 #define RULE_17_INPUT_1                     "J & J"
 #define RULE_17_OUTPUT_1                    "J & J ????????"
 
+#define RULE_18_ID                          18
+#define RULE_18_INPUT_1                     "thing1 *"
+#define RULE_18_OUTPUT_1                    "No way"
+
+#define RULE_19_ID                          19
+#define RULE_19_INPUT_1                     "thing1 *"
+#define RULE_19_OUTPUT_1                    "Really?"
+
+#define RULE_20_ID                          20
+#define RULE_20_INPUT_1                     "thing2 *"
+#define RULE_20_OUTPUT_1                    "Ok"
+
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
 #define USER_INPUT_1c                       "HELLO"
@@ -222,7 +234,9 @@ TestAimlEngine::TestAimlEngine()
 #define USER_INPUT_10d                      "Great :-)"
 #define USER_INPUT_10e                      "Great"
 #define USER_INPUT_17                       "J & J"
-
+#define USER_INPUT_18                       "thing1 is great"
+#define USER_INPUT_19                       "thing1 is great!!"
+#define USER_INPUT_20                       "thing2 rules!"
 
 //--------------------------------------------------------------------------------------------------
 
