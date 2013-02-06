@@ -19,18 +19,60 @@
  *
  */
 
-#ifndef LVK_CMN_VERSION_H
-#define LVK_CMN_VERSION_H
+#ifndef LVK_NLP_TREE_H
+#define LVK_NLP_TREE_H
 
-#include "common/versionrev.h"
+#include <QStringList>
 
-#define ORGANIZATION_NAME   "LVK"
-#define ORGANIZATION_DOMAIN "lvklabs.com"
+#include "nlp-engine/engine.h"
 
-#define APP_VERSION_STR     "2.0-alpha1"
-#define APP_VERSION_REV     AUTO_APP_VERSION_REV
-#define APP_NAME            "Chatbot"
-#define APP_URL_CONTACT     "www.lvklabs.com"
-#define APP_MAIL_CONTACT    "contact@lvklabs.com"
+namespace Lvk
+{
 
-#endif // LVK_CMN_VERSION_H
+/// \addtogroup Lvk
+/// @{
+
+namespace Nlp
+{
+
+class Rule;
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
+
+/**
+ * \brief The Tree class provides ...
+ */
+class Tree
+{
+public:
+
+    /**
+     * Constructs an empty tree
+     */
+    Tree();
+
+    /**
+     * Adds \a rule to the tree
+     */
+    void add(const Rule &rule);
+
+    /**
+     * Gets the list of responses for the given input
+     */
+    QStringList getResponses(const QString &input, Engine::MatchList &matches);
+
+};
+
+/// @}
+
+} // namespace Nlp
+
+/// @}
+
+} // namespace Lvk
+
+
+#endif // LVK_NLP_TREE_H
+

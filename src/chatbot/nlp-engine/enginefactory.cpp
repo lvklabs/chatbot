@@ -21,6 +21,7 @@
 
 #include "nlp-engine/enginefactory.h"
 #include "nlp-engine/hybridengine.h"
+#include "nlp-engine/cb2engine.h"
 
 //--------------------------------------------------------------------------------------------------
 // EngineFactory
@@ -28,7 +29,7 @@
 
 Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
 {
-    return new Nlp::HybridEngine(); // FIXME
+    return new Nlp::Cb2Engine();
 }
 
 //--------------------------------------------------------------------------------------------------

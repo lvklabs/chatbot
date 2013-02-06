@@ -300,7 +300,11 @@ bool Lvk::BE::AppFacade::generalSetup()
     m_rlogh.setUsername(m_rules.metadata(FILE_METADATA_USERNAME).toString());
 
     // Warning order is importante here:
-    setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt());
+    setNlpEngineOptions(m_rules.metadata(FILE_METADATA_NLP_OPTIONS).toUInt()
+                        ////////////////////////// FIXME ///////////////////////////
+                        // Forcing legacy engine. Remove once engine 2.0 is stable
+                        | LegacyEngine);
+                        ////////////////////////////////////////////////////////////
     setupChatbot();
     refreshNlpEngine();
 

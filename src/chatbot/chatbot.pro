@@ -94,6 +94,8 @@ HEADERS += \
     nlp-engine/sanitizerfactory.h \
     nlp-engine/enginefactory.h \
     nlp-engine/nlpproperties.h \
+    nlp-engine/cb2engine.h \
+    nlp-engine/tree.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \
@@ -190,6 +192,8 @@ SOURCES += \
     nlp-engine/lemmatizerfactory.cpp \
     nlp-engine/sanitizerfactory.cpp \
     nlp-engine/enginefactory.cpp \
+    nlp-engine/cb2engine.cpp \
+    nlp-engine/tree.cpp \
     chat-adapter/historyhelper.cpp \
     chat-adapter/xmppchatbot.cpp \
     chat-adapter/fbchatbot.cpp \

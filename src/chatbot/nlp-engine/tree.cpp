@@ -19,18 +19,33 @@
  *
  */
 
-#ifndef LVK_CMN_VERSION_H
-#define LVK_CMN_VERSION_H
+#include "tree.h"
 
-#include "common/versionrev.h"
+//--------------------------------------------------------------------------------------------------
+// Tree
+//--------------------------------------------------------------------------------------------------
 
-#define ORGANIZATION_NAME   "LVK"
-#define ORGANIZATION_DOMAIN "lvklabs.com"
+Lvk::Nlp::Tree::Tree()
+{
+}
 
-#define APP_VERSION_STR     "2.0-alpha1"
-#define APP_VERSION_REV     AUTO_APP_VERSION_REV
-#define APP_NAME            "Chatbot"
-#define APP_URL_CONTACT     "www.lvklabs.com"
-#define APP_MAIL_CONTACT    "contact@lvklabs.com"
+//--------------------------------------------------------------------------------------------------
 
-#endif // LVK_CMN_VERSION_H
+void Lvk::Nlp::Tree::add(const Rule &/*rule*/)
+{
+    // TODO
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QStringList Lvk::Nlp::Tree::getResponses(const QString &/*input*/, Engine::MatchList &matches)
+{
+    QStringList responses;
+
+    // TODO
+    responses.append("*** NOT IMPLEMENTED ***");
+    matches.append(QPair<RuleId, int>(0,0));
+
+    return responses;
+}
+
