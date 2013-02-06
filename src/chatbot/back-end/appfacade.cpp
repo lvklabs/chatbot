@@ -42,6 +42,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMutex>
+#include <QMutexLocker>
 
 //--------------------------------------------------------------------------------------------------
 // Non-members Helpers
@@ -91,6 +93,7 @@ Lvk::BE::AppFacade::AppFacade(QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
       m_nlpEngine(Nlp::EngineFactory().createEngine()),
+      m_engineMutex(new QMutex()),
       m_chatbot(0),
       m_nlpOptions(0)
 {
@@ -103,6 +106,7 @@ Lvk::BE::AppFacade::AppFacade(Nlp::Engine *nlpEngine, QObject *parent /*= 0*/)
     : QObject(parent),
       m_evasivesRule(0),
       m_nlpEngine(nlpEngine),
+      m_engineMutex(new QMutex()),
       m_chatbot(0),
       m_nlpOptions(0) // FIXME value?
 {
@@ -144,6 +148,7 @@ Lvk::BE::AppFacade::~AppFacade()
     close();
 
     delete m_chatbot;
+    delete m_engineMutex;
     delete m_nlpEngine;
 }
 
@@ -431,6 +436,8 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
     matches.clear();
     QString response;
 
+    QMutexLocker locker(m_engineMutex);
+
     if (m_nlpEngine) {
         Nlp::Engine::MatchList nlpRulesMatched;
         response = m_nlpEngine->getResponse(input, target, nlpRulesMatched);
@@ -455,6 +462,8 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
 
 void Lvk::BE::AppFacade::refreshNlpEngine()
 {
+    QMutexLocker locker(m_engineMutex);
+
     m_evasivesRule = 0;
     m_targets.clear();
 
@@ -516,6 +525,19 @@ void Lvk::BE::AppFacade::setNlpEngineOptions(unsigned options)
 {
     if (m_nlpOptions == options) {
         return;
+    }
+
+    QMutexLocker locker(m_engineMutex);
+
+    if ((options & LegacyEngine) && !(m_nlpOptions & LegacyEngine)) {
+        delete m_nlpEngine;
+        m_nlpEngine = Nlp::EngineFactory().createLegacyEngine();
+        m_nlpOptions = 0;
+    }
+    if (!(options & LegacyEngine) && (m_nlpOptions & LegacyEngine)) {
+        delete m_nlpEngine;
+        m_nlpEngine = Nlp::EngineFactory().createEngine();
+        m_nlpOptions = 0;
     }
 
     if ((options & RemoveDupChars) && !(m_nlpOptions & RemoveDupChars)) {

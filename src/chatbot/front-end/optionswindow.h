@@ -40,13 +40,35 @@ public:
     {
         Options()
             : lemmatizeSentence(false), ignoreDupChars(false),
-              exactMatchSupport(false), preferCurCategory(false)
+              exactMatchSupport(false), preferCurCategory(false),
+              legacyEngine(false)
         { }
 
         bool lemmatizeSentence; ///< NLP engine lemmatizes sentences
         bool ignoreDupChars;    ///< NLP engine ignores duplicated characters
         bool exactMatchSupport; ///< NLP engine exact match support enabled
         bool preferCurCategory; ///< NLP engine prefers rules on the current category
+        bool legacyEngine;      ///< Use legacy NLP engine from Chatbot 1.x
+
+        /**
+         * Returns true if \a this is equal to \a other. Otherwise; returns false
+         */
+        bool operator==(const Options &other)
+        {
+            return lemmatizeSentence == other.lemmatizeSentence &&
+                    ignoreDupChars == other.ignoreDupChars &&
+                    exactMatchSupport == other.exactMatchSupport &&
+                    preferCurCategory == other.preferCurCategory &&
+                    legacyEngine == other.legacyEngine;
+        }
+
+        /**
+         * Returns true if \a this is different to \a other. Otherwise; returns false
+         */
+        bool operator!=(const Options &other)
+        {
+            return !this->operator==(other);
+        }
     };
 
     /**

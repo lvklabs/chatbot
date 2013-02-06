@@ -49,6 +49,11 @@ public:
      * Creates a default NLP engine.
      */
     Engine* createEngine();
+
+    /**
+     * Creates a legacy NLP engine (Chatbot 1.x).
+     */
+    Engine* createLegacyEngine();
 };
 
 /// @}

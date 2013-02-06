@@ -55,8 +55,9 @@ void Lvk::FE::OptionsWindow::setOptions(const Lvk::FE::OptionsWindow::Options &o
 {
     ui->rmDupCharCheckBox->setChecked(opt.ignoreDupChars);
     ui->lemmatizeCheckBox->setChecked(opt.lemmatizeSentence);
-    ui->exactMatchCheckbox->setChecked(opt.exactMatchSupport);
+    ui->exactMatchCheckBox->setChecked(opt.exactMatchSupport);
     ui->preferCategCheckBox->setChecked(opt.preferCurCategory);
+    ui->legacyEngineCheckBox->setChecked(opt.legacyEngine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -67,8 +68,9 @@ Lvk::FE::OptionsWindow::Options Lvk::FE::OptionsWindow::options() const
 
     opt.ignoreDupChars = ui->rmDupCharCheckBox->isChecked();
     opt.lemmatizeSentence = ui->lemmatizeCheckBox->isChecked();
-    opt.exactMatchSupport = ui->exactMatchCheckbox->isChecked();
+    opt.exactMatchSupport = ui->exactMatchCheckBox->isChecked();
     opt.preferCurCategory = ui->preferCategCheckBox->isChecked();
+    opt.legacyEngine = ui->legacyEngineCheckBox->isChecked();
 
     return opt;
 }

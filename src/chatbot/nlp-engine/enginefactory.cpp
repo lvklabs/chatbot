@@ -28,6 +28,13 @@
 
 Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
 {
+    return new Nlp::HybridEngine(); // FIXME
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createLegacyEngine()
+{
     return new Nlp::HybridEngine();
 }
 

@@ -63,7 +63,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="exactMatchCheckbox">
+        <widget class="QCheckBox" name="exactMatchCheckBox">
          <property name="text">
           <string>Enable exact match support</string>
          </property>
@@ -73,6 +73,16 @@ p, li { white-space: pre-wrap; }
         <widget class="QCheckBox" name="preferCategCheckBox">
          <property name="text">
           <string>Prefer rules on the current category</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="legacyEngineCheckBox">
+         <property name="toolTip">
+          <string>Use this option only if you want strict backward compatibility with Chatbot 1.x</string>
+         </property>
+         <property name="text">
+          <string>Use legacy NLP engine (Chatbot 1.x)</string>
          </property>
         </widget>
        </item>
