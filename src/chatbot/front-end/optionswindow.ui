@@ -77,16 +77,6 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="legacyEngineCheckBox">
-         <property name="toolTip">
-          <string>Use this option only if you want strict backward compatibility with Chatbot 1.x</string>
-         </property>
-         <property name="text">
-          <string>Use legacy NLP engine (Chatbot 1.x)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer name="generalVerticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

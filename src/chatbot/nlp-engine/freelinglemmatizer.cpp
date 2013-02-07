@@ -114,16 +114,51 @@ inline void init(maco** p, const ConfigFilesMap &configFiles)
 
 //--------------------------------------------------------------------------------------------------
 
-inline void convert(const std::list<sentence> &ls, QString &str)
+// Required for split() to mark the end of the sentence, otherwise returns an empty
+// list and waits for more input.
+//
+// We need to append " ." instead of just "." because inputs like "Hi A" splits into:
+// "Hi", "A."
+// Freeling gets confused and thinks that "A." is an abbrevation, should split into:
+// "Hi", "A", "."
+//
+// For more details see https://github.com/lvklabs/chatbot/issues/33
+inline QString addFullStop(const QString &input)
 {
-    str.clear();
+    QString s = input.trimmed();
+
+    if (!s.endsWith(" .")) {
+        s.append(" .");
+    }
+
+    return s;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline void convert(const std::list<word> &lw, QStringList &l)
+{
+    l.clear();
+
+    for (std::list<word>::const_iterator wit = lw.begin(); wit != lw.end(); ++wit) {
+        l.append(QString::fromStdString(wit->get_form()));
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline void convert(const std::list<sentence> &ls, Lvk::Nlp::WordList &l)
+{
+    l.clear();
 
     for (list<sentence>::const_iterator lit = ls.begin(); lit != ls.end(); ++lit) {
         for (sentence::const_iterator wit = lit->begin(); wit != lit->end(); ++wit) {
-            if (str.size() > 0 && wit->get_form() != ".") {
-                str += " ";
-            }
-            str += QString::fromStdString(wit->get_lemma());
+            Lvk::Nlp::Word w;
+            w.origWord = QString::fromStdString(wit->get_form());
+            w.normWord = QString::fromStdString(wit->get_form());
+            w.lemma    = QString::fromStdString(wit->get_lemma());
+            w.posTag   = QString::fromStdString(wit->get_parole());
+            l.append(w);
         }
     }
 }
@@ -167,37 +202,37 @@ Lvk::Nlp::FreelingLemmatizer::~FreelingLemmatizer()
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input)
+void Lvk::Nlp::FreelingLemmatizer::tokenize(const QString &input, QStringList &l)
 {
-    QString output = input.trimmed();
-
     if (m_flInit) {
-        if (!output.endsWith(" .")) {
-            output.append(" .");
-
-            // Required for split() to mark the end of the sentence, otherwise returns an empty
-            // list and waits for more input.
-            //
-            // We need to append " ." instead of just "." because inputs like "Hi A" splits into:
-            // "Hi", "A."
-            // Freeling gets confused and thinks that "A." is an abbrevation, should split into:
-            // "Hi", "A", "."
-            //
-            // For more details see https://github.com/lvklabs/chatbot/issues/33
-        }
-
         std::list<word> lw;
-        m_tk->tokenize(output.toStdString(), lw);
+        m_tk->tokenize(addFullStop(input).toStdString(), lw);
+
+        convert(lw, l);
+    } else {
+        qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
+    }
+
+    qDebug() << "   - Tokenized:" << input << "->" << l;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList &l)
+{
+    if (m_flInit) {
+        std::list<word> lw;
+        m_tk->tokenize(addFullStop(input).toStdString(), lw);
 
         std::list<sentence> ls;
         m_sp->split(lw, false, ls);
 
         m_morpho->analyze(ls);
 
-        convert(ls, output);
+        convert(ls, l);
+    } else {
+        qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
     }
 
-    qDebug() << "   - Lemmatized:" << input << "->" << output;
-
-    return output;
+    qDebug() << "   - Lemmatized:" << input << "->" << l;
 }

@@ -21,9 +21,8 @@
 
 #include "nlp-engine/cb2engine.h"
 #include "nlp-engine/rule.h"
-#include "nlp-engine/nullsanitizer.h"
-#include "nlp-engine/nulllemmatizer.h"
 #include "nlp-engine/nlpproperties.h"
+#include "nlp-engine/globaltools.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "common/logger.h"
@@ -58,10 +57,7 @@ inline QSharedPointer<T> makeSharedPtr(T *p)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::Cb2Engine::Cb2Engine()
-    : m_preSanitizer(new Nlp::NullSanitizer()),
-      m_postSanitizer(new Nlp::NullSanitizer()),
-      m_lemmatizer(new Nlp::NullLemmatizer()),
-      m_logFile(new QFile()),
+    : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
       m_setTopics(false)
@@ -72,14 +68,13 @@ Lvk::Nlp::Cb2Engine::Cb2Engine()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::Cb2Engine::Cb2Engine(Sanitizer *sanitizer)
-    : m_preSanitizer(sanitizer),
-      m_postSanitizer(new Nlp::NullSanitizer()),
-      m_lemmatizer(new Nlp::NullLemmatizer()),
-      m_logFile(new QFile()),
+    : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
       m_setTopics(false)
 {
+    Nlp::GlobalTools::instance()->setPreSanitizer(sanitizer);
+
     initLog();
 }
 
@@ -87,14 +82,15 @@ Lvk::Nlp::Cb2Engine::Cb2Engine(Sanitizer *sanitizer)
 
 Lvk::Nlp::Cb2Engine::Cb2Engine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
                                Sanitizer *postSanitizer)
-    : m_preSanitizer(preSanitizer),
-      m_postSanitizer(postSanitizer),
-      m_lemmatizer(lemmatizer),
-      m_logFile(new QFile()),
+    : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
       m_setTopics(false)
 {
+    Nlp::GlobalTools::instance()->setPreSanitizer(preSanitizer);
+    Nlp::GlobalTools::instance()->setLemmatizer(lemmatizer);
+    Nlp::GlobalTools::instance()->setPostSanitizer(postSanitizer);
+
     initLog();
 }
 
@@ -266,31 +262,12 @@ Lvk::Nlp::Tree * Lvk::Nlp::Cb2Engine::buildTree(const QString &target)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Cb2Engine::normalize(QStringList &inputList)
-{
-    for (int i = 0; i < inputList.size(); ++i) {
-        normalize(inputList[i]);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Nlp::Cb2Engine::normalize(QString &input)
-{
-    qDebug() << " - Normalizing input" << input;
-
-    input = m_preSanitizer->sanitize(input);
-    input = m_lemmatizer->lemmatize(input);
-    input = m_postSanitizer->sanitize(input);
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Lvk::Nlp::Cb2Engine::setPreSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
 {
     QMutexLocker locker(m_mutex);
 
-    m_preSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer());
+    Nlp::GlobalTools::instance()->setPreSanitizer(sanitizer);
+
     m_dirty = true;
 }
 
@@ -300,7 +277,8 @@ void Lvk::Nlp::Cb2Engine::setLemmatizer(Lvk::Nlp::Lemmatizer *lemmatizer)
 {
     QMutexLocker locker(m_mutex);
 
-    m_lemmatizer.reset(lemmatizer ? lemmatizer : new NullLemmatizer());
+    Nlp::GlobalTools::instance()->setLemmatizer(lemmatizer);
+
     m_dirty = true;
 }
 
@@ -310,7 +288,8 @@ void Lvk::Nlp::Cb2Engine::setPostSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
 {
     QMutexLocker locker(m_mutex);
 
-    m_postSanitizer.reset(sanitizer ? sanitizer : new NullSanitizer);
+    Nlp::GlobalTools::instance()->setPostSanitizer(sanitizer);
+
     m_dirty = true;
 }
 

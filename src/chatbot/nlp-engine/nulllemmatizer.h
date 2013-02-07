@@ -17,7 +17,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The NullLemmatizer class provides a Lemmatizer that does nothing.
+ * \brief The NullLemmatizer class provides a Lemmatizer that does nothing, only tokenizes
  */
 class NullLemmatizer : public Lemmatizer
 {
@@ -33,11 +33,26 @@ public:
     ~NullLemmatizer() { }
 
     /**
-     * Returns \a input without any change.
+     *
      */
-    QString lemmatize(const QString &input)
+    void lemmatize(const QString &input, WordList &l)
     {
-        return input;
+        l.clear();
+
+        QStringList tokens;
+        tokenize(input, tokens);
+
+        foreach (QString t, tokens) {
+            l.append(Nlp::Word(t));
+        }
+    }
+
+    /**
+     * Splits \a input using regexp "\\s+"
+     */
+    void tokenize(const QString &input, QStringList &l)
+    {
+        l = input.split(QRegExp("\\s+"), QString::SkipEmptyParts);
     }
 };
 

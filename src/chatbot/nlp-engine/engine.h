@@ -57,9 +57,14 @@ public:
     virtual ~Engine() {}
 
     /**
-     * MatchList provides a list of pairs (RuleId, InputNumber)
+     * RuleMatch provides a pair (RuleId, InputNumber)
      */
-    typedef QList< QPair<RuleId, int> > MatchList;
+    typedef QPair<RuleId, int> RuleMatch;
+
+    /**
+     * MatchList provides a list of RuleMatch
+     */
+    typedef QList<RuleMatch> MatchList;
 
     /**
      * Returns a copy of the rules.

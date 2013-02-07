@@ -3,7 +3,8 @@ TARGET = chatbot
 QT += \
     gui \
     xml \
-    network
+    network \
+    qt3support ### TODO remove this dep
 
 TEMPLATE = app
 
@@ -21,17 +22,16 @@ ICON_THEME = chatbot
 
 # Required config options are:
 # - qxmpp
-# - programq
 # Optional config options are:
 # - freeling  : Enable freeling lemmatizer
 # - gelf_stats: Enable Graylog statistics on remote server
 # - openssl   : Enable cryptographic security with openssl
 win32 {
-    CONFIG  += qxmpp programq freeling
+    CONFIG  += qxmpp freeling
 } else:mac {
-    CONFIG  += qxmpp programq
+    CONFIG  += qxmpp
 } else {
-    CONFIG  += qxmpp programq freeling
+    CONFIG  += qxmpp freeling
 }
 
 PROJECT_PATH = $$PWD
@@ -80,9 +80,6 @@ HEADERS += \
     back-end/chatbotfactory.h \
     back-end/chatbottempfile.h \
     back-end/filemetadata.h \
-    nlp-engine/exactmatchengine.h \
-    nlp-engine/aimlengine.h \
-    nlp-engine/hybridengine.h \
     nlp-engine/sanitizer.h \
     nlp-engine/defaultsanitizer.h \
     nlp-engine/nullsanitizer.h \
@@ -96,6 +93,9 @@ HEADERS += \
     nlp-engine/nlpproperties.h \
     nlp-engine/cb2engine.h \
     nlp-engine/tree.h \
+    nlp-engine/globaltools.h \
+    nlp-engine/scoringalgorithm.h \
+    nlp-engine/matchpolicy.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \
@@ -146,7 +146,7 @@ HEADERS += \
     da-server/contestdata.h \
     da-server/contestdatauploader.h \
     da-server/nullcontestdatauploader.h \
-    da-server/datauploaderfactory.h
+    da-server/datauploaderfactory.h \
 
 SOURCES += \
     main/main.cpp \
@@ -185,15 +185,15 @@ SOURCES += \
     back-end/accountverifier.cpp \
     back-end/chatbotfactory.cpp \
     back-end/chatbottempfile.cpp \
-    nlp-engine/exactmatchengine.cpp \
-    nlp-engine/aimlengine.cpp \
-    nlp-engine/hybridengine.cpp \
     nlp-engine/defaultsanitizer.cpp \
     nlp-engine/lemmatizerfactory.cpp \
     nlp-engine/sanitizerfactory.cpp \
     nlp-engine/enginefactory.cpp \
     nlp-engine/cb2engine.cpp \
     nlp-engine/tree.cpp \
+    nlp-engine/globaltools.cpp \
+    nlp-engine/scoringalgorithm.cpp \
+    nlp-engine/matchpolicy.cpp
     chat-adapter/historyhelper.cpp \
     chat-adapter/xmppchatbot.cpp \
     chat-adapter/fbchatbot.cpp \
@@ -221,7 +221,7 @@ SOURCES += \
     da-server/rest.cpp \
     da-server/userauth.cpp \
     da-server/updater.cpp \
-    da-server/datauploaderfactory.cpp
+    da-server/datauploaderfactory.cpp \
 
 
 FORMS += \
@@ -262,12 +262,6 @@ qxmpp {
     LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
 }
 
-programq {
-    QT += qt3support
-    HEADERS += $$PRGRAMQ_INCLUDE_PATH/aimlparser.h
-    SOURCES += $$PRGRAMQ_SRC_PATH/aimlparser.cpp
-}
-
 # Freeling support
 freeling {
     DEFINES += PCRE_STATIC FREELING_SUPPORT
@@ -304,3 +298,5 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
 ############################################
+
+

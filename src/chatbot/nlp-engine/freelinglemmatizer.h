@@ -40,9 +40,15 @@ public:
     ~FreelingLemmatizer();
 
     /**
-     * \copydoc Lemmatizer::lemmatize(const QString &)
+     * \copydoc Lemmatizer::tokenize(const QString &input, QStringList &l)
      */
-    QString lemmatize(const QString &input);
+    virtual void tokenize(const QString &input, QStringList &l);
+
+    /**
+     * \copydoc Lemmatizer::lemmatize(const QString &input, WordList &l)
+     */
+    virtual void lemmatize(const QString &input, WordList &l);
+
 
 private:
     FreelingLemmatizer(const FreelingLemmatizer&);

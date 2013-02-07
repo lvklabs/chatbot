@@ -19,14 +19,41 @@
  *
  */
 
-#include "nlp-engine/enginefactory.h"
-#include "nlp-engine/cb2engine.h"
+#include "scoringalgorithm.h"
 
 //--------------------------------------------------------------------------------------------------
-// EngineFactory
+// ScoringAlgorithm
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
+Lvk::Nlp::ScoringAlgorithm::ScoringAlgorithm()
 {
-    return new Nlp::Cb2Engine();
 }
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::ScoringAlgorithm::updateScore(int tokenIndex, float weight)
+{
+    for (int i = m_weights.size(); i <= tokenIndex; ++i) {
+        m_weights.append(0);
+    }
+
+    m_weights[tokenIndex] = weight;
+
+    for (int i = tokenIndex + 1; i < m_weights.size(); ++i) {
+        m_weights[i] = 0;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+float Lvk::Nlp::ScoringAlgorithm::currentScore()
+{
+    float score = 0;
+
+    foreach (float w, m_weights) {
+        score += w;
+    }
+
+    return score;
+}
+

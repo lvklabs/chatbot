@@ -19,10 +19,15 @@
  *
  */
 
-#ifndef LVK_NLP_ENGINEFACTORY_H
-#define LVK_NLP_ENGINEFACTORY_H
+#ifndef LVK_NLP_WORD_H
+#define LVK_NLP_WORD_H
 
-#include "nlp-engine/engine.h"
+#include <QString>
+#include <QDebug>
+#include <QStringList>
+#include <QList>
+#include <QDataStream>
+#include <QMetaType>
 
 namespace Lvk
 {
@@ -38,18 +43,31 @@ namespace Nlp
 /// @{
 
 /**
- * \brief The EngineFactory class provides a factory of NLP engines.
+ * \brief Word struct
  */
-
-class EngineFactory
+struct Word
 {
-public:
+    Word(const QString origWord = "") : origWord(origWord) { }
 
-    /**
-     * Creates a default NLP engine.
-     */
-    Engine* createEngine();
+    QString origWord;
+    QString normWord;
+    QString lemma;
+    QString posTag;
+    QStringList altSpells;
+
+    //bool operator==(const Word &other)
 };
+
+
+inline QDebug& operator<<(QDebug& dbg, const Word &w)
+{
+    dbg.space() << w.origWord << w.normWord << w.lemma << w.posTag /*<< w.altSpells*/;
+
+    return dbg.maybeSpace();
+}
+
+
+typedef QList<Word> WordList;
 
 /// @}
 
@@ -59,6 +77,5 @@ public:
 
 } // namespace Lvk
 
-
-#endif // LVK_NLP_ENGINEFACTORY_H
+#endif // LVK_NLP_WORD_H
 

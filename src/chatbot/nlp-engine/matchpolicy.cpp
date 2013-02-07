@@ -19,14 +19,27 @@
  *
  */
 
-#include "nlp-engine/enginefactory.h"
-#include "nlp-engine/cb2engine.h"
+#include "matchpolicy.h"
+
+#include "nlp-engine/node.h"
+#include "nlp-engine/word.h"
 
 //--------------------------------------------------------------------------------------------------
-// EngineFactory
+// MatchPolicy
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
+float Lvk::Nlp::MatchPolicy::operator()(const Lvk::Nlp::Node *node, const Lvk::Nlp::Word &w)
 {
-    return new Nlp::Cb2Engine();
+    if (/*Nlp::WildcardNode *wcNode =*/ dynamic_cast<const Nlp::WildcardNode *>(node)) {
+        return 0.001;
+    } else if (const Nlp::WordNode *wNode = dynamic_cast<const Nlp::WordNode *>(node)) {
+        if (wNode->word.lemma == w.lemma) {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
+    } else {
+        return 0.0;
+    }
 }
+

@@ -1,6 +1,8 @@
 #ifndef LVK_NLP_LEMMATIZER_H
 #define LVK_NLP_LEMMATIZER_H
 
+#include "nlp-engine/word.h"
+
 #include <QString>
 #include <QStringList>
 
@@ -30,21 +32,14 @@ public:
     virtual ~Lemmatizer() {}
 
     /**
-     * Lemmatizes \a input.
+     * Tokenizes \a input.
      */
-    virtual QString lemmatize(const QString &input) = 0;
+    virtual void tokenize(const QString &input, QStringList &l) = 0;
 
     /**
-     * Lemmatizes each string of the list \a list and returns a new one.
+     * Lemmatizes \a input.
      */
-    virtual QStringList lemmatize(const QStringList &list)
-    {
-        QStringList lemList;
-        for (int i = 0; i < list.size(); ++i) {
-            lemList.append(lemmatize(list[i]));
-        }
-        return lemList;
-    }
+    virtual void lemmatize(const QString &input, WordList &l) = 0;
 };
 
 /// @}

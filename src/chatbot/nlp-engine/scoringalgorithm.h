@@ -19,14 +19,49 @@
  *
  */
 
-#include "nlp-engine/enginefactory.h"
-#include "nlp-engine/cb2engine.h"
+#ifndef LVK_NLP_SCORINGALGORITHM_H
+#define LVK_NLP_SCORINGALGORITHM_H
 
-//--------------------------------------------------------------------------------------------------
-// EngineFactory
-//--------------------------------------------------------------------------------------------------
+#include <QList>
 
-Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
+namespace Lvk
 {
-    return new Nlp::Cb2Engine();
-}
+
+/// \addtogroup Lvk
+/// @{
+
+namespace Nlp
+{
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
+
+/**
+ * \brief ScoringAlgorithm class 
+ */
+
+class ScoringAlgorithm
+{
+public:
+    ScoringAlgorithm();
+
+    void updateScore(int tokenIndex, float weight);
+
+    float currentScore();
+
+private:
+    QList<float> m_weights;
+};
+
+/// @}
+
+} // namespace Nlp
+
+/// @}
+
+} // namespace Lvk
+
+
+#endif // LVK_NLP_SCORINGALGORITHM_H
+

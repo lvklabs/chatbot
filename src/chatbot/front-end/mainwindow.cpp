@@ -866,7 +866,6 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
     curOpt.lemmatizeSentence = nlpEngineOption(BE::AppFacade::LemmatizeSentence);
     curOpt.exactMatchSupport = nlpEngineOption(BE::AppFacade::ExactMatchSupport);
     curOpt.preferCurCategory = nlpEngineOption(BE::AppFacade::PreferCurCategory);
-    curOpt.legacyEngine = nlpEngineOption(BE::AppFacade::LegacyEngine);
 
     OptionsWindow optWindow(curOpt, this);
 
@@ -884,13 +883,6 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
         }
         if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
             setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
-        }
-        if (newOpt.legacyEngine != curOpt.legacyEngine) {
-            setNlpEngineOption(BE::AppFacade::LegacyEngine, newOpt.legacyEngine);
-        }
-
-        if (newOpt != curOpt) {
-            m_appFacade->refreshNlpEngine();
         }
     }
 }

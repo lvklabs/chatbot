@@ -1,11 +1,6 @@
 # Paths to third party libraries
 THIRD_PARTY_PATH      = $$PWD/../third-party
 
-# ProgramQ - Mandatory
-PRGRAMQ_BASE_PATH     = $$THIRD_PARTY_PATH/ProgramQ
-PRGRAMQ_INCLUDE_PATH  = $$PRGRAMQ_BASE_PATH
-PRGRAMQ_SRC_PATH      = $$PRGRAMQ_BASE_PATH
-
 # QXmpp - Mandatory
 QXMPP_BASE_PATH       = $$THIRD_PARTY_PATH/QXmpp
 QXMPP_INCLUDE_PATH    = $$QXMPP_BASE_PATH/include

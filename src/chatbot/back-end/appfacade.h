@@ -40,7 +40,6 @@
 #include "common/conversation.h"
 
 class QFile;
-class QMutex;
 
 namespace Lvk
 {
@@ -204,8 +203,7 @@ public:
         LemmatizeSentence = 0x02,    ///< Lemmatize sentences
         SanitizePostLemma = 0x04,    ///< Sanitize post lemmatization
         ExactMatchSupport = 0x08,    ///< Enable exact match support
-        PreferCurCategory = 0x10,    ///< Prefer rules on the current category
-        LegacyEngine      = 0x20     ///< Use legacy engine from version 1.x
+        PreferCurCategory = 0x10     ///< Prefer rules on the current category
     };
 
     /**
@@ -426,7 +424,6 @@ private:
     ChatbotRulesFile m_rules;
     Rule *m_evasivesRule;
     Nlp::Engine *m_nlpEngine;
-    QMutex *m_engineMutex;
     CA::Chatbot *m_chatbot;
     ChatType m_currentChatbotType;
     QSet<QString> m_targets;

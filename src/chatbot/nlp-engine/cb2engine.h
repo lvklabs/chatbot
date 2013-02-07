@@ -174,39 +174,6 @@ public:
      */
     virtual void setProperty(const QString &name, const QVariant &value);
 
-protected:
-
-    /**
-     * Normalizes the given string \a str
-     */
-    void normalize(QString &str);
-
-    /**
-     * Normalizes the given string \a str and returns a new string
-     */
-    QString normalize(const QString &str)
-    {
-        QString tmp = str;
-        normalize(tmp);
-        return tmp;
-    }
-
-    /**
-     * Normalizes the all the strings in list \a l
-     */
-    void normalize(QStringList &l);
-
-
-    /**
-     * Normalizes the given list \a l and returns a new list
-     */
-    QStringList normalize(const QStringList &l)
-    {
-        QStringList tmp = l;
-        normalize(tmp);
-        return tmp;
-    }
-
     /**
      * \copydoc Engine::clear()
      */
@@ -220,9 +187,6 @@ private:
     typedef QHash<QString, QString> TopicsMap;
 
     RuleList m_rules;
-    std::auto_ptr<Sanitizer>  m_preSanitizer;
-    std::auto_ptr<Sanitizer>  m_postSanitizer;
-    std::auto_ptr<Lemmatizer> m_lemmatizer;
     std::auto_ptr<QFile>      m_logFile;
     TreesMap                  m_trees;
     TopicsMap                 m_topics;

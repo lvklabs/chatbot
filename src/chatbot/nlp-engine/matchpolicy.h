@@ -19,14 +19,42 @@
  *
  */
 
-#include "nlp-engine/enginefactory.h"
-#include "nlp-engine/cb2engine.h"
+#ifndef LVK_NLP_MATCHPOLICY_H
+#define LVK_NLP_MATCHPOLICY_H
 
-//--------------------------------------------------------------------------------------------------
-// EngineFactory
-//--------------------------------------------------------------------------------------------------
-
-Lvk::Nlp::Engine * Lvk::Nlp::EngineFactory::createEngine()
+namespace Lvk
 {
-    return new Nlp::Cb2Engine();
-}
+
+/// \addtogroup Lvk
+/// @{
+
+namespace Nlp
+{
+
+/// \ingroup Lvk
+/// \addtogroup Nlp
+/// @{
+
+struct Node;
+struct Word;
+
+/**
+ * \brief MatchPolicy class 
+ */
+class MatchPolicy
+{
+public:
+    float operator()(const Node *node, const Word &w);
+};
+
+/// @}
+
+} // namespace Nlp
+
+/// @}
+
+} // namespace Lvk
+
+
+#endif // LVK_NLP_MATCHPOLICY_H
+

@@ -57,7 +57,6 @@ void Lvk::FE::OptionsWindow::setOptions(const Lvk::FE::OptionsWindow::Options &o
     ui->lemmatizeCheckBox->setChecked(opt.lemmatizeSentence);
     ui->exactMatchCheckBox->setChecked(opt.exactMatchSupport);
     ui->preferCategCheckBox->setChecked(opt.preferCurCategory);
-    ui->legacyEngineCheckBox->setChecked(opt.legacyEngine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -70,7 +69,6 @@ Lvk::FE::OptionsWindow::Options Lvk::FE::OptionsWindow::options() const
     opt.lemmatizeSentence = ui->lemmatizeCheckBox->isChecked();
     opt.exactMatchSupport = ui->exactMatchCheckBox->isChecked();
     opt.preferCurCategory = ui->preferCategCheckBox->isChecked();
-    opt.legacyEngine = ui->legacyEngineCheckBox->isChecked();
 
     return opt;
 }
