@@ -213,7 +213,7 @@ void Lvk::Nlp::FreelingLemmatizer::tokenize(const QString &input, QStringList &l
         qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
     }
 
-    qDebug() << "   - Tokenized:" << input << "->" << l;
+    qDebug() << "Tokenized:" << input << "->" << l;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -234,5 +234,5 @@ void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList
         qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
     }
 
-    qDebug() << "   - Lemmatized:" << input << "->" << l;
+    qDebug() << "Lemmatized:" << input << "->" << l;
 }

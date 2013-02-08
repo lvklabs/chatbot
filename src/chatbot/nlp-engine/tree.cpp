@@ -21,12 +21,27 @@
 
 #include "nlp-engine/tree.h"
 #include "nlp-engine/node.h"
+#include "nlp-engine/word.h"
 #include "nlp-engine/globaltools.h"
 #include "nlp-engine/matchpolicy.h"
 #include "nlp-engine/scoringalgorithm.h"
 
-#define STAR_OP "*"
-#define PLUS_OP "+"
+#include <QtAlgorithms>
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+inline bool highScoreFirst(const Lvk::Nlp::Result &r1, const Lvk::Nlp::Result &r2)
+{
+    return r1.score > r2.score;
+}
+
+
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 // Tree
@@ -54,10 +69,10 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
 {
     Nlp::WordList words;
 
-    foreach (QString input, rule.input()) {
-        Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
+    for (int i = 0; i < rule.input().size(); ++i) {
 
-        filterPunct(words);
+        qDebug() << "Nlp::Tree: Parsing rule id" << rule.id() << "input #" << i;
+        parseRuleInput(rule.input().at(i), words);
 
         if (words.isEmpty()) {
             continue;
@@ -69,80 +84,90 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
             curNode = addNode(w, curNode);
         }
 
-        setNodeOutput(curNode, rule.output());
+        addRuleInfo(curNode, rule.id(), i, rule.output());
 
-        // FIXME Workaround
+        // TODO explain this:
         if (words.last().normWord == STAR_OP && curNode->parent != m_root) {
-            setNodeOutput(curNode->parent, rule.output());
+            addRuleInfo(curNode->parent, rule.id(), i, rule.output());
         }
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Tree::setNodeOutput(Nlp::Node *node, const QStringList &output)
+void Lvk::Nlp::Tree::addRuleInfo(Nlp::Node *node, const Nlp::RuleId &ruleId, int inputIdx,
+                                 const QStringList &output)
 {
     for (int i = 0; i < output.size(); ++i) {
         // TODO set conditionals
-        node->outputs.append(Nlp::CondOutput(output[i], i));
+        node->outputs.append(Nlp::OutputInfo(output[i], ruleId, inputIdx, i));
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &w, Nlp::Node *parent)
+Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *parent)
 {
-    // TODO
-    // if (w in parent.childs)
-    //      return child
-    // else
+    // TODO check if we can avoid these casts:
 
-    if (w.origWord == STAR_OP) {
-        Nlp::Node *newNode = new Nlp::WildcardNode(parent);
-        parent->childs.append(newNode);
-        newNode->childs.append(newNode); // Loop node
-        return newNode;
-    } else if (w.origWord == PLUS_OP) {
-//        Nlp::Node *newNode = new Nlp::WildcardNode(parent);
-//        parent->childs.append(newNode);
-//        Nlp::Node *newNode2 = new Nlp::WildcardNode(newNode);
-//        newNode->childs.append(newNode2);
-//        newNode2->childs.append(newNode2); // Loop node
-//        return newNode2;
-        Nlp::Node *newNode = new Nlp::WildcardNode(parent);
-        parent->childs.append(newNode);
-        newNode->childs.append(newNode); // Loop node
-        return newNode;
-    // } else if (variable) {
+    // If node already exists for the given word, return that node
+
+    if (word.isAlphanum()) {
+        foreach (Nlp::Node *node, parent->childs) {
+            if (Nlp::WordNode* wNode = dynamic_cast<Nlp::WordNode*>(node)) {
+                if (wNode->word == word) {
+                    return node;
+                }
+            }
+        }
+    }
+
+    if (word.isWildcard()) {
+        foreach (Nlp::Node *node, parent->childs) {
+            if (dynamic_cast<Nlp::WildcardNode*>(node)) {
+                // With the current implementation we don't care what kind of wildcard (* or +)
+                // the difference is where the output is located and it's not handled here
+                return node;
+            }
+        }
+    }
+
+    // Otherwise, add new node
+
+    Nlp::Node *newNode = 0;
+
+    if (word.isWildcard()) {
+        newNode = new Nlp::WildcardNode(parent);
+        newNode->childs.append(newNode); // Loop node (see engine documentation)
+    } else if (word.isVariable()) {
         // TODO
     } else {
-        Nlp::Node *newNode = new Nlp::WordNode(w, parent);
-        parent->childs.append(newNode);
-        return newNode;
+        newNode = new Nlp::WordNode(word, parent);
     }
+
+    parent->childs.append(newNode);
+
+    return newNode;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList &matches)
 {
-    matches.clear();
-
     Nlp::WordList words;
-    Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
+    parseUserInput(input, words);
 
-    filterPunct(words);
-
-    ResultList results;
+    Nlp::ResultList results;
     scoredDFS(results, m_root, words);
 
-    // TODO sort results by score
+    qSort(results.begin(), results.end(), highScoreFirst);
 
     QStringList responses;
+    matches.clear();
 
     foreach (const Result &r, results) {
         responses.append(r.output);
-        matches.append(Engine::RuleMatch(r.ruleId, r.inputIndex));
+        matches.append(Engine::RuleMatch(r.ruleId, r.inputIdx));
     }
 
     return responses;
@@ -150,29 +175,30 @@ QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Tree::scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
+void Lvk::Nlp::Tree::scoredDFS(ResultList &results, const Nlp::Node *root, const Nlp::WordList &words,
                                int offset /*= 0*/)
 {
+    QString dgbMargin = QString((offset+1)*4, '#');
+
     foreach (const Nlp::Node *node, root->childs) {
-//        qDebug() << QString((offset+1)*4, '#') << "Current node"
-//                 << (dynamic_cast<const Nlp::WordNode*>(node) ?
-//                         dynamic_cast<const Nlp::WordNode*>(node)->word.origWord : "*");
+        qDebug() <<  dgbMargin << "Current node" << *node;
 
         float matchWeight = (*m_matchPolicy)(node, words[offset]);
-        if (matchWeight > 0) {
 
-//            qDebug() << QString((offset+1)*4, '#') << words[offset] << "match with w" << matchWeight;
+        if (matchWeight > 0) {
+            qDebug() << dgbMargin << words[offset] << "matched with weight" << matchWeight;
 
             m_scoringAlg->updateScore(offset, matchWeight);
+
             if (offset + 1 < words.size()) {
-                scoredDFS(r, node, words, offset + 1);
+                scoredDFS(results, node, words, offset + 1);
             } else {
-                QString output = getOutput(node);
-                if (!output.isEmpty()) {
-                    // TODO add rule id and input index
-                    r.append(Result(output, 0, 0, m_scoringAlg->currentScore()));
-//                } else {
-//                    qDebug() << QString((offset+1)*4, '#') << "No output found!";
+                Nlp::Result r = getValidOutput(node);
+                if (!r.isNull()) {
+                    r.score = m_scoringAlg->currentScore();
+                    results.append(r);
+                } else {
+                    qDebug() << dgbMargin << "No output found!";
                 }
             }
         }
@@ -181,31 +207,56 @@ void Lvk::Nlp::Tree::scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::Tree::getOutput(const Nlp::Node *node)
+Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
 {
-    QString output;
+    Nlp::Result r;
 
-    foreach (const Nlp::CondOutput &co, node->outputs) {
+    // Find first output that is not empty and satisfies its predicate.
+    // TODO consider outputs with different priorities
+    foreach (const Nlp::OutputInfo &co, node->outputs) {
         if (!co.output.isEmpty() && co.predicate()) {
-            output = co.output;
-            // TODO expand variables
+            r.output = co.output; // TODO expand variables
+            r.ruleId = co.ruleId;
+            r.inputIdx = co.inputIdx;
             break;
         }
     }
-    return output;
+    return r;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
+{
+    words.clear();
+
+    Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
+
+    filterPunct(words);
+
+    // TODO parse variables
+    // TODO parse literals
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Tree::parseUserInput(const QString &input, Nlp::WordList &words)
+{
+    words.clear();
+
+    Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
+
+    filterPunct(words);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Nlp::Tree::filterPunct(Nlp::WordList &words)
 {
-    qDebug() << "pre" << words;
     for (int i = 0; i < words.size(); ++i) {
-        const QString &w = words[i].origWord;
-        // TODO check .isPunct(). Consider !.isAlphanum()
-        if (w.size() == 1 && w[0].isPunct() && w != STAR_OP && w != PLUS_OP) {
+        if (words[i].isPunct()) {
             words.removeAt(i);
         }
     }
-    qDebug() << "post" << words;
 }
+

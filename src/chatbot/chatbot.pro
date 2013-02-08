@@ -96,6 +96,9 @@ HEADERS += \
     nlp-engine/globaltools.h \
     nlp-engine/scoringalgorithm.h \
     nlp-engine/matchpolicy.h \
+    nlp-engine/word.h \
+    nlp-engine/node.h \
+    nlp-engine/result.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \
@@ -193,7 +196,7 @@ SOURCES += \
     nlp-engine/tree.cpp \
     nlp-engine/globaltools.cpp \
     nlp-engine/scoringalgorithm.cpp \
-    nlp-engine/matchpolicy.cpp
+    nlp-engine/matchpolicy.cpp \
     chat-adapter/historyhelper.cpp \
     chat-adapter/xmppchatbot.cpp \
     chat-adapter/fbchatbot.cpp \

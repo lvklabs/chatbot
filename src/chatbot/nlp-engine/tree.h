@@ -22,12 +22,14 @@
 #ifndef LVK_NLP_TREE_H
 #define LVK_NLP_TREE_H
 
+#include <QString>
 #include <QStringList>
 #include <QPair>
 #include <QList>
 
 #include "nlp-engine/engine.h"
 #include "nlp-engine/word.h"
+#include "nlp-engine/result.h"
 
 namespace Lvk
 {
@@ -82,25 +84,16 @@ private:
     MatchPolicy *m_matchPolicy;
     ScoringAlgorithm *m_scoringAlg;
 
-    // TODO move this out. Replace old MatchList with ResultList
-    struct Result
-    {
-        Result(const QString &output = "", RuleId ruleId = 0, int inputIndex = 0, float score = 0)
-            : output(output), ruleId(ruleId), inputIndex(inputIndex), score(score) { }
+    Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
 
-        QString output;
-        RuleId ruleId;
-        int inputIndex;
-        float score;
-    };
-
-    typedef QList<Result> ResultList;
-
-    Nlp::Node * addNode(const Nlp::Word &w, Nlp::Node *parent);
-    void setNodeOutput(Nlp::Node *node, const QStringList &output);
+    void addRuleInfo(Nlp::Node *node, const Nlp::RuleId &ruleId, int inputIdx,
+                     const QStringList &output);
     void scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
                    int offset = 0);
-    QString getOutput(const Nlp::Node *node);
+
+    Nlp::Result getValidOutput(const Nlp::Node *node);
+    void parseRuleInput(const QString &input, Nlp::WordList &words);
+    void parseUserInput(const QString &input, Nlp::WordList &words);
     void filterPunct(Nlp::WordList &words);
 };
 

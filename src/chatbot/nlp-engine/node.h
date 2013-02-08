@@ -27,6 +27,7 @@
 
 #include <QList>
 #include <QString>
+#include <QDebug>
 //#include <QSet>
 
 namespace Lvk
@@ -42,6 +43,9 @@ namespace Nlp
 /// \addtogroup Nlp
 /// @{
 
+/**
+ * \brief
+ */
 struct Predicate
 {
     virtual ~Predicate() { }
@@ -53,16 +57,25 @@ struct Predicate
 
 };
 
-struct CondOutput
+/**
+ * \brief
+ */
+struct OutputInfo
 {
-    CondOutput(const QString &output = "", int index = 0, const Predicate &p = Predicate())
-        : output(output), index(index), predicate(p) { }
+    OutputInfo(const QString &output = "", Nlp::RuleId ruleId = 0, int inputIdx = 0,
+               int outputIdx = 0, const Predicate &p = Predicate())
+        : output(output), ruleId(ruleId), inputIdx(inputIdx), outputIdx(outputIdx), predicate(p) { }
 
     QString output;
-    int index;
+    Nlp::RuleId ruleId;
+    int inputIdx;
+    int outputIdx;
     Predicate predicate;
 };
 
+/**
+ * \brief
+ */
 struct Node
 {
     Node(Node *parent = 0)
@@ -72,33 +85,70 @@ struct Node
 
     Node *parent;
     QList<Node *> childs;
-    QList<CondOutput> outputs;
+    QList<OutputInfo> outputs;
     bool randomOutput;
     int nextOutput;
-    //QSet<Nlp::RuleId> ruleIds;
+
+    virtual QString toString() const
+    {
+        return "Node()";
+    }
 };
 
+/**
+ * \brief
+ */
 struct WordNode : Node
 {
     WordNode(const Word &w = Word(), Node *parent = 0)
         : Node(parent), word(w) { }
 
     Word word;
+
+    QString toString() const
+    {
+        return "WordNode(" + word.origWord + ")";
+    }
 };
 
+/**
+ * \brief
+ */
 struct WildcardNode : Node
 {
     WildcardNode(Node *parent = 0)
         : Node(parent) { }
+
+    QString toString() const
+    {
+        return "WildcardNode()";
+    }
 };
 
+/**
+ * \brief
+ */
 struct VariableNode : Node
 {
     VariableNode(const QString &varName = QString(), Node *parent = 0)
         : Node(parent), varName(varName) { }
 
     QString varName;
+
+    QString toString() const
+    {
+        return "VariableNode(" + varName + ")";
+    }
 };
+
+/**
+ * Makes the Node type printable for debugging purposes
+ */
+inline QDebug& operator<<(QDebug& dbg, const Node &n)
+{
+    dbg.nospace() << n.toString();
+    return dbg.maybeSpace();
+}
 
 /// @}
 

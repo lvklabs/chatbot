@@ -64,6 +64,7 @@ public:
     /**
      * MatchList provides a list of RuleMatch
      */
+    // TODO replace MatchList with ResultList
     typedef QList<RuleMatch> MatchList;
 
     /**

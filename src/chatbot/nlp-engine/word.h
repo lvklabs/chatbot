@@ -29,6 +29,10 @@
 #include <QDataStream>
 #include <QMetaType>
 
+#define STAR_OP "*"
+#define PLUS_OP "+"
+
+
 namespace Lvk
 {
 
@@ -55,7 +59,39 @@ struct Word
     QString posTag;
     QStringList altSpells;
 
-    //bool operator==(const Word &other)
+    bool operator==(const Word &other) const
+    {
+        return origWord == other.origWord &&
+                normWord == other.normWord &&
+                lemma == other.lemma &&
+                posTag == other.posTag &&
+                altSpells == other.altSpells;
+    }
+
+    bool operator!=(const Word &other) const
+    {
+        return !this->operator==(other);
+    }
+
+    bool isWildcard() const
+    {
+        return origWord == STAR_OP || origWord == PLUS_OP;
+    }
+
+    bool isPunct() const
+    {
+        return !isWildcard() && origWord.size() == 1 && origWord[0].isPunct();
+    }
+
+    bool isVariable() const
+    {
+        return false; // TODO
+    }
+
+    bool isAlphanum() const
+    {
+        return !isWildcard() && !isPunct(); // TODO
+    }
 };
 
 
