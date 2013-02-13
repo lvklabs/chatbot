@@ -51,7 +51,7 @@ void Lvk::FE::OptionsWindow::connectSignals()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::OptionsWindow::setOptions(const Lvk::FE::OptionsWindow::Options &opt)
+void Lvk::FE::OptionsWindow::setOptions(const Lvk::FE::OptionsWindow::Options &/*opt*/)
 {
     ///////////////////////////////////////////////////////////////////
     // FIXME
