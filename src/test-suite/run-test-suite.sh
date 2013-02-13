@@ -4,7 +4,7 @@ shadow_build_dir=.test-suite-shadow-build
 project_dir=..
 log_file=run.log
 
-unit_tests="json-unit-test cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test aiml-engine-unit-test hybrid-engine-unit-test secure-stats-file-unit-test stats-manager-test updater-unit-test"
+unit_tests="json-unit-test cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test secure-stats-file-unit-test stats-manager-test updater-unit-test cb2-engine-unit-test"
 e2e_tests="user-auth-test"
 
 if [ "$1" == "-u" ]; then

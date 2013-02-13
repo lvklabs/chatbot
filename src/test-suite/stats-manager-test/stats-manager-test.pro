@@ -36,11 +36,13 @@ SOURCES += \
     ../../chatbot/common/csvrow.cpp \
     ../../chatbot/common/csvdocument.cpp \
     ../../chatbot/common/random.cpp \
-    ../../chatbot/nlp-engine/exactmatchengine.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/nlp-engine/enginefactory.cpp \
-    ../../chatbot/nlp-engine/aimlengine.cpp \
-    ../../chatbot/nlp-engine/hybridengine.cpp \
+    ../../chatbot/nlp-engine/cb2engine.cpp \
+    ../../chatbot/nlp-engine/tree.cpp \
+    ../../chatbot/nlp-engine/globaltools.cpp \
+    ../../chatbot/nlp-engine/scoringalgorithm.cpp \
+    ../../chatbot/nlp-engine/matchpolicy.cpp \
     ../../chatbot/back-end/rule.cpp \
     ../../third-party/ProgramQ/aimlparser.cpp \
     statsmanagertest.cpp

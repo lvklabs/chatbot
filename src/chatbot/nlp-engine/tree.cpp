@@ -147,6 +147,8 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
     parent->childs.append(newNode);
 
+    qDebug() << "Nlp::Tree: Added new node" << *newNode << "with parent" << *parent;
+
     return newNode;
 }
 
@@ -228,12 +230,15 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
 
 void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 {
+    qDebug() << "Nlp::Tree: Parsing rule input" << input;
+
     words.clear();
 
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
     filterPunct(words);
 
+    qDebug() << "Nlp::Tree: Parsed rule input" << words;
     // TODO parse variables
     // TODO parse literals
 }
@@ -242,11 +247,15 @@ void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 
 void Lvk::Nlp::Tree::parseUserInput(const QString &input, Nlp::WordList &words)
 {
+    qDebug() << "Nlp::Tree: Parsing user input" << input;
+
     words.clear();
 
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
     filterPunct(words);
+
+    qDebug() << "Nlp::Tree: Parsed user input" << words;
 }
 
 //--------------------------------------------------------------------------------------------------

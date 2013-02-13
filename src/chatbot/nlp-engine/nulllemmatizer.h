@@ -43,7 +43,7 @@ public:
         tokenize(input, tokens);
 
         foreach (QString t, tokens) {
-            l.append(Nlp::Word(t));
+            l.append(Nlp::Word(t, t, t));
         }
     }
 

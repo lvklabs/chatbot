@@ -146,8 +146,8 @@ struct VariableNode : Node
  */
 inline QDebug& operator<<(QDebug& dbg, const Node &n)
 {
-    dbg.nospace() << n.toString();
-    return dbg.maybeSpace();
+    dbg.space() << n.toString();
+    return dbg.space();
 }
 
 /// @}

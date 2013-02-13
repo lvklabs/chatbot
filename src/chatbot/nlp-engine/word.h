@@ -51,7 +51,8 @@ namespace Nlp
  */
 struct Word
 {
-    Word(const QString origWord = "") : origWord(origWord) { }
+    Word(const QString origWord = "", const QString normWord = "", const QString lemma = "")
+        : origWord(origWord), normWord(normWord), lemma(lemma) { }
 
     QString origWord;
     QString normWord;
