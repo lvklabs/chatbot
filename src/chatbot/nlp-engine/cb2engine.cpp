@@ -212,7 +212,9 @@ QStringList Lvk::Nlp::Cb2Engine::getAllResponsesWithTree(const QString &input,
 
     TreesMap::iterator it = m_trees.find(treeName);
 
+    qDebug() << "Cb2Engine: Searching tree with name" << treeName;
     if (it != m_trees.end()) {
+        qDebug() << "Cb2Engine: Found!";
         // We keep the topic for each target, otherwise the Chatbot will confuse topics
         // if it's talking with two or more people at the same time
         //(*it)->setTopic(m_topics[target]);
@@ -249,6 +251,8 @@ void Lvk::Nlp::Cb2Engine::refresh()
 Lvk::Nlp::Tree * Lvk::Nlp::Cb2Engine::buildTree(const QString &target)
 {
     Nlp::Tree *tree = new Nlp::Tree();
+
+    qDebug() << "Cb2Engine: Building tree for target" << target;
 
     for (int i = 0; i < m_rules.size(); ++i) {
         const QStringList &targetList = m_rules[i].target();

@@ -45,7 +45,7 @@
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
     : m_options(RemoveDiacritic | RemovePunctuation | RemoveDupChars | RemoveBraces),
-      m_logEnabled(true)
+      m_logEnabled(false)
 {
     initSets();
 }
@@ -53,7 +53,7 @@ Lvk::Nlp::DefaultSanitizer::DefaultSanitizer()
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::DefaultSanitizer::DefaultSanitizer(unsigned options)
-    : m_options(options), m_logEnabled(true)
+    : m_options(options), m_logEnabled(false)
 {
     initSets();
 }

@@ -108,7 +108,7 @@ public:
     virtual QString sanitize(const QString &str) const;
 
     /**
-     * Enables or disables logging. The log is enabled by default.
+     * Enables or disables logging. The log is disabled by default.
      */
     void setLogEnabled(bool enabled);
 

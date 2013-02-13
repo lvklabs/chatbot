@@ -29,19 +29,27 @@ MockLemmatizer::~MockLemmatizer()
 
 void MockLemmatizer::tokenize(const QString &input, QStringList &l)
 {
-    QStringList tokens = input.split(QRegExp("\\b"), QString::SkipEmptyParts);
+    QString token;
 
-    qDebug() << "MockLemmatizer: tokens:" << tokens;
-
-    //l = tokens.filter(QRegExp("^\\S+$"));
-    foreach (const QString &t, tokens) {
-        QString tt = t.trimmed();
-        if (!tt.isEmpty()) {
-            l.append(tt);
+    foreach (const QChar &c, input) {
+        if (c.isLetterOrNumber()) {
+            token.append(c);
+        } else {
+            if (!token.isEmpty()) {
+                l.append(token);
+                token.clear();
+            }
+            if (!c.isSpace()) {
+                l.append(c);
+            }
         }
     }
 
-    qDebug() << "MockLemmatizer: ftokens:" << l;
+    if (!token.isEmpty()) {
+        l.append(token);
+    }
+
+    qDebug() << "MockLemmatizer: tokens:" << l;
 }
 
 //--------------------------------------------------------------------------------------------------

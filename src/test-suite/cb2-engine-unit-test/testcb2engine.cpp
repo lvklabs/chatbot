@@ -37,6 +37,11 @@
 
 #include "mocklemmatizer.h"
 
+#define EnableTestMatchWithSingleOutput
+#define EnableTestMatchWithSingleOutputWithLemmatizer
+#define EnableTestMatchWithTarget
+#define EnableTestMatchPriority
+
 //--------------------------------------------------------------------------------------------------
 // TestCb2Engine declaration
 //--------------------------------------------------------------------------------------------------
@@ -73,7 +78,6 @@ private Q_SLOTS:
 private:
 
     Lvk::Nlp::Cb2Engine *m_engine;
-    Lvk::Nlp::Cb2Engine *m_engineWithDefSanitizer;
 
     void testMatch(void (TestCb2Engine::*setRulesMemb)(Lvk::Nlp::Cb2Engine *engine),
                    Lvk::Nlp::Cb2Engine *engine);
@@ -87,7 +91,7 @@ private:
 };
 
 TestCb2Engine::TestCb2Engine()
-    : m_engine(0), m_engineWithDefSanitizer(0)
+    : m_engine(0)
 {
 }
 
@@ -338,11 +342,6 @@ void TestCb2Engine::setRules5(Lvk::Nlp::Cb2Engine *engine)
                             QStringList() << RULE_11_OUTPUT_1,
                             QStringList());
 
-    rules << Lvk::Nlp::Rule(RULE_13_ID,
-                            QStringList() << RULE_13_INPUT_1,
-                            QStringList() << RULE_13_OUTPUT_1,
-                            QStringList());
-
     rules << Lvk::Nlp::Rule(RULE_7_ID,
                             QStringList() << RULE_7_INPUT_1,
                             QStringList() << RULE_7_OUTPUT_1,
@@ -448,11 +447,6 @@ void TestCb2Engine::setRules7(Lvk::Nlp::Cb2Engine *engine)
 void TestCb2Engine::initTestCase()
 {
     m_engine = new Lvk::Nlp::Cb2Engine(new Lvk::Nlp::NullSanitizer());
-
-    unsigned options = Lvk::Nlp::DefaultSanitizer::RemoveDiacritic |
-                       Lvk::Nlp::DefaultSanitizer::RemovePunctuation;
-
-    m_engineWithDefSanitizer = new Lvk::Nlp::Cb2Engine(new Lvk::Nlp::DefaultSanitizer(options));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -461,9 +455,6 @@ void TestCb2Engine::cleanupTestCase()
 {
     delete m_engine;
     m_engine = 0;
-
-    delete m_engineWithDefSanitizer;
-    m_engineWithDefSanitizer = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -476,6 +467,8 @@ void TestCb2Engine::testMatch(void (TestCb2Engine::*setRulesMemb)(Lvk::Nlp::Cb2E
     QFETCH(QString, expectedOutput);
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
+
+    engine->setLemmatizer(new MockLemmatizer());
 
     (this->*setRulesMemb)(engine);
 
@@ -524,7 +517,9 @@ void TestCb2Engine::testMatchWithSingleOutput_data()
 
 void TestCb2Engine::testMatchWithSingleOutput()
 {
-    //QSKIP("", SkipAll);
+#ifndef EnableTestMatchWithSingleOutput
+    QSKIP("Skip macro on", SkipAll);
+#endif
 
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
@@ -597,7 +592,9 @@ void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer_data()
 
 void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer()
 {
-    //QSKIP("", SkipAll);
+#ifndef EnableTestMatchWithSingleOutputWithLemmatizer
+    QSKIP("Skip macro on", SkipAll);
+#endif
 
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
@@ -703,7 +700,9 @@ void TestCb2Engine::testMatchWithTarget_data()
 
 void TestCb2Engine::testMatchWithTarget()
 {
-    QSKIP("Not supported", SkipAll);
+#ifndef EnableTestMatchWithTarget
+    QSKIP("Skip macro on", SkipAll);
+#endif
 
     testMatch(&TestCb2Engine::setRules4, m_engine);
 }
@@ -719,7 +718,7 @@ void TestCb2Engine::testMatchPriority_data()
     QTest::addColumn<int>("ruleInputNumber");
 
     // 1. Prefer rules with target over rules without target
-    // 2. Prefer rules without * over ruels with *
+    // 2. Prefer rules without * over rules with *
 
     QTest::newRow("P1 r simple w/target")        << TARGET_USER_1 << USER_INPUT_8c
                                                  << RULE_10_OUTPUT_1 << RULE_10_ID << 0;
@@ -738,7 +737,9 @@ void TestCb2Engine::testMatchPriority_data()
 
 void TestCb2Engine::testMatchPriority()
 {
-    QSKIP("Not supported", SkipAll);
+#ifndef EnableTestMatchPriority
+    QSKIP("Skip macro on", SkipAll);
+#endif
 
     testMatch(&TestCb2Engine::setRules5, m_engine);
 }
@@ -748,6 +749,8 @@ void TestCb2Engine::testMatchPriority()
 void TestCb2Engine::testMatchWithTopic()
 {
     QSKIP("Not supported", SkipAll);
+
+    m_engine->setLemmatizer(new MockLemmatizer());
 
     setRules6(m_engine);
 
