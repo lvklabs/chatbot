@@ -35,6 +35,8 @@
 #include "nlp-engine/nulllemmatizer.h"
 #include "nlp-engine/sanitizerfactory.h"
 
+#include "mocklemmatizer.h"
+
 //--------------------------------------------------------------------------------------------------
 // TestCb2Engine declaration
 //--------------------------------------------------------------------------------------------------
@@ -58,9 +60,6 @@ private Q_SLOTS:
     void testMatchWithRandomOutput_data();
     void testMatchWithRandomOutput();
 
-    void testMatchWithDefaultSanitizer_data();
-    void testMatchWithDefaultSanitizer();
-
     void testMatchWithTarget_data();
     void testMatchWithTarget();
 
@@ -81,7 +80,6 @@ private:
 
     void setRules1(Lvk::Nlp::Cb2Engine *engine);
     void setRules2(Lvk::Nlp::Cb2Engine *engine);
-    void setRules3(Lvk::Nlp::Cb2Engine *engine);
     void setRules4(Lvk::Nlp::Cb2Engine *engine);
     void setRules5(Lvk::Nlp::Cb2Engine *engine);
     void setRules6(Lvk::Nlp::Cb2Engine *engine);
@@ -118,7 +116,7 @@ TestCb2Engine::TestCb2Engine()
 #define RULE_1_ID                           1
 #define RULE_1_INPUT_1                      "Hello"
 #define RULE_1_INPUT_2                      "Hi"
-#define RULE_1_INPUT_3                      "Hello *"
+#define RULE_1_INPUT_3                      "Hello +"
 #define RULE_1_OUTPUT_1                     "Hi!"
 #define RULE_1_OUTPUT_2                     "Hello!"
 #define RULE_1_OUTPUT_3                     "Hey!"
@@ -227,7 +225,7 @@ TestCb2Engine::TestCb2Engine()
 #define USER_INPUT_8c                       "Do you like soccer?"
 #define USER_INPUT_9a                       "Cual es tu barrio"
 #define USER_INPUT_9b                       "Cu" a_ACUTE "l es tu barrio?"
-#define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO????"
+#define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO?"
 #define USER_INPUT_9d                       "como    se   llama, tu barrio"
 #define USER_INPUT_10a                      ":)"
 #define USER_INPUT_10b                      ":D"
@@ -266,6 +264,11 @@ void TestCb2Engine::setRules1(Lvk::Nlp::Cb2Engine *engine)
                             QStringList() << RULE_5_INPUT_1,
                             QStringList() << RULE_5_OUTPUT_1);
 
+    rules << Lvk::Nlp::Rule(RULE_6_ID,
+                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
+                                          << QString::fromUtf8(RULE_6_INPUT_2),
+                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
+
     rules << Lvk::Nlp::Rule(RULE_17_ID,
                             QStringList() << RULE_17_INPUT_1,
                             QStringList() << RULE_17_OUTPUT_1);
@@ -286,24 +289,6 @@ void TestCb2Engine::setRules2(Lvk::Nlp::Cb2Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_1_ID,
                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
                             QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules3(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
-
-    rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
-                                          << QString::fromUtf8(RULE_6_INPUT_2),
-                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
 
     engine->setRules(rules);
 }
@@ -532,10 +517,6 @@ void TestCb2Engine::testMatchWithSingleOutput_data()
     QTest::newRow("so 10") << USER_INPUT_7b << RULE_3_OUTPUT_1  << RULE_3_ID << 1;
     QTest::newRow("so 11") << USER_INPUT_7c << RULE_3_OUTPUT_1  << RULE_3_ID << 2;
     QTest::newRow("so 12") << USER_INPUT_7d << RULE_3_OUTPUT_1  << RULE_3_ID << 3;
-//    QTest::newRow("so 13") << USER_INPUT_8a << RULE_5_OUTPUT_1  << RULE_5_ID << 0;
-//    QTest::newRow("so 14") << USER_INPUT_8b << QString()        << 0 << 0;
-//    QTest::newRow("so 15") << USER_INPUT_1d << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
-//    QTest::newRow("so 16") << USER_INPUT_1e << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
     QTest::newRow("so 17") << USER_INPUT_17 << RULE_17_OUTPUT_1 << RULE_17_ID << 0;
 }
 
@@ -543,10 +524,14 @@ void TestCb2Engine::testMatchWithSingleOutput_data()
 
 void TestCb2Engine::testMatchWithSingleOutput()
 {
+    //QSKIP("", SkipAll);
+
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
+
+    m_engine->setLemmatizer(new Lvk::Nlp::NullLemmatizer());
 
     setRules1(m_engine);
 
@@ -589,23 +574,37 @@ void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer_data()
     QTest::newRow("so 10") << USER_INPUT_7b << RULE_3_OUTPUT_1  << RULE_3_ID << 1;
     QTest::newRow("so 11") << USER_INPUT_7c << RULE_3_OUTPUT_1  << RULE_3_ID << 2;
     QTest::newRow("so 12") << USER_INPUT_7d << RULE_3_OUTPUT_1  << RULE_3_ID << 3;
-    QTest::newRow("so 13") << USER_INPUT_8a << RULE_5_OUTPUT_1  << RULE_5_ID << 0;
     QTest::newRow("so 14") << USER_INPUT_8b << QString()        << 0 << 0;
     QTest::newRow("so 15") << USER_INPUT_1d << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
-    QTest::newRow("so 16") << USER_INPUT_1e << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
     QTest::newRow("so 17") << USER_INPUT_17 << RULE_17_OUTPUT_1 << RULE_17_ID << 0;
+
+    QTest::newRow("ds 1") << QString::fromUtf8(USER_INPUT_9a)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("ds 2") << QString::fromUtf8(USER_INPUT_9b)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("ds 3") << QString::fromUtf8(USER_INPUT_9c)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 0;
+    QTest::newRow("ds 4") << QString::fromUtf8(USER_INPUT_9d)
+                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
+                                           << RULE_6_ID << 1;
+
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer()
 {
-    QSKIP("Not supported", SkipAll);
+    //QSKIP("", SkipAll);
 
     QFETCH(QString, userInput);
     QFETCH(QString, expectedOutput);
     QFETCH(int, ruleId);
     QFETCH(int, ruleInputNumber);
+
+    m_engine->setLemmatizer(new MockLemmatizer());
 
     setRules1(m_engine);
 
@@ -668,57 +667,6 @@ void TestCb2Engine::testMatchWithRandomOutput()
     }
 
     QCOMPARE(outputUseCount.size(), expectedOutput.size());
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::testMatchWithDefaultSanitizer_data()
-{
-    QTest::addColumn<QString>("userInput");
-    QTest::addColumn<QString>("expectedOutput");
-    QTest::addColumn<int>("ruleId");
-    QTest::addColumn<int>("ruleInputNumber");
-
-    QTest::newRow("ds 1") << QString::fromUtf8(USER_INPUT_9a)
-                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
-                                           << RULE_6_ID << 0;
-    QTest::newRow("ds 2") << QString::fromUtf8(USER_INPUT_9b)
-                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
-                                           << RULE_6_ID << 0;
-    QTest::newRow("ds 3") << QString::fromUtf8(USER_INPUT_9c)
-                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
-                                           << RULE_6_ID << 0;
-    QTest::newRow("ds 4") << QString::fromUtf8(USER_INPUT_9d)
-                                           << QString::fromUtf8(RULE_6_OUTPUT_1)
-                                           << RULE_6_ID << 1;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::testMatchWithDefaultSanitizer()
-{
-    QSKIP("Not supported", SkipAll);
-
-    QFETCH(QString, userInput);
-    QFETCH(QString, expectedOutput);
-    QFETCH(int, ruleId);
-    QFETCH(int, ruleInputNumber);
-
-    setRules3(m_engineWithDefSanitizer);
-
-    Lvk::Nlp::Engine::MatchList matches;
-
-    QString output = m_engineWithDefSanitizer->getResponse(userInput, matches);
-
-    if (!expectedOutput.isNull()) {
-        QCOMPARE(output, expectedOutput);
-        QCOMPARE(matches.size(), 1);
-        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
-        QCOMPARE(matches[0].second, ruleInputNumber);
-    } else {
-        QVERIFY(output.isEmpty());
-        QCOMPARE(matches.size(), 0);
-    }
 }
 
 //--------------------------------------------------------------------------------------------------

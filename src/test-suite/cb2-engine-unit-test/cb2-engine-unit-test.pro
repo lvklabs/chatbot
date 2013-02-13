@@ -38,7 +38,8 @@ HEADERS += \
     ../../chatbot/nlp-engine/node.h \
     ../../chatbot/nlp-engine/result.h \
     ../../chatbot/common/settings.h \
-    ../../chatbot/common/logger.h
+    ../../chatbot/common/logger.h \
+    mocklemmatizer.h
 
 SOURCES += \
     testcb2engine.cpp\
@@ -52,6 +53,9 @@ SOURCES += \
     ../../chatbot/nlp-engine/scoringalgorithm.cpp \
     ../../chatbot/nlp-engine/matchpolicy.cpp \
     ../../chatbot/common/settings.cpp \
-    ../../chatbot/common/logger.cpp
+    ../../chatbot/common/logger.cpp \
+    mocklemmatizer.cpp
+
+
 
 

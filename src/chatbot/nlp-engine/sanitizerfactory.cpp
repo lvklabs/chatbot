@@ -29,8 +29,8 @@
 Lvk::Nlp::Sanitizer * Lvk::Nlp::SanitizerFactory::createPreSanitizer()
 {
     return new DefaultSanitizer(DefaultSanitizer::RemoveDupChars |
-                                DefaultSanitizer::RemoveBraces |
-                                DefaultSanitizer::RemoveDoubleQuotes);
+                                DefaultSanitizer::RemoveBraces /*|
+                                DefaultSanitizer::RemoveDoubleQuotes*/);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -38,5 +38,6 @@ Lvk::Nlp::Sanitizer * Lvk::Nlp::SanitizerFactory::createPreSanitizer()
 Lvk::Nlp::Sanitizer * Lvk::Nlp::SanitizerFactory::createPostSanitizer()
 {
     return new DefaultSanitizer(DefaultSanitizer::RemoveDiacritic |
-                                DefaultSanitizer::RemovePunctuation);
+                                DefaultSanitizer::LowerCase /*|
+                                DefaultSanitizer::RemovePunctuation*/);
 }

@@ -870,20 +870,21 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
     OptionsWindow optWindow(curOpt, this);
 
     if (optWindow.exec() == QDialog::Accepted) {
-        OptionsWindow::Options newOpt = optWindow.options();
-
-        if (newOpt.ignoreDupChars != curOpt.ignoreDupChars) {
-            setNlpEngineOption(BE::AppFacade::RemoveDupChars, newOpt.ignoreDupChars);
-        }
-        if (newOpt.lemmatizeSentence != curOpt.lemmatizeSentence) {
-            setNlpEngineOption(BE::AppFacade::LemmatizeSentence, newOpt.lemmatizeSentence);
-        }
-        if (newOpt.exactMatchSupport != curOpt.exactMatchSupport) {
-            setNlpEngineOption(BE::AppFacade::ExactMatchSupport, newOpt.exactMatchSupport);
-        }
-        if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
-            setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
-        }
+    // FIXME
+    //        OptionsWindow::Options newOpt = optWindow.options();
+    //
+    //        if (newOpt.ignoreDupChars != curOpt.ignoreDupChars) {
+    //            setNlpEngineOption(BE::AppFacade::RemoveDupChars, newOpt.ignoreDupChars);
+    //        }
+    //        if (newOpt.lemmatizeSentence != curOpt.lemmatizeSentence) {
+    //            setNlpEngineOption(BE::AppFacade::LemmatizeSentence, newOpt.lemmatizeSentence);
+    //        }
+    //        if (newOpt.exactMatchSupport != curOpt.exactMatchSupport) {
+    //            setNlpEngineOption(BE::AppFacade::ExactMatchSupport, newOpt.exactMatchSupport);
+    //        }
+    //        if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
+    //            setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
+    //        }
     }
 }
 

@@ -188,6 +188,13 @@ QString Lvk::Nlp::DefaultSanitizer::sanitize(const QString &str) const
         }
 
         //-------------------------------------------------------------------------------
+        // Lower case letters
+
+        if (m_options & LowerCase) {
+            cur = cur.toLower();
+        }
+
+        //-------------------------------------------------------------------------------
 
         szStr.append(cur);
     }

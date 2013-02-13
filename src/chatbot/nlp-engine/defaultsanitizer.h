@@ -79,7 +79,13 @@ public:
         /**
          * Removes double quotes
          */
-        RemoveDoubleQuotes = 0x10
+        RemoveDoubleQuotes = 0x10,
+
+        /**
+         * Lower case letters
+         */
+        LowerCase = 0x20
+
     };
 
     /**

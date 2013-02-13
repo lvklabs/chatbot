@@ -2,6 +2,7 @@
 #define LVK_NLP_FREELINGLEMMATIZER_H
 
 #include "nlp-engine/lemmatizer.h"
+#include "nlp-engine/sanitizer.h"
 
 class tokenizer;
 class splitter;
@@ -47,7 +48,7 @@ public:
     /**
      * \copydoc Lemmatizer::lemmatize(const QString &input, WordList &l)
      */
-    virtual void lemmatize(const QString &input, WordList &l);
+    virtual void lemmatize(const QString &input, WordList &words);
 
 
 private:
@@ -58,6 +59,8 @@ private:
     tokenizer *m_tk;
     splitter *m_sp;
     maco *m_morpho;
+    Sanitizer *m_preSanitizer;
+    Sanitizer *m_postSanitizer;
 };
 
 /// @}

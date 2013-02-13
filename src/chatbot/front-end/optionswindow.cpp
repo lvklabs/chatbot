@@ -53,10 +53,21 @@ void Lvk::FE::OptionsWindow::connectSignals()
 
 void Lvk::FE::OptionsWindow::setOptions(const Lvk::FE::OptionsWindow::Options &opt)
 {
-    ui->rmDupCharCheckBox->setChecked(opt.ignoreDupChars);
-    ui->lemmatizeCheckBox->setChecked(opt.lemmatizeSentence);
-    ui->exactMatchCheckBox->setChecked(opt.exactMatchSupport);
-    ui->preferCategCheckBox->setChecked(opt.preferCurCategory);
+    ///////////////////////////////////////////////////////////////////
+    // FIXME
+    // ui->rmDupCharCheckBox->setChecked(opt.ignoreDupChars);
+    // ui->lemmatizeCheckBox->setChecked(opt.lemmatizeSentence);
+    // ui->exactMatchCheckBox->setChecked(opt.exactMatchSupport);
+    // ui->preferCategCheckBox->setChecked(opt.preferCurCategory);
+    ui->rmDupCharCheckBox->setChecked(true);
+    ui->lemmatizeCheckBox->setChecked(true);
+    ui->exactMatchCheckBox->setChecked(false);
+    ui->preferCategCheckBox->setChecked(false);
+    ui->rmDupCharCheckBox->setEnabled(false);
+    ui->lemmatizeCheckBox->setEnabled(false);
+    ui->exactMatchCheckBox->setEnabled(false);
+    ui->preferCategCheckBox->setEnabled(false);
+    ///////////////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 #include "nlp-engine/freelinglemmatizer.h"
+#include "nlp-engine/sanitizerfactory.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
@@ -155,7 +156,6 @@ inline void convert(const std::list<sentence> &ls, Lvk::Nlp::WordList &l)
         for (sentence::const_iterator wit = lit->begin(); wit != lit->end(); ++wit) {
             Lvk::Nlp::Word w;
             w.origWord = QString::fromStdString(wit->get_form());
-            w.normWord = QString::fromStdString(wit->get_form());
             w.lemma    = QString::fromStdString(wit->get_lemma());
             w.posTag   = QString::fromStdString(wit->get_parole());
             l.append(w);
@@ -171,7 +171,7 @@ inline void convert(const std::list<sentence> &ls, Lvk::Nlp::WordList &l)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::FreelingLemmatizer::FreelingLemmatizer()
-    : m_flInit(false), m_tk(0), m_sp(0), m_morpho(0)
+    : m_flInit(false), m_tk(0), m_sp(0), m_morpho(0), m_preSanitizer(0), m_postSanitizer(0)
 {
     ConfigFilesMap configFiles;
 
@@ -189,12 +189,17 @@ Lvk::Nlp::FreelingLemmatizer::FreelingLemmatizer()
     } else {
         qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
     }
+
+    m_preSanitizer = Nlp::SanitizerFactory().createPreSanitizer();
+    m_postSanitizer = Nlp::SanitizerFactory().createPostSanitizer();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::FreelingLemmatizer::~FreelingLemmatizer()
 {
+    delete m_postSanitizer;
+    delete m_preSanitizer;
     delete m_morpho;
     delete m_sp;
     delete m_tk;
@@ -218,9 +223,11 @@ void Lvk::Nlp::FreelingLemmatizer::tokenize(const QString &input, QStringList &l
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList &l)
+void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList &words)
 {
     if (m_flInit) {
+        m_preSanitizer->sanitize(input);
+
         std::list<word> lw;
         m_tk->tokenize(addFullStop(input).toStdString(), lw);
 
@@ -229,10 +236,14 @@ void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList
 
         m_morpho->analyze(ls);
 
-        convert(ls, l);
+        convert(ls, words);
+
+        for (int i = 0; i < words.size(); ++i)  {
+            words[i].normWord = m_postSanitizer->sanitize(words[i].origWord);
+        }
     } else {
         qCritical() << "Freeling could not be initialized. Lemmatization is disabled.";
     }
 
-    qDebug() << "Lemmatized:" << input << "->" << l;
+    qDebug() << "Lemmatized:" << input << "->" << words;
 }
