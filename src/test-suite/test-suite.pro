@@ -18,7 +18,8 @@ unit_tests {
 end_to_end_tests {
     SUBDIRS += \
         user-auth-test \
+        cb2-engine-full-test
 }
 
-
 OTHER_FILES += run-test-suite.sh
+
