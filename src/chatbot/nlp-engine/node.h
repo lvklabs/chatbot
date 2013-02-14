@@ -93,6 +93,24 @@ struct Node
     {
         return "Node()";
     }
+
+    template<class T>
+    bool is() const
+    {
+        return dynamic_cast<const T *>(this) != 0;
+    }
+
+    template<class T>
+    T * to()
+    {
+        return dynamic_cast<T *>(this);
+    }
+
+    template<class T>
+    const T * to() const
+    {
+        return dynamic_cast<const T *>(this);
+    }
 };
 
 /**
@@ -107,7 +125,7 @@ struct WordNode : Node
 
     QString toString() const
     {
-        return "WordNode(" + word.origWord + ")";
+        return QString("WordNode(%1)").arg(word.origWord);
     }
 };
 
@@ -116,12 +134,27 @@ struct WordNode : Node
  */
 struct WildcardNode : Node
 {
-    WildcardNode(Node *parent = 0)
-        : Node(parent) { }
+    WildcardNode(int min = 0, int max = 0, Node *parent = 0)
+        : Node(parent), min(min), max(max) { }
+
+    WildcardNode(const QString &wc, Node *parent = 0)
+        : Node(parent), min(0), max(0)
+    {
+        if (wc == STAR_OP) {
+            min = 0;
+            max = -1;
+        } else if (wc == PLUS_OP) {
+            min = 1;
+            max = -1;
+        }
+    }
+
+    int min;
+    int max;
 
     QString toString() const
     {
-        return "WildcardNode()";
+        return QString("WildcardNode(%1,%2)").arg(min).arg(max);
     }
 };
 

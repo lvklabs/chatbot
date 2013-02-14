@@ -114,7 +114,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
     if (word.isWord()) {
         foreach (Nlp::Node *node, parent->childs) {
-            if (Nlp::WordNode* wNode = dynamic_cast<Nlp::WordNode*>(node)) {
+            if (Nlp::WordNode* wNode = node->to<Nlp::WordNode>()) {
                 if (wNode->word == word) {
                     return node;
                 }
@@ -124,9 +124,13 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
     if (word.isWildcard()) {
         foreach (Nlp::Node *node, parent->childs) {
-            if (dynamic_cast<Nlp::WildcardNode*>(node)) {
-                // With the current implementation we don't care what kind of wildcard (* or +)
-                // the difference is where the output is located and it's not handled here
+            if (Nlp::WildcardNode* wcNode = node->to<Nlp::WildcardNode>()) {
+                // Currently we only support two wildcards: * and +
+                // We must handle the case where new node is a * node and we already have
+                // a + node
+                if (word.origWord == STAR_OP && wcNode->min == 1) {
+                    wcNode->min = 0;
+                }
                 return node;
             }
         }
@@ -137,7 +141,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
     Nlp::Node *newNode = 0;
 
     if (word.isWildcard()) {
-        newNode = new Nlp::WildcardNode(parent);
+        newNode = new Nlp::WildcardNode(word.origWord, parent);
         newNode->childs.append(newNode); // Loop node (see engine documentation)
     } else if (word.isVariable()) {
         // TODO
@@ -146,6 +150,12 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
     }
 
     parent->childs.append(newNode);
+
+    // If parent is *, we need to add a new edge from parent->parent to newNode
+    // TODO handle case where there are two or more * adjacent
+    if (parent->is<Nlp::WildcardNode>() && parent->to<Nlp::WildcardNode>()->min == 0) {
+        parent->parent->childs.append(newNode);
+    }
 
     qDebug() << "Nlp::Tree: Added new node" << *newNode << "with parent" << *parent;
 
@@ -177,8 +187,8 @@ QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Tree::scoredDFS(ResultList &results, const Nlp::Node *root, const Nlp::WordList &words,
-                               int offset /*= 0*/)
+void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
+                               const Nlp::WordList &words, int offset /*= 0*/)
 {
     QString dgbMargin = QString((offset+1)*4, '#');
 

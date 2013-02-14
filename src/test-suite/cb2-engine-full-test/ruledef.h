@@ -13,6 +13,10 @@
 #define RULE_2_INPUT_2                      "* Chau"
 #define RULE_2_OUTPUT_1                     "Chau!"
 
+#define RULE_3_ID                           3
+#define RULE_3_INPUT_1                      "* jugar * futbol *"
+#define RULE_3_OUTPUT_1                     "Yo tambien"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -26,6 +30,10 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_2_ID,
                             QStringList() << RULE_2_INPUT_1 << RULE_2_INPUT_2,
                             QStringList() << RULE_2_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_3_ID,
+                            QStringList() << RULE_3_INPUT_1,
+                            QStringList() << RULE_3_OUTPUT_1);
 
     engine->setRules(rules);
 }
