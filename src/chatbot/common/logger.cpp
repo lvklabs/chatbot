@@ -166,7 +166,7 @@ void Lvk::Cmn::Logger::msgHandler(QtMsgType type, const char *msg)
 {
     m_logFile->write(QDateTime::currentDateTime().toString(DATE_TIME_LOG_FORMAT).toUtf8());
     m_logFile->write(" ");
-    m_logFile->write(m_strPid);
+    m_logFile->write(m_strPid.toAscii());
     m_logFile->write(" ");
 
     switch (type) {
