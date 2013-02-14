@@ -28,7 +28,7 @@
 #include <QList>
 #include <QString>
 #include <QDebug>
-//#include <QSet>
+#include <QHash>
 
 namespace Lvk
 {
@@ -60,18 +60,30 @@ struct Predicate
 /**
  * \brief
  */
-struct OutputInfo
+struct CondOutput
 {
-    OutputInfo(const QString &output = "", Nlp::RuleId ruleId = 0, int inputIdx = 0,
-               int outputIdx = 0, const Predicate &p = Predicate())
-        : output(output), ruleId(ruleId), inputIdx(inputIdx), outputIdx(outputIdx), predicate(p) { }
+    CondOutput(const QString &output = "", const Predicate &p = Predicate())
+        : output(output), predicate(p) { }
 
     QString output;
-    Nlp::RuleId ruleId;
-    int inputIdx;
-    int outputIdx;
     Predicate predicate;
 };
+
+/**
+ * \brief
+ */
+struct CondOutputList : public QList<CondOutput>
+{
+    CondOutputList()
+        : randomOutput(false) { }
+
+    bool randomOutput;
+};
+
+/**
+ * \brief
+ */
+typedef QHash<quint64, CondOutputList> OutputMap;
 
 /**
  * \brief
@@ -79,15 +91,13 @@ struct OutputInfo
 struct Node
 {
     Node(Node *parent = 0)
-        : parent(parent), randomOutput(false), nextOutput(0) { }
+        : parent(parent) { }
 
     virtual ~Node() { }
 
     Node *parent;
     QList<Node *> childs;
-    QList<OutputInfo> outputs;
-    bool randomOutput;
-    int nextOutput;
+    OutputMap omap;
 
     virtual QString toString() const
     {

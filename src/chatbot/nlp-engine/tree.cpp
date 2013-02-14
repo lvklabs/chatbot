@@ -28,6 +28,9 @@
 
 #include <QtAlgorithms>
 
+#define MAX_INPUT_IDX_SIZE  10   // in bits
+#define INPUT_IDX_MASK      ((1 << MAX_INPUT_IDX_SIZE) - 1)
+
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
@@ -40,6 +43,26 @@ inline bool highScoreFirst(const Lvk::Nlp::Result &r1, const Lvk::Nlp::Result &r
     return r1.score > r2.score;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+inline quint64 getOmapId(Lvk::Nlp::RuleId ruleId, int inputIdx)
+{
+    return (inputIdx & INPUT_IDX_MASK) + (ruleId << MAX_INPUT_IDX_SIZE);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline Lvk::Nlp::RuleId getRuleId(quint64 id)
+{
+    return id >> MAX_INPUT_IDX_SIZE;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline int getInputIndex(quint64 id)
+{
+    return id & INPUT_IDX_MASK;
+}
 
 } // namespace
 
@@ -98,9 +121,11 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
 void Lvk::Nlp::Tree::addRuleInfo(Nlp::Node *node, const Nlp::RuleId &ruleId, int inputIdx,
                                  const QStringList &output)
 {
-    for (int i = 0; i < output.size(); ++i) {
-        // TODO set conditionals
-        node->outputs.append(Nlp::OutputInfo(output[i], ruleId, inputIdx, i));
+    foreach (const QString o, output) {
+        if (!o.isEmpty()) {
+            // TODO set conditionals
+            node->omap[getOmapId(ruleId, inputIdx)].append(Nlp::CondOutput(o));
+        }
     }
 }
 
@@ -223,16 +248,24 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
 {
     Nlp::Result r;
 
-    // Find first output that is not empty and satisfies its predicate.
-    // TODO consider outputs with different priorities
-    foreach (const Nlp::OutputInfo &co, node->outputs) {
-        if (!co.output.isEmpty() && co.predicate()) {
-            r.output = co.output; // TODO expand variables
-            r.ruleId = co.ruleId;
-            r.inputIdx = co.inputIdx;
-            break;
+    Nlp::OutputMap::const_iterator it;
+    for (it = node->omap.constBegin(); it != node->omap.constEnd() && r.isNull(); ++it) {
+        const Nlp::CondOutputList &l = it.value();
+
+        // TODO if random output, choose randomly
+
+        for (int i = 0; i < l.size(); ++i) {
+            const Nlp::CondOutput &co = l[i];
+
+            if (co.predicate(/* TODO pass context */)) {
+                r.ruleId = getRuleId(it.key());
+                r.inputIdx = getInputIndex(it.key());
+                r.output = co.output; // TODO expand variables
+                break;
+            }
         }
     }
+
     return r;
 }
 
