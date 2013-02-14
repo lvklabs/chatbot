@@ -254,24 +254,11 @@ OTHER_FILES += \
     res/chatbot.rc
 
 
-# Third-party ###############################
+# Freeling Wrapper #########################
 
-include(3rd-party.pri)
-
-INCLUDEPATH += $$THIRD_PARTY_PATH
-
-qxmpp {
-    INCLUDEPATH += $$QXMPP_INCLUDE_PATH
-    LIBS += -L$$QXMPP_LIB_PATH $$QXMPP_LIBS
-}
-
-# Freeling support
 freeling {
-    DEFINES += PCRE_STATIC FREELING_SUPPORT
-    INCLUDEPATH += $$FREELING_INCLUDE_PATH
     HEADERS += nlp-engine/freelinglemmatizer.h
     SOURCES += nlp-engine/freelinglemmatizer.cpp
-    LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
 
 
@@ -282,24 +269,25 @@ da_contest {
 }
 
 
-############################################
-# Copy language files
+# Third-party dependencies #################
+
+include(3rd-party.pri)
+
+
+# Copy language files ######################
 win32:copylang.commands = # FIXME
 else:copylang.commands = cp -R $$PROJECT_PATH/lang .
 
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
-############################################
 
 
-############################################
-# Update git revision in versionrev.h
+# Update git revision in versionrev.h ######
 versionrev.target = common/versionrev.h
 win32:versionrev.commands = $$PWD/sh/update-revision.bat $$PWD
 else:versionrev.commands = $$PWD/sh/update-revision.sh
 
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
-############################################
 
 

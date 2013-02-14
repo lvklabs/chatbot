@@ -22,8 +22,6 @@ exists (crypto/dakeymanager.h) {
 }
 
 gelf_stats {
-    DEFINES += GELF_STATS_SUPPORT
-    INCLUDEPATH += $$ZLIB_INCLUDE_PATH
     HEADERS += da-server/zlibhelper.h \
         da-server/graylogremotelogger.h \
         da-server/gelf.h \
@@ -32,21 +30,9 @@ gelf_stats {
         da-server/graylogremotelogger.cpp \
         da-server/gelf.cpp \
         da-server/syslog.cpp
-    LIBS += -L$$ZLIB_LIB_PATH $$ZLIB_LIBS
-}
-
-openssl {
-    DEFINES += OPENSSL_SUPPORT
-    INCLUDEPATH += $$OPENSSL_INCLUDE_PATH
-    HEADERS +=
-    SOURCES +=
-    LIBS += -L$$OPENSSL_LIB_PATH $$OPENSSL_LIBS
 }
 
 qssh {
-    DEFINES += QSSH_SUPPORT
-    INCLUDEPATH += $$QSSH_INCLUDE_PATH
     HEADERS += da-server/sftpcontestdatauploader.h
     SOURCES += da-server/sftpcontestdatauploader.cpp
-    LIBS += -L$$QSSH_LIB_PATH $$QSSH_LIBS
 }
