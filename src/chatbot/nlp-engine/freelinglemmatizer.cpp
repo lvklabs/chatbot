@@ -155,6 +155,9 @@ inline void convert(const std::list<sentence> &ls, Lvk::Nlp::WordList &l)
     for (list<sentence>::const_iterator lit = ls.begin(); lit != ls.end(); ++lit) {
         for (sentence::const_iterator wit = lit->begin(); wit != lit->end(); ++wit) {
             Lvk::Nlp::Word w;
+            // CHECK
+            //w.origWord = input.mid(wit->get_span_start(), wit->get_span_finish() - wit->get_span_start());
+            //w.normWord = QString::fromStdString(wit->get_form());
             w.origWord = QString::fromStdString(wit->get_form());
             w.lemma    = QString::fromStdString(wit->get_lemma());
             w.posTag   = QString::fromStdString(wit->get_parole());
@@ -226,10 +229,10 @@ void Lvk::Nlp::FreelingLemmatizer::tokenize(const QString &input, QStringList &l
 void Lvk::Nlp::FreelingLemmatizer::lemmatize(const QString &input, Nlp::WordList &words)
 {
     if (m_flInit) {
-        m_preSanitizer->sanitize(input);
+        QString szInput = m_preSanitizer->sanitize(input);
 
         std::list<word> lw;
-        m_tk->tokenize(addFullStop(input).toStdString(), lw);
+        m_tk->tokenize(addFullStop(szInput).toStdString(), lw);
 
         std::list<sentence> ls;
         m_sp->split(lw, false, ls);

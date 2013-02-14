@@ -112,7 +112,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
     // If node already exists for the given word, return that node
 
-    if (word.isAlphanum()) {
+    if (word.isWord()) {
         foreach (Nlp::Node *node, parent->childs) {
             if (Nlp::WordNode* wNode = dynamic_cast<Nlp::WordNode*>(node)) {
                 if (wNode->word == word) {
@@ -236,11 +236,11 @@ void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
-    filterPunct(words);
+     // TODO parse variables
+
+    filterSymbols(words);
 
     qDebug() << "Nlp::Tree: Parsed rule input" << words;
-    // TODO parse variables
-    // TODO parse literals
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -253,18 +253,20 @@ void Lvk::Nlp::Tree::parseUserInput(const QString &input, Nlp::WordList &words)
 
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
-    filterPunct(words);
+    filterSymbols(words);
 
     qDebug() << "Nlp::Tree: Parsed user input" << words;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Tree::filterPunct(Nlp::WordList &words)
+void Lvk::Nlp::Tree::filterSymbols(Nlp::WordList &words)
 {
-    for (int i = 0; i < words.size(); ++i) {
-        if (words[i].isPunct()) {
+    for (int i = 0; i < words.size();) {
+        if (words[i].isSymbol()) {
             words.removeAt(i);
+        } else {
+            ++i;
         }
     }
 }

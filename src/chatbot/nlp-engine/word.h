@@ -79,9 +79,9 @@ struct Word
         return origWord == STAR_OP || origWord == PLUS_OP;
     }
 
-    bool isPunct() const
+    bool isSymbol() const
     {
-        return !isWildcard() && origWord.size() == 1 && origWord[0].isPunct();
+        return !isWildcard() && origWord.size() >= 1 && !origWord[0].isLetterOrNumber();
     }
 
     bool isVariable() const
@@ -89,10 +89,11 @@ struct Word
         return false; // TODO
     }
 
-    bool isAlphanum() const
+    bool isWord() const
     {
-        return !isWildcard() && !isPunct(); // TODO
+        return !isWildcard() && !isSymbol() && !isVariable();
     }
+
 };
 
 

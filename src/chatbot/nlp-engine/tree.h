@@ -94,7 +94,7 @@ private:
     Nlp::Result getValidOutput(const Nlp::Node *node);
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
-    void filterPunct(Nlp::WordList &words);
+    void filterSymbols(Nlp::WordList &words);
 };
 
 /// @}
