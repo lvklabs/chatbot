@@ -35,12 +35,59 @@
 #include "nlp-engine/nulllemmatizer.h"
 #include "nlp-engine/sanitizerfactory.h"
 
+#include "ruledef.h"
 #include "mocklemmatizer.h"
 
 #define EnableTestMatchWithSingleOutput
 #define EnableTestMatchWithSingleOutputWithLemmatizer
 #define EnableTestMatchWithTarget
 #define EnableTestMatchPriority
+//#define EnableTestExactMatch
+
+#define USER_INPUT_1a                       "Hello"
+#define USER_INPUT_1b                       "hello"
+#define USER_INPUT_1c                       "HELLO"
+#define USER_INPUT_1d                       "HELLO,"
+#define USER_INPUT_1e                       "HELLO;!?"
+#define USER_INPUT_1f                       "Heeeeellooooooo"
+#define USER_INPUT_2                        "Hi"
+#define USER_INPUT_3                        "Hey there!"
+#define USER_INPUT_4a                       "What is your name?"
+#define USER_INPUT_4b                       "What   is your    name?"
+#define USER_INPUT_4c                       "What   is your    name"
+#define USER_INPUT_5                        "Hello there!"
+#define USER_INPUT_6                        "Hello how are you!!"
+#define USER_INPUT_7a                       "cars"
+#define USER_INPUT_7b                       "Do you like cars ?"
+#define USER_INPUT_7c                       "cars are the best!"
+#define USER_INPUT_7d                       "Have you seen the latest cars that BMW have launched?"
+#define USER_INPUT_8a                       "Do you like cats?"
+#define USER_INPUT_8b                       "Do you like robots?"
+#define USER_INPUT_8c                       "Do you like soccer?"
+#define USER_INPUT_9a                       "Cual es tu barrio"
+#define USER_INPUT_9b                       "Cu" a_ACUTE "l es tu barrio?"
+#define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO?"
+#define USER_INPUT_9d                       "como    se   llama, tu barrio"
+#define USER_INPUT_10a                      ":)"
+#define USER_INPUT_10b                      ":D"
+#define USER_INPUT_10c                      "Great! :-)"
+#define USER_INPUT_10d                      "Great :-)"
+#define USER_INPUT_10e                      "Great"
+#define USER_INPUT_17                       "J & J"
+#define USER_INPUT_18                       "thing1 is great"
+#define USER_INPUT_19                       "thing1 is great!!"
+#define USER_INPUT_20                       "thing2 rules!"
+#define USER_INPUT_21a                      "Yo jugaba en river"
+#define USER_INPUT_21b                      "Yo jugaba para river"
+#define USER_INPUT_21c                      "Yo jugaba, para river"
+#define USER_INPUT_21d                      "Yo juego en river"
+#define USER_INPUT_22a                      "jugar en"
+#define USER_INPUT_22b                      "jugar para"
+#define USER_INPUT_23a                      ":-)"
+#define USER_INPUT_23b                      ":)"
+#define USER_INPUT_24a                       "w1 w2 w3"
+#define USER_INPUT_24b                       "w1 w2 w3 w4"
+
 
 //--------------------------------------------------------------------------------------------------
 // TestCb2Engine declaration
@@ -71,6 +118,9 @@ private Q_SLOTS:
     void testMatchPriority_data();
     void testMatchPriority();
 
+    void testExactMatch_data();
+    void testExactMatch();
+
     void testMatchWithTopic();
 
     void cleanupTestCase();
@@ -79,15 +129,7 @@ private:
 
     Lvk::Nlp::Cb2Engine *m_engine;
 
-    void testMatch(void (TestCb2Engine::*setRulesMemb)(Lvk::Nlp::Cb2Engine *engine),
-                   Lvk::Nlp::Cb2Engine *engine);
-
-    void setRules1(Lvk::Nlp::Cb2Engine *engine);
-    void setRules2(Lvk::Nlp::Cb2Engine *engine);
-    void setRules4(Lvk::Nlp::Cb2Engine *engine);
-    void setRules5(Lvk::Nlp::Cb2Engine *engine);
-    void setRules6(Lvk::Nlp::Cb2Engine *engine);
-    void setRules7(Lvk::Nlp::Cb2Engine *engine);
+    void testMatch(void (*setRulesFunc)(Lvk::Nlp::Engine *engine), Lvk::Nlp::Cb2Engine *engine);
 };
 
 TestCb2Engine::TestCb2Engine()
@@ -99,350 +141,6 @@ TestCb2Engine::TestCb2Engine()
 // TestCb2Engine definition
 //--------------------------------------------------------------------------------------------------
 
-#define a_ACUTE     "\xc3\xa1"
-#define e_ACUTE     "\xc3\xa9"
-#define i_ACUTE     "\xc3\xad"
-#define o_ACUTE     "\xc3\xb3"
-#define u_ACUTE     "\xc3\xba"
-#define A_ACUTE     "\xc3\x81"
-#define E_ACUTE     "\xc3\x89"
-#define I_ACUTE     "\xc3\x8d"
-#define O_ACUTE     "\xc3\x93"
-#define U_ACUTE     "\xc3\x9a"
-#define u_DIAERESIS "\xc3\xbc"
-#define U_DIAERESIS "\xc3\x9c"
-
-#define TARGET_USER_1                       "-1234123431@chat.facebook.com"
-#define TARGET_USER_2                       "-1234123432@chat.facebook.com"
-#define TARGET_USER_3                       "John R. Smith"
-#define TARGET_USER_4                       "Ju" a_ACUTE "n P" e_ACUTE "rez"
-
-#define RULE_1_ID                           1
-#define RULE_1_INPUT_1                      "Hello"
-#define RULE_1_INPUT_2                      "Hi"
-#define RULE_1_INPUT_3                      "Hello +"
-#define RULE_1_OUTPUT_1                     "Hi!"
-#define RULE_1_OUTPUT_2                     "Hello!"
-#define RULE_1_OUTPUT_3                     "Hey!"
-
-#define RULE_2_ID                           2
-#define RULE_2_INPUT_1                      "What is your name?"
-#define RULE_2_OUTPUT_1                     "R2D2"
-
-#define RULE_3_ID                           3
-#define RULE_3_INPUT_1                      "cars"
-#define RULE_3_INPUT_2                      "* cars"
-#define RULE_3_INPUT_3                      "cars *"
-#define RULE_3_INPUT_4                      "* cars *"
-#define RULE_3_OUTPUT_1                     "I love cars"
-
-//#define RULE_4_ID                           4
-//#define RULE_4_INPUT_1                      "Do you like *"
-//#define RULE_4_OUTPUT_1                     "<srai><star/></srai>"
-
-#define RULE_5_ID                           5
-#define RULE_5_INPUT_1                      "cats"
-#define RULE_5_OUTPUT_1                     "I hate cats!"
-
-#define RULE_6_ID                           6
-#define RULE_6_INPUT_1                      "Cu" a_ACUTE "l es tu barrio?"
-#define RULE_6_INPUT_2                      "C" O_ACUTE "MO SE LLAMA TU BARRIO?"
-#define RULE_6_OUTPUT_1                     "G" u_DIAERESIS "emes"
-
-#define RULE_7_ID                           7
-#define RULE_7_INPUT_1                      "Do you like soccer?"
-#define RULE_7_OUTPUT_1                     "Sure!"
-
-#define RULE_8_ID                           8
-#define RULE_8_INPUT_1                      "Do you like *?"
-#define RULE_8_OUTPUT_1                     "Yes I do"
-
-#define RULE_9_ID                           9
-#define RULE_9_INPUT_1                      "* you like soccer?"
-#define RULE_9_OUTPUT_1                     "Yeap"
-
-#define RULE_10_ID                          10
-#define RULE_10_INPUT_1                     "Do you like soccer?"
-#define RULE_10_OUTPUT_1                    "Nope"
-
-#define RULE_11_ID                          11
-#define RULE_11_INPUT_1                     "*"
-#define RULE_11_OUTPUT_1                    "Everything 1"
-
-#define RULE_12_ID                          12
-#define RULE_12_INPUT_1                     "*"
-#define RULE_12_OUTPUT_1                    "Everything 2!"
-
-#define RULE_13_ID                          13
-#define RULE_13_INPUT_1                     "Do you like *?"
-#define RULE_13_OUTPUT_1                    "It's my favorite sport!"
-
-#define RULE_14_ID                          14
-#define RULE_14_INPUT_1                     "Do you like *?"
-#define RULE_14_OUTPUT_1                    "Depends on..."
-
-#define RULE_15_ID                          15
-#define RULE_15_INPUT_1                     "\":)\""
-#define RULE_15_INPUT_2                     "\":D\""
-#define RULE_15_INPUT_3                     "\"Great! :-)\""
-#define RULE_15_OUTPUT_1                    ":)"
-
-#define RULE_16_ID                          16
-#define RULE_16_INPUT_1                     "\"Hello\""
-#define RULE_16_OUTPUT_1                    "Hi!"
-
-#define RULE_17_ID                          17
-#define RULE_17_INPUT_1                     "J & J"
-#define RULE_17_OUTPUT_1                    "J & J ????????"
-
-#define RULE_18_ID                          18
-#define RULE_18_INPUT_1                     "thing1 *"
-#define RULE_18_OUTPUT_1                    "No way"
-
-#define RULE_19_ID                          19
-#define RULE_19_INPUT_1                     "thing1 *"
-#define RULE_19_OUTPUT_1                    "Really?"
-
-#define RULE_20_ID                          20
-#define RULE_20_INPUT_1                     "thing2 *"
-#define RULE_20_OUTPUT_1                    "Ok"
-
-#define USER_INPUT_1a                       "Hello"
-#define USER_INPUT_1b                       "hello"
-#define USER_INPUT_1c                       "HELLO"
-#define USER_INPUT_1d                       "HELLO,"
-#define USER_INPUT_1e                       "HELLO;!?"
-#define USER_INPUT_1f                       "Hellooooooo"
-#define USER_INPUT_2                        "Hi"
-#define USER_INPUT_3                        "Hey there!"
-#define USER_INPUT_4a                       "What is your name?"
-#define USER_INPUT_4b                       "What   is your    name?"
-#define USER_INPUT_4c                       "What   is your    name"
-#define USER_INPUT_5                        "Hello there!"
-#define USER_INPUT_6                        "Hello how are you!!"
-#define USER_INPUT_7a                       "cars"
-#define USER_INPUT_7b                       "Do you like cars ?"
-#define USER_INPUT_7c                       "cars are the best!"
-#define USER_INPUT_7d                       "Have you seen the latest cars that BMW have launched?"
-#define USER_INPUT_8a                       "Do you like cats?"
-#define USER_INPUT_8b                       "Do you like robots?"
-#define USER_INPUT_8c                       "Do you like soccer?"
-#define USER_INPUT_9a                       "Cual es tu barrio"
-#define USER_INPUT_9b                       "Cu" a_ACUTE "l es tu barrio?"
-#define USER_INPUT_9c                       "C" U_ACUTE "AL " E_ACUTE "S TU BARRIO?"
-#define USER_INPUT_9d                       "como    se   llama, tu barrio"
-#define USER_INPUT_10a                      ":)"
-#define USER_INPUT_10b                      ":D"
-#define USER_INPUT_10c                      "Great! :-)"
-#define USER_INPUT_10d                      "Great :-)"
-#define USER_INPUT_10e                      "Great"
-#define USER_INPUT_17                       "J & J"
-#define USER_INPUT_18                       "thing1 is great"
-#define USER_INPUT_19                       "thing1 is great!!"
-#define USER_INPUT_20                       "thing2 rules!"
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules1(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_2_ID,
-                            QStringList() << RULE_2_INPUT_1,
-                            QStringList() << RULE_2_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3
-                                          << RULE_3_INPUT_4,
-                            QStringList() << RULE_3_OUTPUT_1);
-
-//    rules << Lvk::Nlp::Rule(RULE_4_ID,
-//                            QStringList() << RULE_4_INPUT_1,
-//                            QStringList() << RULE_4_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_5_ID,
-                            QStringList() << RULE_5_INPUT_1,
-                            QStringList() << RULE_5_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
-                                          << QString::fromUtf8(RULE_6_INPUT_2),
-                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1));
-
-    rules << Lvk::Nlp::Rule(RULE_17_ID,
-                            QStringList() << RULE_17_INPUT_1,
-                            QStringList() << RULE_17_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_17_ID,
-                            QStringList() << RULE_17_INPUT_1,
-                            QStringList() << RULE_17_OUTPUT_1);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules2(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules4(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    rules << Lvk::Nlp::Rule(RULE_2_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
-                            QStringList() << RULE_1_OUTPUT_1,
-                            QStringList() << TARGET_USER_2);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1,
-                            QStringList() << RULE_3_OUTPUT_1,
-                            QStringList() << TARGET_USER_2 << QString::fromUtf8(TARGET_USER_4));
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_6_ID,
-                            QStringList() << QString::fromUtf8(RULE_6_INPUT_1)
-                                          << QString::fromUtf8(RULE_6_INPUT_2),
-                            QStringList() << QString::fromUtf8(RULE_6_OUTPUT_1),
-                            QStringList() << TARGET_USER_1 << TARGET_USER_2 << TARGET_USER_3);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules5(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_11_ID,
-                            QStringList() << RULE_11_INPUT_1,
-                            QStringList() << RULE_11_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_8_ID,
-                            QStringList() << RULE_8_INPUT_1,
-                            QStringList() << RULE_8_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_9_ID,
-                            QStringList() << RULE_9_INPUT_1,
-                            QStringList() << RULE_9_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_10_ID,
-                            QStringList() << RULE_10_INPUT_1,
-                            QStringList() << RULE_10_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    rules << Lvk::Nlp::Rule(RULE_12_ID,
-                            QStringList() << RULE_12_INPUT_1,
-                            QStringList() << RULE_12_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_14_ID,
-                            QStringList() << RULE_14_INPUT_1,
-                            QStringList() << RULE_14_OUTPUT_1,
-                            QStringList() << TARGET_USER_1);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules6(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    // TOPIC 1 --------------------
-
-    QString topicSoccer = "soccer";
-
-    rules << Lvk::Nlp::Rule(RULE_7_ID,
-                            QStringList() << RULE_7_INPUT_1,
-                            QStringList() << RULE_7_OUTPUT_1);
-
-    rules[0].setTopic(topicSoccer);
-
-    rules << Lvk::Nlp::Rule(RULE_18_ID,
-                            QStringList() << RULE_18_INPUT_1,
-                            QStringList() << RULE_18_OUTPUT_1);
-
-    rules[1].setTopic(topicSoccer);
-
-
-    // TOPIC 2 --------------------
-
-    QString topicCars = "\"cars\"";
-
-    rules << Lvk::Nlp::Rule(RULE_19_ID,
-                            QStringList() << RULE_19_INPUT_1,
-                            QStringList() << RULE_19_OUTPUT_1);
-
-    rules[2].setTopic(topicCars);
-
-    rules << Lvk::Nlp::Rule(RULE_3_ID,
-                            QStringList() << RULE_3_INPUT_1 << RULE_3_INPUT_2 << RULE_3_INPUT_3,
-                            QStringList() << RULE_3_OUTPUT_1);
-
-    rules[3].setTopic(topicCars);
-
-    rules << Lvk::Nlp::Rule(RULE_20_ID,
-                            QStringList() << RULE_20_INPUT_1,
-                            QStringList() << RULE_20_OUTPUT_1);
-
-    rules[4].setTopic(topicCars);
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::setRules7(Lvk::Nlp::Cb2Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_15_ID,
-                            QStringList() << RULE_15_INPUT_1 << RULE_15_INPUT_2 << RULE_15_INPUT_3,
-                            QStringList() << RULE_15_OUTPUT_1,
-                            QStringList());
-
-    rules << Lvk::Nlp::Rule(RULE_16_ID,
-                            QStringList() << RULE_16_INPUT_1,
-                            QStringList() << RULE_16_OUTPUT_1,
-                            QStringList());
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
 
 void TestCb2Engine::initTestCase()
 {
@@ -459,8 +157,8 @@ void TestCb2Engine::cleanupTestCase()
 
 //--------------------------------------------------------------------------------------------------
 
-void TestCb2Engine::testMatch(void (TestCb2Engine::*setRulesMemb)(Lvk::Nlp::Cb2Engine *engine),
-                               Lvk::Nlp::Cb2Engine *engine)
+void TestCb2Engine::testMatch(void (*setRulesFunc)(Lvk::Nlp::Engine *engine),
+                              Lvk::Nlp::Cb2Engine *engine)
 {
     QFETCH(QString, targetUser);
     QFETCH(QString, userInput);
@@ -470,7 +168,7 @@ void TestCb2Engine::testMatch(void (TestCb2Engine::*setRulesMemb)(Lvk::Nlp::Cb2E
 
     engine->setLemmatizer(new MockLemmatizer());
 
-    (this->*setRulesMemb)(engine);
+    setRulesFunc(engine);
 
     Lvk::Nlp::Engine::MatchList matches;
     QString output;
@@ -704,7 +402,7 @@ void TestCb2Engine::testMatchWithTarget()
     QSKIP("Skip macro on", SkipAll);
 #endif
 
-    testMatch(&TestCb2Engine::setRules4, m_engine);
+    testMatch(setRules4, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -741,7 +439,7 @@ void TestCb2Engine::testMatchPriority()
     QSKIP("Skip macro on", SkipAll);
 #endif
 
-    testMatch(&TestCb2Engine::setRules5, m_engine);
+    testMatch(setRules5, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -782,6 +480,39 @@ void TestCb2Engine::testMatchWithTopic()
         QCOMPARE(matches.size(), 1);
         QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestCb2Engine::testExactMatch_data()
+{
+    QTest::addColumn<QString>("targetUser");
+    QTest::addColumn<QString>("userInput");
+    QTest::addColumn<QString>("expectedOutput");
+    QTest::addColumn<int>("ruleId");
+    QTest::addColumn<int>("ruleInputNumber");
+
+    QTest::newRow("em 1") << "" << USER_INPUT_21a << RULE_21_OUTPUT_1 << RULE_21_ID << 0;
+    QTest::newRow("em 2") << "" << USER_INPUT_21b << RULE_22_OUTPUT_1 << RULE_22_ID << 1;
+    QTest::newRow("em 3") << "" << USER_INPUT_21c << RULE_21_OUTPUT_1 << RULE_21_ID << 1;
+    QTest::newRow("em 4") << "" << USER_INPUT_21d << RULE_22_OUTPUT_1 << RULE_22_ID << 0;
+    QTest::newRow("em 5") << "" << USER_INPUT_22a << RULE_22_OUTPUT_1 << RULE_22_ID << 0;
+    QTest::newRow("em 6") << "" << USER_INPUT_22b << RULE_22_OUTPUT_1 << RULE_22_ID << 1;
+    QTest::newRow("em 7") << "" << USER_INPUT_23a << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
+    QTest::newRow("em 8") << "" << USER_INPUT_23b << QString()        << 0          << 0;
+    QTest::newRow("em 9") << "" << USER_INPUT_24a << RULE_24_OUTPUT_1 << RULE_24_ID << 0;
+    QTest::newRow("em 9") << "" << USER_INPUT_24b << RULE_24_OUTPUT_1 << RULE_24_ID << 1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestCb2Engine::testExactMatch()
+{
+#ifndef EnableTestExactMatch
+    QSKIP("Skip macro on", SkipAll);
+#endif
+
+    testMatch(setRules8, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -64,9 +64,22 @@ void MockLemmatizer::lemmatize(const QString &input, Lvk::Nlp::WordList &words)
     tokenize(input, tokens);
 
     foreach (const QString &token, tokens) {
-        Lvk::Nlp::Word w(token, m_postSanitizer->sanitize(token), m_postSanitizer->sanitize(token));
+        Lvk::Nlp::Word w(token, m_postSanitizer->sanitize(token), getLemma(token));
         words.append(w);
     }
 
     qDebug() << "MockLemmatizer: lemmas:" << words;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString MockLemmatizer::getLemma(const QString &word)
+{
+    QString w = word.toLower();
+
+    if (w == "jugaba" || w == "juego") {
+        w = "jugar";
+    }
+
+    return m_postSanitizer->sanitize(w);
 }

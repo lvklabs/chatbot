@@ -22,6 +22,8 @@ private:
 
     Lvk::Nlp::Sanitizer *m_preSanitizer;
     Lvk::Nlp::Sanitizer *m_postSanitizer;
+
+    QString getLemma(const QString &word);
 };
 
 #endif // MOCKLEMMATIZER_H
