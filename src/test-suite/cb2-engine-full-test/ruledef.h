@@ -17,6 +17,15 @@
 #define RULE_3_INPUT_1                      "* jugar * futbol *"
 #define RULE_3_OUTPUT_1                     "Yo tambien"
 
+#define RULE_4_ID                           4
+#define RULE_4_INPUT_1                      "Te gusta [algo]?"
+#define RULE_4_INPUT_2                      "Te gusta [algo] mucho?"
+#define RULE_4_OUTPUT_1                     "Si me gusta [algo]"
+
+#define RULE_5_ID                           5
+#define RULE_5_INPUT_1                      "Te gusta [algo] mas que [algo2]?"
+#define RULE_5_OUTPUT_1                     "Entre [algo] y [algo2] no se..."
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -34,6 +43,14 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_3_ID,
                             QStringList() << RULE_3_INPUT_1,
                             QStringList() << RULE_3_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_4_ID,
+                            QStringList() << RULE_4_INPUT_1 << RULE_4_INPUT_2,
+                            QStringList() << RULE_4_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_5_ID,
+                            QStringList() << RULE_5_INPUT_1,
+                            QStringList() << RULE_5_OUTPUT_1);
 
     engine->setRules(rules);
 }

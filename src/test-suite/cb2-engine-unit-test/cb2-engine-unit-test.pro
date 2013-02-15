@@ -38,6 +38,7 @@ HEADERS += \
     ../../chatbot/nlp-engine/node.h \
     ../../chatbot/nlp-engine/result.h \
     ../../chatbot/nlp-engine/condoutput.h \
+    ../../chatbot/nlp-engine/varstack.h \
     ../../chatbot/common/settings.h \
     ../../chatbot/common/random.h \
     ../../chatbot/common/logger.h \

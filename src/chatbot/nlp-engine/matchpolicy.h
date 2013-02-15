@@ -22,6 +22,11 @@
 #ifndef LVK_NLP_MATCHPOLICY_H
 #define LVK_NLP_MATCHPOLICY_H
 
+#include <QString>
+
+#include "nlp-engine/word.h"
+#include "nlp-engine/varstack.h"
+
 namespace Lvk
 {
 
@@ -36,7 +41,7 @@ namespace Nlp
 /// @{
 
 struct Node;
-struct Word;
+
 
 /**
  * \brief MatchPolicy class 
@@ -44,7 +49,14 @@ struct Word;
 class MatchPolicy
 {
 public:
-    float operator()(const Node *node, const Word &w);
+    float operator()(const Node *node, const WordList &words, int offset);
+
+    QString getCapture(const QString &varName);
+
+private:
+     VarStack m_stack;
+
+    void updateVarStack(const Node *node, int offset);
 };
 
 /// @}

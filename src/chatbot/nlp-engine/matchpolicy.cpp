@@ -19,27 +19,97 @@
  *
  */
 
-#include "matchpolicy.h"
-
+#include "nlp-engine/matchpolicy.h"
 #include "nlp-engine/node.h"
 #include "nlp-engine/word.h"
+
+#define CAPTURE_SEP " "
+
+inline void removeLastWord(QString &s)
+{
+    int n = s.lastIndexOf(CAPTURE_SEP);
+
+    s = (n == -1) ? QString() : s.mid(0, n);
+}
 
 //--------------------------------------------------------------------------------------------------
 // MatchPolicy
 //--------------------------------------------------------------------------------------------------
 
-float Lvk::Nlp::MatchPolicy::operator()(const Lvk::Nlp::Node *node, const Lvk::Nlp::Word &w)
+float Lvk::Nlp::MatchPolicy::operator()(const Nlp::Node *node, const Nlp::WordList &words,
+                                        int offset)
 {
-    if (/*Nlp::WildcardNode *wcNode =*/ dynamic_cast<const Nlp::WildcardNode *>(node)) {
-        return 0.001;
-    } else if (const Nlp::WordNode *wNode = dynamic_cast<const Nlp::WordNode *>(node)) {
-        if (wNode->word.lemma == w.lemma) {
-            return 1.0;
-        } else {
-            return 0.0;
+    float weight = 0.0;
+
+    if (node->is<Nlp::WildcardNode>()) {
+        weight = 0.001;
+    } else if (node->is<Nlp::VariableNode>()) {
+        weight = 0.001;
+    } else if (const Nlp::WordNode *wNode = node->to<Nlp::WordNode>()) {
+        if (wNode->word.lemma == words[offset].lemma) {
+            weight = 1.0;
         }
-    } else {
-        return 0.0;
     }
+
+    updateVarStack(node, offset);
+
+    // If there is match
+    if (weight > 0.0) {
+        // If there is a variable in scope
+        if (!m_stack.isEmpty() && m_stack.last().scope.contains(offset)) {
+            QString &capture = m_stack.last().capture;
+            if (capture.size() > 0) {
+                capture.append(CAPTURE_SEP);
+            }
+            capture.append(words[offset].origWord);
+        }
+    }
+
+    return weight;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::MatchPolicy::updateVarStack(const Nlp::Node *node, int offset)
+{
+    // If current variable out of scope
+    while (m_stack.size() > 0 && m_stack.last().scope.start >= offset) {
+        m_stack.removeLast();
+    }
+
+    // Rewind
+    while (m_stack.size() > 0 && m_stack.last().scope.end >= offset) {
+        m_stack.last().scope.end -= 1;
+        removeLastWord(m_stack.last().capture); // Ugly! TODO move this out and optimize!
+    }
+
+    const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>();
+
+    if (varNode) {
+        if (m_stack.isEmpty()) {
+            m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+        } else {
+            if (m_stack.last().name != varNode->varName) {
+                m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+            } else {
+                m_stack.last().scope.end = offset;
+            }
+        }
+    } else {
+        // Nothing to do
+    }
+
+    qDebug() << "VarStack:" << m_stack;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::MatchPolicy::getCapture(const QString &varName)
+{
+    for (int i = m_stack.size() - 1; i >= 0; --i) {
+        if (m_stack[i].name == varName) {
+            return m_stack[i].capture;
+        }
+    }
+    return QString();
+}

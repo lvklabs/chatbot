@@ -104,6 +104,7 @@ HEADERS += \
     nlp-engine/node.h \
     nlp-engine/result.h \
     nlp-engine/condoutput.h \
+    nlp-engine/varstack.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \
@@ -294,5 +295,6 @@ else:versionrev.commands = $$PWD/sh/update-revision.sh
 
 QMAKE_EXTRA_TARGETS += versionrev
 PRE_TARGETDEPS += common/versionrev.h
+
 
 

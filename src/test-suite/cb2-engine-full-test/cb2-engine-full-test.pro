@@ -40,7 +40,8 @@ HEADERS += \
     ../../chatbot/nlp-engine/result.h \
     ../../chatbot/nlp-engine/freelinglemmatizer.h \
     ../../chatbot/nlp-engine/condoutput.h \
-    ruledef.h
+    ../../chatbot/nlp-engine/varstack.h \
+    ruledef.h \
 
 SOURCES += \
     cb2enginefulltest.cpp \
@@ -78,4 +79,5 @@ win32 {
 
 QMAKE_EXTRA_TARGETS += copyfiles
 POST_TARGETDEPS += copyfiles
+
 

@@ -73,7 +73,8 @@ inline int getInputIndex(quint64 id)
 Lvk::Nlp::Tree::Tree()
     : m_root(new Nlp::Node()),
       m_matchPolicy(new Nlp::MatchPolicy()),
-      m_scoringAlg(new Nlp::ScoringAlgorithm())
+      m_scoringAlg(new Nlp::ScoringAlgorithm()),
+      m_varRegex(VAR_DECL_REGEX)
 {
 }
 
@@ -179,6 +180,10 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
         }
     }
 
+    if (word.isVariable()) {
+        // TODO check
+    }
+
     // Otherwise, add new node
 
     Nlp::Node *newNode = 0;
@@ -187,7 +192,9 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
         newNode = new Nlp::WildcardNode(word.origWord, parent);
         newNode->childs.append(newNode); // Loop node (see engine documentation)
     } else if (word.isVariable()) {
-        // TODO
+        QString varName = word.origWord.mid(1, word.origWord.size() - 2); // Remove square braces
+        newNode = new Nlp::VariableNode(varName, parent);
+        newNode->childs.append(newNode); // Loop node (see engine documentation)
     } else {
         newNode = new Nlp::WordNode(word, parent);
     }
@@ -217,6 +224,8 @@ QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList
 
     qSort(results.begin(), results.end(), highScoreFirst);
 
+    qDebug() << "Nlp::Tree: Results: " << results;
+
     QStringList responses;
     matches.clear();
 
@@ -238,7 +247,7 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
     foreach (const Nlp::Node *node, root->childs) {
         qDebug() <<  dgbMargin << "Current node" << *node;
 
-        float matchWeight = (*m_matchPolicy)(node, words[offset]);
+        float matchWeight = (*m_matchPolicy)(node, words, offset);
 
         if (matchWeight > 0) {
             qDebug() << dgbMargin << words[offset] << "matched with weight" << matchWeight;
@@ -275,12 +284,37 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
         if (!co.isNull()) {
             r.ruleId = getRuleId(it.key());
             r.inputIdx = getInputIndex(it.key());
-            r.output = co.output; // TODO expand variables
+            r.output = expandVars(co.output);
             break;
         }
     }
 
     return r;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::Tree::expandVars(const QString &output)
+{
+    QString newOutput;
+    QString varName;
+    int offset = 0;
+    int i = 0;
+
+    while (true) {
+        i = m_varRegex.indexIn(output, offset);
+        if (i != -1) {
+            varName = m_varRegex.cap(1);
+            newOutput += output.mid(offset, i - offset) + m_matchPolicy->getCapture(varName);
+            offset = i + varName.size() + 2;
+        } else {
+            newOutput += output.mid(offset);
+            break;
+        }
+    }
+
+    return newOutput;
 }
 
 //--------------------------------------------------------------------------------------------------

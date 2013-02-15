@@ -24,14 +24,15 @@
 
 #include <QString>
 #include <QDebug>
+#include <QRegExp>
 #include <QStringList>
 #include <QList>
 #include <QDataStream>
 #include <QMetaType>
 
-#define STAR_OP "*"
-#define PLUS_OP "+"
-
+#define STAR_OP             "*"
+#define PLUS_OP             "+"
+#define VAR_DECL_REGEX      "\\[(\\w+)\\]"
 
 namespace Lvk
 {
@@ -79,14 +80,15 @@ struct Word
         return origWord == STAR_OP || origWord == PLUS_OP;
     }
 
-    bool isSymbol() const
-    {
-        return !isWildcard() && origWord.size() >= 1 && !origWord[0].isLetterOrNumber();
-    }
-
     bool isVariable() const
     {
-        return false; // TODO
+        return QRegExp(VAR_DECL_REGEX).exactMatch(origWord);
+    }
+
+    bool isSymbol() const
+    {
+        return !isWildcard() && !isVariable() && origWord.size() >= 1
+                && !origWord[0].isLetterOrNumber();
     }
 
     bool isWord() const

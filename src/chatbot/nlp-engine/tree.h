@@ -85,6 +85,7 @@ private:
     Node *m_root;
     MatchPolicy *m_matchPolicy;
     ScoringAlgorithm *m_scoringAlg;
+    QRegExp m_varRegex;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
     void addNodeOutput(const Rule &rule, const QSet<PairedNode> &onodes);
@@ -93,6 +94,7 @@ private:
                    int offset = 0);
 
     Nlp::Result getValidOutput(const Nlp::Node *node);
+    QString expandVars(const QString &output);
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
     void filterSymbols(Nlp::WordList &words);

@@ -35,6 +35,10 @@ CONTRACT2        1  ('([sdm]|ma|na|m|th|ch|i|u|n|un|r))({NOALPHANUM}|$)
 KEEP_COMPOUNDS   0  {ALPHA}+(['_\-]{ALPHA}+)+
 *ABREVIATIONS1   0  (({ALPHA}+\.)+)(?!\.\.)
 *ABREVIATIONS2   0  ({ALPHA}+\.)(?!\.\.)
+## LVK modification to the rules -- start
+## Adding support to tokenize variable declarations
+VAR_DECL        0  \[{ALPHANUM}+\]
+## LVK modification to the rules -- end
 WORD             0  {ALPHANUM}+
 OTHERS_C         0  {OTHERS}
 </RegExps>

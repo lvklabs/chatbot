@@ -102,6 +102,10 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("10") << "yo jugaba futbol"               << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
     QTest::newRow("11") << QString::fromUtf8("Yo jugu\xc3\xa9 al futbol mucho tiempo")         << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
     QTest::newRow("12") << QString::fromUtf8("Yo?? jugu\xc3\xa9 al futbol muuucho tiempo!!!")  << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
+    QTest::newRow("13") << "te gusta el chocolate?"         << "Si me gusta el chocolate"      << RULE_4_ID << 0;
+    QTest::newRow("14") << "te gusta los chocolates?"       << "Si me gusta los chocolates"    << RULE_4_ID << 0;
+    QTest::newRow("15") << "te gusta el chocolate mucho?"   << "Si me gusta el chocolate"      << RULE_4_ID << 1;
+    QTest::newRow("14") << "te gusta A mas que B?"          << "Entre A y B no se..."          << RULE_5_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

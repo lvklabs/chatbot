@@ -65,6 +65,15 @@ struct Result
     }
 };
 
+
+inline QDebug& operator<<(QDebug& dbg, const Result &r)
+{
+    dbg.space() << r.score << r.output << r.ruleId << r.inputIdx;
+
+    return dbg.maybeSpace();
+}
+
+
 typedef QList<Result> ResultList;
 
 /// @}
