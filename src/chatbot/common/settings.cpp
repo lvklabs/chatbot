@@ -29,6 +29,12 @@
 #  define SETTINGS_FILENAME   "./chatbot.conf"
 #endif
 
+#ifdef DA_CONTEST
+#  define DEFAULT_LANG  "es_AR"
+#else
+#  define DEFAULT_LANG  "en_EN"
+#endif
+
 //--------------------------------------------------------------------------------------------------
 // Settings
 //--------------------------------------------------------------------------------------------------
@@ -60,7 +66,7 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
         } else if (key == SETTING_LANG_PATH) {
             defaultValue = QString("./lang");
         } else if (key == SETTING_APP_LANGUAGE) {
-            defaultValue = QString("es_AR");
+            defaultValue = QString(DEFAULT_LANG);
         } else if (key == SETTING_APP_SEND_STATS) {
             defaultValue = true;
         }

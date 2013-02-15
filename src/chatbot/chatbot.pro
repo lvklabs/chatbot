@@ -18,7 +18,11 @@ DEFINES +=  \
 # Icon theme can be
 # - chatbot: Chatbot custom icon theme
 # - gnome  : Gnome-like icon theme
-ICON_THEME = chatbot
+da_contest {
+    ICON_THEME = chatbot
+} else {
+    ICON_THEME = gnome
+}
 
 # Required config options are:
 # - qxmpp
