@@ -80,14 +80,15 @@ private:
     Tree(Tree&);
     Tree& operator=(Tree&);
 
+    typedef QPair<int, Nlp::Node *> PairedNode; // pair (input idx, node)
+
     Node *m_root;
     MatchPolicy *m_matchPolicy;
     ScoringAlgorithm *m_scoringAlg;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
+    void addRuleOutput(const Rule &rule, const QSet<PairedNode> &onodes);
 
-    void addRuleInfo(Nlp::Node *node, const Nlp::RuleId &ruleId, int inputIdx,
-                     const QStringList &output);
     void scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
                    int offset = 0);
 

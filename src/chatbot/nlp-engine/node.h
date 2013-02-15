@@ -78,6 +78,8 @@ struct CondOutputList : public QList<CondOutput>
         : randomOutput(false) { }
 
     bool randomOutput;
+
+    // TODO check if we need to define operator=
 };
 
 /**

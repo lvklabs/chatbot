@@ -92,6 +92,10 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
 {
     Nlp::WordList words;
 
+    QSet<PairedNode> onodes;    // Set of nodes with output
+
+    // Parse each rule input and add nodes in the tree
+
     for (int i = 0; i < rule.input().size(); ++i) {
 
         qDebug() << "Nlp::Tree: Parsing rule id" << rule.id() << "input #" << i;
@@ -107,25 +111,39 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
             curNode = addNode(w, curNode);
         }
 
-        addRuleInfo(curNode, rule.id(), i, rule.output());
+        onodes.insert(PairedNode(i, curNode));
 
-        // TODO explain this:
         if (words.last().normWord == STAR_OP && curNode->parent != m_root) {
-            addRuleInfo(curNode->parent, rule.id(), i, rule.output());
+            onodes.insert(PairedNode(i, curNode->parent));
         }
     }
+
+    // Add rule output to each node in onodes
+
+    addNodeOutput(rule, onodes);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::Tree::addRuleInfo(Nlp::Node *node, const Nlp::RuleId &ruleId, int inputIdx,
-                                 const QStringList &output)
+void Lvk::Nlp::Tree::addNodeOutput(const Lvk::Nlp::Rule &rule, const QSet<PairedNode> &onodes)
 {
-    foreach (const QString o, output) {
-        if (!o.isEmpty()) {
-            // TODO set conditionals
-            node->omap[getOmapId(ruleId, inputIdx)].append(Nlp::CondOutput(o));
+    // Build list of outputs with their condition
+    // TODO add condition
+
+    Nlp::CondOutputList l;
+    foreach (const QString &o, rule.output()) {
+        QString ot = o.trimmed();
+        if (!ot.isEmpty()) {
+            l.append(Nlp::CondOutput(ot));
         }
+    }
+
+    // Add the output list to all nodes in onodes.
+    // Because CondOutputList inherits the "Implicit Shared Model" from QList, all These
+    // copies don't waste a lot of memory
+
+    foreach (const PairedNode &onode, onodes) {
+        onode.second->omap[getOmapId(rule.id(), onode.first)] = l;
     }
 }
 
@@ -313,4 +331,5 @@ void Lvk::Nlp::Tree::filterSymbols(Nlp::WordList &words)
         }
     }
 }
+
 
