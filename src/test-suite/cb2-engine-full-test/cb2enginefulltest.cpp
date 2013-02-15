@@ -3,6 +3,8 @@
 
 #include "nlp-engine/cb2engine.h"
 #include "nlp-engine/lemmatizerfactory.h"
+#include "common/settingskeys.h"
+#include "common/settings.h"
 
 #include "ruledef.h"
 
@@ -32,8 +34,11 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 Cb2EnginefullTest::Cb2EnginefullTest()
-    : m_engine(new Nlp::Cb2Engine())
+    : m_engine(0)
 {
+    Cmn::Settings().setValue(SETTING_APP_LANGUAGE, "es_AR");
+
+    m_engine = new Nlp::Cb2Engine();
     m_engine->setLemmatizer(Nlp::LemmatizerFactory().createLemmatizer());
 
     setRules1(m_engine);

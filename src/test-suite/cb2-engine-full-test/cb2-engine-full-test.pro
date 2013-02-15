@@ -69,7 +69,9 @@ FL_DATA_PATH += \
     $$PROJECT_PATH/../../third-party/Freeling/data/es/
 
 win32 {
-    # TODO
+    warning(This test needs manual setup)
+    warning(Copy freeling data in the directory where the test is executed)
+    # TODO copy files automatically
 } else {
     copyfiles.commands = mkdir -p ./data/freeling/; cp -Rf $$FL_DATA_PATH ./data/freeling/
 }
