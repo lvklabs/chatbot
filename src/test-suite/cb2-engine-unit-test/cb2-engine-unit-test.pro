@@ -37,7 +37,9 @@ HEADERS += \
     ../../chatbot/nlp-engine/word.h \
     ../../chatbot/nlp-engine/node.h \
     ../../chatbot/nlp-engine/result.h \
+    ../../chatbot/nlp-engine/condoutput.h \
     ../../chatbot/common/settings.h \
+    ../../chatbot/common/random.h \
     ../../chatbot/common/logger.h \
     mocklemmatizer.h \
     ruledef.h
@@ -54,6 +56,7 @@ SOURCES += \
     ../../chatbot/nlp-engine/scoringalgorithm.cpp \
     ../../chatbot/nlp-engine/matchpolicy.cpp \
     ../../chatbot/common/settings.cpp \
+    ../../chatbot/common/random.cpp \
     ../../chatbot/common/logger.cpp \
     mocklemmatizer.cpp
 

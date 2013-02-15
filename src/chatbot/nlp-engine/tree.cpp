@@ -269,18 +269,14 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
     Nlp::OutputMap::const_iterator it;
     for (it = node->omap.constBegin(); it != node->omap.constEnd() && r.isNull(); ++it) {
         const Nlp::CondOutputList &l = it.value();
+        // TODO pass context
+        const Nlp::CondOutput &co = l.nextValid();
 
-        // TODO if random output, choose randomly
-
-        for (int i = 0; i < l.size(); ++i) {
-            const Nlp::CondOutput &co = l[i];
-
-            if (co.predicate(/* TODO pass context */)) {
-                r.ruleId = getRuleId(it.key());
-                r.inputIdx = getInputIndex(it.key());
-                r.output = co.output; // TODO expand variables
-                break;
-            }
+        if (!co.isNull()) {
+            r.ruleId = getRuleId(it.key());
+            r.inputIdx = getInputIndex(it.key());
+            r.output = co.output; // TODO expand variables
+            break;
         }
     }
 

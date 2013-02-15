@@ -99,6 +99,7 @@ HEADERS += \
     nlp-engine/word.h \
     nlp-engine/node.h \
     nlp-engine/result.h \
+    nlp-engine/condoutput.h \
     chat-adapter/xmppchatbot.h \
     chat-adapter/historyhelper.h \
     chat-adapter/chatbot.h \

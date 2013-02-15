@@ -87,7 +87,7 @@ private:
     ScoringAlgorithm *m_scoringAlg;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
-    void addRuleOutput(const Rule &rule, const QSet<PairedNode> &onodes);
+    void addNodeOutput(const Rule &rule, const QSet<PairedNode> &onodes);
 
     void scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
                    int offset = 0);

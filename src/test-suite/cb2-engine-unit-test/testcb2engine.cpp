@@ -43,6 +43,7 @@
 #define EnableTestMatchWithTarget
 #define EnableTestMatchPriority
 //#define EnableTestExactMatch
+#define EnableTestMatchWithSecuentialOutput
 
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
@@ -108,6 +109,9 @@ private Q_SLOTS:
 
     void testMatchWithSingleOutputWithLemmatizer_data();
     void testMatchWithSingleOutputWithLemmatizer();
+
+    void testMatchWithSecuentialOutput_data();
+    void testMatchWithSecuentialOutput();
 
     void testMatchWithRandomOutput_data();
     void testMatchWithRandomOutput();
@@ -362,6 +366,43 @@ void TestCb2Engine::testMatchWithRandomOutput()
     }
 
     QCOMPARE(outputUseCount.size(), expectedOutput.size());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestCb2Engine::testMatchWithSecuentialOutput_data()
+{
+    QTest::addColumn<QString>("userInput");
+    QTest::addColumn<QStringList>("expectedOutput");
+
+    QStringList RULE_1_OUTPUT_LIST(QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2
+                                                 << RULE_1_OUTPUT_3);
+
+    QTest::newRow("so 1") << USER_INPUT_1a << RULE_1_OUTPUT_LIST;
+    QTest::newRow("so 2") << USER_INPUT_2 << RULE_1_OUTPUT_LIST;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestCb2Engine::testMatchWithSecuentialOutput()
+{
+#ifndef EnableTestMatchWithSecuentialOutput
+    QSKIP("Skip macro on", SkipAll);
+#endif
+
+    QFETCH(QString, userInput);
+    QFETCH(QStringList, expectedOutput);
+
+    setRules2(m_engine);
+
+    Lvk::Nlp::Engine::MatchList matches;
+
+    for (int i = 0; i < 10; ++i) {
+        QString output = m_engine->getResponse(userInput, matches);
+
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(expectedOutput[i % expectedOutput.size()], output);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

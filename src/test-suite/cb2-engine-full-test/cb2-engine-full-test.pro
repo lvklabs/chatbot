@@ -18,6 +18,7 @@ HEADERS += \
     ../../chatbot/common/settings.h \
     ../../chatbot/common/settingskeys.h \
     ../../chatbot/common/logger.h \
+    ../../chatbot/common/random.h \
     ../../chatbot/nlp-engine/sanitizer.h \
     ../../chatbot/nlp-engine/defaultsanitizer.h \
     ../../chatbot/nlp-engine/nullsanitizer.h \
@@ -38,12 +39,14 @@ HEADERS += \
     ../../chatbot/nlp-engine/node.h \
     ../../chatbot/nlp-engine/result.h \
     ../../chatbot/nlp-engine/freelinglemmatizer.h \
+    ../../chatbot/nlp-engine/condoutput.h \
     ruledef.h
 
 SOURCES += \
     cb2enginefulltest.cpp \
     ../../chatbot/common/settings.cpp \
     ../../chatbot/common/logger.cpp \
+    ../../chatbot/common/random.cpp \
     ../../chatbot/nlp-engine/defaultsanitizer.cpp \
     ../../chatbot/nlp-engine/lemmatizerfactory.cpp \
     ../../chatbot/nlp-engine/sanitizerfactory.cpp \

@@ -24,6 +24,7 @@
 
 #include "nlp-engine/word.h"
 #include "nlp-engine/rule.h"
+#include "nlp-engine/condoutput.h"
 
 #include <QList>
 #include <QString>
@@ -42,45 +43,6 @@ namespace Nlp
 /// \ingroup Lvk
 /// \addtogroup Nlp
 /// @{
-
-/**
- * \brief
- */
-struct Predicate
-{
-    virtual ~Predicate() { }
-
-    bool operator()() const
-    {
-        return true;
-    }
-
-};
-
-/**
- * \brief
- */
-struct CondOutput
-{
-    CondOutput(const QString &output = "", const Predicate &p = Predicate())
-        : output(output), predicate(p) { }
-
-    QString output;
-    Predicate predicate;
-};
-
-/**
- * \brief
- */
-struct CondOutputList : public QList<CondOutput>
-{
-    CondOutputList()
-        : randomOutput(false) { }
-
-    bool randomOutput;
-
-    // TODO check if we need to define operator=
-};
 
 /**
  * \brief
