@@ -115,7 +115,9 @@ void Lvk::FE::MainWindow::setupUi()
     menu->addAction(ui->actionAddCondRule);
     ui->addRuleButton->setMenu(menu);
 
+#ifdef DA_CONTEST
     setWindowIcon(QIcon(APP_ICON_FILE));
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -842,6 +844,7 @@ void Lvk::FE::MainWindow::onExportMenuTriggered()
 void Lvk::FE::MainWindow::onAboutMenuTriggered()
 {
     QString title = QString(tr("About %1...")).arg(APP_NAME);
+#ifdef DA_CONTEST
     QString text = QString(tr(
         "<p><b>%1 %2</b><br/>Rev: %3</p>"
         "<p>Developed by LVK in conjuntion with FaMAF - UNC for the Manuel Sadosky Foundation</p>"
@@ -860,9 +863,30 @@ void Lvk::FE::MainWindow::onAboutMenuTriggered()
             .arg(APP_VERSION_STR)
             .arg(QString(APP_VERSION_REV).mid(0, 30))
             .arg(APP_URL_CONTACT);
+#else
+    QString text = QString(tr(
+        "<p><b>%1 %2 - Open Source Edition</b><br/>Rev: %3</p>"
+        "<p>Developed by LVK in conjuntion with FaMAF</p>"
+        "<a href=\"http://%4\">www.lvklabs.com</a>"
+        "<br/><a href=\"http://www.famaf.unc.edu.ar/\">www.famaf.unc.edu.ar</a>"
+        "<br/><p>Chatbot is free software: you can redistribute it and/or modify "
+        "it under the terms of the GNU General Public License as published by "
+        "the Free Software Foundation, either version 3 of the License, or "
+        "(at your option) any later version.</p>"
+        "<p>Chatbot is distributed in the hope that it will be useful, "
+        "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+        "GNU General Public License for more details.</p>"))
+            .arg(APP_NAME)
+            .arg(APP_VERSION_STR)
+            .arg(QString(APP_VERSION_REV).mid(0, 30))
+            .arg(APP_URL_CONTACT);
+#endif
 
     QMessageBox msg(QMessageBox::NoIcon, title, text);
+#ifdef DA_CONTEST
     msg.setIconPixmap(QPixmap(APP_ICON_FILE));
+#endif
     msg.exec();
 }
 

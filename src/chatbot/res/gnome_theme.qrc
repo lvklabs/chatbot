@@ -5,7 +5,7 @@
         <file alias="remove.png">gnome_theme/remove.png</file>
         <file alias="rule.png">gnome_theme/rule.png</file>
         <file alias="add_rule.png">gnome_theme/add_rule.png</file>
-        <file alias="clear.png">gnome_theme/clear.png</file>
+        <file alias="clear_conv.png">gnome_theme/clear.png</file>
         <file alias="category_locked.png">gnome_theme/category_locked.png</file>
         <file alias="no_match.png">gnome_theme/no_match.png</file>
         <file alias="match.png">gnome_theme/match.png</file>
@@ -13,7 +13,6 @@
         <file alias="gmail.png">gnome_theme/gmail.png</file>
         <file alias="teach_rule.png">gnome_theme/teach_rule.png</file>
         <file alias="undo.png">gnome_theme/undo.png</file>
-        <file alias="app_icon">icon/chatbot_icon_128x128.png</file>
         <file alias="users.png">gnome_theme/users.png</file>
         <file alias="new_chatbot.png">gnome_theme/new_chatbot.png</file>
         <file alias="open_chatbot.png">gnome_theme/open_chatbot.png</file>
