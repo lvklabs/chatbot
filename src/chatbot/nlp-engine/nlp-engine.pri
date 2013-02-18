@@ -1,41 +1,51 @@
 # NLP Engine module
 
+isEmpty(PROJECT_PATH) {
+    PROJECT_PATH = .
+}
+
 HEADERS += \
-    nlp-engine/sanitizer.h \
-    nlp-engine/defaultsanitizer.h \
-    nlp-engine/nullsanitizer.h \
-    nlp-engine/lemmatizer.h \
-    nlp-engine/nulllemmatizer.h \
-    nlp-engine/rule.h \
-    nlp-engine/engine.h \
-    nlp-engine/lemmatizerfactory.h \
-    nlp-engine/sanitizerfactory.h \
-    nlp-engine/enginefactory.h \
-    nlp-engine/nlpproperties.h \
-    nlp-engine/cb2engine.h \
-    nlp-engine/tree.h \
-    nlp-engine/globaltools.h \
-    nlp-engine/scoringalgorithm.h \
-    nlp-engine/matchpolicy.h \
-    nlp-engine/word.h \
-    nlp-engine/node.h \
-    nlp-engine/result.h \
-    nlp-engine/condoutput.h \
-    nlp-engine/varstack.h \
+    $$PROJECT_PATH/nlp-engine/sanitizer.h \
+    $$PROJECT_PATH/nlp-engine/defaultsanitizer.h \
+    $$PROJECT_PATH/nlp-engine/nullsanitizer.h \
+    $$PROJECT_PATH/nlp-engine/lemmatizer.h \
+    $$PROJECT_PATH/nlp-engine/nulllemmatizer.h \
+    $$PROJECT_PATH/nlp-engine/rule.h \
+    $$PROJECT_PATH/nlp-engine/engine.h \
+    $$PROJECT_PATH/nlp-engine/lemmatizerfactory.h \
+    $$PROJECT_PATH/nlp-engine/sanitizerfactory.h \
+    $$PROJECT_PATH/nlp-engine/enginefactory.h \
+    $$PROJECT_PATH/nlp-engine/nlpproperties.h \
+    $$PROJECT_PATH/nlp-engine/cb2engine.h \
+    $$PROJECT_PATH/nlp-engine/tree.h \
+    $$PROJECT_PATH/nlp-engine/globaltools.h \
+    $$PROJECT_PATH/nlp-engine/scoringalgorithm.h \
+    $$PROJECT_PATH/nlp-engine/matchpolicy.h \
+    $$PROJECT_PATH/nlp-engine/word.h \
+    $$PROJECT_PATH/nlp-engine/node.h \
+    $$PROJECT_PATH/nlp-engine/result.h \
+    $$PROJECT_PATH/nlp-engine/condoutput.h \
+    $$PROJECT_PATH/nlp-engine/varstack.h
 
 SOURCES += \
-    nlp-engine/defaultsanitizer.cpp \
-    nlp-engine/lemmatizerfactory.cpp \
-    nlp-engine/sanitizerfactory.cpp \
-    nlp-engine/enginefactory.cpp \
-    nlp-engine/cb2engine.cpp \
-    nlp-engine/tree.cpp \
-    nlp-engine/globaltools.cpp \
-    nlp-engine/scoringalgorithm.cpp \
-    nlp-engine/matchpolicy.cpp \
+    $$PROJECT_PATH/nlp-engine/defaultsanitizer.cpp \
+    $$PROJECT_PATH/nlp-engine/lemmatizerfactory.cpp \
+    $$PROJECT_PATH/nlp-engine/sanitizerfactory.cpp \
+    $$PROJECT_PATH/nlp-engine/enginefactory.cpp \
+    $$PROJECT_PATH/nlp-engine/cb2engine.cpp \
+    $$PROJECT_PATH/nlp-engine/tree.cpp \
+    $$PROJECT_PATH/nlp-engine/globaltools.cpp \
+    $$PROJECT_PATH/nlp-engine/scoringalgorithm.cpp \
+    $$PROJECT_PATH/nlp-engine/matchpolicy.cpp \
 
 
 freeling {
-    HEADERS += nlp-engine/freelinglemmatizer.h
-    SOURCES += nlp-engine/freelinglemmatizer.cpp
+    HEADERS += \
+        $$PROJECT_PATH/nlp-engine/freelinglemmatizer.h
+
+    SOURCES += \
+        $$PROJECT_PATH/nlp-engine/freelinglemmatizer.cpp
 }
+
+
+

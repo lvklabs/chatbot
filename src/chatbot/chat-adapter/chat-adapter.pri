@@ -4,22 +4,26 @@ QT += \
     xml \
     network \
 
+isEmpty(PROJECT_PATH) {
+    PROJECT_PATH = .
+}
+
 HEADERS += \
-    chat-adapter/xmppchatbot.h \
-    chat-adapter/historyhelper.h \
-    chat-adapter/chatbot.h \
-    chat-adapter/fbchatbot.h \
-    chat-adapter/gtalkchatbot.h \
-    chat-adapter/contactinfo.h \
-    chat-adapter/chatcorpus.h \
-    chat-adapter/chatbotai.h \
-    chat-adapter/fbownmessageextension.h \
+    $$PROJECT_PATH/chat-adapter/xmppchatbot.h \
+    $$PROJECT_PATH/chat-adapter/historyhelper.h \
+    $$PROJECT_PATH/chat-adapter/chatbot.h \
+    $$PROJECT_PATH/chat-adapter/fbchatbot.h \
+    $$PROJECT_PATH/chat-adapter/gtalkchatbot.h \
+    $$PROJECT_PATH/chat-adapter/contactinfo.h \
+    $$PROJECT_PATH/chat-adapter/chatcorpus.h \
+    $$PROJECT_PATH/chat-adapter/chatbotai.h \
+    $$PROJECT_PATH/chat-adapter/fbownmessageextension.h \
 
 SOURCES += \
-    chat-adapter/historyhelper.cpp \
-    chat-adapter/xmppchatbot.cpp \
-    chat-adapter/fbchatbot.cpp \
-    chat-adapter/gtalkchatbot.cpp \
-    chat-adapter/chatbot.cpp \
-    chat-adapter/chatcorpus.cpp \
-    chat-adapter/fbownmessageextension.cpp \
+    $$PROJECT_PATH/chat-adapter/historyhelper.cpp \
+    $$PROJECT_PATH/chat-adapter/xmppchatbot.cpp \
+    $$PROJECT_PATH/chat-adapter/fbchatbot.cpp \
+    $$PROJECT_PATH/chat-adapter/gtalkchatbot.cpp \
+    $$PROJECT_PATH/chat-adapter/chatbot.cpp \
+    $$PROJECT_PATH/chat-adapter/chatcorpus.cpp \
+    $$PROJECT_PATH/chat-adapter/fbownmessageextension.cpp \

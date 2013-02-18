@@ -4,83 +4,87 @@ QT += \
     gui \
     qt3support ### TODO remove this dep
 
+isEmpty(PROJECT_PATH) {
+    PROJECT_PATH = .
+}
+
 HEADERS += \
-    front-end/mainwindow.h \
-    front-end/ruletreemodel.h \
-    front-end/ruletreeview.h \
-    front-end/ruleoutputwidget.h \
-    front-end/ruleinputwidget.h \
-    front-end/testconversationwidget.h \
-    front-end/portdialog.h \
-    front-end/exportdialog.h \
-    front-end/importdialog.h \
-    front-end/rosterwidget.h \
-    front-end/autocompletetextedit.h \
-    front-end/chathistorywidget.h \
-    front-end/linefilteredit.h \
-    front-end/ruletextview.h \
-    front-end/scorewidget.h \
-    front-end/tinyscorewidget.h \
-    front-end/detailsdialog.h \
-    front-end/welcomewidget.h \
-    front-end/optionswindow.h \
-    front-end/filedialog.h \
-    front-end/mainwindowrefactor.h \
-    front-end/sendscoredialog.h \
-    front-end/newupdatedialog.h \
-    front-end/updateexecutor.h \
-    front-end/testinputtext.h \
-    front-end/ruleeditwidget.h \
-    front-end/connectionwidget.h \
-    front-end/memberfunctor.h \
-    front-end/uploaderprogressdialog.h \
-    front-end/accountverifwidget.h\
+    $$PROJECT_PATH/front-end/mainwindow.h \
+    $$PROJECT_PATH/front-end/ruletreemodel.h \
+    $$PROJECT_PATH/front-end/ruletreeview.h \
+    $$PROJECT_PATH/front-end/ruleoutputwidget.h \
+    $$PROJECT_PATH/front-end/ruleinputwidget.h \
+    $$PROJECT_PATH/front-end/testconversationwidget.h \
+    $$PROJECT_PATH/front-end/portdialog.h \
+    $$PROJECT_PATH/front-end/exportdialog.h \
+    $$PROJECT_PATH/front-end/importdialog.h \
+    $$PROJECT_PATH/front-end/rosterwidget.h \
+    $$PROJECT_PATH/front-end/autocompletetextedit.h \
+    $$PROJECT_PATH/front-end/chathistorywidget.h \
+    $$PROJECT_PATH/front-end/linefilteredit.h \
+    $$PROJECT_PATH/front-end/ruletextview.h \
+    $$PROJECT_PATH/front-end/scorewidget.h \
+    $$PROJECT_PATH/front-end/tinyscorewidget.h \
+    $$PROJECT_PATH/front-end/detailsdialog.h \
+    $$PROJECT_PATH/front-end/welcomewidget.h \
+    $$PROJECT_PATH/front-end/optionswindow.h \
+    $$PROJECT_PATH/front-end/filedialog.h \
+    $$PROJECT_PATH/front-end/mainwindowrefactor.h \
+    $$PROJECT_PATH/front-end/sendscoredialog.h \
+    $$PROJECT_PATH/front-end/newupdatedialog.h \
+    $$PROJECT_PATH/front-end/updateexecutor.h \
+    $$PROJECT_PATH/front-end/testinputtext.h \
+    $$PROJECT_PATH/front-end/ruleeditwidget.h \
+    $$PROJECT_PATH/front-end/connectionwidget.h \
+    $$PROJECT_PATH/front-end/memberfunctor.h \
+    $$PROJECT_PATH/front-end/uploaderprogressdialog.h \
+    $$PROJECT_PATH/front-end/accountverifwidget.h\
 
 SOURCES += \
-    front-end/mainwindow.cpp \
-    front-end/ruletreemodel.cpp \
-    front-end/ruletreeview.cpp \
-    front-end/ruleoutputwidget.cpp \
-    front-end/ruleinputwidget.cpp \
-    front-end/testconversationwidget.cpp \
-    front-end/portdialog.cpp \
-    front-end/exportdialog.cpp \
-    front-end/importdialog.cpp \
-    front-end/rosterwidget.cpp \
-    front-end/autocompletetextedit.cpp \
-    front-end/chathistorywidget.cpp \
-    front-end/linefilteredit.cpp \
-    front-end/ruletextview.cpp \
-    front-end/scorewidget.cpp \
-    front-end/tinyscorewidget.cpp \
-    front-end/detailsdialog.cpp \
-    front-end/optionswindow.cpp \
-    front-end/welcomewidget.cpp \
-    front-end/mainwindowrefactor.cpp \
-    front-end/sendscoredialog.cpp \
-    front-end/newupdatedialog.cpp \
-    front-end/testinputtext.cpp \
-    front-end/ruleeditwidget.cpp \
-    front-end/connectionwidget.cpp \
-    front-end/uploaderprogressdialog.cpp \
-    front-end/accountverifwidget.cpp \
+    $$PROJECT_PATH/front-end/mainwindow.cpp \
+    $$PROJECT_PATH/front-end/ruletreemodel.cpp \
+    $$PROJECT_PATH/front-end/ruletreeview.cpp \
+    $$PROJECT_PATH/front-end/ruleoutputwidget.cpp \
+    $$PROJECT_PATH/front-end/ruleinputwidget.cpp \
+    $$PROJECT_PATH/front-end/testconversationwidget.cpp \
+    $$PROJECT_PATH/front-end/portdialog.cpp \
+    $$PROJECT_PATH/front-end/exportdialog.cpp \
+    $$PROJECT_PATH/front-end/importdialog.cpp \
+    $$PROJECT_PATH/front-end/rosterwidget.cpp \
+    $$PROJECT_PATH/front-end/autocompletetextedit.cpp \
+    $$PROJECT_PATH/front-end/chathistorywidget.cpp \
+    $$PROJECT_PATH/front-end/linefilteredit.cpp \
+    $$PROJECT_PATH/front-end/ruletextview.cpp \
+    $$PROJECT_PATH/front-end/scorewidget.cpp \
+    $$PROJECT_PATH/front-end/tinyscorewidget.cpp \
+    $$PROJECT_PATH/front-end/detailsdialog.cpp \
+    $$PROJECT_PATH/front-end/optionswindow.cpp \
+    $$PROJECT_PATH/front-end/welcomewidget.cpp \
+    $$PROJECT_PATH/front-end/mainwindowrefactor.cpp \
+    $$PROJECT_PATH/front-end/sendscoredialog.cpp \
+    $$PROJECT_PATH/front-end/newupdatedialog.cpp \
+    $$PROJECT_PATH/front-end/testinputtext.cpp \
+    $$PROJECT_PATH/front-end/ruleeditwidget.cpp \
+    $$PROJECT_PATH/front-end/connectionwidget.cpp \
+    $$PROJECT_PATH/front-end/uploaderprogressdialog.cpp \
+    $$PROJECT_PATH/front-end/accountverifwidget.cpp \
 
 FORMS += \
-    front-end/mainwindow.ui \
-    front-end/portdialog.ui \
-    front-end/chathistorywidget.ui \
-    front-end/scorewidget.ui \
-    front-end/tinyscorewidget.ui \
-    front-end/detailsdialog.ui \
-    front-end/optionswindow.ui \
-    front-end/welcomewidget.ui \
-    front-end/ruleeditwidget.ui \
-    front-end/connectionwidget.ui \
-    front-end/accountverifwidget.ui
+    $$PROJECT_PATH/front-end/mainwindow.ui \
+    $$PROJECT_PATH/front-end/portdialog.ui \
+    $$PROJECT_PATH/front-end/chathistorywidget.ui \
+    $$PROJECT_PATH/front-end/scorewidget.ui \
+    $$PROJECT_PATH/front-end/tinyscorewidget.ui \
+    $$PROJECT_PATH/front-end/detailsdialog.ui \
+    $$PROJECT_PATH/front-end/optionswindow.ui \
+    $$PROJECT_PATH/front-end/welcomewidget.ui \
+    $$PROJECT_PATH/front-end/ruleeditwidget.ui \
+    $$PROJECT_PATH/front-end/connectionwidget.ui \
+    $$PROJECT_PATH/front-end/accountverifwidget.ui
 
 
 isEmpty( ICON_THEME ) {
     ICON_THEME = gnome
 }
 
-RESOURCES += res/$${ICON_THEME}_theme.qrc
+RESOURCES += $$PROJECT_PATH/res/$${ICON_THEME}_theme.qrc

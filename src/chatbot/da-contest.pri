@@ -10,29 +10,35 @@ unix:!mac{
   QMAKE_LFLAGS_RPATH=
 }
 
+isEmpty(PROJECT_PATH) {
+    PROJECT_PATH = .
+}
+
 exists (da-server/daserverconfig.h) {
     DEFINES += DA_SERVER_CONFIG
-    HEADERS += da-server/daserverconfig.h
+    HEADERS += $$PROJECT_PATH/da-server/daserverconfig.h
 }
 
 exists (crypto/dakeymanager.h) {
     DEFINES += DA_KEY_MANAGER
-    HEADERS += crypto/dakeymanager.h
-    SOURCES += crypto/dakeymanager.cpp
+    HEADERS += $$PROJECT_PATH/crypto/dakeymanager.h
+    SOURCES += $$PROJECT_PATH/crypto/dakeymanager.cpp
 }
 
 gelf_stats {
-    HEADERS += da-server/zlibhelper.h \
-        da-server/graylogremotelogger.h \
-        da-server/gelf.h \
-        da-server/syslog.h
-    SOURCES += da-server/zlibhelper.cpp \
-        da-server/graylogremotelogger.cpp \
-        da-server/gelf.cpp \
-        da-server/syslog.cpp
+    HEADERS += \
+        $$PROJECT_PATH/da-server/zlibhelper.h \
+        $$PROJECT_PATH/da-server/graylogremotelogger.h \
+        $$PROJECT_PATH/da-server/gelf.h \
+        $$PROJECT_PATH/da-server/syslog.h
+    SOURCES += \
+        $$PROJECT_PATH/da-server/zlibhelper.cpp \
+        $$PROJECT_PATH/da-server/graylogremotelogger.cpp \
+        $$PROJECT_PATH/da-server/gelf.cpp \
+        $$PROJECT_PATH/da-server/syslog.cpp
 }
 
 qssh {
-    HEADERS += da-server/sftpcontestdatauploader.h
-    SOURCES += da-server/sftpcontestdatauploader.cpp
+    HEADERS += $$PROJECT_PATH/da-server/sftpcontestdatauploader.h
+    SOURCES += $$PROJECT_PATH/da-server/sftpcontestdatauploader.cpp
 }

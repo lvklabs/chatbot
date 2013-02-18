@@ -1,25 +1,29 @@
-# Back-end Module
+# $$PROJECT_PATH/back-end Module
+
+isEmpty(PROJECT_PATH) {
+    PROJECT_PATH = .
+}
 
 HEADERS += \
-    back-end/appfacade.h \
-    back-end/rule.h \
-    back-end/roster.h \
-    back-end/target.h \
-    back-end/chatbotrulesfile.h \
-    back-end/aiadapter.h \
-    back-end/rloghelper.h \
-    back-end/accountverifier.h \
-    back-end/chattype.h \
-    back-end/chatbotfactory.h \
-    back-end/chatbottempfile.h \
-    back-end/filemetadata.h \
+    $$PROJECT_PATH/back-end/appfacade.h \
+    $$PROJECT_PATH/back-end/rule.h \
+    $$PROJECT_PATH/back-end/roster.h \
+    $$PROJECT_PATH/back-end/target.h \
+    $$PROJECT_PATH/back-end/chatbotrulesfile.h \
+    $$PROJECT_PATH/back-end/aiadapter.h \
+    $$PROJECT_PATH/back-end/rloghelper.h \
+    $$PROJECT_PATH/back-end/accountverifier.h \
+    $$PROJECT_PATH/back-end/chattype.h \
+    $$PROJECT_PATH/back-end/chatbotfactory.h \
+    $$PROJECT_PATH/back-end/chatbottempfile.h \
+    $$PROJECT_PATH/back-end/filemetadata.h \
 
 SOURCES += \
-    back-end/appfacade.cpp \
-    back-end/rule.cpp \
-    back-end/chatbotrulesfile.cpp \
-    back-end/aiadapter.cpp \
-    back-end/rloghelper.cpp \
-    back-end/accountverifier.cpp \
-    back-end/chatbotfactory.cpp \
-    back-end/chatbottempfile.cpp \
+    $$PROJECT_PATH/back-end/appfacade.cpp \
+    $$PROJECT_PATH/back-end/rule.cpp \
+    $$PROJECT_PATH/back-end/chatbotrulesfile.cpp \
+    $$PROJECT_PATH/back-end/aiadapter.cpp \
+    $$PROJECT_PATH/back-end/rloghelper.cpp \
+    $$PROJECT_PATH/back-end/accountverifier.cpp \
+    $$PROJECT_PATH/back-end/chatbotfactory.cpp \
+    $$PROJECT_PATH/back-end/chatbottempfile.cpp \
