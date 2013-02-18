@@ -261,6 +261,10 @@ QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList
 void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
                                const Nlp::WordList &words, int offset /*= 0*/)
 {
+    if (offset >= words.size()) {
+        return;
+    }
+
     QString dgbMargin = QString((offset+1)*4, '#');
 
     foreach (const Nlp::Node *node, root->childs) {
