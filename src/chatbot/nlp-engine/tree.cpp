@@ -400,10 +400,11 @@ void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 
     words.clear();
 
+    // TODO sanitize input -- https://github.com/lvklabs/chatbot/issues/24
+
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
-     // TODO parse variables
-
+    parseExactMatch(words);
     filterSymbols(words);
 
     qDebug() << "Nlp::Tree: Parsed rule input" << words;
@@ -417,7 +418,11 @@ void Lvk::Nlp::Tree::parseUserInput(const QString &input, Nlp::WordList &words)
 
     words.clear();
 
-    Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
+    // TODO sanitize input -- https://github.com/lvklabs/chatbot/issues/24
+
+    QString szInput = input;
+    szInput.remove('\'');
+    Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(szInput, words);
 
     filterSymbols(words);
 
@@ -433,6 +438,21 @@ void Lvk::Nlp::Tree::filterSymbols(Nlp::WordList &words)
             words.removeAt(i);
         } else {
             ++i;
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Tree::parseExactMatch(Nlp::WordList &words)
+{
+    for (int i = 0; i < words.size(); ++i) {
+        QString &w = words[i].origWord;
+        if (w.size() >= 3 && w[0] == '\'' && w[w.size() - 1] == '\'') {
+            w = w.mid(1, w.size() - 2).toLower(); // TODO check if we want to normalize to lower
+            words[i].normWord = w;
+            words[i].lemma = "";
+            words[i].posTag = "";
         }
     }
 }

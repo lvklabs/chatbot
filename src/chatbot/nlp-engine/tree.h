@@ -103,6 +103,7 @@ private:
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
     void filterSymbols(Nlp::WordList &words);
+    void parseExactMatch(Nlp::WordList &words);
     QString getRecResponse(const QString &input, Engine::MatchList &matches);
 };
 

@@ -37,11 +37,16 @@
 
 #define RULE_8_ID                           8
 #define RULE_8_INPUT_1                      ":)"
-#define RULE_8_INPUT_2                      ":'("
+#define RULE_8_INPUT_2                      ":D"
 #define RULE_8_INPUT_3                      ":-)"
 #define RULE_8_INPUT_4                      "=)"
 #define RULE_8_INPUT_5                      ":P"
 #define RULE_8_OUTPUT_1                     ":)"
+
+#define RULE_9_ID                           1
+#define RULE_9_INPUT_1                      "'Perros'"
+#define RULE_9_INPUT_2                      "'Perrito'"
+#define RULE_9_OUTPUT_1                     "?"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -81,6 +86,10 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
                             QStringList() << RULE_8_INPUT_1  << RULE_8_INPUT_2 << RULE_8_INPUT_3
                                           << RULE_8_INPUT_4  << RULE_8_INPUT_5,
                             QStringList() << RULE_8_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_9_ID,
+                            QStringList() << RULE_9_INPUT_1 << RULE_9_INPUT_2,
+                            QStringList() << RULE_9_OUTPUT_1);
 
     engine->setRules(rules);
 }

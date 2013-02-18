@@ -46,8 +46,12 @@ float Lvk::Nlp::MatchPolicy::operator()(const Nlp::Node *node, const Nlp::WordLi
     } else if (node->is<Nlp::VariableNode>()) {
         weight = 0.001;
     } else if (const Nlp::WordNode *wNode = node->to<Nlp::WordNode>()) {
-        if (wNode->word.lemma == words[offset].lemma) {
+        if (wNode->word.origWord == words[offset].origWord) {
             weight = 1.0;
+        } else if (wNode->word.lemma.size() > 0) {
+            if (wNode->word.lemma == words[offset].lemma) {
+                weight = 0.5;
+            }
         }
     }
 

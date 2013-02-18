@@ -8,6 +8,8 @@
 
 #include "ruledef.h"
 
+#define UTF8        QString::fromUtf8
+
 using namespace Lvk;
 
 //--------------------------------------------------------------------------------------------------
@@ -100,8 +102,8 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow(" 8") << "Bye"                            << QString()       << 0         << 1;
     QTest::newRow(" 9") << "jugar futbol"                   << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
     QTest::newRow("10") << "yo jugaba futbol"               << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
-    QTest::newRow("11") << QString::fromUtf8("Yo jugu\xc3\xa9 al futbol mucho tiempo")         << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
-    QTest::newRow("12") << QString::fromUtf8("Yo?? jugu\xc3\xa9 al futbol muuucho tiempo!!!")  << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
+    QTest::newRow("11") << UTF8("Yo jugu\xc3\xa9 al futbol mucho tiempo")      << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
+    QTest::newRow("12") << UTF8("Yo?? jugu\xc3\xa9 al futbol muuucho tiempo!") << RULE_3_OUTPUT_1 << RULE_3_ID << 0;
     QTest::newRow("13") << "te gusta el chocolate?"         << "Si me gusta el chocolate"      << RULE_4_ID << 0;
     QTest::newRow("14") << "te gusta los chocolates?"       << "Si me gusta los chocolates"    << RULE_4_ID << 0;
     QTest::newRow("15") << "te gusta el chocolate mucho?"   << "Si me gusta el chocolate"      << RULE_4_ID << 1;
@@ -109,10 +111,12 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("17") << "Solamente te gusta A mas que B?"<< "Entre A y B no se..."          << RULE_6_ID << 1;
     QTest::newRow("18") << "w1 v1a v1b w2 v2 w3 hola w4"    << "w5 v2 w6 Hola! w7 v1a v1b w8"  << RULE_7_ID << 0;
     QTest::newRow("19") << ":)"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 0;
-    QTest::newRow("20") << ":'("                            << RULE_8_OUTPUT_1 << RULE_8_ID << 1;
+    QTest::newRow("20") << ":D"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 1;
     QTest::newRow("21") << ":-)"                            << RULE_8_OUTPUT_1 << RULE_8_ID << 2;
     QTest::newRow("22") << "=)"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 3;
-    QTest::newRow("23") << ":P"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 4;
+    QTest::newRow("24") << "perro"                          << QString()       << 0         << 0;
+    QTest::newRow("25") << "perros"                         << RULE_9_OUTPUT_1 << RULE_9_ID << 0;
+    QTest::newRow("26") << "perrito"                        << RULE_9_OUTPUT_1 << RULE_9_ID << 1;
 }
 
 //--------------------------------------------------------------------------------------------------
