@@ -35,6 +35,14 @@
 #define RULE_7_INPUT_1                      "w1 [var1] w2 [var2] w3 [var3] w4"
 #define RULE_7_OUTPUT_1                     "w5 [var2] w6 R[var3] w7 [var1] w8"
 
+#define RULE_8_ID                           8
+#define RULE_8_INPUT_1                      ":)"
+#define RULE_8_INPUT_2                      ":'("
+#define RULE_8_INPUT_3                      ":-)"
+#define RULE_8_INPUT_4                      "=)"
+#define RULE_8_INPUT_5                      ":P"
+#define RULE_8_OUTPUT_1                     ":)"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -68,6 +76,11 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_7_ID,
                             QStringList() << RULE_7_INPUT_1,
                             QStringList() << RULE_7_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_8_ID,
+                            QStringList() << RULE_8_INPUT_1  << RULE_8_INPUT_2 << RULE_8_INPUT_3
+                                          << RULE_8_INPUT_4  << RULE_8_INPUT_5,
+                            QStringList() << RULE_8_OUTPUT_1);
 
     engine->setRules(rules);
 }

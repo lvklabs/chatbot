@@ -90,7 +90,7 @@ void Cb2EnginefullTest::testCase1_data()
 
     QTest::newRow(" 0") << "Hola"                           << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
     QTest::newRow(" 1") << "HOLAAA!!"                       << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
-    QTest::newRow(" 2") << "hooola$%&/()=^[]{}-_.,:;'\\!?"  << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
+    QTest::newRow(" 2") << "hooola$%&/()^[]{}-_.,=:;'\\!?"  << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
     QTest::newRow(" 3") << "Hola como andas?"               << RULE_1_OUTPUT_1 << RULE_1_ID << 1;
     QTest::newRow(" 3") << "Hola, que hacessss?"            << RULE_1_OUTPUT_1 << RULE_1_ID << 1;
     QTest::newRow(" 4") << "chau"                           << RULE_2_OUTPUT_1 << RULE_2_ID << 0;
@@ -108,6 +108,11 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("16") << "te gusta A mas que B?"          << "Entre A y B no se..."          << RULE_5_ID << 0;
     QTest::newRow("17") << "Solamente te gusta A mas que B?"<< "Entre A y B no se..."          << RULE_6_ID << 1;
     QTest::newRow("18") << "w1 v1a v1b w2 v2 w3 hola w4"    << "w5 v2 w6 Hola! w7 v1a v1b w8"  << RULE_7_ID << 0;
+    QTest::newRow("19") << ":)"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 0;
+    QTest::newRow("20") << ":'("                            << RULE_8_OUTPUT_1 << RULE_8_ID << 1;
+    QTest::newRow("21") << ":-)"                            << RULE_8_OUTPUT_1 << RULE_8_ID << 2;
+    QTest::newRow("22") << "=)"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 3;
+    QTest::newRow("23") << ":P"                             << RULE_8_OUTPUT_1 << RULE_8_ID << 4;
 }
 
 //--------------------------------------------------------------------------------------------------
