@@ -76,6 +76,11 @@ public:
      */
     QStringList getResponses(const QString &input, Engine::MatchList &matches);
 
+    /**
+     * Gets the response with the highest score
+     */
+    QString getResponse(const QString &input, Engine::MatchList &matches);
+
 private:
     Tree(Tree&);
     Tree& operator=(Tree&);
@@ -94,10 +99,11 @@ private:
                    int offset = 0);
 
     Nlp::Result getValidOutput(const Nlp::Node *node);
-    QString expandVars(const QString &output);
+    QString expandVars(const QString &output, bool *ok);
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
     void filterSymbols(Nlp::WordList &words);
+    QString getRecResponse(const QString &input, Engine::MatchList &matches);
 };
 
 /// @}

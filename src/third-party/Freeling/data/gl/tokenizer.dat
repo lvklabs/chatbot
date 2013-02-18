@@ -37,6 +37,8 @@ KEEP_COMPOUNDS  0  {ALPHA}+(['_\-]{ALPHA}+)+
 ## LVK modification to the rules -- start
 ## Adding support to tokenize variable declarations
 VAR_DECL        0  \[{ALPHANUM}+\]
+REC_DECL        0  [rR]\[{ALPHANUM}+\]
+EM_DECL         0  '.*'
 ## LVK modification to the rules -- end
 WORD            0  {ALPHANUM}+
 OTHERS_C        0  {OTHERS}

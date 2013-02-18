@@ -214,6 +214,25 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
 //--------------------------------------------------------------------------------------------------
 
+QString Lvk::Nlp::Tree::getResponse(const QString &input, Engine::MatchList &matches)
+{
+    matches.clear();
+
+    QString resp;
+
+    Engine::MatchList tmpMatches;
+    QStringList responses = getResponses(input, tmpMatches);
+
+    if (responses.size() > 0 && tmpMatches.size() > 0) {
+        resp = responses[0];
+        matches.append(tmpMatches[0]);
+    }
+
+    return resp;
+
+}
+//--------------------------------------------------------------------------------------------------
+
 QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList &matches)
 {
     Nlp::WordList words;
@@ -282,39 +301,91 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
         const Nlp::CondOutput &co = l.nextValid();
 
         if (!co.isNull()) {
-            r.ruleId = getRuleId(it.key());
-            r.inputIdx = getInputIndex(it.key());
-            r.output = expandVars(co.output);
-            break;
+            bool ok;
+            QString expOutput = expandVars(co.output, &ok);
+            if (ok) {
+                r.output = expOutput;
+                r.ruleId = getRuleId(it.key());
+                r.inputIdx = getInputIndex(it.key());
+                break;
+            }
         }
     }
 
     return r;
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::Tree::expandVars(const QString &output)
+QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
 {
     QString newOutput;
     QString varName;
+    QString varValue;
     int offset = 0;
     int i = 0;
+    bool recursive = false;
 
     while (true) {
         i = m_varRegex.indexIn(output, offset);
         if (i != -1) {
             varName = m_varRegex.cap(1);
-            newOutput += output.mid(offset, i - offset) + m_matchPolicy->getCapture(varName);
-            offset = i + varName.size() + 2;
+            varValue = m_matchPolicy->getCapture(varName);
+
+            recursive = i > 0 && output[i - 1].toLower() == 'r';
+
+            // if recursive variable
+            if (recursive) {
+                Engine::MatchList matches;
+                varValue = getRecResponse(varValue, matches);
+
+                if (varValue.isEmpty()) {
+                    newOutput.clear();
+                    *ok = false;
+                    break;
+                }
+
+                i--;
+            }
+
+            newOutput += output.mid(offset, i - offset) + varValue;
+            offset =  i + varName.size() + (recursive ? 3 : 2);
         } else {
             newOutput += output.mid(offset);
+            *ok = true;
             break;
         }
     }
 
     return newOutput;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &matches)
+{
+    QString resp;
+
+    // Push new context
+    Nlp::MatchPolicy *policyBak = m_matchPolicy;
+    Nlp::MatchPolicy policy;
+    m_matchPolicy = &policy;
+    Nlp::ScoringAlgorithm *algorithmBak = m_scoringAlg;
+    Nlp::ScoringAlgorithm algorithm;
+    m_scoringAlg = &algorithm;
+
+
+    // TODO
+    // - add loop detection
+    // - fix lost score
+    // - fix lost match list
+    resp = getResponse(input, matches);
+
+    // Pop context
+    m_scoringAlg = algorithmBak;
+    m_matchPolicy = policyBak;
+
+    return resp;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -361,5 +432,4 @@ void Lvk::Nlp::Tree::filterSymbols(Nlp::WordList &words)
         }
     }
 }
-
 

@@ -105,7 +105,9 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("13") << "te gusta el chocolate?"         << "Si me gusta el chocolate"      << RULE_4_ID << 0;
     QTest::newRow("14") << "te gusta los chocolates?"       << "Si me gusta los chocolates"    << RULE_4_ID << 0;
     QTest::newRow("15") << "te gusta el chocolate mucho?"   << "Si me gusta el chocolate"      << RULE_4_ID << 1;
-    QTest::newRow("14") << "te gusta A mas que B?"          << "Entre A y B no se..."          << RULE_5_ID << 0;
+    QTest::newRow("16") << "te gusta A mas que B?"          << "Entre A y B no se..."          << RULE_5_ID << 0;
+    QTest::newRow("17") << "Solamente te gusta A mas que B?"<< "Entre A y B no se..."          << RULE_6_ID << 1;
+    QTest::newRow("18") << "w1 v1a v1b w2 v2 w3 hola w4"    << "w5 v2 w6 Hola! w7 v1a v1b w8"  << RULE_7_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------
