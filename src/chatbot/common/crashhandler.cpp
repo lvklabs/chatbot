@@ -101,6 +101,7 @@ void Lvk::Cmn::CrashHandler::handler(int sig)
 
 void Lvk::Cmn::CrashHandler::checkForCrash()
 {
+#ifdef DA_CONTEST
     QFile file(m_crashFilename);
 
     if (file.exists()) {
@@ -127,6 +128,7 @@ void Lvk::Cmn::CrashHandler::checkForCrash()
             qCritical() << "Could not read crash file" << m_crashFilename;
         }
     }
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
