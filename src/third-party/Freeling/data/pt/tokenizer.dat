@@ -35,7 +35,7 @@ KEEP_COMPOUNDS  0  {ALPHA}+(['_\-]{ALPHA}+)+
 *ABREVIATIONS2  0  ({ALPHA}+\.)(?!\.\.)
 ## LVK modification to the rules -- start
 ## Adding support to tokenize variable declarations
-SMILEYS         0  ([:;=8BXx]|:')[-^]?[()/|PpbSs$*Oo@\]\[{}] 
+SMILEYS         0  ([:;=8BXx]|:')[-^]?[()/|DPpbSs$*Oo@\]\[{}] 
 VAR_DECL        0  \[{ALPHANUM}+\]
 REC_DECL        0  [rR]\[{ALPHANUM}+\]
 EM_DECL         0  '.*'
