@@ -88,8 +88,7 @@ struct Word
 
     bool isSymbol() const
     {
-        return !isWildcard() && !isVariable() && origWord.size() >= 1
-                && !origWord[0].isLetterOrNumber();
+        return !isWildcard() && origWord.size() == 1 && !origWord[0].isLetterOrNumber();
     }
 
     bool isWord() const
