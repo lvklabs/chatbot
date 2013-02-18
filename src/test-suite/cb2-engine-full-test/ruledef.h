@@ -43,10 +43,18 @@
 #define RULE_8_INPUT_5                      ":P"
 #define RULE_8_OUTPUT_1                     ":)"
 
-#define RULE_9_ID                           1
+#define RULE_9_ID                           9
 #define RULE_9_INPUT_1                      "'Perros'"
 #define RULE_9_INPUT_2                      "'Perrito'"
 #define RULE_9_OUTPUT_1                     "?"
+
+#define RULE_10_ID                          10
+#define RULE_10_INPUT_1                     " * tengo miedo a [frase]"
+#define RULE_10_OUTPUT_1                    "desde cuando le tenes miedo a [frase]?"
+
+#define RULE_11_ID                          11
+#define RULE_11_INPUT_1                     " a * b * c * d * e * f *"
+#define RULE_11_OUTPUT_1                    "ok"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -90,6 +98,14 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_9_ID,
                             QStringList() << RULE_9_INPUT_1 << RULE_9_INPUT_2,
                             QStringList() << RULE_9_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_10_ID,
+                            QStringList() << RULE_10_INPUT_1,
+                            QStringList() << RULE_10_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_11_ID,
+                            QStringList() << RULE_11_INPUT_1,
+                            QStringList() << RULE_11_OUTPUT_1);
 
     engine->setRules(rules);
 }
