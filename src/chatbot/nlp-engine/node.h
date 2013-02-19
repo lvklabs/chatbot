@@ -24,7 +24,7 @@
 
 #include "nlp-engine/word.h"
 #include "nlp-engine/rule.h"
-#include "nlp-engine/condoutput.h"
+#include "nlp-engine/condoutputlist.h"
 
 #include <QList>
 #include <QString>

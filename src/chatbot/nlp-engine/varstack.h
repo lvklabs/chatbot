@@ -77,31 +77,31 @@ inline QDebug& operator<<(QDebug& dbg, const VarScope &s)
 /**
  * \brief
  */
-struct VarInfo
+struct Variable
 {
-    VarInfo(const QString &name = "", const VarScope &scope = VarScope())
+    Variable(const QString &name = "", const VarScope &scope = VarScope())
         : name(name), scope(scope) { }
 
     QString name;
+    QString value;
     VarScope scope;
-    QString capture;
 
     bool isNull()
     {
-        return name.isNull() && scope.isNull() && capture.isNull();
+        return name.isNull() && scope.isNull() && value.isNull();
     }
 
     void clear()
     {
         name.clear();
         scope.clear();
-        capture.clear();
+        value.clear();
     }
 };
 
-inline QDebug& operator<<(QDebug& dbg, const VarInfo &i)
+inline QDebug& operator<<(QDebug& dbg, const Variable &i)
 {
-    dbg.nospace() << i.name << "," << i.scope << "," << i.capture;
+    dbg.nospace() << i.name << "," << i.scope << "," << i.value;
     return dbg.maybeSpace();
 }
 
@@ -109,8 +109,20 @@ inline QDebug& operator<<(QDebug& dbg, const VarInfo &i)
 /**
  * \brief
  */
-typedef QList<VarInfo> VarStack;
+class VarStack : public QList<Variable>
+{
+public:
 
+    QString value(const QString &varName) const
+    {
+        for (int i = size() - 1; i >= 0; --i) {
+            if (at(i).name == varName) {
+                return at(i).value;
+            }
+        }
+        return QString();
+    }
+};
 
 /// @}
 

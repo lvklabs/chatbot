@@ -145,15 +145,8 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
 void Lvk::Nlp::Tree::addNodeOutput(const Lvk::Nlp::Rule &rule, const QSet<PairedNode> &onodes)
 {
     // Build list of outputs with their condition
-    // TODO add condition
 
-    Nlp::CondOutputList l;
-    foreach (const QString &o, rule.output()) {
-        QString ot = o.trimmed();
-        if (!ot.isEmpty()) {
-            l.append(Nlp::CondOutput(ot));
-        }
-    }
+    Nlp::CondOutputList l(rule.output());
 
     // Add the output list to all nodes in onodes.
     // Because CondOutputList inherits the "Implicit Shared Model" from QList, all These
@@ -336,17 +329,17 @@ void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp
     // Rewind
     while (m_stack.size() > 0 && m_stack.last().scope.end >= offset) {
         m_stack.last().scope.end -= 1;
-        removeLastWord(m_stack.last().capture); // Ugly! TODO move this out and optimize!
+        removeLastWord(m_stack.last().value); // Ugly! TODO move this out and optimize!
     }
 
     const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>();
 
     if (varNode) {
         if (m_stack.isEmpty()) {
-            m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+            m_stack.append(Nlp::Variable(varNode->varName, Nlp::VarScope(offset, offset)));
         } else {
             if (m_stack.last().name != varNode->varName) {
-                m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+                m_stack.append(Nlp::Variable(varNode->varName, Nlp::VarScope(offset, offset)));
             } else {
                 m_stack.last().scope.end = offset;
             }
@@ -358,27 +351,15 @@ void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp
     if (matchWeight > 0) {
         // If there is a variable in scope
         if (!m_stack.isEmpty() && m_stack.last().scope.contains(offset)) {
-            QString &capture = m_stack.last().capture;
-            if (capture.size() > 0) {
-                capture.append(CAPTURE_SEP);
+            QString &value = m_stack.last().value;
+            if (value.size() > 0) {
+                value.append(CAPTURE_SEP);
             }
-            capture.append(word.origWord);
+            value.append(word.origWord);
         }
     }
 
     TRACE(offset) << "VarStack:" << m_stack;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-QString Lvk::Nlp::Tree::getVarValue(const QString &varName)
-{
-    for (int i = m_stack.size() - 1; i >= 0; --i) {
-        if (m_stack[i].name == varName) {
-            return m_stack[i].capture;
-        }
-    }
-    return QString();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -390,19 +371,18 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
     Nlp::OutputMap::const_iterator it;
     for (it = node->omap.constBegin(); it != node->omap.constEnd() && r.isNull(); ++it) {
         const Nlp::CondOutputList &l = it.value();
-        // TODO pass context
-        const Nlp::CondOutput &co = l.nextValid();
+        QString output = l.nextValidOutput(m_stack);
 
-        if (!co.isNull()) {
+        if (!output.isNull()) {
             bool ok;
-            QString expOutput = expandVars(co.output, &ok);
+            QString expOutput = expandVars(output, &ok);
             if (ok) {
                 r.output = expOutput;
                 r.ruleId = getRuleId(it.key());
                 r.inputIdx = getInputIndex(it.key());
                 break;
             } else {
-                qDebug() << "Failed to expand output" << co.output << ". Trying with next output";
+                qDebug() << "Failed to expand output" << output << ". Trying with next output";
             }
         }
     }
@@ -427,7 +407,7 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
         i = m_varRegex.indexIn(output, offset);
         if (i != -1) {
             varName = m_varRegex.cap(1);
-            varValue = getVarValue(varName);
+            varValue = m_stack.value(varName);
 
             recursive = i > 0 && output[i - 1].toLower() == 'r';
 

@@ -19,15 +19,15 @@
  *
  */
 
-#ifndef LVK_NLP_CONDOUTPUT_H
-#define LVK_NLP_CONDOUTPUT_H
+#ifndef LVK_NLP_CONDOUTPUTLIST_H
+#define LVK_NLP_CONDOUTPUTLIST_H
 
 #include <QList>
 #include <QString>
 #include <QStringList>
-#include <QSharedPointer>
 
-#include "nlp-engine/predicate.h"
+#include "nlp-engine/varstack.h"
+#include "nlp-engine/condoutput.h"
 
 namespace Lvk
 {
@@ -38,8 +38,6 @@ namespace Lvk
 namespace Nlp
 {
 
-class VarStack;
-
 /// \ingroup Lvk
 /// \addtogroup Nlp
 /// @{
@@ -47,16 +45,19 @@ class VarStack;
 /**
  * \brief
  */
-class CondOutput
+class CondOutputList : public QList<CondOutput>
 {
 public:
-    CondOutput(const QString &rawOutput = "");
+    CondOutputList(const QStringList &outputs = QStringList(), bool random = false);
 
-    bool eval(const Nlp::VarStack &varStack, QString &output) const;
+    QString nextValidOutput(const Nlp::VarStack &varStack) const;
+
+    void setRandomOutput(bool random);
+
+    // TODO check if we need to define operator=
 
 private:
-    QStringList m_outputs;
-    QList< QSharedPointer<Nlp::Predicate> > m_predicates;
+    mutable int m_next;
 };
 
 /// @}
@@ -68,5 +69,5 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_NLP_CONDOUTPUT_H
+#endif // LVK_NLP_CONDOUTPUTLIST_H
 
