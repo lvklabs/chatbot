@@ -30,6 +30,7 @@
 #include "nlp-engine/engine.h"
 #include "nlp-engine/word.h"
 #include "nlp-engine/result.h"
+#include "nlp-engine/varstack.h"
 
 namespace Lvk
 {
@@ -91,6 +92,7 @@ private:
     MatchPolicy *m_matchPolicy;
     ScoringAlgorithm *m_scoringAlg;
     QRegExp m_varRegex;
+    VarStack m_stack;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
     void addNodeOutput(const Rule &rule, const QSet<PairedNode> &onodes);
@@ -105,6 +107,8 @@ private:
     void filterSymbols(Nlp::WordList &words);
     void parseExactMatch(Nlp::WordList &words);
     QString getRecResponse(const QString &input, Engine::MatchList &matches);
+    QString getVarValue(const QString &varName);
+    void updateVarStack(const Node *node, int offset, const Nlp::Word &word, float matchWeight);
 };
 
 /// @}

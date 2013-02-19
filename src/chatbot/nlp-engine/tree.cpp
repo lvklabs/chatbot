@@ -30,6 +30,7 @@
 
 #define MAX_INPUT_IDX_SIZE  10   // in bits
 #define INPUT_IDX_MASK      ((1 << MAX_INPUT_IDX_SIZE) - 1)
+#define CAPTURE_SEP         " "
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -62,6 +63,15 @@ inline Lvk::Nlp::RuleId getRuleId(quint64 id)
 inline int getInputIndex(quint64 id)
 {
     return id & INPUT_IDX_MASK;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+inline void removeLastWord(QString &s)
+{
+    int n = s.lastIndexOf(CAPTURE_SEP);
+
+    s = (n == -1) ? QString() : s.mid(0, n);
 }
 
 } // namespace
@@ -270,7 +280,9 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
     foreach (const Nlp::Node *node, root->childs) {
         qDebug() <<  dgbMargin << "Current node" << *node;
 
-        float matchWeight = (*m_matchPolicy)(node, words, offset);
+        float matchWeight = (*m_matchPolicy)(node, words[offset]);
+
+        updateVarStack(node, offset, words[offset], matchWeight);
 
         if (matchWeight > 0) {
             qDebug() << dgbMargin << words[offset] << "matched with weight" << matchWeight;
@@ -290,6 +302,64 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
             }
         }
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp::Word &word,
+                                    float matchWeight)
+{
+    // If current variable out of scope
+    while (m_stack.size() > 0 && m_stack.last().scope.start >= offset) {
+        m_stack.removeLast();
+    }
+
+    // Rewind
+    while (m_stack.size() > 0 && m_stack.last().scope.end >= offset) {
+        m_stack.last().scope.end -= 1;
+        removeLastWord(m_stack.last().capture); // Ugly! TODO move this out and optimize!
+    }
+
+    const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>();
+
+    if (varNode) {
+        if (m_stack.isEmpty()) {
+            m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+        } else {
+            if (m_stack.last().name != varNode->varName) {
+                m_stack.append(Nlp::VarInfo(varNode->varName, Nlp::VarScope(offset, offset)));
+            } else {
+                m_stack.last().scope.end = offset;
+            }
+        }
+    } else {
+        // Nothing to do
+    }
+
+    qDebug() << "VarStack:" << m_stack;
+
+    if (matchWeight > 0) {
+        // If there is a variable in scope
+        if (!m_stack.isEmpty() && m_stack.last().scope.contains(offset)) {
+            QString &capture = m_stack.last().capture;
+            if (capture.size() > 0) {
+                capture.append(CAPTURE_SEP);
+            }
+            capture.append(word.origWord);
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::Tree::getVarValue(const QString &varName)
+{
+    for (int i = m_stack.size() - 1; i >= 0; --i) {
+        if (m_stack[i].name == varName) {
+            return m_stack[i].capture;
+        }
+    }
+    return QString();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -334,7 +404,7 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
         i = m_varRegex.indexIn(output, offset);
         if (i != -1) {
             varName = m_varRegex.cap(1);
-            varValue = m_matchPolicy->getCapture(varName);
+            varValue = getVarValue(varName);
 
             recursive = i > 0 && output[i - 1].toLower() == 'r';
 
@@ -371,13 +441,10 @@ QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &
     QString resp;
 
     // Push new context
-    Nlp::MatchPolicy *policyBak = m_matchPolicy;
-    Nlp::MatchPolicy policy;
-    m_matchPolicy = &policy;
-    Nlp::ScoringAlgorithm *algorithmBak = m_scoringAlg;
-    Nlp::ScoringAlgorithm algorithm;
-    m_scoringAlg = &algorithm;
-
+    Nlp::VarStack stackBak = m_stack;
+    Nlp::ScoringAlgorithm *scoringAlgBak = m_scoringAlg;
+    m_stack = Nlp::VarStack();
+    m_scoringAlg = new Nlp::ScoringAlgorithm();
 
     // TODO
     // - add loop detection
@@ -386,8 +453,9 @@ QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &
     resp = getResponse(input, matches);
 
     // Pop context
-    m_scoringAlg = algorithmBak;
-    m_matchPolicy = policyBak;
+    delete m_scoringAlg;
+    m_scoringAlg = scoringAlgBak;
+    m_stack = stackBak;
 
     return resp;
 }
