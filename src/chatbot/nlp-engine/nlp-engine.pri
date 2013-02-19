@@ -27,7 +27,9 @@ HEADERS += \
     $$PROJECT_PATH/nlp-engine/condoutput.h \
     $$PROJECT_PATH/nlp-engine/varstack.h \
     $$PROJECT_PATH/nlp-engine/predicate.h \
-    $$PROJECT_PATH/nlp-engine/condoutputlist.h
+    $$PROJECT_PATH/nlp-engine/condoutputlist.h \
+    $$PROJECT_PATH/nlp-engine/varscope.h \
+    $$PROJECT_PATH/nlp-engine/variable.h
 
 SOURCES += \
     $$PROJECT_PATH/nlp-engine/defaultsanitizer.cpp \
@@ -40,7 +42,9 @@ SOURCES += \
     $$PROJECT_PATH/nlp-engine/scoringalgorithm.cpp \
     $$PROJECT_PATH/nlp-engine/matchpolicy.cpp \
     $$PROJECT_PATH/nlp-engine/condoutput.cpp \
-    $$PROJECT_PATH/nlp-engine/condoutputlist.cpp
+    $$PROJECT_PATH/nlp-engine/condoutputlist.cpp \
+    $$PROJECT_PATH/nlp-engine/variable.cpp \
+    $$PROJECT_PATH/nlp-engine/varstack.cpp
 
 
 freeling {
@@ -50,6 +54,9 @@ freeling {
     SOURCES += \
         $$PROJECT_PATH/nlp-engine/freelinglemmatizer.cpp
 }
+
+
+
 
 
 

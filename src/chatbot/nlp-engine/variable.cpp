@@ -19,52 +19,10 @@
  *
  */
 
-#ifndef LVK_NLP_VARSTACK_H
-#define LVK_NLP_VARSTACK_H
+#include "variable.h"
 
-#include <QString>
-#include <QList>
+//--------------------------------------------------------------------------------------------------
+// Variable
+//--------------------------------------------------------------------------------------------------
 
-#include "nlp-engine/variable.h"
-
-namespace Lvk
-{
-
-/// \addtogroup Lvk
-/// @{
-
-namespace Nlp
-{
-
-/// \ingroup Lvk
-/// \addtogroup Nlp
-/// @{
-
-/**
- * \brief
- */
-class VarStack
-{
-public:
-
-    void update(const QString &varName, int offset);
-
-    void capture(const QString &word, int offset);
-
-    QString value(const QString &varName) const;
-
-private:
-    QList<Variable> m_stack;
-};
-
-/// @}
-
-} // namespace Nlp
-
-/// @}
-
-} // namespace Lvk
-
-
-#endif // LVK_NLP_VARSTACK_H
 

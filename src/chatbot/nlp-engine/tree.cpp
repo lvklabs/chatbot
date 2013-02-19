@@ -30,7 +30,6 @@
 
 #define MAX_INPUT_IDX_SIZE  10   // in bits
 #define INPUT_IDX_MASK      ((1 << MAX_INPUT_IDX_SIZE) - 1)
-#define CAPTURE_SEP         " "
 
 #ifdef DEBUG_TRACE
 #define TRACE(offset)   (QDebug() << QString((offset+1)*4, '#'))
@@ -69,15 +68,6 @@ inline Lvk::Nlp::RuleId getRuleId(quint64 id)
 inline int getInputIndex(quint64 id)
 {
     return id & INPUT_IDX_MASK;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline void removeLastWord(QString &s)
-{
-    int n = s.lastIndexOf(CAPTURE_SEP);
-
-    s = (n == -1) ? QString() : s.mid(0, n);
 }
 
 } // namespace
@@ -277,10 +267,16 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
 
         float matchWeight = (*m_matchPolicy)(node, words[offset]);
 
-        updateVarStack(node, offset, words[offset], matchWeight);
+        if (const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>()) {
+            m_stack.update(varNode->varName, offset);
+        } else {
+            m_stack.update(QString(), offset);
+        }
 
         if (matchWeight > 0) {
             TRACE(offset) << words[offset] << "matched with weight" << matchWeight;
+
+            m_stack.capture(words[offset].origWord, offset);
 
             m_scoringAlg->updateScore(offset, matchWeight);
 
@@ -314,52 +310,6 @@ void Lvk::Nlp::Tree::handleEndWord(Nlp::ResultList &results, const Nlp::Node *no
     } else {
         TRACE(offset) << "Infinite loop detected!";
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp::Word &word,
-                                    float matchWeight)
-{
-    // If current variable out of scope
-    while (m_stack.size() > 0 && m_stack.last().scope.start >= offset) {
-        m_stack.removeLast();
-    }
-
-    // Rewind
-    while (m_stack.size() > 0 && m_stack.last().scope.end >= offset) {
-        m_stack.last().scope.end -= 1;
-        removeLastWord(m_stack.last().value); // Ugly! TODO move this out and optimize!
-    }
-
-    const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>();
-
-    if (varNode) {
-        if (m_stack.isEmpty()) {
-            m_stack.append(Nlp::Variable(varNode->varName, Nlp::VarScope(offset, offset)));
-        } else {
-            if (m_stack.last().name != varNode->varName) {
-                m_stack.append(Nlp::Variable(varNode->varName, Nlp::VarScope(offset, offset)));
-            } else {
-                m_stack.last().scope.end = offset;
-            }
-        }
-    } else {
-        // Nothing to do
-    }
-
-    if (matchWeight > 0) {
-        // If there is a variable in scope
-        if (!m_stack.isEmpty() && m_stack.last().scope.contains(offset)) {
-            QString &value = m_stack.last().value;
-            if (value.size() > 0) {
-                value.append(CAPTURE_SEP);
-            }
-            value.append(word.origWord);
-        }
-    }
-
-    TRACE(offset) << "VarStack:" << m_stack;
 }
 
 //--------------------------------------------------------------------------------------------------

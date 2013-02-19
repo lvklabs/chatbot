@@ -19,13 +19,14 @@
  *
  */
 
-#ifndef LVK_NLP_VARSTACK_H
-#define LVK_NLP_VARSTACK_H
+#ifndef LVK_NLP_VARIABLE_H
+#define LVK_NLP_VARIABLE_H
 
+#include <QtDebug>
 #include <QString>
-#include <QList>
 
-#include "nlp-engine/variable.h"
+#include "nlp-engine/varscope.h"
+
 
 namespace Lvk
 {
@@ -43,19 +44,37 @@ namespace Nlp
 /**
  * \brief
  */
-class VarStack
+struct Variable
 {
-public:
+    Variable(const QString &name = "", const VarScope &scope = VarScope())
+        : name(name), scope(scope) { }
 
-    void update(const QString &varName, int offset);
+    QString name;
+    QString value;
+    VarScope scope;
 
-    void capture(const QString &word, int offset);
+    bool isNull()
+    {
+        return name.isNull() && scope.isNull() && value.isNull();
+    }
 
-    QString value(const QString &varName) const;
-
-private:
-    QList<Variable> m_stack;
+    void clear()
+    {
+        name.clear();
+        scope.clear();
+        value.clear();
+    }
 };
+
+
+/**
+ * \brief
+ */
+inline QDebug& operator<<(QDebug& dbg, const Variable &i)
+{
+    dbg.nospace() << i.name << "," << i.scope << "," << i.value;
+    return dbg.maybeSpace();
+}
 
 /// @}
 
@@ -66,5 +85,5 @@ private:
 } // namespace Lvk
 
 
-#endif // LVK_NLP_VARSTACK_H
+#endif // LVK_NLP_VARIABLE_H
 
