@@ -468,8 +468,6 @@ void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 
     words.clear();
 
-    // TODO sanitize input -- https://github.com/lvklabs/chatbot/issues/24
-
     Nlp::GlobalTools::instance()->lemmatizer()->lemmatize(input, words);
 
     parseExactMatch(words);
@@ -485,8 +483,6 @@ void Lvk::Nlp::Tree::parseUserInput(const QString &input, Nlp::WordList &words)
     qDebug() << "Nlp::Tree: Parsing user input" << input;
 
     words.clear();
-
-    // TODO sanitize input -- https://github.com/lvklabs/chatbot/issues/24
 
     QString szInput = input;
     szInput.remove('\'');

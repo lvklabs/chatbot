@@ -92,7 +92,7 @@ void Cb2EnginefullTest::testCase1_data()
 
     QTest::newRow(" 0") << "Hola"                           << RULE_1_OUTPUT_1  << RULE_1_ID  << 0;
     QTest::newRow("0a") << "\"Hola"                         << RULE_1_OUTPUT_1  << RULE_1_ID  << 0; // Test for issue #24
-    // TODO QTest::newRow("0b") << "{Hola"                          << RULE_1_OUTPUT_1 << RULE_1_ID << 0;
+    QTest::newRow("0b") << "{(Hola"                         << RULE_1_OUTPUT_1  << RULE_1_ID  << 0; // Similar to issue #24
     QTest::newRow(" 1") << "HOLAAA!!"                       << RULE_1_OUTPUT_1  << RULE_1_ID  << 0;
     QTest::newRow(" 2") << "hooola$%&/()^[]{}-_.,=:;'\\!?"  << RULE_1_OUTPUT_1  << RULE_1_ID  << 0;
     QTest::newRow(" 3") << "Hola como andas?"               << RULE_1_OUTPUT_1  << RULE_1_ID  << 1;
