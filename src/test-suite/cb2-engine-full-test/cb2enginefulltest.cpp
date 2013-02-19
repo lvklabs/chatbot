@@ -28,22 +28,25 @@ private Q_SLOTS:
     void cleanupTestCase();
     void testCase1();
     void testCase1_data();
+    void testInfiniteLoopDetection();
+    void testInfiniteLoopDetection_data();
 
 private:
     Nlp::Cb2Engine *m_engine;
+    int m_ruleSet;
+
+    void testWithRuleSet(int set);
 };
 
 //--------------------------------------------------------------------------------------------------
 
 Cb2EnginefullTest::Cb2EnginefullTest()
-    : m_engine(0)
+    : m_engine(0), m_ruleSet(0)
 {
     Cmn::Settings().setValue(SETTING_APP_LANGUAGE, "es_AR");
 
     m_engine = new Nlp::Cb2Engine();
     m_engine->setLemmatizer(Nlp::LemmatizerFactory().createLemmatizer());
-
-    setRules1(m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -60,12 +63,27 @@ void Cb2EnginefullTest::cleanupTestCase()
 
 //--------------------------------------------------------------------------------------------------
 
-void Cb2EnginefullTest::testCase1()
+void Cb2EnginefullTest::testWithRuleSet(int set)
 {
     QFETCH(QString, input);
     QFETCH(QString, expOutput);
     QFETCH(int, ruleId);
     QFETCH(int, inputIdx);
+
+    if (m_ruleSet != set) {
+        switch (set) {
+        case 1:
+            setRules1(m_engine);
+            break;
+        case 2:
+            setRules2(m_engine);
+            break;
+        default:
+            m_engine->clear();
+            break;
+        }
+        m_ruleSet = set;
+    }
 
     Nlp::Engine::MatchList matches;
     QString output = m_engine->getResponse(input, matches);
@@ -79,6 +97,13 @@ void Cb2EnginefullTest::testCase1()
         QVERIFY(output.isEmpty());
         QVERIFY(matches.isEmpty());
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Cb2EnginefullTest::testCase1()
+{
+    testWithRuleSet(1);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -112,7 +137,7 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("14") << "te gusta los chocolates?"       << "Si me gusta los chocolates"        << RULE_4_ID  << 0; // Test for issue #5
     QTest::newRow("15") << "te gusta el chocolate mucho?"   << "Si me gusta el chocolate"          << RULE_4_ID  << 1;
     QTest::newRow("16") << "te gusta A mas que B?"          << "Entre A y B no se..."              << RULE_5_ID  << 0;
-    QTest::newRow("17") << "Solamente te gusta A mas que B?"<< "Entre A y B no se..."              << RULE_6_ID  << 1;
+    QTest::newRow("17") << "Solamente simplemente te gusta A mas que B?"<< "Entre A y B no se..."  << RULE_6_ID  << 1;
     QTest::newRow("18") << "w1 v1a v1b w2 v2 w3 hola w4"    << "w5 v2 w6 Hola! w7 v1a v1b w8"      << RULE_7_ID  << 0;
     QTest::newRow("27") << "le tengo miedo a los aviones"   << "desde cuando le tenes miedo a los aviones?" << RULE_10_ID << 0; // Test for issue #7
 
@@ -127,6 +152,26 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("28") << " a x b x c d e f x"             << RULE_11_OUTPUT_1 << RULE_11_ID << 0; // idem
     QTest::newRow("28") << " a x b x c x d x e x f"         << RULE_11_OUTPUT_1 << RULE_11_ID << 0; // idem
     QTest::newRow("28") << " x a x b x c x d x e x f"       << QString()        << 0          << 0; // idem
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Cb2EnginefullTest::testInfiniteLoopDetection()
+{
+    testWithRuleSet(2);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Cb2EnginefullTest::testInfiniteLoopDetection_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expOutput");
+    QTest::addColumn<int>("ruleId");
+    QTest::addColumn<int>("inputIdx");
+
+    QTest::newRow("l0") << "Hola"                    << QString()  << 0 << 0;
+    QTest::newRow("l1") << "Simplemente hola"        << QString()  << 0 << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

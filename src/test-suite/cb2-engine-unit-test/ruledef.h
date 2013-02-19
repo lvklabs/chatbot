@@ -115,25 +115,6 @@
 #define RULE_20_INPUT_1                     "thing2 *"
 #define RULE_20_OUTPUT_1                    "Ok"
 
-#define RULE_21_ID                          21
-#define RULE_21_INPUT_1                     "* \"jugaba en\" *"
-#define RULE_21_INPUT_2                     "* \"jugaba, para\" *"
-#define RULE_21_OUTPUT_1                    "Por que ahora no?"
-
-#define RULE_22_ID                          22
-#define RULE_22_INPUT_1                     "* jugar en *"
-#define RULE_22_INPUT_2                     "* jugar, para *"
-#define RULE_22_OUTPUT_1                    "Ok"
-
-#define RULE_23_ID                          23
-#define RULE_23_INPUT_1                     "\":-)\""
-#define RULE_23_OUTPUT_1                    ":D"
-
-#define RULE_24_ID                          24
-#define RULE_24_INPUT_1                     "w1 \"w2 w3"
-#define RULE_24_INPUT_2                     "w1 \"\" w2 w3 w4"
-#define RULE_24_OUTPUT_1                    "w4"
-
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -331,31 +312,6 @@ inline void setRules7(Lvk::Nlp::Engine *engine)
                             QStringList() << RULE_16_INPUT_1,
                             QStringList() << RULE_16_OUTPUT_1,
                             QStringList());
-
-    engine->setRules(rules);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline void setRules8(Lvk::Nlp::Engine *engine)
-{
-    Lvk::Nlp::RuleList rules;
-
-    rules << Lvk::Nlp::Rule(RULE_21_ID,
-                            QStringList() << RULE_21_INPUT_1 << RULE_21_INPUT_2,
-                            QStringList() << RULE_21_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_22_ID,
-                            QStringList() << RULE_22_INPUT_1 << RULE_22_INPUT_2,
-                            QStringList() << RULE_22_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_23_ID,
-                            QStringList() << RULE_23_INPUT_1,
-                            QStringList() << RULE_23_OUTPUT_1);
-
-    rules << Lvk::Nlp::Rule(RULE_24_ID,
-                            QStringList() << RULE_24_INPUT_1 << RULE_24_INPUT_2,
-                            QStringList() << RULE_24_OUTPUT_1);
 
     engine->setRules(rules);
 }

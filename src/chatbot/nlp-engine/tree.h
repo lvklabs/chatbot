@@ -26,6 +26,7 @@
 #include <QStringList>
 #include <QPair>
 #include <QList>
+#include <QSet>
 
 #include "nlp-engine/engine.h"
 #include "nlp-engine/word.h"
@@ -93,13 +94,13 @@ private:
     ScoringAlgorithm *m_scoringAlg;
     QRegExp m_varRegex;
     VarStack m_stack;
+    QSet< QPair<const Nlp::Node*, int> > m_loopDetector;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);
     void addNodeOutput(const Rule &rule, const QSet<PairedNode> &onodes);
-
     void scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
                    int offset = 0);
-
+    void handleEndWord(Nlp::ResultList &results, const Nlp::Node *node, int offset);
     Nlp::Result getValidOutput(const Nlp::Node *node);
     QString expandVars(const QString &output, bool *ok);
     void parseRuleInput(const QString &input, Nlp::WordList &words);

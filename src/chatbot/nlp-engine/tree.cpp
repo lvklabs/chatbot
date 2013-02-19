@@ -32,6 +32,12 @@
 #define INPUT_IDX_MASK      ((1 << MAX_INPUT_IDX_SIZE) - 1)
 #define CAPTURE_SEP         " "
 
+#ifdef DEBUG_TRACE
+#define TRACE(offset)   (QDebug() << QString((offset+1)*4, '#'))
+#else
+#define TRACE(offset)   QNoDebug()
+#endif
+
 //--------------------------------------------------------------------------------------------------
 // Helpers
 //--------------------------------------------------------------------------------------------------
@@ -162,8 +168,6 @@ void Lvk::Nlp::Tree::addNodeOutput(const Lvk::Nlp::Rule &rule, const QSet<Paired
 
 Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *parent)
 {
-    // TODO check if we can avoid these casts:
-
     // If node already exists for the given word, return that node
 
     if (word.isWord()) {
@@ -275,32 +279,47 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
         return;
     }
 
-    QString dgbMargin = QString((offset+1)*4, '#');
-
     foreach (const Nlp::Node *node, root->childs) {
-        qDebug() <<  dgbMargin << "Current node" << *node;
+        TRACE(offset) << "Current node" << *node;
 
         float matchWeight = (*m_matchPolicy)(node, words[offset]);
 
         updateVarStack(node, offset, words[offset], matchWeight);
 
         if (matchWeight > 0) {
-            qDebug() << dgbMargin << words[offset] << "matched with weight" << matchWeight;
+            TRACE(offset) << words[offset] << "matched with weight" << matchWeight;
 
             m_scoringAlg->updateScore(offset, matchWeight);
 
             if (offset + 1 < words.size()) {
                 scoredDFS(results, node, words, offset + 1);
             } else {
-                Nlp::Result r = getValidOutput(node);
-                if (!r.isNull()) {
-                    r.score = m_scoringAlg->currentScore();
-                    results.append(r);
-                } else {
-                    qDebug() << dgbMargin << "No output found!";
-                }
+                handleEndWord(results, node, offset);
             }
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Tree::handleEndWord(Nlp::ResultList &results, const Nlp::Node *node, int offset)
+{
+    QPair<const Nlp::Node*, int> p(node, offset);
+
+    if (!m_loopDetector.contains(p)) {
+        m_loopDetector.insert(p);
+
+        Nlp::Result r = getValidOutput(node);
+        if (!r.isNull()) {
+            r.score = m_scoringAlg->currentScore();
+            results.append(r);
+        } else {
+           TRACE(offset) << "No output found!";
+        }
+
+        m_loopDetector.remove(p);
+    } else {
+        TRACE(offset) << "Infinite loop detected!";
     }
 }
 
@@ -336,8 +355,6 @@ void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp
         // Nothing to do
     }
 
-    qDebug() << "VarStack:" << m_stack;
-
     if (matchWeight > 0) {
         // If there is a variable in scope
         if (!m_stack.isEmpty() && m_stack.last().scope.contains(offset)) {
@@ -348,6 +365,8 @@ void Lvk::Nlp::Tree::updateVarStack(const Nlp::Node *node, int offset, const Nlp
             capture.append(word.origWord);
         }
     }
+
+    TRACE(offset) << "VarStack:" << m_stack;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -382,6 +401,8 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
                 r.ruleId = getRuleId(it.key());
                 r.inputIdx = getInputIndex(it.key());
                 break;
+            } else {
+                qDebug() << "Failed to expand output" << co.output << ". Trying with next output";
             }
         }
     }
@@ -393,6 +414,8 @@ Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
 
 QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
 {
+    // TODO a possible optimization is to have all outputs already splitted
+
     QString newOutput;
     QString varName;
     QString varValue;
@@ -438,8 +461,6 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
 
 QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &matches)
 {
-    QString resp;
-
     // Push new context
     Nlp::VarStack stackBak = m_stack;
     Nlp::ScoringAlgorithm *scoringAlgBak = m_scoringAlg;
@@ -447,10 +468,9 @@ QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &
     m_scoringAlg = new Nlp::ScoringAlgorithm();
 
     // TODO
-    // - add loop detection
     // - fix lost score
     // - fix lost match list
-    resp = getResponse(input, matches);
+    QString resp = getResponse(input, matches);
 
     // Pop context
     delete m_scoringAlg;

@@ -56,6 +56,10 @@
 #define RULE_11_INPUT_1                     " a * b * c * d * e * f *"
 #define RULE_11_OUTPUT_1                    "ok"
 
+#define RULE_12_ID                          12
+#define RULE_12_INPUT_1                     "[var]"
+#define RULE_12_OUTPUT_1                    "r[var]"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -106,6 +110,22 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_11_ID,
                             QStringList() << RULE_11_INPUT_1,
                             QStringList() << RULE_11_OUTPUT_1);
+
+    engine->setRules(rules);
+}
+
+
+inline void setRules2(Lvk::Nlp::Engine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_6_ID,
+                            QStringList() << RULE_6_INPUT_1 << RULE_6_INPUT_2,
+                            QStringList() << RULE_6_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_12_ID,
+                            QStringList() << RULE_12_INPUT_1,
+                            QStringList() << RULE_12_OUTPUT_1);
 
     engine->setRules(rules);
 }

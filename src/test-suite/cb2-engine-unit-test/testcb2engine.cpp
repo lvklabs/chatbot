@@ -42,7 +42,6 @@
 #define EnableTestMatchWithSingleOutputWithLemmatizer
 #define EnableTestMatchWithTarget
 #define EnableTestMatchPriority
-//#define EnableTestExactMatch
 #define EnableTestMatchWithSecuentialOutput
 
 #define USER_INPUT_1a                       "Hello"
@@ -121,9 +120,6 @@ private Q_SLOTS:
 
     void testMatchPriority_data();
     void testMatchPriority();
-
-    void testExactMatch_data();
-    void testExactMatch();
 
     void testMatchWithTopic();
 
@@ -521,39 +517,6 @@ void TestCb2Engine::testMatchWithTopic()
         QCOMPARE(matches.size(), 1);
         QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
     }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::testExactMatch_data()
-{
-    QTest::addColumn<QString>("targetUser");
-    QTest::addColumn<QString>("userInput");
-    QTest::addColumn<QString>("expectedOutput");
-    QTest::addColumn<int>("ruleId");
-    QTest::addColumn<int>("ruleInputNumber");
-
-    QTest::newRow("em 1") << "" << USER_INPUT_21a << RULE_21_OUTPUT_1 << RULE_21_ID << 0;
-    QTest::newRow("em 2") << "" << USER_INPUT_21b << RULE_22_OUTPUT_1 << RULE_22_ID << 1;
-    QTest::newRow("em 3") << "" << USER_INPUT_21c << RULE_21_OUTPUT_1 << RULE_21_ID << 1;
-    QTest::newRow("em 4") << "" << USER_INPUT_21d << RULE_22_OUTPUT_1 << RULE_22_ID << 0;
-    QTest::newRow("em 5") << "" << USER_INPUT_22a << RULE_22_OUTPUT_1 << RULE_22_ID << 0;
-    QTest::newRow("em 6") << "" << USER_INPUT_22b << RULE_22_OUTPUT_1 << RULE_22_ID << 1;
-    QTest::newRow("em 7") << "" << USER_INPUT_23a << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
-    QTest::newRow("em 8") << "" << USER_INPUT_23b << QString()        << 0          << 0;
-    QTest::newRow("em 9") << "" << USER_INPUT_24a << RULE_24_OUTPUT_1 << RULE_24_ID << 0;
-    QTest::newRow("em 9") << "" << USER_INPUT_24b << RULE_24_OUTPUT_1 << RULE_24_ID << 1;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TestCb2Engine::testExactMatch()
-{
-#ifndef EnableTestExactMatch
-    QSKIP("Skip macro on", SkipAll);
-#endif
-
-    testMatch(setRules8, m_engine);
 }
 
 //--------------------------------------------------------------------------------------------------
