@@ -32,6 +32,7 @@
 #include "nlp-engine/word.h"
 #include "nlp-engine/result.h"
 #include "nlp-engine/varstack.h"
+#include "nlp-engine/parser.h"
 
 namespace Lvk
 {
@@ -92,8 +93,8 @@ private:
     Node *m_root;
     MatchPolicy *m_matchPolicy;
     ScoringAlgorithm *m_scoringAlg;
-    QRegExp m_varRegex;
-    VarStack m_stack;
+    Nlp::Parser m_parser;
+    Nlp::VarStack m_stack;
     QSet< QPair<const Nlp::Node*, int> > m_loopDetector;
 
     Nlp::Node * addNode(const Nlp::Word &word, Nlp::Node *parent);

@@ -22,6 +22,7 @@
 #include "nlp-engine/condoutput.h"
 #include "nlp-engine/varstack.h"
 #include "nlp-engine/predicate.h"
+#include "nlp-engine/parser.h"
 
 //--------------------------------------------------------------------------------------------------
 // CondOutput
@@ -29,10 +30,31 @@
 
 Lvk::Nlp::CondOutput::CondOutput(const QString &rawOutput)
 {
-    // TODO parse conditionals
-    m_outputs.append(rawOutput);
-    m_predicates.append(QSharedPointer<Nlp::Predicate>(new True()));
+    Nlp::Parser parser;
 
+    int i = 0;
+    int offset = 0;
+    Nlp::Predicate *pred = 0;
+    QString body;
+
+    while (true) {
+        i = parser.parseIf(rawOutput, offset, &pred, &body);
+        if (i != -1) {
+            append(body, pred);
+            offset =  i + 1;
+        } else {
+            break;
+        }
+    }
+
+    if (m_predicates.size() > 0) {
+        i = parser.parseElse(rawOutput, offset, &body);
+        if (i != -1) {
+            append(body, new Nlp::True());
+        }
+    } else {
+        append(rawOutput, new Nlp::True());
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -48,3 +70,10 @@ bool Lvk::Nlp::CondOutput::eval(const Nlp::VarStack &varStack, QString &output) 
     return false;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::CondOutput::append(const QString &output, Nlp::Predicate *pred)
+{
+    m_outputs.append(output.trimmed());
+    m_predicates.append(QSharedPointer<Nlp::Predicate>(pred));
+}

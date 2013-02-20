@@ -93,12 +93,14 @@ public:
         return eval(comp1, comp2, varStack);
     }
 
-    bool eval(int i, int j, const Nlp::VarStack &/*varStack*/)
+private:
+
+    bool eval(int i, int j, const Nlp::VarStack &/*varStack*/) const
     {
         return j == i;
     }
 
-    bool eval(const QString s1, const QString s2, const Nlp::VarStack &varStack)
+    bool eval(const QString &s1, const QString &s2, const Nlp::VarStack &varStack) const
     {
         bool ok1, ok2;
         int i = s1.toInt(&ok1);
@@ -107,19 +109,19 @@ public:
         return (ok1 && ok2) ? eval(i, j, varStack) : (s1 == s2);
     }
 
-    bool eval(const Nlp::Variable v, const QString s, const Nlp::VarStack &varStack)
+    bool eval(const Nlp::Variable &v, const QString &s, const Nlp::VarStack &varStack) const
     {
-        return eval(varStack.value(v.name), s);
+        return eval(varStack.value(v.name), s, varStack);
     }
 
-    bool eval(const QString s, const Nlp::Variable v, const Nlp::VarStack &varStack)
+    bool eval(const QString &s, const Nlp::Variable &v, const Nlp::VarStack &varStack) const
     {
-        return eval(varStack.value(v.name), s);
+        return eval(varStack.value(v.name), s, varStack);
     }
 
-    bool eval(const Nlp::Variable v1, const Nlp::Variable v2, const Nlp::VarStack &varStack)
+    bool eval(const Nlp::Variable &v1, const Nlp::Variable &v2, const Nlp::VarStack &varStack) const
     {
-        return eval(varStack.value(v1.name), varStack.value(v2.name));
+        return eval(varStack.value(v1.name), varStack.value(v2.name), varStack);
     }
 };
 

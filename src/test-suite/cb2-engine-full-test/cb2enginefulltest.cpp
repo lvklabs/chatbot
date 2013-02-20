@@ -152,12 +152,17 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("28") << " a x b x c d e f x"             << RULE_11_OUTPUT_1 << RULE_11_ID << 0; // idem
     QTest::newRow("28") << " a x b x c x d x e x f"         << RULE_11_OUTPUT_1 << RULE_11_ID << 0; // idem
     QTest::newRow("28") << " x a x b x c x d x e x f"       << QString()        << 0          << 0; // idem
+    QTest::newRow("30") << "me gusta jugar a futbol"        << "a mi tambien"   << RULE_13_ID << 0;
+    QTest::newRow("30") << "me gusta jugar a voley"         << "a mi no"        << RULE_13_ID << 0;
+    QTest::newRow("30") << "me gusta jugar a tenis"         << "Si? tenis?"     << RULE_13_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Cb2EnginefullTest::testInfiniteLoopDetection()
 {
+    //QSKIP("", SkipAll);
+
     testWithRuleSet(2);
 }
 

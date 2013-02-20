@@ -30,10 +30,7 @@
 #include <QDataStream>
 #include <QMetaType>
 
-#define STAR_OP             "*"
-#define PLUS_OP             "+"
-#define VAR_DECL_REGEX      "\\[(\\w+)\\]"
-#define RECURSION_REGEX     "[rR]" VAR_DECL_REGEX
+#include "nlp-engine/syntax.h"
 
 namespace Lvk
 {

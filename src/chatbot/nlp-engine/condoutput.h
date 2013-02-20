@@ -57,6 +57,8 @@ public:
 private:
     QStringList m_outputs;
     QList< QSharedPointer<Nlp::Predicate> > m_predicates;
+
+    void append(const QString &output, Nlp::Predicate *pred);
 };
 
 /// @}

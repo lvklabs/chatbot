@@ -79,8 +79,7 @@ inline int getInputIndex(quint64 id)
 Lvk::Nlp::Tree::Tree()
     : m_root(new Nlp::Node()),
       m_matchPolicy(new Nlp::MatchPolicy()),
-      m_scoringAlg(new Nlp::ScoringAlgorithm()),
-      m_varRegex(VAR_DECL_REGEX)
+      m_scoringAlg(new Nlp::ScoringAlgorithm())
 {
 }
 
@@ -354,12 +353,9 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
     bool recursive = false;
 
     while (true) {
-        i = m_varRegex.indexIn(output, offset);
+        i = m_parser.parseVariable(output, offset, &varName, &recursive);
         if (i != -1) {
-            varName = m_varRegex.cap(1);
             varValue = m_stack.value(varName);
-
-            recursive = i > 0 && output[i - 1].toLower() == 'r';
 
             // if recursive variable
             if (recursive) {
