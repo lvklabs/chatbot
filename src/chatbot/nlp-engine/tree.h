@@ -77,12 +77,12 @@ public:
     /**
      * Gets the list of responses for the given input
      */
-    QStringList getResponses(const QString &input, Engine::MatchList &matches);
+    void getResponses(const QString &input, Nlp::ResultList &results);
 
     /**
      * Gets the response with the highest score
      */
-    QString getResponse(const QString &input, Engine::MatchList &matches);
+    void getResponse(const QString &input, Nlp::Result &result);
 
 private:
     Tree(Tree&);
@@ -102,13 +102,13 @@ private:
     void scoredDFS(ResultList &r, const Nlp::Node *root, const Nlp::WordList &words,
                    int offset = 0);
     void handleEndWord(Nlp::ResultList &results, const Nlp::Node *node, int offset);
-    Nlp::Result getValidOutput(const Nlp::Node *node);
+    Nlp::ResultList getResultsForNode(const Nlp::Node *node);
     QString expandVars(const QString &output, bool *ok);
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
     void filterSymbols(Nlp::WordList &words);
     void parseExactMatch(Nlp::WordList &words);
-    QString getRecResponse(const QString &input, Engine::MatchList &matches);
+    void getRecResponse(const QString &input, Nlp::Result &result);
     QString getVarValue(const QString &varName);
     void updateVarStack(const Node *node, int offset, const Nlp::Word &word, float matchWeight);
 };

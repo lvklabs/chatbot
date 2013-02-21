@@ -50,6 +50,18 @@ inline QSharedPointer<T> makeSharedPtr(T *p)
     return QSharedPointer<T>(p);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+// Convert ResultList to (QStringList, MatchList)
+inline void convert(const Lvk::Nlp::ResultList &results, QStringList &responses,
+                    Lvk::Nlp::Engine::MatchList &matches)
+{
+    foreach (const Lvk::Nlp::Result &r, results) {
+        responses.append(r.output);
+        matches.append(Lvk::Nlp::Engine::RuleMatch(r.ruleId, r.inputIdx));
+    }
+}
+
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -60,7 +72,7 @@ Lvk::Nlp::Cb2Engine::Cb2Engine()
     : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
-      m_setTopics(false)
+      m_preferCurTopic(false)
 {
     initLog();
 }
@@ -71,7 +83,7 @@ Lvk::Nlp::Cb2Engine::Cb2Engine(Sanitizer *sanitizer)
     : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
-      m_setTopics(false)
+      m_preferCurTopic(false)
 {
     Nlp::GlobalTools::instance()->setPreSanitizer(sanitizer);
 
@@ -85,7 +97,7 @@ Lvk::Nlp::Cb2Engine::Cb2Engine(Sanitizer *preSanitizer, Lemmatizer *lemmatizer,
     : m_logFile(new QFile()),
       m_mutex(new QMutex(QMutex::Recursive)),
       m_dirty(false),
-      m_setTopics(false)
+      m_preferCurTopic(false)
 {
     Nlp::GlobalTools::instance()->setPreSanitizer(preSanitizer);
     Nlp::GlobalTools::instance()->setLemmatizer(lemmatizer);
@@ -189,13 +201,24 @@ QStringList Lvk::Nlp::Cb2Engine::getAllResponses(const QString &input, const QSt
     qDebug() << "Cb2Engine: Getting response for input" << input
              << "and target" << target << "...";
 
-    QStringList responses = getAllResponsesWithTree(input, target, matches, target);
+    Nlp::ResultList results;
 
-    // No response found with the given target, fallback to rules with any user
-    if (responses.isEmpty() && target != ANY_USER) {
-        responses = getAllResponsesWithTree(input, target, matches, ANY_USER);
+    // If no response found with the given target, fallback to rules with any user
+    getAllResponsesWithTree(target, input, results);
+    if (results.isEmpty() && target != ANY_USER) {
+        getAllResponsesWithTree(ANY_USER, input, results);
     }
 
+    // If rules with current topic are prefered: Reorder results and update current topic
+    if (m_preferCurTopic && !results.isEmpty()) {
+        QString &topic = m_topics[target];
+        reorderByTopic(topic, results);
+        topic = topicForRule(results[0].ruleId);
+    }
+
+    // TODO Avoid this convertion. In the future remove MatchList and use only ResultList
+    QStringList responses;
+    convert(results, responses, matches);
     qDebug() << "Cb2Engine: Responses found: " << responses;
 
     return responses;
@@ -203,26 +226,18 @@ QStringList Lvk::Nlp::Cb2Engine::getAllResponses(const QString &input, const QSt
 
 //--------------------------------------------------------------------------------------------------
 
-QStringList Lvk::Nlp::Cb2Engine::getAllResponsesWithTree(const QString &input,
-                                                         const QString &/*target*/,
-                                                         Engine::MatchList &matches,
-                                                         const QString &treeName)
+void Lvk::Nlp::Cb2Engine::getAllResponsesWithTree(const QString &treeName, const QString &input,
+                                                  Nlp::ResultList &results)
 {
-    QStringList responses;
-
-    TreesMap::iterator it = m_trees.find(treeName);
+    results.clear();
 
     qDebug() << "Cb2Engine: Searching tree with name" << treeName;
+
+    TreesMap::iterator it = m_trees.find(treeName);
     if (it != m_trees.end()) {
         qDebug() << "Cb2Engine: Found!";
-        // We keep the topic for each target, otherwise the Chatbot will confuse topics
-        // if it's talking with two or more people at the same time
-        //(*it)->setTopic(m_topics[target]);
-        responses.append((*it)->getResponses(input, matches));
-        //m_topics[target] = (*it)->topic();
+        (*it)->getResponses(input, results);
     }
-
-    return responses;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -262,6 +277,33 @@ Lvk::Nlp::Tree * Lvk::Nlp::Cb2Engine::buildTree(const QString &target)
     }
 
     return tree;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Nlp::Cb2Engine::reorderByTopic(const QString &topic, Nlp::ResultList &results)
+{
+    if (topic.isEmpty()) {
+        return;
+    }
+
+    for (int i = 0, j = 0; i < results.size(); ++i) {
+        if (topicForRule(results[i].ruleId) == topic) {
+            results.move(i, j++);
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::Cb2Engine::topicForRule(Nlp::RuleId ruleId)
+{
+    foreach (const Nlp::Rule &rule, m_rules) {
+        if (rule.id() == ruleId) {
+            return rule.topic();
+        }
+    }
+    return "";
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -330,7 +372,7 @@ bool Lvk::Nlp::Cb2Engine::hasConditional(const QString &/*output*/)
 QVariant Lvk::Nlp::Cb2Engine::property(const QString &name)
 {
     if (name == NLP_PROP_PREFER_CUR_TOPIC) {
-        return QVariant(m_setTopics);
+        return QVariant(m_preferCurTopic);
     } else {
         return QVariant();
     }
@@ -343,15 +385,13 @@ void Lvk::Nlp::Cb2Engine::setProperty(const QString &name, const QVariant &value
     if (name == NLP_PROP_PREFER_CUR_TOPIC) {
         QMutexLocker locker(m_mutex);
 
-        if (value.toBool() == true && !m_setTopics) {
+        if (value.toBool() == true && !m_preferCurTopic) {
             qDebug() << "Cb2Engine: Enabled topics";
-            m_setTopics = true;
-            m_dirty = true;
+            m_preferCurTopic = true;
         }
-        if (value.toBool() == false && m_setTopics) {
+        if (value.toBool() == false && m_preferCurTopic) {
             qDebug() << "Cb2Engine: Disabled topics";
-            m_setTopics = false;
-            m_dirty = true;
+            m_preferCurTopic = false;
         }
     }
 }
@@ -367,4 +407,3 @@ void Lvk::Nlp::Cb2Engine::clear()
     m_trees.clear();
     m_topics.clear();
 }
-

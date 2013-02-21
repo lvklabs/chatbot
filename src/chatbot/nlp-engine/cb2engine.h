@@ -192,15 +192,15 @@ private:
     TopicsMap                 m_topics;
     QMutex *m_mutex;
     bool m_dirty;
-    bool m_setTopics;
+    bool m_preferCurTopic;
 
     void initLog();
-
-    inline QStringList getAllResponsesWithTree(const QString &input, const QString &target,
-                                               MatchList &matches, const QString &treeName);
-
+    void getAllResponsesWithTree(const QString &treeName, const QString &input,
+                                 Nlp::ResultList &results);
     void refresh();
     Nlp::Tree * buildTree(const QString &target);
+    void reorderByTopic(const QString &topic, Nlp::ResultList &results);
+    QString topicForRule(Nlp::RuleId ruleId);
 };
 
 /// @}

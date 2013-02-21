@@ -210,46 +210,29 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::Tree::getResponse(const QString &input, Engine::MatchList &matches)
+void Lvk::Nlp::Tree::getResponse(const QString &input, Nlp::Result &result)
 {
-    matches.clear();
+    result.clear();
 
-    QString resp;
+    Nlp::ResultList results;
+    getResponses(input, results);
 
-    Engine::MatchList tmpMatches;
-    QStringList responses = getResponses(input, tmpMatches);
-
-    if (responses.size() > 0 && tmpMatches.size() > 0) {
-        resp = responses[0];
-        matches.append(tmpMatches[0]);
+    if (!results.isEmpty()) {
+        result = results.first();
     }
-
-    return resp;
-
 }
 //--------------------------------------------------------------------------------------------------
 
-QStringList Lvk::Nlp::Tree::getResponses(const QString &input, Engine::MatchList &matches)
+void Lvk::Nlp::Tree::getResponses(const QString &input, Nlp::ResultList &results)
 {
     Nlp::WordList words;
     parseUserInput(input, words);
 
-    Nlp::ResultList results;
     scoredDFS(results, m_root, words);
 
     qSort(results.begin(), results.end(), highScoreFirst);
 
     qDebug() << "Nlp::Tree: Results: " << results;
-
-    QStringList responses;
-    matches.clear();
-
-    foreach (const Result &r, results) {
-        responses.append(r.output);
-        matches.append(Engine::RuleMatch(r.ruleId, r.inputIdx));
-    }
-
-    return responses;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -297,12 +280,11 @@ void Lvk::Nlp::Tree::handleEndWord(Nlp::ResultList &results, const Nlp::Node *no
     if (!m_loopDetector.contains(p)) {
         m_loopDetector.insert(p);
 
-        Nlp::Result r = getValidOutput(node);
-        if (!r.isNull()) {
-            r.score = m_scoringAlg->currentScore();
+        Nlp::ResultList r = getResultsForNode(node);
+        if (!r.isEmpty()) {
             results.append(r);
         } else {
-           TRACE(offset) << "No output found!";
+           TRACE(offset) << "No valid outputs found!";
         }
 
         m_loopDetector.remove(p);
@@ -313,30 +295,40 @@ void Lvk::Nlp::Tree::handleEndWord(Nlp::ResultList &results, const Nlp::Node *no
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Result Lvk::Nlp::Tree::getValidOutput(const Nlp::Node *node)
+Lvk::Nlp::ResultList Lvk::Nlp::Tree::getResultsForNode(const Nlp::Node *node)
 {
-    Nlp::Result r;
-
+    Nlp::ResultList results;
+    QSet<Nlp::RuleId> ruleIds;
     Nlp::OutputMap::const_iterator it;
-    for (it = node->omap.constBegin(); it != node->omap.constEnd() && r.isNull(); ++it) {
+    float score = m_scoringAlg->currentScore();
+
+    // For each rule definition, try to find a valid output
+    for (it = node->omap.constBegin(); it != node->omap.constEnd(); ++it) {
+        Nlp::RuleId ruleId = getRuleId(it.key());
+        int inputIdx = getInputIndex(it.key());
+
+        if (ruleIds.contains(ruleId)) {
+            continue;
+        }
+
         const Nlp::CondOutputList &l = it.value();
         QString output = l.nextValidOutput(m_stack);
 
-        if (!output.isNull()) {
-            bool ok;
-            QString expOutput = expandVars(output, &ok);
-            if (ok) {
-                r.output = expOutput;
-                r.ruleId = getRuleId(it.key());
-                r.inputIdx = getInputIndex(it.key());
-                break;
-            } else {
-                qDebug() << "Failed to expand output" << output << ". Trying with next output";
-            }
+        if (output.isNull()) {
+            continue;
         }
+
+        bool ok;
+        QString expOutput = expandVars(output, &ok);
+        if (ok) {
+            results.append(Nlp::Result(expOutput, ruleId, inputIdx, score));
+        } else {
+            qDebug() << "Failed to expand output" << output << ". Trying with next output";
+        }
+
     }
 
-    return r;
+    return results;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -359,10 +351,12 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
 
             // if recursive variable
             if (recursive) {
-                Engine::MatchList matches;
-                varValue = getRecResponse(varValue, matches);
+                Nlp::Result result;
+                getRecResponse(varValue, result);
 
-                if (varValue.isEmpty()) {
+                if (result.isValid()) {
+                    varValue = result.output;
+                } else {
                     newOutput.clear();
                     *ok = false;
                     break;
@@ -385,7 +379,7 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &matches)
+void Lvk::Nlp::Tree::getRecResponse(const QString &input, Nlp::Result &result)
 {
     // Push new context
     Nlp::VarStack stackBak = m_stack;
@@ -396,14 +390,12 @@ QString Lvk::Nlp::Tree::getRecResponse(const QString &input, Engine::MatchList &
     // TODO
     // - fix lost score
     // - fix lost match list
-    QString resp = getResponse(input, matches);
+    getResponse(input, result);
 
     // Pop context
     delete m_scoringAlg;
     m_scoringAlg = scoringAlgBak;
     m_stack = stackBak;
-
-    return resp;
 }
 
 //--------------------------------------------------------------------------------------------------

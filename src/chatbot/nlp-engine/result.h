@@ -43,7 +43,6 @@ namespace Nlp
 /**
  * \brief
  */
-// TODO rename this class
 struct Result
 {
     Result(const QString &output = "", RuleId ruleId = 0, int inputIndex = 0, float score = 0)
@@ -62,6 +61,19 @@ struct Result
     bool isNull()
     {
         return output.isEmpty() && !ruleId && !inputIdx && !score;
+    }
+
+    bool isValid()
+    {
+        return !isNull();
+    }
+
+    void clear()
+    {
+        output.clear();
+        ruleId = 0;
+        inputIdx = 0;
+        score = 0;
     }
 };
 
