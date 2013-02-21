@@ -341,34 +341,6 @@ void Lvk::Nlp::Cb2Engine::setPostSanitizer(Lvk::Nlp::Sanitizer *sanitizer)
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Nlp::Cb2Engine::hasVariable(const QString &/*input*/)
-{
-    return false; // TODO
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::Nlp::Cb2Engine::hasKeywordOp(const QString &/*input*/)
-{
-    return false; // TODO
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::Nlp::Cb2Engine::hasRegexOp(const QString &/*input*/)
-{
-    return false; // TODO
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Lvk::Nlp::Cb2Engine::hasConditional(const QString &/*output*/)
-{
-    return false; // TODO
-}
-
-//--------------------------------------------------------------------------------------------------
-
 QVariant Lvk::Nlp::Cb2Engine::property(const QString &name)
 {
     if (name == NLP_PROP_PREFER_CUR_TOPIC) {

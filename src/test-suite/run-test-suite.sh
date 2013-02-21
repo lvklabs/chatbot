@@ -4,24 +4,24 @@ shadow_build_dir=.test-suite-shadow-build
 project_dir=..
 log_file=run.log
 
-unit_tests="json-unit-test cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test secure-stats-file-unit-test stats-manager-test updater-unit-test cb2-engine-unit-test"
-e2e_tests="user-auth-test cb2-engine-full-test"
+unit_tests="json-unit-test cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test secure-stats-file-unit-test updater-unit-test cb2-engine-unit-test"
+sys_tests="user-auth-test cb2-engine-full-test stats-manager-test"
 
 show_usage()
 {
   echo "Syntax:"
-  echo "   $0 -u        # Run unit and system tests"
-  echo "   $0 -e        # Run end to end tests"
+  echo "   $0 -u        # Run unit tests"
+  echo "   $0 -s        # Run system tests"
   echo "   $0 -a        # Run all tests"
   echo "   $0 test_name # Run only specified tests"
 }
 
 if [ "$1" == "-u" ]; then
   tests="$unit_tests"
-elif [ "$1" == "-e" ]; then
-  tests="$e2e_tests"
+elif [ "$1" == "-s" ]; then
+  tests="$sys_tests"
 elif [ "$1" == "-a" ]; then
-  tests="$unit_tests $e2e_tests"
+  tests="$unit_tests $sys_tests"
 elif [ "$1" == "" ]; then
   show_usage
   exit 1

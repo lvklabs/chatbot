@@ -105,10 +105,10 @@ inline BE::Rule * newRuleTree2()
 {
     BE::Rule *root = new BE::Rule("", BE::Rule::ContainerRule);
     newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root);
-    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root);
+    newOrdinaryRule(QStringList() << "Soccer +",           QStringList() << "Hello",   root);
     newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root);
     newOrdinaryRule(QStringList() << "Do you play [sth]?",
-                    QStringList() << "{if [sth] = soccer}Yes{else}No", root);
+                    QStringList() << "{if [sth] == soccer}Yes{else}No", root);
 
     return root;
 }
@@ -381,26 +381,26 @@ void StatsManagerTest::testScoreAlgorithm_data()
     newOrdinaryRule(QStringList(),                         QStringList() << "Hello",   root1c);
     newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root1d);
     newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root1e);
-    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root1f);
+    newOrdinaryRule(QStringList() << "*Soccer *",          QStringList() << "Hello",   root1f);
     newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root1g);
-    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root1h);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] == soccer}Yes{else}No", root1h);
     newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if sth = soccer}Yes{else}No", root1i);
     newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5a);
     newOrdinaryRule(QStringList() << "Hey",                QStringList() << "Hello",   root5a);
     newOrdinaryRule(QStringList() << "Hello",              QStringList() << "Hello",   root5a);
     newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root5a);
-    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root5a);
+    newOrdinaryRule(QStringList() << "Soccer+",            QStringList() << "Hello",   root5a);
     newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root5a);
-    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5a);
-    newOrdinaryRule(QStringList() << "Do you like [sth]?", QStringList() << "{if [sth] = ice-cream}Yes{else}No", root5a);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if soccer != [sth]}Yes{else}No", root5a);
+    newOrdinaryRule(QStringList() << "Do you like [sth]?", QStringList() << "{if [sth] == ice-cream}Yes{else}No", root5a);
     newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
     newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
     newOrdinaryRule(QStringList() << "Hi!",                QStringList() << "Hello",   root5b);
     newOrdinaryRule(QStringList() << "Hi *",               QStringList() << "Hello",   root5b);
-    newOrdinaryRule(QStringList() << "Soccer **",          QStringList() << "Hello",   root5b);
+    newOrdinaryRule(QStringList() << "*Soccer *",          QStringList() << "Hello",   root5b);
     newOrdinaryRule(QStringList() << "[hecho]",            QStringList() << "[hecho]", root5b);
-    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
-    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] = soccer}Yes{else}No", root5b);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] == soccer}Yes{else}No", root5b);
+    newOrdinaryRule(QStringList() << "Do you play [sth]?", QStringList() << "{if [sth] == soccer}Yes{else}No", root5b);
 
     int root5a_score = SIMPL_P*3 + KWOP_P + REGEX_P + VAR_P + COND_P*2;
     int root5b_score = SIMPL_P + KWOP_P + REGEX_P + VAR_P + COND_P;

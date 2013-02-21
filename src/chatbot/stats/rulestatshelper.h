@@ -24,7 +24,8 @@
 
 #include "stats/statshelper.h"
 #include "back-end/rule.h"
-#include "nlp-engine/enginefactory.h"
+#include "nlp-engine/parser.h"
+#include "nlp-engine/syntax.h"
 
 #include <QSet>
 #include <QPair>
@@ -55,8 +56,7 @@ public:
      * Constructs an emtpy RuleStatsHelper
      */
     RuleStatsHelper()
-        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine()),
-          m_regexRules(0), m_keywordRules(0), m_varRules(0), m_condRules(0)
+        : m_rules(0), m_points(0), m_regexRules(0), m_varRules(0), m_condRules(0)
     {
     }
 
@@ -64,8 +64,7 @@ public:
      * Constructs a RuleStatsHelper and provides statistics for the given \a root rule.
      */
     RuleStatsHelper(const Lvk::BE::Rule *root)
-        : m_rules(0), m_points(0), m_engine(Nlp::EngineFactory().createEngine()),
-          m_regexRules(0), m_keywordRules(0), m_varRules(0), m_condRules(0)
+        : m_rules(0), m_points(0), m_regexRules(0), m_varRules(0), m_condRules(0)
     {
         if (root) {
             rcount(root);
@@ -105,14 +104,6 @@ public:
     }
 
     /**
-     * Returns the total amount of rules with keyword operator
-     */
-    unsigned keywordRules()
-    {
-        return m_keywordRules;
-    }
-
-    /**
      * Returns the total amount of rules with variables
      */
     unsigned variableRules()
@@ -149,7 +140,6 @@ public:
         m_rules = 0;
         m_points = 0;
         m_regexRules = 0;
-        m_keywordRules = 0;
         m_varRules = 0;
         m_condRules = 0;
     }
@@ -223,20 +213,17 @@ protected:
     {
         if (input.isEmpty() || output.isEmpty()) {
             return 0;
-        } else if (m_engine->hasVariable(input)) {
-            if (m_engine->hasConditional(output)) {
+        } else if (m_parser.parseVariable(input) != -1) {
+            if (m_parser.parseIf(output) != -1) {
                 ++m_condRules;
                 return 4;
-            } else if (m_engine->hasVariable(output)) {
+            } else if (m_parser.parseVariable(output) != -1) {
                 ++m_varRules;
                 return 3;
             } else {
                 return 1;
             }
-        } else if (m_engine->hasKeywordOp(input)) {
-            ++m_keywordRules;
-            return 2;
-        } else if (m_engine->hasRegexOp(input)) {
+        } else if (input.contains(STAR_OP) || input.contains(PLUS_OP)) {
             ++m_regexRules;
             return 2;
         } else {
@@ -253,11 +240,10 @@ private:
 
     unsigned m_rules;
     unsigned m_points;
-    std::auto_ptr<Nlp::Engine> m_engine;
     unsigned m_regexRules;
-    unsigned m_keywordRules;
     unsigned m_varRules;
     unsigned m_condRules;
+    Nlp::Parser m_parser;
 };
 
 /// @}

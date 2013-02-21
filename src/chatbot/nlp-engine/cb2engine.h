@@ -137,26 +137,6 @@ public:
     virtual void setPostSanitizer(Sanitizer *sanitizer);
 
     /**
-     * \copydoc Engine::hasVariable()
-     */
-    virtual bool hasVariable(const QString &input);
-
-    /**
-     * \copydoc Engine::hasKeywordOp()
-     */
-    virtual bool hasKeywordOp(const QString &input);
-
-    /**
-     * \copydoc Engine::hasRegexOp()
-     */
-    virtual bool hasRegexOp(const QString &input);
-
-    /**
-     * \copydoc Engine::hasConditional()
-     */
-    virtual bool hasConditional(const QString &output);
-
-    /**
      * \copydoc Engine::property()
      *
      * Cb2Engine supports only one property:

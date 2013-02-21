@@ -298,7 +298,6 @@ void Lvk::Stats::StatsManager::setRuleMetrics()
     m_statsFile->setMetric(Stats::RuleLexiconSize,  m_ruleStats.lexiconSize());
     m_statsFile->setMetric(Stats::RuleWordCount,    m_ruleStats.words());
     m_statsFile->setMetric(Stats::RegexRuleCount,   m_ruleStats.regexRules());
-    m_statsFile->setMetric(Stats::KeywordRuleCount, m_ruleStats.keywordRules());
     m_statsFile->setMetric(Stats::VarRuleCount,     m_ruleStats.variableRules());
     m_statsFile->setMetric(Stats::CondRuleCount,    m_ruleStats.conditionalRules());
 }
