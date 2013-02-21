@@ -56,21 +56,21 @@ public:
      * If the declaration is found, it returns the index position of the  declaration
      * in \a s and sets \a varName and \a recursive. Otherwise; returns -1
      */
-    int parseVariable(const QString &s, int offset, QString *varName = 0, bool *recursive = 0);
+    int parseVariable(const QString &s, QString *varName = 0, bool *recursive = 0, int offset = 0);
 
     /**
      * Parses string \a s starting from position \a offset searching for a 'if' declaration.
      * If the declaration is found, it returns the index position of the declaration
      * in \a s and sets \a predicate and \a body. Otherwise; returns -1
      */
-    int parseIf(const QString &s, int offset, Nlp::Predicate **pred = 0, QString *body = 0);
+    int parseIf(const QString &s, Nlp::Predicate **pred = 0, QString *body = 0, int offset = 0);
 
     /**
      * Parses string \a s starting from position \a offset searching for a 'else' declaration.
      * If the declaration is found, it returns the index position of the declaration
      * in \a s and sets \a body. Otherwise; returns -1
      */
-    int parseElse(const QString &s, int offset, QString *body = 0);
+    int parseElse(const QString &s, QString *body = 0, int offset = 0);
 
 private:
     QRegExp m_varRegex;
@@ -78,7 +78,7 @@ private:
     QRegExp m_elseRegex;
 
     void initRegexps();
-    Predicate * buildPredicate(const QString &c1, const QString &c2);
+    Predicate * parsePredicate(const QString &c1, const QString &c2, const QString &comp);
 };
 
 /// @}

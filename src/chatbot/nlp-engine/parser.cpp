@@ -26,6 +26,22 @@
 #include <QDebug>
 
 //--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+template<typename T1, typename T2>
+Lvk::Nlp::Comparison<T1, T2> * make_comp(const T1 &t1, const T2 &t2)
+{
+    return new Lvk::Nlp::Comparison<T1, T2>(t1, t2);
+}
+
+} // namespace
+
+
+//--------------------------------------------------------------------------------------------------
 // Parser
 //--------------------------------------------------------------------------------------------------
 
@@ -52,11 +68,13 @@ void Lvk::Nlp::Parser::initRegexps()
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Nlp::Parser::parseVariable(const QString &s, int offset, QString *varName, bool *recursive)
+int Lvk::Nlp::Parser::parseVariable(const QString &s, QString *varName, bool *recursive, int offset)
 {
     int i = m_varRegex.indexIn(s, offset);
 
     if (i != -1) {
+        qDebug() << "Parsed var" << m_ifRegex.cap(1);
+
         if (varName) {
             *varName = m_varRegex.cap(1).trimmed();
         }
@@ -70,13 +88,18 @@ int Lvk::Nlp::Parser::parseVariable(const QString &s, int offset, QString *varNa
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Nlp::Parser::parseIf(const QString &s, int offset, Nlp::Predicate **pred, QString *body)
+int Lvk::Nlp::Parser::parseIf(const QString &s, Nlp::Predicate **pred, QString *body, int offset)
 {
     int i = m_ifRegex.indexIn(s, offset);
 
     if (i != -1) {
+        qDebug() << "Parsed if" << m_ifRegex.cap(1)  << m_ifRegex.cap(2)
+                 << m_ifRegex.cap(3) << m_ifRegex.cap(4);
+
         if (pred) {
-            *pred = buildPredicate(m_ifRegex.cap(1).trimmed(), m_ifRegex.cap(3).trimmed());
+            *pred = parsePredicate(m_ifRegex.cap(1).trimmed(),
+                                   m_ifRegex.cap(3).trimmed(),
+                                   m_ifRegex.cap(2).trimmed());
         }
         if (body) {
             *body =  m_ifRegex.cap(4).trimmed();
@@ -89,11 +112,13 @@ int Lvk::Nlp::Parser::parseIf(const QString &s, int offset, Nlp::Predicate **pre
 
 //--------------------------------------------------------------------------------------------------
 
-int Lvk::Nlp::Parser::parseElse(const QString &s, int offset, QString *body)
+int Lvk::Nlp::Parser::parseElse(const QString &s, QString *body, int offset)
 {
     int i = m_elseRegex.indexIn(s, offset);
 
     if (i != -1) {
+        qDebug() << "Parsed else" << m_ifRegex.cap(1);
+
         if (body) {
             *body = m_elseRegex.cap(1).trimmed();
         }
@@ -104,9 +129,26 @@ int Lvk::Nlp::Parser::parseElse(const QString &s, int offset, QString *body)
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::Predicate * Lvk::Nlp::Parser::buildPredicate(const QString &c1, const QString &c2)
+Lvk::Nlp::Predicate * Lvk::Nlp::Parser::parsePredicate(const QString &c1, const QString &c2,
+                                                       const QString &/*comp*/)
 {
     // TODO set comparison type
-    return new Nlp::Comparison<Nlp::Variable, QString>(Nlp::Variable(c1), c2);
+
+    QString varName1;
+    QString varName2;
+
+    if (parseVariable(c1, &varName1) != -1) {
+        if (parseVariable(c2, &varName2) != -1) {
+            return make_comp(Nlp::Variable(varName1), Nlp::Variable(varName2));
+        } else {
+            return make_comp(Nlp::Variable(varName1), c2);
+        }
+    } else {
+        if (parseVariable(c2, &varName2) != -1) {
+            return make_comp(c1, Nlp::Variable(varName2));
+        } else {
+            return make_comp(c1, c2);
+        }
+    }
 }
 

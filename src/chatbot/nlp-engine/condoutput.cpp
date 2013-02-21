@@ -38,17 +38,17 @@ Lvk::Nlp::CondOutput::CondOutput(const QString &rawOutput)
     QString body;
 
     while (true) {
-        i = parser.parseIf(rawOutput, offset, &pred, &body);
+        i = parser.parseIf(rawOutput, &pred, &body, offset);
         if (i != -1) {
             append(body, pred);
-            offset =  i + 1;
+            offset =  i + body.size() + 1;
         } else {
             break;
         }
     }
 
     if (m_predicates.size() > 0) {
-        i = parser.parseElse(rawOutput, offset, &body);
+        i = parser.parseElse(rawOutput, &body, offset);
         if (i != -1) {
             append(body, new Nlp::True());
         }

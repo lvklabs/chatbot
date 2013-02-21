@@ -106,7 +106,7 @@ private:
         int i = s1.toInt(&ok1);
         int j = s2.toInt(&ok2);
 
-        return (ok1 && ok2) ? eval(i, j, varStack) : (s1 == s2);
+        return (ok1 && ok2) ? eval(i, j, varStack) : (s1.compare(s2, Qt::CaseInsensitive) == 0);
     }
 
     bool eval(const Nlp::Variable &v, const QString &s, const Nlp::VarStack &varStack) const

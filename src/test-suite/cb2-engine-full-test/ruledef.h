@@ -64,6 +64,10 @@
 #define RULE_13_INPUT_1                     "me gusta jugar a [var]"
 #define RULE_13_OUTPUT_1                    "{if [var] == futbol} a mi tambien {if [var] == voley} a mi no {else} Si? [var]?"
 
+#define RULE_14_ID                          14
+#define RULE_14_INPUT_1                     "w1 [var] w2"
+#define RULE_14_OUTPUT_1                    "{if [var] == v1 v2} r1 {if v2 == [var]} r2 {if [var] == [var]} r3"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -118,6 +122,10 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_13_ID,
                             QStringList() << RULE_13_INPUT_1,
                             QStringList() << RULE_13_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_14_ID,
+                            QStringList() << RULE_14_INPUT_1,
+                            QStringList() << RULE_14_OUTPUT_1);
 
     engine->setRules(rules);
 }

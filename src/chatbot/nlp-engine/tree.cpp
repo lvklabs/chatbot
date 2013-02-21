@@ -353,7 +353,7 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
     bool recursive = false;
 
     while (true) {
-        i = m_parser.parseVariable(output, offset, &varName, &recursive);
+        i = m_parser.parseVariable(output, &varName, &recursive, offset);
         if (i != -1) {
             varValue = m_stack.value(varName);
 
