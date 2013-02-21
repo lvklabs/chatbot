@@ -33,9 +33,9 @@ namespace
 {
 
 template<typename T1, typename T2>
-Lvk::Nlp::Comparison<T1, T2> * make_comp(const T1 &t1, const T2 &t2)
+Lvk::Nlp::Comparison<T1, T2> * make_comp(const T1 &t1, const T2 &t2, Lvk::Nlp::CompType op)
 {
-    return new Lvk::Nlp::Comparison<T1, T2>(t1, t2);
+    return new Lvk::Nlp::Comparison<T1, T2>(t1, t2, op);
 }
 
 } // namespace
@@ -130,25 +130,47 @@ int Lvk::Nlp::Parser::parseElse(const QString &s, QString *body, int offset)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Nlp::Predicate * Lvk::Nlp::Parser::parsePredicate(const QString &c1, const QString &c2,
-                                                       const QString &/*comp*/)
+                                                       const QString &comp)
 {
-    // TODO set comparison type
-
     QString varName1;
     QString varName2;
+    Nlp::CompType op = parseCompType(comp);
 
     if (parseVariable(c1, &varName1) != -1) {
         if (parseVariable(c2, &varName2) != -1) {
-            return make_comp(Nlp::Variable(varName1), Nlp::Variable(varName2));
+            return make_comp(Nlp::Variable(varName1), Nlp::Variable(varName2), op);
         } else {
-            return make_comp(Nlp::Variable(varName1), c2);
+            return make_comp(Nlp::Variable(varName1), c2, op);
         }
     } else {
         if (parseVariable(c2, &varName2) != -1) {
-            return make_comp(c1, Nlp::Variable(varName2));
+            return make_comp(c1, Nlp::Variable(varName2), op);
         } else {
-            return make_comp(c1, c2);
+            return make_comp(c1, c2, op);
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Nlp::CompType Lvk::Nlp::Parser::parseCompType(const QString &comp)
+{
+    if (comp == "==") {
+        return Nlp::Equal;
+    } else if (comp == ">") {
+        return Nlp::GreaterOrEqual;
+    } else if (comp == "<") {
+        return Nlp::Less;
+    } else if (comp == ">=") {
+        return Nlp::GreaterOrEqual;
+    } else if (comp == "<=") {
+        return Nlp::LessOrEqual;
+    } else if (comp == "!=") {
+        return Nlp::NotEqual;
+    } else {
+        // Should not happen if regexps are well defined
+        qCritical() << "Parser: Unknown comparison operator" << comp;
+        return Nlp::Equal;
     }
 }
 

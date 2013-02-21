@@ -35,7 +35,7 @@ Lvk::Nlp::CondOutputList::CondOutputList(const QStringList &outputs, bool random
     foreach (const QString &o, outputs) {
         QString rawOutput = o.trimmed();
         if (!rawOutput.isEmpty()) {
-            append(Nlp::CondOutput(rawOutput));
+            append(Nlp::CondOutput::fromRawString(rawOutput));
         }
     }
 }

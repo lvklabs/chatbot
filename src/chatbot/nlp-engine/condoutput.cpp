@@ -28,33 +28,16 @@
 // CondOutput
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Nlp::CondOutput::CondOutput(const QString &rawOutput)
+Lvk::Nlp::CondOutput::CondOutput()
 {
-    Nlp::Parser parser;
+}
 
-    int i = 0;
-    int offset = 0;
-    Nlp::Predicate *pred = 0;
-    QString body;
+//--------------------------------------------------------------------------------------------------
 
-    while (true) {
-        i = parser.parseIf(rawOutput, &pred, &body, offset);
-        if (i != -1) {
-            append(body, pred);
-            offset =  i + body.size() + 1;
-        } else {
-            break;
-        }
-    }
-
-    if (m_predicates.size() > 0) {
-        i = parser.parseElse(rawOutput, &body, offset);
-        if (i != -1) {
-            append(body, new Nlp::True());
-        }
-    } else {
-        append(rawOutput, new Nlp::True());
-    }
+void Lvk::Nlp::CondOutput::append(const QString &output, Nlp::Predicate *pred)
+{
+    m_outputs.append(output.trimmed());
+    m_predicates.append(QSharedPointer<Nlp::Predicate>(pred));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -72,8 +55,35 @@ bool Lvk::Nlp::CondOutput::eval(const Nlp::VarStack &varStack, QString &output) 
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Nlp::CondOutput::append(const QString &output, Nlp::Predicate *pred)
+Lvk::Nlp::CondOutput Lvk::Nlp::CondOutput::fromRawString(const QString &s)
 {
-    m_outputs.append(output.trimmed());
-    m_predicates.append(QSharedPointer<Nlp::Predicate>(pred));
+    CondOutput co;
+
+    Nlp::Parser parser;
+
+    int i = 0;
+    int offset = 0;
+    Nlp::Predicate *pred = 0;
+    QString body;
+
+    while (true) {
+        i = parser.parseIf(s, &pred, &body, offset);
+        if (i != -1) {
+            co.append(body, pred);
+            offset =  i + body.size() + 1;
+        } else {
+            break;
+        }
+    }
+
+    if (co.m_predicates.size() > 0) {
+        i = parser.parseElse(s, &body, offset);
+        if (i != -1) {
+            co.append(body, new Nlp::True());
+        }
+    } else {
+        co.append(s, new Nlp::True());
+    }
+
+    return co;
 }

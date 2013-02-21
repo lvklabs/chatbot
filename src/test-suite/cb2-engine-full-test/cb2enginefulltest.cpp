@@ -158,6 +158,13 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("33") << "w1 v1 v2 w2"                    << "r1"             << RULE_14_ID << 0;
     QTest::newRow("34") << "w1 v2 w2"                       << "r2"             << RULE_14_ID << 0;
     QTest::newRow("34") << "w1 v3 w2"                       << "r3"             << RULE_14_ID << 0;
+
+    QTest::newRow("35") << UTF8("Tengo 18 a\xc3\xb1os")     << "igual que yo!"         << RULE_15_ID << 0;
+    QTest::newRow("36") << UTF8("Tengo 20 a\xc3\xb1os")     << "sos mas grande que yo" << RULE_15_ID << 0;
+    QTest::newRow("37") << UTF8("Tengo 40 a\xc3\xb1os")     << "sos un viejo"          << RULE_15_ID << 0;
+    QTest::newRow("38") << UTF8("Tengo 10 a\xc3\xb1os")     << "sos mas chico que yo"  << RULE_15_ID << 0;
+    QTest::newRow("39") << UTF8("Tengo -9 a\xc3\xb1os")     << "imposible!"            << RULE_15_ID << 0;
+    QTest::newRow("40") << UTF8("Tengo muuuuchos a\xc3\xb1os") << "sos un viejo"       << RULE_15_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

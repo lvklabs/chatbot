@@ -40,88 +40,54 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The Predicate class provides the interface for all predicates
  */
 class Predicate
 {
 public:
+    /**
+     * Destroys the object
+     */
     virtual ~Predicate() { }
 
+    /**
+     * Evaluates the predicate using the variable stack \a varStack.
+     * Returns \a true if the predicate is satisfied; \a false otherwise.
+     */
     virtual bool eval(const Nlp::VarStack &varStack) const = 0;
 };
 
+
 /**
- * \brief
+ * \brief The True class is a Predicate that always returns true
  */
 class True : public Predicate
 {
 public:
+
+    /**
+     * This method always returns \a true
+     */
     virtual bool eval(const Nlp::VarStack &/*varStack*/) const
     {
         return true;
     }
 };
 
+
 /**
- * \brief
+ * \brief The False class is a Predicate that always returns false
  */
 class False : public Predicate
 {
 public:
+
+    /**
+     * This method always returns \a false
+     */
     virtual bool eval(const Nlp::VarStack &/*varStack*/) const
     {
         return false;
-    }
-};
-
-/**
- * \brief
- */
-template<typename T1,typename T2>
-class Comparison : public Predicate
-{
-public:
-
-    Comparison(const T1 &c1, const T2 &c2)
-        : comp1(c1), comp2(c2) { }
-
-    T1 comp1;
-    T2 comp2;
-
-    virtual bool eval(const Nlp::VarStack &varStack) const
-    {
-        return eval(comp1, comp2, varStack);
-    }
-
-private:
-
-    bool eval(int i, int j, const Nlp::VarStack &/*varStack*/) const
-    {
-        return j == i;
-    }
-
-    bool eval(const QString &s1, const QString &s2, const Nlp::VarStack &varStack) const
-    {
-        bool ok1, ok2;
-        int i = s1.toInt(&ok1);
-        int j = s2.toInt(&ok2);
-
-        return (ok1 && ok2) ? eval(i, j, varStack) : (s1.compare(s2, Qt::CaseInsensitive) == 0);
-    }
-
-    bool eval(const Nlp::Variable &v, const QString &s, const Nlp::VarStack &varStack) const
-    {
-        return eval(varStack.value(v.name), s, varStack);
-    }
-
-    bool eval(const QString &s, const Nlp::Variable &v, const Nlp::VarStack &varStack) const
-    {
-        return eval(varStack.value(v.name), s, varStack);
-    }
-
-    bool eval(const Nlp::Variable &v1, const Nlp::Variable &v2, const Nlp::VarStack &varStack) const
-    {
-        return eval(varStack.value(v1.name), varStack.value(v2.name), varStack);
     }
 };
 

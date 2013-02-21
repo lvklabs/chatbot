@@ -45,20 +45,23 @@ class VarStack;
 /// @{
 
 /**
- * \brief
+ * \brief The CondOutput class provides ...
  */
 class CondOutput
 {
 public:
-    CondOutput(const QString &rawOutput = "");
+    CondOutput();
+
+    void append(const QString &output, Nlp::Predicate *pred);
 
     bool eval(const Nlp::VarStack &varStack, QString &output) const;
+
+    static CondOutput fromRawString(const QString &s);
 
 private:
     QStringList m_outputs;
     QList< QSharedPointer<Nlp::Predicate> > m_predicates;
 
-    void append(const QString &output, Nlp::Predicate *pred);
 };
 
 /// @}

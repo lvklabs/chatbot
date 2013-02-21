@@ -25,6 +25,7 @@
 #include <QRegExp>
 
 #include "nlp-engine/predicate.h"
+#include "nlp-engine/comparison.h"
 
 namespace Lvk
 {
@@ -78,7 +79,8 @@ private:
     QRegExp m_elseRegex;
 
     void initRegexps();
-    Predicate * parsePredicate(const QString &c1, const QString &c2, const QString &comp);
+    Nlp::Predicate * parsePredicate(const QString &c1, const QString &c2, const QString &comp);
+    Nlp::CompType parseCompType(const QString &comp);
 };
 
 /// @}

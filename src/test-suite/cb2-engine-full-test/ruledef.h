@@ -68,6 +68,12 @@
 #define RULE_14_INPUT_1                     "w1 [var] w2"
 #define RULE_14_OUTPUT_1                    "{if [var] == v1 v2} r1 {if v2 == [var]} r2 {if [var] == [var]} r3"
 
+#define RULE_15_ID                          15
+#define RULE_15_INPUT_1                     "Tengo [num] a\xc3\xb1os?"
+#define RULE_15_OUTPUT_1                    "{if [num] == 18} igual que yo! {  if  [num]  >  30  } sos un viejo"\
+                                            "{if [num] >= 19} sos mas grande que yo {  if [num] == muchos  } sos un viejo"\
+                                            "{if [num] >= 1} sos mas chico que yo {if [num]<1} imposible!"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -126,6 +132,10 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_14_ID,
                             QStringList() << RULE_14_INPUT_1,
                             QStringList() << RULE_14_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_15_ID,
+                            QStringList() << QString::fromUtf8(RULE_15_INPUT_1),
+                            QStringList() << RULE_15_OUTPUT_1);
 
     engine->setRules(rules);
 }

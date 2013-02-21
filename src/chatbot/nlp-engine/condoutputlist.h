@@ -43,7 +43,7 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The CondOutputList provides a list of CondOutput's
  */
 class CondOutputList : public QList<CondOutput>
 {
@@ -53,8 +53,6 @@ public:
     QString nextValidOutput(const Nlp::VarStack &varStack) const;
 
     void setRandomOutput(bool random);
-
-    // TODO check if we need to define operator=
 
 private:
     mutable int m_next;
