@@ -78,8 +78,7 @@ inline int getInputIndex(quint64 id)
 
 Lvk::Nlp::Tree::Tree()
     : m_root(new Nlp::Node()),
-      m_matchPolicy(new Nlp::MatchPolicy()),
-      m_scoringAlg(new Nlp::ScoringAlgorithm())
+      m_matchPolicy(new Nlp::MatchPolicy())
 {
 }
 
@@ -87,7 +86,6 @@ Lvk::Nlp::Tree::Tree()
 
 Lvk::Nlp::Tree::~Tree()
 {
-    delete m_scoringAlg;
     delete m_matchPolicy;
     delete m_root;
 }
@@ -228,9 +226,17 @@ void Lvk::Nlp::Tree::getResponses(const QString &input, Nlp::ResultList &results
     Nlp::WordList words;
     parseUserInput(input, words);
 
+    m_searchCtx.push();
+
     scoredDFS(results, m_root, words);
 
     qSort(results.begin(), results.end(), highScoreFirst);
+
+    m_searchCtx.pop();
+
+    if (m_searchCtx.isEmpty()) {
+        m_loopDetector.clear();
+    }
 
     qDebug() << "Nlp::Tree: Results: " << results;
 }
@@ -249,18 +255,18 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
 
         float matchWeight = (*m_matchPolicy)(node, words[offset]);
 
+        QString varName;
         if (const Nlp::VariableNode *varNode = node->to<Nlp::VariableNode>()) {
-            m_stack.update(varNode->varName, offset);
-        } else {
-            m_stack.update(QString(), offset);
+            varName = varNode->varName;
         }
+        m_searchCtx.stack().update(varName, offset);
 
         if (matchWeight > 0) {
             TRACE(offset) << words[offset] << "matched with weight" << matchWeight;
 
-            m_stack.capture(words[offset].origWord, offset);
+            m_searchCtx.stack().capture(words[offset].origWord, offset);
 
-            m_scoringAlg->updateScore(offset, matchWeight);
+            m_searchCtx.score().updateScore(offset, matchWeight);
 
             if (offset + 1 < words.size()) {
                 scoredDFS(results, node, words, offset + 1);
@@ -300,7 +306,7 @@ Lvk::Nlp::ResultList Lvk::Nlp::Tree::getResultsForNode(const Nlp::Node *node)
     Nlp::ResultList results;
     QSet<Nlp::RuleId> ruleIds;
     Nlp::OutputMap::const_iterator it;
-    float score = m_scoringAlg->currentScore();
+    float score = m_searchCtx.score().currentScore();
 
     // For each rule definition, try to find a valid output
     for (it = node->omap.constBegin(); it != node->omap.constEnd(); ++it) {
@@ -312,7 +318,7 @@ Lvk::Nlp::ResultList Lvk::Nlp::Tree::getResultsForNode(const Nlp::Node *node)
         }
 
         const Nlp::CondOutputList &l = it.value();
-        QString output = l.nextValidOutput(m_stack);
+        QString output = l.nextValidOutput(m_searchCtx.stack());
 
         if (output.isNull()) {
             continue;
@@ -347,12 +353,12 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
     while (true) {
         i = m_parser.parseVariable(output, &varName, &recursive, offset);
         if (i != -1) {
-            varValue = m_stack.value(varName);
+            varValue = m_searchCtx.stack().value(varName);
 
             // if recursive variable
             if (recursive) {
                 Nlp::Result result;
-                getRecResponse(varValue, result);
+                getResponse(varValue, result);
 
                 if (result.isValid()) {
                     varValue = result.output;
@@ -375,27 +381,6 @@ QString Lvk::Nlp::Tree::expandVars(const QString &output, bool *ok)
     }
 
     return newOutput;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::Nlp::Tree::getRecResponse(const QString &input, Nlp::Result &result)
-{
-    // Push new context
-    Nlp::VarStack stackBak = m_stack;
-    Nlp::ScoringAlgorithm *scoringAlgBak = m_scoringAlg;
-    m_stack = Nlp::VarStack();
-    m_scoringAlg = new Nlp::ScoringAlgorithm();
-
-    // TODO
-    // - fix lost score
-    // - fix lost match list
-    getResponse(input, result);
-
-    // Pop context
-    delete m_scoringAlg;
-    m_scoringAlg = scoringAlgBak;
-    m_stack = stackBak;
 }
 
 //--------------------------------------------------------------------------------------------------

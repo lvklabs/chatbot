@@ -32,7 +32,8 @@ HEADERS += \
     $$PROJECT_PATH/nlp-engine/variable.h \
     $$PROJECT_PATH/nlp-engine/syntax.h \
     $$PROJECT_PATH/nlp-engine/parser.h \
-    $$PROJECT_PATH/nlp-engine/comparison.h
+    $$PROJECT_PATH/nlp-engine/comparison.h \
+    $$PROJECT_PATH/nlp-engine/searchcontext.h
 
 SOURCES += \
     $$PROJECT_PATH/nlp-engine/defaultsanitizer.cpp \
@@ -58,6 +59,7 @@ freeling {
     SOURCES += \
         $$PROJECT_PATH/nlp-engine/freelinglemmatizer.cpp
 }
+
 
 
 
