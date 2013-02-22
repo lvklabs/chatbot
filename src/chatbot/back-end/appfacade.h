@@ -199,9 +199,9 @@ public:
      * NLP Engine Options
      */
     enum NlpEngineOption {
-        RemoveDupChars    = 0x01,    ///< Remove duplicated characters
+        RemoveDupChars    = 0x01,    ///< Remove duplicated characters -- DEPRECATED --
         LemmatizeSentence = 0x02,    ///< Lemmatize sentences
-        SanitizePostLemma = 0x04,    ///< Sanitize post lemmatization
+        SanitizePostLemma = 0x04,    ///< Sanitize post lemmatization  -- DEPRECATED --
         ExactMatchSupport = 0x08,    ///< Enable exact match support
         PreferCurCategory = 0x10     ///< Prefer rules on the current category
     };

@@ -58,7 +58,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For instance &lt;span style=&quot; font-style:italic;&quot;&gt;write&lt;/span&gt; is equal than &lt;span style=&quot; font-style:italic;&quot;&gt;wrote, written&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>Lemmatize sentences</string>
+          <string>Normalize and lemmatize sentences</string>
          </property>
         </widget>
        </item>
