@@ -117,7 +117,7 @@ void Lvk::Nlp::Tree::add(const Nlp::Rule &rule)
 
         onodes.insert(PairedNode(i, curNode));
 
-        if (words.last().normWord == STAR_OP && curNode->parent != m_root) {
+        if (words.last().isStar() && curNode->parent != m_root) {
             onodes.insert(PairedNode(i, curNode->parent));
         }
     }
@@ -166,7 +166,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
                 // Currently we only support two wildcards: * and +
                 // We must handle the case where new node is a * node and we already have
                 // a + node
-                if (word.origWord == STAR_OP && wcNode->min == 1) {
+                if (word.isStar() && wcNode->min == 1) {
                     wcNode->min = 0;
                 }
                 return node;
@@ -394,6 +394,7 @@ void Lvk::Nlp::Tree::parseRuleInput(const QString &input, Nlp::WordList &words)
 
     parseExactMatch(words);
     filterSymbols(words);
+    checkSyntax(words);
 
     qDebug() << "Nlp::Tree: Parsed rule input" << words;
 }
@@ -430,6 +431,26 @@ void Lvk::Nlp::Tree::filterSymbols(Nlp::WordList &words)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Nlp::Tree::checkSyntax(Nlp::WordList &/*words*/)
+{
+    // So far this method only checks for two or more consecutive star operators and only
+    // keeps one
+    //    bool isStar = false;
+    //    bool prevIsStar = false;
+    //
+    //    for (int i = 0; i < words.size();) {
+    //        isStar = words[i].isStar();
+    //        if (isStar && prevIsStar) {
+    //            words.removeAt(i);
+    //        } else {
+    //            ++i;
+    //        }
+    //        prevIsStar = isStar;
+    //    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::Tree::parseExactMatch(Nlp::WordList &words)
 {
     for (int i = 0; i < words.size(); ++i) {
@@ -442,4 +463,3 @@ void Lvk::Nlp::Tree::parseExactMatch(Nlp::WordList &words)
         }
     }
 }
-

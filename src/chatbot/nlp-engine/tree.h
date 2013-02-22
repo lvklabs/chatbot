@@ -105,6 +105,7 @@ private:
     QString expandVars(const QString &output, bool *ok);
     void parseRuleInput(const QString &input, Nlp::WordList &words);
     void parseUserInput(const QString &input, Nlp::WordList &words);
+    void checkSyntax(Nlp::WordList &words);
     void filterSymbols(Nlp::WordList &words);
     void parseExactMatch(Nlp::WordList &words);
 };
