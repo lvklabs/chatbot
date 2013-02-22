@@ -133,7 +133,7 @@ void Lvk::Nlp::Tree::addNodeOutput(const Lvk::Nlp::Rule &rule, const QSet<Paired
 {
     // Build list of outputs with their condition
 
-    Nlp::CondOutputList l(rule.output());
+    Nlp::CondOutputList l(rule.output(), rule.randomOutput());
 
     // Add the output list to all nodes in onodes.
     // Because CondOutputList inherits the "Implicit Shared Model" from QList, all These
@@ -265,7 +265,6 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
             TRACE(offset) << words[offset] << "matched with weight" << matchWeight;
 
             m_searchCtx.stack().capture(words[offset].origWord, offset);
-
             m_searchCtx.score().updateScore(offset, matchWeight);
 
             if (offset + 1 < words.size()) {

@@ -42,6 +42,7 @@
 #define EnableTestMatchWithSingleOutputWithLemmatizer
 #define EnableTestMatchWithTarget
 #define EnableTestMatchPriority
+#define EnableTestMatchWithRandomOutput
 #define EnableTestMatchWithSecuentialOutput
 #define EnableTestMatchWithTopic
 
@@ -330,39 +331,55 @@ void TestCb2Engine::testMatchWithRandomOutput_data()
                                                  << RULE_1_OUTPUT_3);
 
     QTest::newRow("ro 1") << USER_INPUT_1a << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 2") << USER_INPUT_1b << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 3") << USER_INPUT_1c << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 4") << USER_INPUT_2  << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 5") << USER_INPUT_5  << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 6") << USER_INPUT_6  << RULE_1_OUTPUT_LIST;
+    QTest::newRow("ro 2") << USER_INPUT_2  << RULE_1_OUTPUT_LIST;
+    QTest::newRow("ro 3") << USER_INPUT_5  << RULE_1_OUTPUT_LIST;
+    QTest::newRow("ro 4") << USER_INPUT_6  << RULE_1_OUTPUT_LIST;
 }
 
 //--------------------------------------------------------------------------------------------------
 
+
 void TestCb2Engine::testMatchWithRandomOutput()
 {
-    QSKIP("Not supported", SkipAll);
+#ifndef EnableTestMatchWithRandomOutput
+    QSKIP("Skip macro on", SkipAll);
+#endif
 
     QFETCH(QString, userInput);
     QFETCH(QStringList, expectedOutput);
 
-    QHash<QString, int> outputUseCount;
+    setRules2(m_engine, true);
 
-    setRules2(m_engine);
+    int seqSize = expectedOutput.size();
 
-    for (int i = 0; i < 50; ++i) {
+    typedef QList<QString> OuputSeq;
+    OuputSeq seq; // output sequence
+    QList<OuputSeq> seqs;
 
+    for (int i = 0; i < seqSize * 5; ++i) {
         Lvk::Nlp::Engine::MatchList matches;
-
         QString output = m_engine->getResponse(userInput, matches);
 
         QVERIFY(expectedOutput.contains(output));
         QCOMPARE(matches.size(), 1);
 
-        outputUseCount[output] = outputUseCount[output] + 1;
+        seq.append(output);
+
+        if ((i + 1) % seqSize == 0) {
+            seqs.append(seq);
+            seq.clear();
+        }
     }
 
-    QCOMPARE(outputUseCount.size(), expectedOutput.size());
+    bool diffSeqs = 0;
+    for (int i = 0; i < seqs.size(); ++i) {
+        for (int j = i + 1; j < seqs.size(); ++j) {
+            if (seqs[i] != seqs[j]) {
+                ++diffSeqs;
+            }
+        }
+    }
+    QVERIFY(diffSeqs > 0);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -390,7 +407,7 @@ void TestCb2Engine::testMatchWithSecuentialOutput()
     QFETCH(QString, userInput);
     QFETCH(QStringList, expectedOutput);
 
-    setRules2(m_engine);
+    setRules2(m_engine, false);
 
     Lvk::Nlp::Engine::MatchList matches;
 

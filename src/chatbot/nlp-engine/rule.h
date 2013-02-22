@@ -62,19 +62,19 @@ public:
     /**
      * Constructs a NLP rule with \a id
      */
-    Rule(RuleId id = 0) : m_id(id) {}
+    Rule(RuleId id = 0) : m_id(id), m_random(false) {}
 
     /**
      * Constructs a NLP rule with \a id, \a input and \a output
      */
     Rule(RuleId id, const QStringList &input, const QStringList &output)
-        : m_id(id), m_input(input), m_output(output) {}
+        : m_id(id), m_input(input), m_output(output), m_random(false) {}
 
     /**
      * Constructs a NLP rule with \a id, \a input,\a output and \a target
      */
     Rule(RuleId id, const QStringList &input, const QStringList &output, const QStringList &target)
-        : m_id(id), m_input(input), m_output(output), m_target(target) {}
+        : m_id(id), m_input(input), m_output(output), m_target(target), m_random(false) {}
 
     /**
      * Returns the rule ID, by default 0.
@@ -146,6 +146,18 @@ public:
      */
     void setTopic(const QString &topic) { m_topic = topic; }
 
+    /**
+     * Returns true if the output should be selected randomly; otherwise returns false.
+     * By default is sequential.
+     */
+    bool randomOutput() const { return m_random; }
+
+    /**
+     * Sets whether the output should be selected randomly or sequentially.
+     * By default is sequential.
+     */
+    void setRandomOutput(bool random) { m_random = random; }
+
 private:
 
     RuleId m_id;
@@ -153,6 +165,7 @@ private:
     QStringList m_output;
     QStringList m_target;
     QString m_topic;
+    bool m_random;
 };
 
 

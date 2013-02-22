@@ -160,13 +160,15 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
 
 //--------------------------------------------------------------------------------------------------
 
-inline void setRules2(Lvk::Nlp::Engine *engine)
+inline void setRules2(Lvk::Nlp::Engine *engine, bool random)
 {
     Lvk::Nlp::RuleList rules;
 
     rules << Lvk::Nlp::Rule(RULE_1_ID,
                             QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
                             QStringList() << RULE_1_OUTPUT_1 << RULE_1_OUTPUT_2 << RULE_1_OUTPUT_3);
+
+    rules[0].setRandomOutput(random);
 
     engine->setRules(rules);
 }

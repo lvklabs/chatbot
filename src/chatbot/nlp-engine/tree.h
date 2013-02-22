@@ -53,7 +53,7 @@ class ScoringAlgorithm;
 /// @{
 
 /**
- * \brief The Tree class provides ...
+ * \brief The Tree class provides tree to perform searches...
  */
 class Tree
 {
