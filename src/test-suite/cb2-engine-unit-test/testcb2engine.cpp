@@ -45,6 +45,7 @@
 #define EnableTestMatchWithRandomOutput
 #define EnableTestMatchWithSecuentialOutput
 #define EnableTestMatchWithTopic
+#define EnableTestInfiniteLoopDetection
 
 #define USER_INPUT_1a                       "Hello"
 #define USER_INPUT_1b                       "hello"
@@ -126,6 +127,9 @@ private Q_SLOTS:
     void testMatchPriority();
 
     void testMatchWithTopic();
+
+    void testInfiniteLoopDetection();
+    void testInfiniteLoopDetection_data();
 
     void cleanupTestCase();
 
@@ -539,6 +543,51 @@ void TestCb2Engine::testMatchWithTopic()
         QCOMPARE(response, QString(RULE_19_OUTPUT_1));
         QCOMPARE(matches.size(), 1);
         QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
+    }
+}
+//--------------------------------------------------------------------------------------------------
+
+
+void TestCb2Engine::testInfiniteLoopDetection_data()
+{
+    QTest::addColumn<QString>("userInput");
+    QTest::addColumn<QString>("expectedOutput");
+    QTest::addColumn<int>("ruleId");
+    QTest::addColumn<int>("ruleInputNumber");
+
+    QTest::newRow("loop0") << "Hola"                    << QString()  << 0 << 0;
+    QTest::newRow("loop1") << "Simplemente hola"        << QString()  << 0 << 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void TestCb2Engine::testInfiniteLoopDetection()
+{
+#ifndef EnableTestInfiniteLoopDetection
+    QSKIP("Skip macro on", SkipAll);
+#endif
+
+    QFETCH(QString, userInput);
+    QFETCH(QString, expectedOutput);
+    QFETCH(int, ruleId);
+    QFETCH(int, ruleInputNumber);
+
+    m_engine->setLemmatizer(new Lvk::Nlp::NullLemmatizer());
+
+    setRules8(m_engine);
+
+    Lvk::Nlp::Engine::MatchList matches;
+
+    QString output = m_engine->getResponse(userInput, matches);
+
+    if (!expectedOutput.isNull()) {
+        QCOMPARE(output, expectedOutput);
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, static_cast<Lvk::Nlp::RuleId>(ruleId));
+        QCOMPARE(matches[0].second, ruleInputNumber);
+    } else {
+        QVERIFY(output.isEmpty());
+        QCOMPARE(matches.size(), 0);
     }
 }
 

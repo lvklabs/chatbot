@@ -116,6 +116,15 @@
 #define RULE_20_INPUT_1                     "thing2 *"
 #define RULE_20_OUTPUT_1                    "Ok"
 
+#define RULE_21_ID                          21
+#define RULE_21_INPUT_1                     "[var]"
+#define RULE_21_OUTPUT_1                    "r[var]"
+
+#define RULE_22_ID                           22
+#define RULE_22_INPUT_1                      "Simplemente [var]"
+#define RULE_22_INPUT_2                      "Solamente [var]"
+#define RULE_22_OUTPUT_1                     "R[var]"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -315,6 +324,26 @@ inline void setRules7(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_16_ID,
                             QStringList() << RULE_16_INPUT_1,
                             QStringList() << RULE_16_OUTPUT_1,
+                            QStringList());
+
+    engine->setRules(rules);
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+inline void setRules8(Lvk::Nlp::Engine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    rules << Lvk::Nlp::Rule(RULE_21_ID,
+                            QStringList() << RULE_21_INPUT_1,
+                            QStringList() << RULE_21_OUTPUT_1,
+                            QStringList());
+
+    rules << Lvk::Nlp::Rule(RULE_22_ID,
+                            QStringList() << RULE_22_INPUT_1 << RULE_22_INPUT_2,
+                            QStringList() << RULE_22_OUTPUT_1,
                             QStringList());
 
     engine->setRules(rules);

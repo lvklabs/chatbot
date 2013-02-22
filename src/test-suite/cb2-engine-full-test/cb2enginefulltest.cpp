@@ -28,8 +28,6 @@ private Q_SLOTS:
     void cleanupTestCase();
     void testCase1();
     void testCase1_data();
-    void testInfiniteLoopDetection();
-    void testInfiniteLoopDetection_data();
 
 private:
     Nlp::Cb2Engine *m_engine;
@@ -165,28 +163,6 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("38") << UTF8("Tengo 10 a\xc3\xb1os")     << "sos mas chico que yo"  << RULE_15_ID << 0;
     QTest::newRow("39") << UTF8("Tengo -9 a\xc3\xb1os")     << "imposible!"            << RULE_15_ID << 0;
     QTest::newRow("40") << UTF8("Tengo muuuuchos a\xc3\xb1os") << "sos un viejo"       << RULE_15_ID << 0;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Cb2EnginefullTest::testInfiniteLoopDetection()
-{
-    QSKIP("", SkipAll);
-
-    testWithRuleSet(2);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Cb2EnginefullTest::testInfiniteLoopDetection_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expOutput");
-    QTest::addColumn<int>("ruleId");
-    QTest::addColumn<int>("inputIdx");
-
-    QTest::newRow("l0") << "Hola"                    << QString()  << 0 << 0;
-    QTest::newRow("l1") << "Simplemente hola"        << QString()  << 0 << 0;
 }
 
 //--------------------------------------------------------------------------------------------------
