@@ -974,7 +974,7 @@ void Lvk::FE::MainWindow::onAddVarRuleAction()
 void Lvk::FE::MainWindow::onAddCondRuleAction()
 {
     addRuleWithDialog(QStringList() << tr("left text [variable] right text"),
-                      QStringList() << tr("{if [variable] = value} response 1"
+                      QStringList() << tr("{if [variable] == value} response 1"
                                           " {else} response 2"));
 }
 
