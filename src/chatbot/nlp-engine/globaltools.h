@@ -44,36 +44,23 @@ namespace Nlp
 /**
  * \brief The GlobalTools class provides collection of common NLP tools
  */
+// TODO refactor and remove this class!
 class GlobalTools
 {
 public:
     static GlobalTools* instance();
 
-    // TODO do not return raw pointers
 
-    /**
-     */
     Sanitizer * preSanitizer();
 
-    /**
-     */
     void setPreSanitizer(Sanitizer *sanitizer);
 
-
-    /**
-     */
     Lemmatizer * lemmatizer();
 
-    /**
-     */
     void setLemmatizer(Lemmatizer *lemmatizer);
 
-    /**
-     */
     Sanitizer * postSanitizer();
 
-    /**
-     */
     void setPostSanitizer(Sanitizer *sanitizer);
 
 private:
