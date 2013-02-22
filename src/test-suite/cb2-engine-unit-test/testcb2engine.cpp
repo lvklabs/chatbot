@@ -52,7 +52,9 @@
 #define USER_INPUT_1d                       "HELLO,"
 #define USER_INPUT_1e                       "HELLO;!?"
 #define USER_INPUT_1f                       "Heeeeellooooooo"
-#define USER_INPUT_2                        "Hi"
+#define USER_INPUT_2a                       "Hi"
+#define USER_INPUT_2b                       "Bonjour"
+#define USER_INPUT_2c                       "aa bb Bonjour aa bb"
 #define USER_INPUT_3                        "Hey there!"
 #define USER_INPUT_4a                       "What is your name?"
 #define USER_INPUT_4b                       "What   is your    name?"
@@ -200,7 +202,7 @@ void TestCb2Engine::testMatchWithSingleOutput_data()
     QTest::newRow("so 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
     QTest::newRow("so 2")  << USER_INPUT_1b << QString()        << 0 << 0;
     QTest::newRow("so 3")  << USER_INPUT_1c << QString()        << 0 << 0;
-    QTest::newRow("so 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1  << RULE_1_ID << 1;
+    QTest::newRow("so 4a") << USER_INPUT_2a << RULE_1_OUTPUT_1  << RULE_1_ID << 1;
     QTest::newRow("so 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
     QTest::newRow("so 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
     QTest::newRow("so 6")  << USER_INPUT_4c << QString()        << 0 << 0;
@@ -259,7 +261,9 @@ void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer_data()
     QTest::newRow("so 1")  << USER_INPUT_1a << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
     QTest::newRow("so 2")  << USER_INPUT_1b << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
     QTest::newRow("so 3")  << USER_INPUT_1c << RULE_1_OUTPUT_1  << RULE_1_ID << 0;
-    QTest::newRow("so 4")  << USER_INPUT_2  << RULE_1_OUTPUT_1  << RULE_1_ID << 1;
+    QTest::newRow("so 4a") << USER_INPUT_2a << RULE_1_OUTPUT_1  << RULE_1_ID << 1;
+    QTest::newRow("so 4b") << USER_INPUT_2b << RULE_1_OUTPUT_1  << RULE_1_ID << 3;
+    QTest::newRow("so 4c") << USER_INPUT_2c << RULE_1_OUTPUT_1  << RULE_1_ID << 3;
     QTest::newRow("so 5")  << USER_INPUT_4a << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
     QTest::newRow("so 6")  << USER_INPUT_4b << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
     QTest::newRow("so 6b") << USER_INPUT_4c << RULE_2_OUTPUT_1  << RULE_2_ID << 0;
@@ -285,7 +289,6 @@ void TestCb2Engine::testMatchWithSingleOutputWithLemmatizer_data()
     QTest::newRow("ds 4") << QString::fromUtf8(USER_INPUT_9d)
                                            << QString::fromUtf8(RULE_6_OUTPUT_1)
                                            << RULE_6_ID << 1;
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -331,7 +334,7 @@ void TestCb2Engine::testMatchWithRandomOutput_data()
                                                  << RULE_1_OUTPUT_3);
 
     QTest::newRow("ro 1") << USER_INPUT_1a << RULE_1_OUTPUT_LIST;
-    QTest::newRow("ro 2") << USER_INPUT_2  << RULE_1_OUTPUT_LIST;
+    QTest::newRow("ro 2") << USER_INPUT_2a  << RULE_1_OUTPUT_LIST;
     QTest::newRow("ro 3") << USER_INPUT_5  << RULE_1_OUTPUT_LIST;
     QTest::newRow("ro 4") << USER_INPUT_6  << RULE_1_OUTPUT_LIST;
 }
@@ -393,7 +396,7 @@ void TestCb2Engine::testMatchWithSecuentialOutput_data()
                                                  << RULE_1_OUTPUT_3);
 
     QTest::newRow("so 1") << USER_INPUT_1a << RULE_1_OUTPUT_LIST;
-    QTest::newRow("so 2") << USER_INPUT_2 << RULE_1_OUTPUT_LIST;
+    QTest::newRow("so 2") << USER_INPUT_2a << RULE_1_OUTPUT_LIST;
 }
 
 //--------------------------------------------------------------------------------------------------

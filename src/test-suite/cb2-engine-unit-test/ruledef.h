@@ -25,6 +25,7 @@
 #define RULE_1_INPUT_1                      "Hello"
 #define RULE_1_INPUT_2                      "Hi"
 #define RULE_1_INPUT_3                      "Hello +"
+#define RULE_1_INPUT_4                      "***** Bonjour *** *"
 #define RULE_1_OUTPUT_1                     "Hi!"
 #define RULE_1_OUTPUT_2                     "Hello!"
 #define RULE_1_OUTPUT_3                     "Hey!"
@@ -122,7 +123,8 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     Lvk::Nlp::RuleList rules;
 
     rules << Lvk::Nlp::Rule(RULE_1_ID,
-                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3,
+                            QStringList() << RULE_1_INPUT_1 << RULE_1_INPUT_2 << RULE_1_INPUT_3
+                                          << RULE_1_INPUT_4,
                             QStringList() << RULE_1_OUTPUT_1);
 
     rules << Lvk::Nlp::Rule(RULE_2_ID,
