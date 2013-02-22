@@ -46,18 +46,22 @@ namespace Nlp
 /// @{
 
 /**
- * \brief Word struct
+ * \brief The Word class provides information about a word such as lemma, PoS tag,
+ *        alternative spells, etc.
+ *
+ * The Word class is used by Lemmatizer's to return the information about a sentence
  */
-struct Word
+class Word
 {
+public:
     Word(const QString origWord = "", const QString normWord = "", const QString lemma = "")
         : origWord(origWord), normWord(normWord), lemma(lemma) { }
 
-    QString origWord;
-    QString normWord;
-    QString lemma;
-    QString posTag;
-    QStringList altSpells;
+    QString origWord; ///< The original word
+    QString normWord; ///< The normalized form of the original word
+    QString lemma;    ///< Word lemma
+    QString posTag;   ///< Word PoS tag
+    QStringList altSpells; ///< Alternative spellings for the original word
 
     bool operator==(const Word &other) const
     {
@@ -73,9 +77,19 @@ struct Word
         return !this->operator==(other);
     }
 
+    bool isStar() const
+    {
+        return origWord == STAR_OP ;
+    }
+
+    bool isPlus() const
+    {
+        return origWord == PLUS_OP;
+    }
+
     bool isWildcard() const
     {
-        return origWord == STAR_OP || origWord == PLUS_OP;
+        return isPlus() || isStar();
     }
 
     bool isVariable() const
@@ -92,10 +106,12 @@ struct Word
     {
         return !isWildcard() && !isSymbol() && !isVariable();
     }
-
 };
 
 
+/**
+ * This method adds support to print debug information of Word classes
+ */
 inline QDebug& operator<<(QDebug& dbg, const Word &w)
 {
     dbg.space() << w.origWord << w.normWord << w.lemma << w.posTag /*<< w.altSpells*/;
@@ -104,6 +120,9 @@ inline QDebug& operator<<(QDebug& dbg, const Word &w)
 }
 
 
+/**
+ * The WordList class provides a list of Word's
+ */
 typedef QList<Word> WordList;
 
 /// @}
