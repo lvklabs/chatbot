@@ -14,7 +14,13 @@ echo "--------"
 echo "Building"
 echo "--------"
 
+if [ -z "$QTDIR" ]; then
+  qmake_path=qmake
+else
+  qmake_path=$QTDIR/bin/qmake
+fi
+
 mkdir -p $shadow_build_dir
-( cd $shadow_build_dir && qmake $project_file "CONFIG+=release da_contest" && make )
+( cd $shadow_build_dir && $qmake_path $project_file "CONFIG+=release da_contest" && make )
 
 
