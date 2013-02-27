@@ -41,33 +41,51 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The result class provides all the information regarding a sentence match
  */
-struct Result
+class Result
 {
-    Result(const QString &output = "", RuleId ruleId = 0, int inputIndex = 0, float score = 0)
-        : output(output), ruleId(ruleId), inputIdx(inputIndex), score(score) { }
+public:
+    /**
+     * Constructs a Result object with \a output, rule ID \a ruleId, input index \a inputIdx
+     * and \a score
+     */
+    Result(const QString &output = "", RuleId ruleId = 0, int inputIdx = 0, float score = 0)
+        : output(output), ruleId(ruleId), inputIdx(inputIdx), score(score) { }
 
-    QString output;
-    RuleId ruleId;
-    int inputIdx;
-    float score;
+    QString output; ///< The output string without expanding variables
+    RuleId ruleId;  ///< The original rule ID
+    int inputIdx;   ///< The input index of the rule
+    float score;    ///< The matching score
 
+    /**
+     * Returns true if the score of \a this is less than the score of \a other.
+     * Otherwise; returns false.
+     */
     bool operator<(const Result &other) const
     {
         return score < other.score;
     }
 
+    /**
+     * Returns true if the result is null. Otherwise; returns false.
+     */
     bool isNull()
     {
         return output.isEmpty() && !ruleId && !inputIdx && !score;
     }
 
+    /**
+     * Returns true if the result is *not* null. Otherwise; returns false.
+     */
     bool isValid()
     {
         return !isNull();
     }
 
+    /**
+     * Clears the content of the object
+     */
     void clear()
     {
         output.clear();
@@ -78,6 +96,9 @@ struct Result
 };
 
 
+/**
+ * \brief This method adds support to print debug information of Result objects
+ */
 inline QDebug& operator<<(QDebug& dbg, const Result &r)
 {
     dbg.space() << r.score << r.output << r.ruleId << r.inputIdx;
@@ -86,6 +107,9 @@ inline QDebug& operator<<(QDebug& dbg, const Result &r)
 }
 
 
+/**
+ * The ResultList class provides a list of Result's
+ */
 typedef QList<Result> ResultList;
 
 /// @}

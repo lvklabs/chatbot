@@ -54,6 +54,11 @@ namespace Nlp
 class Word
 {
 public:
+
+    /**
+     * Consructs a Word object with original word \a origWord, normalized word \a normWord and
+     * lemma \a lemma
+     */
     Word(const QString origWord = "", const QString normWord = "", const QString lemma = "")
         : origWord(origWord), normWord(normWord), lemma(lemma) { }
 
@@ -63,6 +68,9 @@ public:
     QString posTag;   ///< Word PoS tag
     QStringList altSpells; ///< Alternative spellings for the original word
 
+    /**
+     * Returns true if \a this is equal to \a other. Otherwise; returns false.
+     */
     bool operator==(const Word &other) const
     {
         return origWord == other.origWord &&
@@ -72,36 +80,57 @@ public:
                 altSpells == other.altSpells;
     }
 
+    /**
+     * Returns true if \a this is *not* equal to \a other. Otherwise; returns false.
+     */
     bool operator!=(const Word &other) const
     {
         return !this->operator==(other);
     }
 
+    /**
+     * Returns true if \a this is the star operator. Otherwise; returns false.
+     */
     bool isStar() const
     {
         return origWord == STAR_OP ;
     }
 
+    /**
+     * Returns true if \a this is the plus operator. Otherwise; returns false.
+     */
     bool isPlus() const
     {
         return origWord == PLUS_OP;
     }
 
+    /**
+     * Returns true if \a this is a wildcard operator. Otherwise; returns false.
+     */
     bool isWildcard() const
     {
         return isPlus() || isStar();
     }
 
+    /**
+     * Returns true if \a this is a variable. Otherwise; returns false.
+     */
     bool isVariable() const
     {
         return QRegExp(VAR_DECL_REGEX).exactMatch(origWord);
     }
 
+    /**
+     * Returns true if \a this is a symbol. Otherwise; returns false.
+     */
     bool isSymbol() const
     {
         return !isWildcard() && origWord.size() == 1 && !origWord[0].isLetterOrNumber();
     }
 
+    /**
+     * Returns true if \a this is a word. Otherwise; returns false.
+     */
     bool isWord() const
     {
         return !isWildcard() && !isSymbol() && !isVariable();

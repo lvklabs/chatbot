@@ -42,22 +42,34 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The Variable class provides all the information of a variable
+ *
+ * This class is used internally by the Cb2Engine to store information about variables
  */
-struct Variable
+class Variable
 {
+public:
+    /**
+     * Constructs a Variable object with \a name and \a scope
+     */
     Variable(const QString &name = "", const VarScope &scope = VarScope())
         : name(name), scope(scope) { }
 
-    QString name;
-    QString value;
-    VarScope scope;
+    QString name;   ///< The variable name
+    QString value;  ///< The variable value
+    VarScope scope; ///< The variable scope
 
+    /**
+     * Returns true if the variable is null. Otherwise; returns false.
+     */
     bool isNull()
     {
         return name.isNull() && scope.isNull() && value.isNull();
     }
 
+    /**
+     * Clears the content of the object
+     */
     void clear()
     {
         name.clear();
@@ -68,7 +80,7 @@ struct Variable
 
 
 /**
- * \brief
+ * \brief This method adds support to print debug information of Variable objects
  */
 inline QDebug& operator<<(QDebug& dbg, const Variable &i)
 {

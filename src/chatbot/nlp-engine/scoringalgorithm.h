@@ -38,9 +38,8 @@ namespace Nlp
 /// @{
 
 /**
- * \brief ScoringAlgorithm class 
+ * \brief The ScoringAlgorithm class provides the algorithm to calculate the score a sentence match
  */
-
 class ScoringAlgorithm
 {
 public:

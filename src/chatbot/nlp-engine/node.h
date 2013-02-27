@@ -50,19 +50,34 @@ namespace Nlp
 typedef QHash<quint64, CondOutputList> OutputMap;
 
 /**
- * \brief
+ * \brief The Node class provides a node of a Tree
+ *
+ * Node is the base class for all nodes such as WordNode, WildcardNode and VariableNode
+ *
+ * \see Tree, WordNode, WildcardNode and VariableNode
  */
-struct Node
+class Node
 {
+public:
+
+    /**
+     * Constructs a Node object with \a parent
+     */
     Node(Node *parent = 0)
         : parent(parent) { }
 
+    /**
+     * Destroys the object
+     */
     virtual ~Node() { }
 
-    Node *parent;
-    QList<Node *> childs;
-    OutputMap omap;
+    Node *parent;           ///< The node's parent
+    QList<Node *> childs;   ///< The node's childs
+    OutputMap omap;         ///< The node's output map
 
+    /**
+     * Returns the string representation of the object
+     */
     virtual QString toString() const
     {
         return "Node()";
@@ -88,15 +103,23 @@ struct Node
 };
 
 /**
- * \brief
+ * \brief The WordNode class provides a Node that contains information about a word
  */
-struct WordNode : Node
+class WordNode : public Node
 {
+public:
+
+    /**
+     * Constructs a WordNode object with word \a w and \a parent
+     */
     WordNode(const Word &w = Word(), Node *parent = 0)
         : Node(parent), word(w) { }
 
-    Word word;
+    Word word; ///< The word information
 
+    /**
+     * Returns the string representation of the object
+     */
     QString toString() const
     {
         return QString("WordNode(%1)").arg(word.origWord);
@@ -104,13 +127,22 @@ struct WordNode : Node
 };
 
 /**
- * \brief
+ * \brief The WildcarNode class provides a Node that contains information about a wildcard operator
  */
-struct WildcardNode : Node
+class WildcardNode : public Node
 {
+public:
+
+    /**
+     * Constructs a WildcarNode object with range [min,max] \a parent
+     */
     WildcardNode(int min = 0, int max = 0, Node *parent = 0)
         : Node(parent), min(min), max(max) { }
 
+    /**
+     * Constructs a WildcarNode from string \a wc with \a parent. \wc must be the string
+     * representation of a wildcard operator such as STAR_OP or PLUS_OP
+     */
     WildcardNode(const QString &wc, Node *parent = 0)
         : Node(parent), min(0), max(0)
     {
@@ -123,33 +155,46 @@ struct WildcardNode : Node
         }
     }
 
-    int min;
-    int max;
+    int min; ///< The minimun amount of ocurrences
+    int max; ///< The maximun amount of ocurrences. -1 means infinite.
 
+    /**
+     * Returns the string representation of the object
+     */
     QString toString() const
     {
         return QString("WildcardNode(%1,%2)").arg(min).arg(max);
     }
 };
 
+
 /**
- * \brief
+ * \brief The VariableNode class provides a Node that contains information about a variable
  */
-struct VariableNode : Node
+class VariableNode : public Node
 {
+public:
+
+    /**
+     * Constructs a VariableNode object with variable name \a varName and \a parent
+     */
     VariableNode(const QString &varName = QString(), Node *parent = 0)
         : Node(parent), varName(varName) { }
 
-    QString varName;
+    QString varName; ///< The variable name
 
+    /**
+     * Returns the string representation of the object
+     */
     QString toString() const
     {
         return "VariableNode(" + varName + ")";
     }
 };
 
+
 /**
- * Makes the Node type printable for debugging purposes
+ * \brief This method adds support to print debug information of Node objects
  */
 inline QDebug& operator<<(QDebug& dbg, const Node &n)
 {

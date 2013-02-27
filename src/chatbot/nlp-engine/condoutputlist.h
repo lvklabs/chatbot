@@ -48,10 +48,21 @@ namespace Nlp
 class CondOutputList : public QList<CondOutput>
 {
 public:
+    /**
+     * Constructs a CondOutputList with \a outputs.
+     * If \a random is true, the output is chosen randomly. Otherwise; is chosen sequentially.
+     */
     CondOutputList(const QStringList &outputs = QStringList(), bool random = false);
 
+    /**
+     * Returns the next valid output based on the given context \a varStack. Returns an empty
+     * string if there is no valid output.
+     */
     QString nextValidOutput(const Nlp::VarStack &varStack) const;
 
+    /**
+     * If \a random is true, the output is chosen randomly. Otherwise; is chosen sequentially.
+     */
     void setRandomOutput(bool random);
 
 private:

@@ -53,7 +53,7 @@ class ScoringAlgorithm;
 /// @{
 
 /**
- * \brief The Tree class provides tree to perform searches...
+ * \brief The Tree class provides tree to perform NLP searches
  */
 class Tree
 {
@@ -70,17 +70,17 @@ public:
     ~Tree();
 
     /**
-     * Adds \a rule to the tree
+     * Adds NLP \a rule to the tree
      */
-    void add(const Rule &rule);
+    void add(const Nlp::Rule &rule);
 
     /**
-     * Gets the list of responses for the given input
+     * Gets the list of results for \a input
      */
     void getResponses(const QString &input, Nlp::ResultList &results);
 
     /**
-     * Gets the response with the highest score
+     * Gets the results with the highest score for \a input
      */
     void getResponse(const QString &input, Nlp::Result &result);
 

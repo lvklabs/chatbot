@@ -45,7 +45,11 @@ class VarStack;
 /// @{
 
 /**
- * \brief The CondOutput class provides ...
+ * \brief The CondOutput class provides a list of pairs (predicate, output) and a method to
+ * evaluate the predicates and choose one output.
+ *
+ * The key concept of this class is the eval() method that chooses an output that
+ * satisfies its predicate given a context.
  */
 class CondOutput
 {

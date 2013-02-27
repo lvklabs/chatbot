@@ -41,10 +41,11 @@ namespace Nlp
 /// \addtogroup Nlp
 /// @{
 
+// TODO refactor and remove this class!
+
 /**
  * \brief The GlobalTools class provides collection of common NLP tools
  */
-// TODO refactor and remove this class!
 class GlobalTools
 {
 public:

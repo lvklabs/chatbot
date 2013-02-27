@@ -41,7 +41,9 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The VarStack class provides a stack of variables.
+ *
+ * This class is used internally by the Cb2Engine class to keep track of the variables being used.
  */
 class VarStack
 {

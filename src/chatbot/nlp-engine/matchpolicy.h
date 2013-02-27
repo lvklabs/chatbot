@@ -43,12 +43,19 @@ struct Node;
 
 
 /**
- * \brief MatchPolicy class 
+ * \brief The MatchPolicy class defines the matching policy to do a search on a Tree
+ *
+ * Given a Node \a n and a Word \a w, returns "how well" \a w mathes \a n
  */
 class MatchPolicy
 {
 public:
-    float operator()(const Node *node, const Word &word);
+
+    /**
+     * Returns the weight of the node \a n given the word \a w. The weight ranges from 0.0 to 1.0.
+     * A zero weight means no match.
+     */
+    float operator()(const Node *n, const Word &w);
 };
 
 /// @}

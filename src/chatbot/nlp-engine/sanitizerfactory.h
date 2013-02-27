@@ -38,9 +38,8 @@ namespace Nlp
 /// @{
 
 /**
- * \brief SanitizerFactory class 
+ * \brief The SanitizerFactory class provides a factory of Sanitizer's
  */
-
 class SanitizerFactory
 {
 public:

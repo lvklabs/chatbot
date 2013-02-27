@@ -38,27 +38,43 @@ namespace Nlp
 /// @{
 
 /**
- * \brief
+ * \brief The VarScope class contains the scope of a variable.
+ *
+ * \see Variable
  */
-struct VarScope
+class VarScope
 {
+public:
+
+    /**
+     * Constructs a VarScope object with scope [start,end]
+     */
     VarScope(int start = 0, int end = 0)
         : start(start), end(end) { }
 
-    int start;
-    int end;
+    int start; ///< The scope start
+    int end;   ///< The scope end
 
+    /**
+     * Returns true if the scope is null. Otherwise; returns false.
+     */
     bool isNull()
     {
         return !start && !end;
     }
 
+    /**
+     * Clears the content of the object
+     */
     void clear()
     {
         start = 0;
         end = 0;
     }
 
+    /**
+     * Returns true if \a i is in range [start,end]. Otherwise; returns false.
+     */
     bool contains(int i)
     {
         return start <= i && i <= end;
@@ -67,7 +83,7 @@ struct VarScope
 
 
 /**
- * \brief
+ * \brief This method adds support to print debug information of VarScope objects
  */
 inline QDebug& operator<<(QDebug& dbg, const VarScope &s)
 {
