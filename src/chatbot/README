@@ -1,4 +1,23 @@
 
+
+**************** VERY IMPORTANT ****************
+
+  You are in the clue branch!
+
+  THE CLUE BRANCH IS CURRENTLY UNDER HEAVY DEVELOPMENT
+  AND IS VERY UNSTABLE.
+        
+  To compile a stable version switch to branch master:
+         
+  $ git checkout master
+
+  To compile a *very* stable version switch to branch 1.x:
+         
+  $ git checkout 1.x
+
+***********************************************
+
+
 LVK CHATBOT README
 ------------------
 
