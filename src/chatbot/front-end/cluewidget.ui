@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClueWidget</class>
+ <widget class="QWidget" name="ClueWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>568</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="1">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QComboBox" name="comboBox">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>Pedro</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Florencia</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="6">
+      <widget class="Lvk::FE::ScriptCoverageWidget" name="tableView"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Upload</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Lvk::FE::ScriptCoverageWidget</class>
+   <extends>QTableView</extends>
+   <header>front-end/scriptcoveragewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../res/chatbot_theme.qrc"/>
+ </resources>
+ <connections/>
+</ui>

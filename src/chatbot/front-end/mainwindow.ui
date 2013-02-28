@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="mainTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>7</number>
        </property>
        <widget class="QWidget" name="welcomeTab">
         <attribute name="title">
@@ -657,6 +657,20 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="clueTab">
+        <attribute name="title">
+         <string>Clue</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_9">
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="clueLayout">
+           <item row="0" column="0">
+            <widget class="Lvk::FE::ClueWidget" name="clueWidget" native="true"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -830,6 +844,12 @@
    <class>Lvk::FE::AccountVerifWidget</class>
    <extends>QWidget</extends>
    <header>front-end/accountverifwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Lvk::FE::ClueWidget</class>
+   <extends>QWidget</extends>
+   <header>front-end/cluewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

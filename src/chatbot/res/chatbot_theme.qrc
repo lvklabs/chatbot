@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons">
+    <qresource prefix="/icons" lang="suspect.png">
         <file alias="category.png">chatbot_theme/category.png</file>
         <file alias="add_category.png">chatbot_theme/add_category.png</file>
         <file alias="remove.png">chatbot_theme/remove.png</file>
@@ -32,6 +32,9 @@
         <file alias="status_connected.png">chatbot_theme/status_connected.png</file>
         <file alias="status_disconnected.png">chatbot_theme/status_disconnected.png</file>
         <file alias="copy.png">chatbot_theme/copy.png</file>
+        <file alias="detective.png">chatbot_theme/detective.png</file>
+        <file alias="suspect.png">chatbot_theme/suspect.png</file>
+        <file alias="refresh.png">chatbot_theme/refresh.png</file>
     </qresource>
     <qresource prefix="/bg">
         <file alias="welcome.png">chatbot_theme/welcome_bg.png</file>

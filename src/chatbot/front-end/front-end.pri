@@ -39,6 +39,8 @@ HEADERS += \
     $$PROJECT_PATH/front-end/memberfunctor.h \
     $$PROJECT_PATH/front-end/uploaderprogressdialog.h \
     $$PROJECT_PATH/front-end/accountverifwidget.h\
+    $$PROJECT_PATH/front-end/cluewidget.h \
+    $$PROJECT_PATH/front-end/scriptcoveragewidget.h
 
 SOURCES += \
     $$PROJECT_PATH/front-end/mainwindow.cpp \
@@ -68,6 +70,8 @@ SOURCES += \
     $$PROJECT_PATH/front-end/connectionwidget.cpp \
     $$PROJECT_PATH/front-end/uploaderprogressdialog.cpp \
     $$PROJECT_PATH/front-end/accountverifwidget.cpp \
+    $$PROJECT_PATH/front-end/cluewidget.cpp \
+    $$PROJECT_PATH/front-end/scriptcoveragewidget.cpp
 
 FORMS += \
     $$PROJECT_PATH/front-end/mainwindow.ui \
@@ -80,7 +84,9 @@ FORMS += \
     $$PROJECT_PATH/front-end/welcomewidget.ui \
     $$PROJECT_PATH/front-end/ruleeditwidget.ui \
     $$PROJECT_PATH/front-end/connectionwidget.ui \
-    $$PROJECT_PATH/front-end/accountverifwidget.ui
+    $$PROJECT_PATH/front-end/accountverifwidget.ui \
+    $$PROJECT_PATH/front-end/cluewidget.ui \
+    $$PROJECT_PATH/front-end/scriptcoveragewidget.ui
 
 
 isEmpty( ICON_THEME ) {
