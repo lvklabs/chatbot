@@ -151,7 +151,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
     // If node already exists for the given word, return that node
 
     if (word.isWord()) {
-        foreach (Nlp::Node *node, parent->childs) {
+        foreach (Nlp::Node *node, parent->childs()) {
             if (Nlp::WordNode* wNode = node->to<Nlp::WordNode>()) {
                 if (wNode->word == word) {
                     return node;
@@ -161,7 +161,7 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
     }
 
     if (word.isWildcard()) {
-        foreach (Nlp::Node *node, parent->childs) {
+        foreach (Nlp::Node *node, parent->childs()) {
             if (Nlp::WildcardNode* wcNode = node->to<Nlp::WildcardNode>()) {
                 // Currently we only support two wildcards: * and +
                 // We must handle the case where new node is a * node and we already have
@@ -184,21 +184,21 @@ Lvk::Nlp::Node * Lvk::Nlp::Tree::addNode(const Nlp::Word &word, Nlp::Node *paren
 
     if (word.isWildcard()) {
         newNode = new Nlp::WildcardNode(word.origWord, parent);
-        newNode->childs.append(newNode); // Loop node (see engine documentation)
+        newNode->appendChild(newNode); // Loop node (see engine documentation)
     } else if (word.isVariable()) {
         QString varName = word.origWord.mid(1, word.origWord.size() - 2); // Remove square braces
         newNode = new Nlp::VariableNode(varName, parent);
-        newNode->childs.append(newNode); // Loop node (see engine documentation)
+        newNode->appendChild(newNode); // Loop node (see engine documentation)
     } else {
         newNode = new Nlp::WordNode(word, parent);
     }
 
-    parent->childs.append(newNode);
+    parent->appendChild(newNode);
 
     // If parent is *, we need to add a new edge from parent->parent to newNode
     // TODO handle case where there are two or more * adjacent
     if (parent->is<Nlp::WildcardNode>() && parent->to<Nlp::WildcardNode>()->min == 0) {
-        parent->parent->childs.append(newNode);
+        parent->parent->appendChild(newNode);
     }
 
     qDebug() << "Nlp::Tree: Added new node" << *newNode << "with parent" << *parent;
@@ -250,7 +250,7 @@ void Lvk::Nlp::Tree::scoredDFS(Nlp::ResultList &results, const Nlp::Node *root,
         return;
     }
 
-    foreach (const Nlp::Node *node, root->childs) {
+    foreach (const Nlp::Node *node, root->childs()) {
         TRACE(offset) << "Current node" << *node;
 
         float matchWeight = (*m_matchPolicy)(node, words[offset]);

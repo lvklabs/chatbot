@@ -64,16 +64,36 @@ public:
      * Constructs a Node object with \a parent
      */
     Node(Node *parent = 0)
-        : parent(parent) { }
-
-    /**
-     * Destroys the object
-     */
-    virtual ~Node() { }
+        : parent(parent), m_useCount(0) { }
 
     Node *parent;           ///< The node's parent
-    QList<Node *> childs;   ///< The node's childs
     OutputMap omap;         ///< The node's output map
+
+    /**
+     * Returns a reference to the list of childs.
+     * Warning: Do not append childs to that list. To append new childs use appendChild()
+     */
+    QList<Node *> & childs()
+    {
+        return m_childs;
+    }
+
+    /**
+     * Returns a const reference to the list of childs
+     */
+    const QList<Node *> & childs() const
+    {
+        return m_childs;
+    }
+
+    /**
+     * Appends a child \a node
+     */
+    void appendChild(Node *node)
+    {
+        m_childs.append(node);
+        ++node->m_useCount;
+    }
 
     /**
      * Returns the string representation of the object
@@ -83,23 +103,52 @@ public:
         return "Node()";
     }
 
+    /**
+     * Returns true if \a this is of type T
+     */
     template<class T>
     bool is() const
     {
         return dynamic_cast<const T *>(this) != 0;
     }
 
+    /**
+     * if \a this is has type T returns a pointer of type T. Otherwise; returns 0
+     */
     template<class T>
     T * to()
     {
         return dynamic_cast<T *>(this);
     }
 
+    /**
+     * if \a this is has type T returns a const pointer of type T. Otherwise; returns 0
+     */
     template<class T>
     const T * to() const
     {
         return dynamic_cast<const T *>(this);
     }
+
+    /**
+     * Destroys the object and all child nodes not being used anymore
+     */
+    virtual ~Node()
+    {
+        foreach (Node *child, m_childs) {
+            --child->m_useCount;
+            if (child->m_useCount == 0 && child != this) {
+                delete child;
+            }
+        }
+    }
+
+private:
+    Node(const Node&);
+    Node& operator=(const Node&);
+
+    int m_useCount;
+    QList<Node *> m_childs;
 };
 
 /**
