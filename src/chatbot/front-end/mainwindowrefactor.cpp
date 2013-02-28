@@ -123,6 +123,7 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
             ui->mainTabWidget->removePage(ui->verificationTab);
+            ui->mainTabWidget->removePage(ui->clueTab);
             break;
 
         case VerifyAccountUiMode:
@@ -138,6 +139,7 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->removePage(ui->teachTab);
             ui->mainTabWidget->removePage(ui->conversationsTab);
             ui->mainTabWidget->removePage(ui->scoreTab);
+            ui->mainTabWidget->removePage(ui->clueTab);
             ui->mainTabWidget->addTab(ui->verificationTab, QObject::tr("Verify account"));
             break;
 
@@ -154,8 +156,9 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("&Connection"));
             ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("C&onversations"));
         #ifdef DA_CONTEST
-            ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("&Score"));
+            //ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("&Score"));
         #endif
+            ui->mainTabWidget->addTab(ui->clueTab,          QObject::tr("C&lue"));
             ui->mainTabWidget->removePage(ui->verificationTab);
             break;
         }

@@ -106,6 +106,34 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
     </message>
 </context>
 <context>
+    <name>ClueWidget</name>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="29"/>
+        <source>Pedro</source>
+        <translation>Pedro</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="34"/>
+        <source>Florencia</source>
+        <translation>Florencia</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="45"/>
+        <source>Refresh</source>
+        <translation>Actualizar</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="69"/>
+        <source>Upload</source>
+        <translation>Enviar</translation>
+    </message>
+</context>
+<context>
     <name>ConnectionWidget</name>
     <message>
         <location filename="../front-end/connectionwidget.ui" line="14"/>
@@ -1381,6 +1409,34 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
     </message>
 </context>
 <context>
+    <name>Lvk::FE::ScriptCoverageWidget</name>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="183"/>
+        <source>Global coverage: 60%</source>
+        <translation>Cobertura global: 60%</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="212"/>
+        <source>File</source>
+        <translation>Archivo</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="213"/>
+        <source>Coverage</source>
+        <translation>Cobertura</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="231"/>
+        <source>Script</source>
+        <translation>Guión</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="232"/>
+        <source>Rule</source>
+        <translation>Regla</translation>
+    </message>
+</context>
+<context>
     <name>Lvk::FE::SendScoreDialog</name>
     <message>
         <source>Send score? This will also send your rule definitions.&lt;br/&gt;&lt;a href=&quot;#&quot;&gt;See what I&apos;m sending&lt;/a&gt;</source>
@@ -1534,7 +1590,7 @@ Tiempo restante: %3</translation>
     <name>MainWindow</name>
     <message>
         <location filename="../front-end/mainwindow.ui" line="20"/>
-        <location filename="../front-end/mainwindow.ui" line="676"/>
+        <location filename="../front-end/mainwindow.ui" line="690"/>
         <source>Chatbot</source>
         <translation>Chatbot</translation>
     </message>
@@ -1836,94 +1892,99 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Verificación de cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="696"/>
+        <location filename="../front-end/mainwindow.ui" line="662"/>
+        <source>Clue</source>
+        <translation>Clue</translation>
+    </message>
+    <message>
+        <location filename="../front-end/mainwindow.ui" line="710"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="699"/>
+        <location filename="../front-end/mainwindow.ui" line="713"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="704"/>
-        <location filename="../front-end/mainwindow.ui" line="717"/>
+        <location filename="../front-end/mainwindow.ui" line="718"/>
+        <location filename="../front-end/mainwindow.ui" line="731"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="709"/>
-        <location filename="../front-end/mainwindow.ui" line="712"/>
+        <location filename="../front-end/mainwindow.ui" line="723"/>
+        <location filename="../front-end/mainwindow.ui" line="726"/>
         <source>About Chatbot...</source>
         <translation>Acerca de Chatbot...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="722"/>
+        <location filename="../front-end/mainwindow.ui" line="736"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="725"/>
+        <location filename="../front-end/mainwindow.ui" line="739"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="730"/>
+        <location filename="../front-end/mainwindow.ui" line="744"/>
         <source>Save as...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="733"/>
+        <location filename="../front-end/mainwindow.ui" line="747"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="738"/>
+        <location filename="../front-end/mainwindow.ui" line="752"/>
         <source>Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="741"/>
+        <location filename="../front-end/mainwindow.ui" line="755"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="746"/>
+        <location filename="../front-end/mainwindow.ui" line="760"/>
         <source>New</source>
         <translation>Nuevo</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="749"/>
+        <location filename="../front-end/mainwindow.ui" line="763"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="754"/>
+        <location filename="../front-end/mainwindow.ui" line="768"/>
         <source>Import rules...</source>
         <translation>Importar Reglas...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="759"/>
+        <location filename="../front-end/mainwindow.ui" line="773"/>
         <source>Export rules...</source>
         <translation>Exportar Reglas...</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="764"/>
+        <location filename="../front-end/mainwindow.ui" line="778"/>
         <source>Add empty rule</source>
         <translation>Agregar regla vacía</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="769"/>
+        <location filename="../front-end/mainwindow.ui" line="783"/>
         <source>Add rule with conditional</source>
         <translation>Agregar regla condicional</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="774"/>
+        <location filename="../front-end/mainwindow.ui" line="788"/>
         <source>Add rule with variable</source>
         <translation>Agregar regla con variable</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.ui" line="779"/>
+        <location filename="../front-end/mainwindow.ui" line="793"/>
         <source>Options...</source>
         <translation>Opciones...</translation>
     </message>
@@ -2379,34 +2440,38 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Inicio</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="141"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="143"/>
         <source>Verify account</source>
         <translation>Verificar cuenta</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="152"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="154"/>
         <source>T&amp;each</source>
         <translation>&amp;Enseñar reglas</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="153"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="155"/>
         <source>&amp;Test your chatbot</source>
         <translation>&amp;Probá tu chatbot</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="154"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="156"/>
         <source>&amp;Connection</source>
         <translation>&amp;Conexión</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="155"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="157"/>
         <source>C&amp;onversations</source>
         <translation>C&amp;onversaciones</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindowrefactor.cpp" line="157"/>
+        <location filename="../front-end/mainwindowrefactor.cpp" line="161"/>
+        <source>C&amp;lue</source>
+        <translation>C&amp;lue</translation>
+    </message>
+    <message>
         <source>&amp;Score</source>
-        <translation>P&amp;untos</translation>
+        <translation type="obsolete">P&amp;untos</translation>
     </message>
     <message>
         <source>Teach</source>
@@ -2534,6 +2599,45 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../front-end/scorewidget.ui" line="184"/>
         <source>Contacts points</source>
         <translation>Puntos por interlocutores</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptCoverageWidget</name>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="25"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="28"/>
+        <source>Show rule definition</source>
+        <translation>Mostrar definición de la regla</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="51"/>
+        <source>Teach rule from current message</source>
+        <translation>Enseñar regla desde el mensaje actual</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="54"/>
+        <source>Teach rule</source>
+        <translation>Enseñar regla</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="87"/>
+        <source>Filter:</source>
+        <translation>Filtro:</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="112"/>
+        <source>Global coverage:</source>
+        <translation>Cobertura global: </translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="148"/>
+        <source>Remove all conversations</source>
+        <translation>Borrar todas las conversaciones</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="153"/>
+        <source>Remove selected conversation</source>
+        <translation>Borrar conversación seleccionada</translation>
     </message>
 </context>
 <context>
