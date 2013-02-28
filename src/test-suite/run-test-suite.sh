@@ -4,7 +4,7 @@ shadow_build_dir=.test-suite-shadow-build
 project_dir=..
 log_file=run.log
 
-unit_tests="json-unit-test cipher-unit-test csv-document-unit-test conversation-rw-unit-test default-sanitizer-unit-test secure-stats-file-unit-test updater-unit-test cb2-engine-unit-test"
+unit_tests=`find -iname "*-unit-test" -type d | grep -v test-suite-shadow-build | cut -c 3- | tr "\n" " "`
 sys_tests="user-auth-test cb2-engine-full-test stats-manager-test"
 
 show_usage()

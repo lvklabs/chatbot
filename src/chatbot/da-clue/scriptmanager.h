@@ -73,6 +73,10 @@ public:
 
 private:
     QList<Clue::Script> m_scripts;
+    QString m_clueBasePath;
+    QString m_charsPath;
+
+    void initPaths();
 };
 
 /// @}

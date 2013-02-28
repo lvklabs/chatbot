@@ -20,6 +20,12 @@
  */
 
 #include "da-clue/scriptmanager.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
+
+#include <QStringList>
+#include <QFile>
+#include <QtDebug>
 
 //--------------------------------------------------------------------------------------------------
 // ScriptManager
@@ -27,15 +33,56 @@
 
 Lvk::Clue::ScriptManager::ScriptManager()
 {
+    initPaths();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptManager::initPaths()
+{
+    qDebug() << "ScriptManager: Initializing paths...";
+
+    m_clueBasePath = Cmn::Settings().value(SETTING_CLUE_PATH).toString();
+    if (!m_clueBasePath.endsWith("/")) {
+        m_clueBasePath.append("/");
+    }
+
+    m_charsPath = m_clueBasePath + Cmn::Settings().value(SETTING_CLUE_CHARS_FILE).toString();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 QList<Lvk::Clue::Character> Lvk::Clue::ScriptManager::characters()
 {
-    QList<Lvk::Clue::Character> chars;
+    QList<Clue::Character> chars;
 
-    // TODO
+    qDebug() << "ScriptManager: Opening file" << m_charsPath;
+
+    QFile f(m_charsPath);
+
+    if (f.open(QFile::ReadOnly)) {
+        QStringList lines = QString::fromUtf8(f.readAll()).split("\n");
+
+        foreach (QString line, lines) {
+            line = line.trimmed();
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            qDebug() << "ScriptManager: Parsing character" << line;
+
+            // If detective
+            if (line.endsWith("*")) {
+                line.truncate(line.size() - 1);
+                chars.append(Clue::Character(line, true));
+            } else {
+                chars.append(Clue::Character(line));
+            }
+        }
+    } else {
+        qCritical() << "ScriptManager: Could not open" << m_charsPath;
+    }
 
     return chars;
 }

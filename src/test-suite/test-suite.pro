@@ -11,7 +11,8 @@ unit_tests {
         conversation-rw-unit-test \
         secure-stats-file-unit-test \
         cipher-unit-test \
-        updater-unit-test 
+        updater-unit-test \
+        script-manager-unit-test
 }
 
 end_to_end_tests {

@@ -65,6 +65,10 @@ QVariant Lvk::Cmn::Settings::value(const QString &key, const QVariant &defaultVa
             defaultValue = QString("./data");
         } else if (key == SETTING_LANG_PATH) {
             defaultValue = QString("./lang");
+        } else if (key == SETTING_CLUE_PATH) {
+            defaultValue = QString("./clue");
+        } else if (key == SETTING_CLUE_CHARS_FILE) {
+            defaultValue = QString("characters.txt");
         } else if (key == SETTING_APP_LANGUAGE) {
             defaultValue = QString(DEFAULT_LANG);
         } else if (key == SETTING_APP_SEND_STATS) {

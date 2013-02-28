@@ -53,6 +53,22 @@ public:
 
     QString name;       ///< The character name
     bool detective;     ///< True if the character is the dectective
+
+    /**
+     * Return true if \a this is equal to \a other. Otherwise; returns false
+     */
+    bool operator==(const Character &other)
+    {
+        return name == other.name && detective == other.detective;
+    }
+
+    /**
+     * Return true if \a this is *not* equal to \a other. Otherwise; returns false
+     */
+    bool operator!=(const Character &other)
+    {
+        return !this->operator==(other);
+    }
 };
 
 /// @}
