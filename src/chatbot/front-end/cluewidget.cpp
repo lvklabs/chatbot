@@ -1,4 +1,6 @@
 #include "front-end/cluewidget.h"
+#include "da-clue/scriptmanager.h"
+#include "da-clue/clueengine.h"
 #include "ui_cluewidget.h"
 
 //--------------------------------------------------------------------------------------------------

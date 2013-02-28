@@ -48,6 +48,7 @@ include(chat-adapter/chat-adapter.pri)
 include(crypto/crypto.pri)
 include(stats/stats.pri)
 include(da-server/da-server.pri)
+include(da-clue/da-clue.pri)
 
 # 'Dale Aceptar' contest
 da_contest {
