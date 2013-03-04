@@ -99,7 +99,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
     int col = 0;
     bool parsingOk = false;
 
-    QString xml = f.readAll();
+    QString xml = QString::fromUtf8(f.readAll());
 
     if (doc.setContent(xml, &err, &line, &col)) {
         QDomElement root = doc.documentElement();

@@ -7,6 +7,9 @@
 #include "common/settingskeys.h"
 #include "common/settings.h"
 
+#define UTF8    QString::fromUtf8
+
+Q_DECLARE_METATYPE(Lvk::Clue::ScriptLine)
 Q_DECLARE_METATYPE(Lvk::Clue::Script)
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptList)
 
@@ -187,11 +190,6 @@ void ScriptManagerUnitTest::testLoadScripts()
     for (int i = 0; i < scripts.size(); ++i) {
         QCOMPARE(scripts[i].size(), expScripts[i].size());
         for (int j = 0; j < scripts[i].size(); ++j) {
-            qDebug() << scripts[i][j].question << expScripts[i][j].question;
-            qDebug() << scripts[i][j].expAnswer << expScripts[i][j].expAnswer;
-            qDebug() << scripts[i][j].forbidAnswer << expScripts[i][j].forbidAnswer;
-            qDebug() << scripts[i][j].hint << expScripts[i][j].hint;
-            qDebug() << scripts[i][j].importance << expScripts[i][j].importance;
             QCOMPARE(scripts[i][j], expScripts[i][j]);
         }
     }
@@ -215,8 +213,7 @@ void ScriptManagerUnitTest::testLoadScripts_data()
 
     // questions
     QString q1 = "Que estaba haciendo la noche del 31 de marzo?";
-    //FIXME QString q2 = QString::fromUtf8("Por qu\xc3\xa9 no respondi\xc3\xb3 el llamado?");
-    QString q2 = "Por que no respondio el llamado?";
+    QString q2 = UTF8("Por qu\xc3\xa9 no respondi\xc3\xb3 el llamado?");
 
     // expected answers
     QString ea1 = "*durmiendo* | *descanzando*";
