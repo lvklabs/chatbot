@@ -6,6 +6,7 @@
 #include "da-clue/scriptmanager.h"
 #include "common/settingskeys.h"
 #include "common/settings.h"
+#include "common/globalstrings.h"
 
 #define UTF8    QString::fromUtf8
 
@@ -205,11 +206,13 @@ void ScriptManagerUnitTest::testLoadScripts_data()
 {
     //************************************************************************************
     // files
-    QString f1 = "pedro1.txt";
-    QString f2 = "script_pedro2.txt";
+    QString f1 = "pedro1." SCRIPT_FILE_EXT;
+    QString f2 = "script." SCRIPT_FILE_EXT;
+    QString f3 = "script_flor." SCRIPT_FILE_EXT;
 
     // names
     QString n1 = "pedro";
+    QString n2 = "florencia";
 
     // questions
     QString q1 = "Que estaba haciendo la noche del 31 de marzo?";
@@ -233,6 +236,8 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     QString c2 = XML_SCRIPT.arg(XML_HEADER.arg(n1, "2"),
                                 XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, h1) +
                                 XML_QUESTION.arg(q2, ea2, fa2, XML_CRITICAL, h2));
+    QString c3 = XML_SCRIPT.arg(XML_HEADER.arg(n2, "1"),
+                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, h1));
 
     // parsed scripts
     Clue::Script s1(f1, n1, 1);
@@ -240,6 +245,8 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     Clue::Script s2(f2, n1, 2);
     s2.append(Clue::ScriptLine(q1, ea1, fa1, h1, Clue::ScriptLine::Standard));
     s2.append(Clue::ScriptLine(q2, ea2, fa2, h2, Clue::ScriptLine::Critical));
+    Clue::Script s3(f3, n2, 1);
+    s3.append(Clue::ScriptLine(q1, ea1, fa1, h1, Clue::ScriptLine::Standard));
     //************************************************************************************
 
     QTest::addColumn<QStringList>("filenames");
@@ -259,6 +266,11 @@ void ScriptManagerUnitTest::testLoadScripts_data()
 
     QTest::newRow("2") << (QStringList() << f1 << f2)
                        << (QStringList() << c1 << c2)
+                       << n1
+                       << (Clue::ScriptList() << s1 << s2);
+
+    QTest::newRow("3") << (QStringList() << f1 << f2 << f3)
+                       << (QStringList() << c1 << c2 << c3)
                        << n1
                        << (Clue::ScriptList() << s1 << s2);
 }
@@ -285,8 +297,7 @@ void ScriptManagerUnitTest::rmAllScripts()
 {
     QDir dir(m_clueDir);
     QStringList nameFilters;
-    nameFilters.append("*pedro*");
-    nameFilters.append("*florencia*");
+    nameFilters.append("*." SCRIPT_FILE_EXT);
     QStringList files = dir.entryList(nameFilters, QDir::Files, QDir::Name);
 
     foreach (const QString &file, files) {

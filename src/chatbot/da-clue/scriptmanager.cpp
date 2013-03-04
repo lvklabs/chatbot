@@ -23,6 +23,7 @@
 #include "da-clue/scriptparser.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
+#include "common/globalstrings.h"
 
 #include <QStringList>
 #include <QDir>
@@ -106,7 +107,7 @@ bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const QString &name)
 
     QDir dir(m_clueBasePath);
     QStringList nameFilters;
-    nameFilters.append(QString("*%1*").arg(name));
+    nameFilters.append("*." SCRIPT_FILE_EXT);
     QStringList files = dir.entryList(nameFilters, QDir::Files, QDir::Name);
 
     Clue::ScriptParser parser;
@@ -116,7 +117,12 @@ bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const QString &name)
 
     foreach (const QString &file, files) {
         if (parser.parse(m_clueBasePath + file, script)) {
-            m_scripts.append(script);
+            if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
+                m_scripts.append(script);
+            } else {
+                qWarning() << "ScriptManager: Ignoring script" << file
+                           << "with character" << script.character;
+            }
         } else {
             setError(parser.error(), file);
             break;
