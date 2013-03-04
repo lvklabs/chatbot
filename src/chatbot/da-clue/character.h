@@ -23,7 +23,7 @@
 #define LVK_CLUE_CHARACTER_H
 
 #include <QString>
-
+#include <QtDebug>
 
 namespace Lvk
 {
@@ -57,7 +57,7 @@ public:
     /**
      * Return true if \a this is equal to \a other. Otherwise; returns false
      */
-    bool operator==(const Character &other)
+    bool operator==(const Character &other) const
     {
         return name == other.name && detective == other.detective;
     }
@@ -65,11 +65,21 @@ public:
     /**
      * Return true if \a this is *not* equal to \a other. Otherwise; returns false
      */
-    bool operator!=(const Character &other)
+    bool operator!=(const Character &other) const
     {
         return !this->operator==(other);
     }
 };
+
+
+/**
+ * \brief This function adds support to print debug information of Character objects
+ */
+inline QDebug& operator<<(QDebug& dbg, const Character &c)
+{
+    dbg.space() << c.name << (c.detective ? "*" : "");
+    return dbg.space();
+}
 
 /// @}
 

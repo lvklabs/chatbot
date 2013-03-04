@@ -24,7 +24,10 @@
 
 #include "da-clue/script.h"
 #include "da-clue/scripterror.h"
+
 #include <QString>
+
+class QDomElement;
 
 namespace Lvk
 {
@@ -63,6 +66,12 @@ public:
 
 private:
     ScriptError m_error;
+
+    bool parseRoot(QDomElement &root, Clue::Script &script);
+    bool parseHeader(QDomElement &head, Clue::Script &script);
+    bool parseBody(QDomElement &body, Clue::Script &script);
+    bool parseQuestion(QDomElement &q, Clue::Script &script);
+    bool requireTagName(const QString &name, const QDomElement &e);
 };
 
 /// @}

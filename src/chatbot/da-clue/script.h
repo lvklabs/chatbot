@@ -25,6 +25,9 @@
 #include "da-clue/genericscript.h"
 #include "da-clue/scriptline.h"
 
+#include <QList>
+#include <QtDebug>
+
 namespace Lvk
 {
 
@@ -41,7 +44,40 @@ namespace Clue
 /**
  * \brief The Script class provides an ordinary script
  */
-typedef GenericScript<ScriptLine> Script;
+class Script : public GenericScript<ScriptLine>
+{
+public:
+
+    /**
+     * Constructs an empty Script
+     */
+    Script() { }
+
+    /**
+     * Constructs an Script with \a filename, main \a character and script \a number
+     */
+    Script(const QString &filename, const QString &character, int number)
+        : GenericScript<ScriptLine>(filename, character, number) { }
+
+};
+
+/**
+ * \brief This function adds support to print debug information of Script objects
+ */
+inline QDebug& operator<<(QDebug& dbg, const Script &s)
+{
+    dbg.nospace() << s.filename << ":";
+    foreach (const ScriptLine &line, s) {
+        dbg.nospace() << line;
+    }
+    return dbg.space();
+}
+
+
+/**
+ * \brief The ScriptList class provides a list of scripts
+ */
+typedef QList<Script> ScriptList;
 
 /// @}
 

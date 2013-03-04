@@ -57,14 +57,25 @@ public:
     QList<Clue::Character> characters();
 
     /**
+     * Loads the scripts for the character with \a name
+     */
+    bool loadScriptsForCharacter(const QString &name);
+
+    /**
      * Loads the scripts for the character \a c
      */
-    Clue::ScriptError loadScriptsForCharacter(const Clue::Character &c);
+    bool loadScriptsForCharacter(const Clue::Character &c);
+
+    /**
+     * Returns the last error. If \a errMsg is not null, returns an string with details
+     * of the error
+     */
+    Clue::ScriptError error(QString *errMsg = 0);
 
     /**
      * Returns the list of scripts currently loaded.
      */
-    const QList<Clue::Script> &scripts();
+    const Clue::ScriptList &scripts();
 
     /**
      * Clears the scripts loaded
@@ -72,11 +83,15 @@ public:
     void clear();
 
 private:
-    QList<Clue::Script> m_scripts;
+    ScriptList m_scripts;
     QString m_clueBasePath;
     QString m_charsPath;
+    Clue::ScriptError m_error;
+    QString m_errMsg;
 
     void initPaths();
+    void resetError();
+    void setError(Clue::ScriptError err, const QString &filename);
 };
 
 /// @}

@@ -23,7 +23,9 @@
 #define LVK_CLUE_SCRIPTLINE_H
 
 #include "da-clue/character.h"
+
 #include <QString>
+#include <QtDebug>
 
 namespace Lvk
 {
@@ -39,16 +41,78 @@ namespace Clue
 /// @{
 
 /**
- * \brief The ScriptLine class provides a single line in a Script
+ * \brief The ScriptLine class provides a single line in a Clue Script
  */
-
 class ScriptLine
 {
 public:
 
-    QString line;               ///< The script line
-    Clue::Character characater; ///< The character of the line
+    /**
+     * Line importance
+     */
+    enum Importance
+    {
+        Standard,
+        Critical
+    };
+
+    /**
+     * Constructs an empty ScriptLine
+     */
+    ScriptLine()
+        : importance(Standard) { }
+
+    /**
+     * Constructs an ScriptLine with \a question expected answer \a expAnswer, and \a hint
+     */
+    ScriptLine(const QString &question, const QString &expAnswer, const QString &hint)
+        : question(question), expAnswer(expAnswer), hint(hint), importance(Standard) { }
+
+    /**
+     * Constructs an ScriptLine with \a question expected answer \a expAnswer, forbidden answer
+     * \a forbidAnswer, \a hint, and \a importance
+     */
+    ScriptLine(const QString &question, const QString &expAnswer, const QString &forbidAnswer,
+               const QString &hint, Importance importance)
+        : question(question), expAnswer(expAnswer), forbidAnswer(forbidAnswer), hint(hint),
+          importance(importance) { }
+
+    QString question;      ///< The detective question
+    QString expAnswer;     ///< The suspect expected answer pattern
+    QString forbidAnswer;  ///< The suspect forbidden answer pattern
+    QString hint;          ///< The hint in case of rule mismatch
+    Importance importance; ///< The question importance
+
+    /**
+     * Returns true if \a this instance is equeal to \a other
+     */
+    bool operator==(const ScriptLine &other) const
+    {
+        return question == other.question &&
+                expAnswer == other.expAnswer &&
+                forbidAnswer == other.forbidAnswer &&
+                hint == other.hint &&
+                importance == other.importance;
+    }
+
+    /**
+     * Returns true if \a this instance is *not* equeal to \a other
+     */
+    bool operator!=(const ScriptLine &other) const
+    {
+        return !this->operator==(other);
+    }
 };
+
+
+/**
+ * \brief This function adds support to print debug information of ScriptLine objects
+ */
+inline QDebug& operator<<(QDebug& dbg, const ScriptLine &line)
+{
+    dbg.space() << line.question << line.expAnswer;
+    return dbg.space();
+}
 
 /// @}
 

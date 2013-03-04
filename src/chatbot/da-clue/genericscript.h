@@ -44,19 +44,43 @@ namespace Clue
  * \see Script and AnalizedScript
  */
 template<class LineType>
-class GenericScript
+class GenericScript : public QList<LineType>
 {
 public:
 
-    QString filename;      ///< The filename where the script was read
-    QList<LineType> lines; ///< The script lines
+    /**
+     * Constructs an empty GenericScript
+     */
+    GenericScript()
+        : number(0) { }
 
     /**
-     * Returns true if the script is empty. Otherwise; returns false.
+     * Constructs an GenericScript with \a filename, main \a character and script \a number
      */
-    bool isEmpty()
+    GenericScript(const QString &filename, const QString &character, int number)
+        : filename(filename), character(character), number(number) { }
+
+    QString filename;      ///< The filename where the script was read
+    QString character;     ///< The script main character
+    int number;            ///< The script number
+
+    /**
+     * Returns true if \a this instance is equeal to \a other
+     */
+    bool operator==(const GenericScript<LineType> &other) const
     {
-        return lines.isEmpty();
+        return QList<LineType>::operator==(other) &&
+                filename == other.filename &&
+                character == other.character &&
+                number == other.number;
+    }
+
+    /**
+     * Returns true if \a this instance is *not* equeal to \a other
+     */
+    bool operator!=(const GenericScript<LineType> &other) const
+    {
+        return !this->operator==(other);
     }
 
     /**
@@ -64,8 +88,10 @@ public:
      */
     void clear()
     {
+        QList<LineType>::clear();
         filename.clear();
-        lines.clear();
+        character.clear();
+        number = 0;
     }
 };
 

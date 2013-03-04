@@ -20,18 +20,22 @@
  */
 
 #include "da-clue/scriptmanager.h"
+#include "da-clue/scriptparser.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 
 #include <QStringList>
+#include <QDir>
 #include <QFile>
 #include <QtDebug>
+#include <QObject>
 
 //--------------------------------------------------------------------------------------------------
 // ScriptManager
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Clue::ScriptManager::ScriptManager()
+    : m_error(Clue::NoError)
 {
     initPaths();
 }
@@ -60,7 +64,7 @@ QList<Lvk::Clue::Character> Lvk::Clue::ScriptManager::characters()
 
     QFile f(m_charsPath);
 
-    if (f.open(QFile::ReadOnly)) {
+    if (f.open(QFile::ReadOnly | QFile::Text)) {
         QStringList lines = QString::fromUtf8(f.readAll()).split("\n");
 
         foreach (QString line, lines) {
@@ -89,17 +93,42 @@ QList<Lvk::Clue::Character> Lvk::Clue::ScriptManager::characters()
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Clue::ScriptError Lvk::Clue::ScriptManager::loadScriptsForCharacter(
-        const Clue::Character &/*c*/)
+bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const Clue::Character &c)
 {
-    // TODO
-
-    return Clue::UnknownError;
+    return loadScriptsForCharacter(c.name);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-const QList<Lvk::Clue::Script> & Lvk::Clue::ScriptManager::scripts()
+bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const QString &name)
+{
+    qDebug() << "ScriptManager: Loading scripts for character" << name;
+
+    QDir dir(m_clueBasePath);
+    QStringList nameFilters;
+    nameFilters.append(QString("*%1*").arg(name));
+    QStringList files = dir.entryList(nameFilters, QDir::Files, QDir::Name);
+
+    Clue::ScriptParser parser;
+    Clue::Script script;
+
+    resetError();
+
+    foreach (const QString &file, files) {
+        if (parser.parse(m_clueBasePath + file, script)) {
+            m_scripts.append(script);
+        } else {
+            setError(parser.error(), file);
+            break;
+        }
+    }
+
+    return m_error == Clue::NoError;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::Clue::ScriptList & Lvk::Clue::ScriptManager::scripts()
 {
     return m_scripts;
 }
@@ -109,5 +138,60 @@ const QList<Lvk::Clue::Script> & Lvk::Clue::ScriptManager::scripts()
 void Lvk::Clue::ScriptManager::clear()
 {
     m_scripts.clear();
+    m_errMsg.clear();
+    m_error = Clue::NoError;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Clue::ScriptError Lvk::Clue::ScriptManager::error(QString *errMsg)
+{
+    if (errMsg) {
+        *errMsg = m_errMsg;
+    }
+
+    return m_error;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &filename)
+{
+    m_error = err;
+
+    switch (err) {
+    case Clue::NoError:
+        m_errMsg = "";
+        break;
+
+    case Clue::FileNotFoundError:
+        m_errMsg = QObject::tr("File not found '%1'").arg(filename);
+        break;
+
+    case Clue::ReadError:
+        m_errMsg = QObject::tr("Cannot read file '%1'").arg(filename);
+        break;
+
+    case Clue::InvalidFormatError:
+        m_errMsg = QObject::tr("Invalid format in file '%1'").arg(filename);
+        break;
+
+    case Clue::UnknownError:
+    default:
+        m_errMsg = QObject::tr("Unknown error while parsing file '%1'").arg(filename);
+        break;
+    }
+
+    if (!m_errMsg.isEmpty()) {
+        qDebug() << "ScriptManager: " << m_errMsg;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptManager::resetError()
+{
+    m_error = Clue::NoError;
+    m_errMsg.clear();
 }
 

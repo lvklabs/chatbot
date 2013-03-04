@@ -1,5 +1,7 @@
 # Dale Aceptar Clue module
 
+QT += xml
+
 isEmpty(PROJECT_PATH) {
     PROJECT_PATH = .
 }
