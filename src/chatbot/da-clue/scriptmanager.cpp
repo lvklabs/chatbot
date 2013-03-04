@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QtDebug>
 #include <QObject>
 
@@ -94,6 +95,30 @@ QList<Lvk::Clue::Character> Lvk::Clue::ScriptManager::characters()
 
 //--------------------------------------------------------------------------------------------------
 
+const QString & Lvk::Clue::ScriptManager::currentCharacter() const
+{
+    return m_curChar;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptManager::setCurrentCharacter(const QString &name)
+{
+    m_curChar = name.trimmed();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Clue::ScriptManager::loadScripts()
+{
+    if (m_curChar.isEmpty()) {
+        return false;
+    }
+    return loadScriptsForCharacter(m_curChar);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const Clue::Character &c)
 {
     return loadScriptsForCharacter(c.name);
@@ -110,23 +135,38 @@ bool Lvk::Clue::ScriptManager::loadScriptsForCharacter(const QString &name)
     nameFilters.append("*." SCRIPT_FILE_EXT);
     QStringList files = dir.entryList(nameFilters, QDir::Files, QDir::Name);
 
-    Clue::ScriptParser parser;
-    Clue::Script script;
-
+    m_scripts.clear();
     resetError();
 
     foreach (const QString &file, files) {
-        if (parser.parse(m_clueBasePath + file, script)) {
-            if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
-                m_scripts.append(script);
+        if (!loadFile(m_clueBasePath + file, name)) {
+            if (m_error == Clue::CharacterMismatchError) {
+                resetError();
             } else {
-                qWarning() << "ScriptManager: Ignoring script" << file
-                           << "with character" << script.character;
+                break;
             }
-        } else {
-            setError(parser.error(), file);
-            break;
         }
+    }
+
+    return m_error == Clue::NoError;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Clue::ScriptManager::loadFile(const QString &filename, const QString &name)
+{
+    Clue::ScriptParser parser;
+    Clue::Script script;
+
+    if (parser.parse(filename, script)) {
+        if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
+            m_scripts.append(script);
+        } else {
+            setError(Clue::CharacterMismatchError, filename);
+        }
+    } else {
+        setError(parser.error(), filename);
     }
 
     return m_error == Clue::NoError;
@@ -141,8 +181,42 @@ const Lvk::Clue::ScriptList & Lvk::Clue::ScriptManager::scripts()
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::Clue::ScriptManager::import(const QString &filename)
+{
+    qDebug() << "ScriptManager: Importing file" << filename;
+
+    if (!QFile::exists(filename)) {
+        setError(Clue::FileNotFoundError, filename);
+        return false;
+    }
+
+    QString impFile = m_clueBasePath + QFileInfo(filename).fileName();
+
+    qDebug() << "ScriptManager: copying to" << impFile;
+
+    if (QFile::exists(impFile) && !QFile::remove(impFile)) {
+        setError(Clue::CannotOverwriteError, impFile);
+        return false;
+    }
+
+    if (!QFile::copy(filename, impFile)) {
+        setError(Clue::CannotCopyError, filename);
+        return false;
+    }
+
+    if (!loadFile(impFile, m_curChar)) {
+        QFile::remove(impFile);
+        return false;
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Clue::ScriptManager::clear()
 {
+    m_curChar.clear();
     m_scripts.clear();
     m_errMsg.clear();
     m_error = Clue::NoError;
@@ -182,6 +256,18 @@ void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &fi
         m_errMsg = QObject::tr("Invalid format in file '%1'").arg(filename);
         break;
 
+    case Clue::CharacterMismatchError:
+        m_errMsg = QObject::tr("Character mismatch in file '%1'").arg(filename);
+        break;
+
+    case Clue::CannotCopyError:
+        m_errMsg = QObject::tr("Cannot copy file '%1'").arg(filename);
+        break;
+
+    case Clue::CannotOverwriteError:
+        m_errMsg = QObject::tr("Cannot overwrite file '%1'").arg(filename);
+        break;
+
     case Clue::UnknownError:
     default:
         m_errMsg = QObject::tr("Unknown error while parsing file '%1'").arg(filename);
@@ -189,7 +275,7 @@ void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &fi
     }
 
     if (!m_errMsg.isEmpty()) {
-        qDebug() << "ScriptManager: " << m_errMsg;
+        qCritical() << "ScriptManager: " << m_errMsg;
     }
 }
 

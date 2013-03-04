@@ -43,8 +43,11 @@ enum ScriptError
 {
     NoError,
     FileNotFoundError,
+    CannotOverwriteError,
+    CannotCopyError,
     ReadError,
     InvalidFormatError,
+    CharacterMismatchError,
     UnknownError
 };
 

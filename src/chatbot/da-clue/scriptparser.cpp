@@ -22,6 +22,7 @@
 #include "da-clue/scriptparser.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QObject>
 #include <QDomDocument>
 #include <QtDebug>
@@ -79,7 +80,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
     qDebug() << "ScriptParser: parsing filename" << filename;
 
     script.clear();
-    script.filename = filename;
+    script.filename = QFileInfo(filename).fileName();
 
     QFile f(filename);
 
@@ -108,7 +109,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
             parsingOk = parseRoot(root, script);
         }
     } else {
-        qCritical() << "ScriptParser: Error line " << line << ":" << col << err ;
+        qCritical() << "ScriptParser: Error in line " << line << ":" << col << err;
     }
 
     if (!parsingOk) {
@@ -124,7 +125,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
 bool Lvk::Clue::ScriptParser::parseRoot(QDomElement &root, Clue::Script &script)
 {
     if (root.childNodes().size() < 2) {
-        qCritical() << "ScriptParser: Header-Body childs not found";
+        qCritical() << "ScriptParser: Header-Body is missing";
         return false;
     }
 
@@ -157,7 +158,8 @@ bool Lvk::Clue::ScriptParser::parseHeader(QDomElement &header, Clue::Script &scr
         } else if (name == "scriptnumber") {
             script.number = value.toInt();
         } else {
-            qWarning() << "ScriptParser: Unknown header tag" << name;
+            qCritical() << "ScriptParser: Unknown tag" << name;
+            return false;
         }
     }
 
@@ -208,12 +210,17 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
         } else if (name == "hint") {
             hint = value;
         } else {
-            qWarning() << "ScriptParser: Unknown header tag" << name;
+            qCritical() << "ScriptParser: Unknown tag" << name;
+            return false;
         }
     }
 
     // Check mandatory tags
-    if (phrase.isEmpty() || expAnswer.isEmpty()) {
+    if (phrase.isEmpty()) {
+        qCritical() << "ScriptParser: Question incomplete: Phrase is missing";
+        return false;
+    } else if (expAnswer.isEmpty()) {
+        qCritical() << "ScriptParser: Question incomplete: Expected answer is missing";
         return false;
     }
 
@@ -227,8 +234,8 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
 bool Lvk::Clue::ScriptParser::requireTagName(const QString &name, const QDomElement &e)
 {
     if (e.tagName().toLower() != name) {
-        qCritical() << "ScriptParser: Invalid node name" << e.tagName()
-                    << ". expected" << name;
+        qCritical() << "ScriptParser: Invalid tag" << e.tagName()
+                    << "expected" << name;
         return false;
     }
     return true;

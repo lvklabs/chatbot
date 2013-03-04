@@ -13,6 +13,7 @@
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptLine)
 Q_DECLARE_METATYPE(Lvk::Clue::Script)
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptList)
+Q_DECLARE_METATYPE(Lvk::Clue::ScriptError)
 
 using namespace Lvk;
 
@@ -65,6 +66,9 @@ private Q_SLOTS:
     void testLoadScripts();
     void testLoadScripts_data();
 
+    void testImportScript();
+    void testImportScript_data();
+
 private:
     QString m_clueDir;
 
@@ -111,7 +115,7 @@ void ScriptManagerUnitTest::testCharacters()
         Cmn::Settings().setValue(SETTING_CLUE_CHARS_FILE, filename);
     }
 
-    mkFile(filename, content);
+    mkFile(m_clueDir + "/" + filename, content);
 
     QList<Clue::Character> chars = Clue::ScriptManager().characters();
 
@@ -177,12 +181,14 @@ void ScriptManagerUnitTest::testLoadScripts()
     rmAllScripts();
 
     for (int i = 0; i < filenames.size(); ++i) {
-        mkFile(filenames[i], contents[i]);
+        mkFile(m_clueDir + "/" + filenames[i], contents[i]);
     }
 
     Clue::ScriptManager mgr;
 
-    QVERIFY(mgr.loadScriptsForCharacter(character));
+    mgr.setCurrentCharacter(character);
+
+    QVERIFY(mgr.loadScripts());
     QCOMPARE(mgr.error(), Clue::NoError);
 
     Clue::ScriptList scripts = mgr.scripts();
@@ -277,11 +283,76 @@ void ScriptManagerUnitTest::testLoadScripts_data()
 
 //--------------------------------------------------------------------------------------------------
 
+void ScriptManagerUnitTest::testImportScript()
+{
+    QFETCH(QString, filename);
+    QFETCH(QString, content);
+    QFETCH(bool, success);
+    QFETCH(Clue::ScriptError, error);
+
+    QString sourceFile = QDir::tempPath() + "/" + filename;
+    QString destFile = m_clueDir + "/" + filename;
+
+    rmAllScripts();
+
+    Clue::ScriptManager mgr;
+    mgr.setCurrentCharacter("pedro");
+
+    mkFile(sourceFile, content);
+
+    QCOMPARE(mgr.import(sourceFile), success);
+    QCOMPARE(mgr.error(), error);
+
+    QVERIFY(QFile::exists(destFile) == success);
+
+    Clue::ScriptList scripts = mgr.scripts();
+    bool found = false;
+    for (int i = 0; i < scripts.size() && !found; ++i) {
+        if (scripts[i].filename == filename) {
+            found = true;
+        }
+    }
+
+    QVERIFY(found == success);
+
+    mgr.clear();
+
+    QVERIFY(mgr.scripts().isEmpty());
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ScriptManagerUnitTest::testImportScript_data()
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QString>("content");
+    QTest::addColumn<bool>("success");
+    QTest::addColumn<Clue::ScriptError>("error");
+
+    QTest::newRow("0") << "import_test0." SCRIPT_FILE_EXT
+                       << "<html><body>Hi!</body></html>"
+                       << false
+                       << Clue::InvalidFormatError;
+
+    QTest::newRow("1") << "import_test1." SCRIPT_FILE_EXT
+                       << XML_SCRIPT.arg(XML_HEADER.arg("florencia", "1"), "")
+                       << false
+                       << Clue::CharacterMismatchError;
+
+    QTest::newRow("2") << "import_test2." SCRIPT_FILE_EXT
+                       << XML_SCRIPT.arg(XML_HEADER.arg("pedro", "1"), "")
+                       << true
+                       << Clue::NoError;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void ScriptManagerUnitTest::mkFile(const QString &filename, const QString &content)
 {
     qDebug() << "ScripManagerUnitTest: Creating file" << filename;
 
-    QFile f(m_clueDir + "/" + filename);
+    QFile f(filename);
 
     if (f.exists()) {
         QVERIFY(f.remove());

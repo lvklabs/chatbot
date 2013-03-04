@@ -57,6 +57,21 @@ public:
     QList<Clue::Character> characters();
 
     /**
+     * Returns the current character name
+     */
+    const QString & currentCharacter() const;
+
+    /**
+     * Sets the current character name
+     */
+    void setCurrentCharacter(const QString &name);
+
+    /**
+     * Loads the scripts for the current character
+     */
+    bool loadScripts();
+
+    /**
      * Loads the scripts for the character with \a name
      */
     bool loadScriptsForCharacter(const QString &name);
@@ -67,15 +82,21 @@ public:
     bool loadScriptsForCharacter(const Clue::Character &c);
 
     /**
+     * Returns the list of scripts currently loaded.
+     */
+    const Clue::ScriptList &scripts();
+
+    /**
      * Returns the last error. If \a errMsg is not null, returns an string with details
      * of the error
      */
     Clue::ScriptError error(QString *errMsg = 0);
 
     /**
-     * Returns the list of scripts currently loaded.
+     * Imports the script pointed by filaname. The script character must match the current
+     * character. Returns true on success. Otherwise; returns false.
      */
-    const Clue::ScriptList &scripts();
+    bool import(const QString &filename);
 
     /**
      * Clears the scripts loaded
@@ -83,6 +104,7 @@ public:
     void clear();
 
 private:
+    QString m_curChar;
     ScriptList m_scripts;
     QString m_clueBasePath;
     QString m_charsPath;
@@ -90,6 +112,7 @@ private:
     QString m_errMsg;
 
     void initPaths();
+    bool loadFile(const QString &filename, const QString &name);
     void resetError();
     void setError(Clue::ScriptError err, const QString &filename);
 };
