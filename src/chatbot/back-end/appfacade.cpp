@@ -300,6 +300,11 @@ bool Lvk::BE::AppFacade::generalSetup()
     setupChatbot();
     refreshNlpEngine();
 
+    m_scriptMgr.setCurrentCharacter(m_rules.metadata(FILE_METADATA_CLUE_CHARACTER).toString());
+    if (!m_scriptMgr.currentCharacter().isEmpty()) {
+        m_scriptMgr.loadScripts();
+    }
+
     return true;
 }
 
@@ -336,6 +341,8 @@ bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 
 void Lvk::BE::AppFacade::close()
 {
+    m_scriptMgr.clear();
+
     // If chatbot never saved
     if (m_rules.filename().isEmpty()) {
         Stats::StatsManager::manager()->clear();
@@ -881,6 +888,38 @@ int Lvk::BE::AppFacade::scoreRemainingTime() const
 QString Lvk::BE::AppFacade::getTempFileForUpload()
 {
     return BE::ChatbotTempFile().getTempFileForUpload(m_rules.filename());
+}
+
+//--------------------------------------------------------------------------------------------------
+// Clue
+//--------------------------------------------------------------------------------------------------
+
+QList<Lvk::Clue::Character> Lvk::BE::AppFacade::characters()
+{
+    return m_scriptMgr.characters();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const QString & Lvk::BE::AppFacade::currentCharacter() const
+{
+    return m_scriptMgr.currentCharacter();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::AppFacade::setCurrentCharacter(const QString &name)
+{
+    m_rules.setMetadata(FILE_METADATA_CLUE_CHARACTER, name);
+
+    m_scriptMgr.setCurrentCharacter(name);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::Clue::ScriptList & Lvk::BE::AppFacade::scripts()
+{
+    return m_scriptMgr.scripts();
 }
 
 

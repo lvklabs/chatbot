@@ -27,5 +27,6 @@
 #define FILE_METADATA_NLP_OPTIONS         "nlp_options"
 #define FILE_METADATA_ROSTER              "roster"
 #define FILE_METADATA_BLACK_ROSTER        "black_roster"
+#define FILE_METADATA_CLUE_CHARACTER      "clue_character"
 
 #endif // LVK_BE_FILEMETADATA_H

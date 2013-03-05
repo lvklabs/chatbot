@@ -37,6 +37,8 @@
 #include "back-end/rloghelper.h"
 #include "back-end/accountverifier.h"
 #include "da-server/remotelogger.h"
+#include "da-clue/character.h"
+#include "da-clue/scriptmanager.h"
 #include "common/conversation.h"
 
 class QFile;
@@ -368,6 +370,26 @@ public:
      */
     QString getTempFileForUpload();
 
+    /**
+     * Returns the list of available characters
+     */
+    QList<Clue::Character> characters();
+
+    /**
+     * Returns the current character name
+     */
+    const QString & currentCharacter() const;
+
+    /**
+     * Sets the current character name
+     */
+    void setCurrentCharacter(const QString &name);
+
+    /**
+     * Returns the list of scripts currently loaded.
+     */
+    const Clue::ScriptList &scripts();
+
 signals:
 
     /**
@@ -430,6 +452,7 @@ private:
     unsigned m_nlpOptions;
     RlogHelper m_rlogh;
     AccountVerifier m_account;
+    Clue::ScriptManager m_scriptMgr;
 
     void init();
     bool setDefaultNlpOptions();
