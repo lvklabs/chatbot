@@ -162,7 +162,7 @@ bool Lvk::Clue::ScriptParser::parseHeader(QDomElement &header, Clue::Script &scr
         } else if (name == "scriptnumber") {
             script.number = value.toInt();
         } else {
-            m_errMsg = QObject::tr("Unknown tag 'name'").arg(name);
+            m_errMsg = QObject::tr("Unknown tag '%1'").arg(name);
             return false;
         }
     }
@@ -221,10 +221,10 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
 
     // Check mandatory tags
     if (phrase.isEmpty()) {
-        m_errMsg = QObject::tr("Question icomplete: Phrase is missing");
+        m_errMsg = QObject::tr("Incomplete question found: Phrase is missing");
         return false;
     } else if (expAnswer.isEmpty()) {
-        m_errMsg = QObject::tr("Question icomplete: Expected answer is missing");
+        m_errMsg = QObject::tr("Incomplete question found: Expected answer is missing");
         return false;
     }
 
