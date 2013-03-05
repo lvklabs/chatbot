@@ -19,7 +19,7 @@ Lvk::FE::ConnectionWidget::ConnectionWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->verifactionWidget->setSkipAllowed(false);
+    ui->verifactionWidget->setChangeAccountMode(true);
 
     clear();
 

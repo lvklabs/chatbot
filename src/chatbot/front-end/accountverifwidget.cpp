@@ -18,6 +18,8 @@ Lvk::FE::AccountVerifWidget::AccountVerifWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    loadCharacters();
+
     clear();
 
     connectSignals();
@@ -28,6 +30,20 @@ Lvk::FE::AccountVerifWidget::AccountVerifWidget(QWidget *parent)
 Lvk::FE::AccountVerifWidget::~AccountVerifWidget()
 {
     delete ui;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AccountVerifWidget::loadCharacters()
+{
+    ui->charsComboBox->clear();
+    ui->charsComboBox->addItem(tr("(Choose one)"));
+
+    if (m_appFacade) {
+        foreach (const Clue::Character &c, m_appFacade->characters()) {
+            ui->charsComboBox->addItem(c.name);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -50,12 +66,18 @@ void Lvk::FE::AccountVerifWidget::setAppFacade(BE::AppFacade *appFacade)
         connect(m_appFacade, SIGNAL(accountOk()),               SLOT(onAccountOk()));
         connect(m_appFacade, SIGNAL(accountError(int, QString)),SLOT(onAccountError(int, QString)));
     }
+
+    loadCharacters();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::AccountVerifWidget::onVerifyPressed()
 {
+    if (!verifyCharacter()) {
+        return;
+    }
+
     QString title;
     QString errMsg;
 
@@ -63,7 +85,7 @@ void Lvk::FE::AccountVerifWidget::onVerifyPressed()
 
     if (username.isEmpty()) {
         title = tr("Invalid username");
-        errMsg = tr("Please provide a username");
+        errMsg = tr("Please, provide a username");
     }
 
     // To connect to a facebook chat we need the facebook username. We cannot connect using the
@@ -128,6 +150,8 @@ void Lvk::FE::AccountVerifWidget::onAccountOk()
 {
     qDebug() << "AccountVerifWidget: Verify Account Ok";
 
+    setCurrentCharacter();
+
     clear();
 
     emit accountOk();
@@ -148,11 +172,13 @@ void Lvk::FE::AccountVerifWidget::onAccountError(int err, const QString &msg)
 
 void Lvk::FE::AccountVerifWidget::onVerifyAccountSkipped()
 {
+    if (!verifyCharacter()) {
+        return;
+    }
+
     qDebug() << "AccountVerifWidget: Verify Account Skipped";
 
-    ui->fbChatRadio->setChecked(true);
-    ui->usernameText->setText("");
-    ui->passwordText->setText("");
+    setCurrentCharacter();
 
     clear();
 
@@ -184,6 +210,7 @@ void Lvk::FE::AccountVerifWidget::setUiMode(Lvk::FE::AccountVerifWidget::UiMode 
 
     case VerifyAccountUiMode:
         ui->verifyAccountButton->setEnabled(true);
+        ui->charsComboBox->setEnabled(true);
         ui->usernameText->setEnabled(true);
         ui->passwordText->setEnabled(true);
         ui->fbChatRadio->setEnabled(true);
@@ -195,6 +222,7 @@ void Lvk::FE::AccountVerifWidget::setUiMode(Lvk::FE::AccountVerifWidget::UiMode 
 
     case VerifyingAccountUiMode:
         ui->verifyAccountButton->setEnabled(false);
+        ui->charsComboBox->setEnabled(false);
         ui->usernameText->setEnabled(false);
         ui->passwordText->setEnabled(false);
         ui->fbChatRadio->setEnabled(false);
@@ -206,6 +234,7 @@ void Lvk::FE::AccountVerifWidget::setUiMode(Lvk::FE::AccountVerifWidget::UiMode 
 
     case VerifyAccountFailedUiMode:
         ui->verifyAccountButton->setEnabled(true);
+        ui->charsComboBox->setEnabled(true);
         ui->usernameText->setEnabled(true);
         ui->passwordText->setEnabled(true);
         ui->fbChatRadio->setEnabled(true);
@@ -237,13 +266,37 @@ void Lvk::FE::AccountVerifWidget::clear()
     ui->fbChatRadio->setChecked(true);
     ui->passwordText->clear();
     ui->usernameText->clear();
+    ui->charsComboBox->setCurrentIndex(0);
 
     setUiMode(VerifyAccountUiMode);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::AccountVerifWidget::setSkipAllowed(bool allowed)
+void Lvk::FE::AccountVerifWidget::setChangeAccountMode(bool changeMode)
 {
-    ui->verifyLaterButton->setVisible(allowed);
+    ui->charsComboBox->setVisible(!changeMode);
+    ui->characterLabel->setVisible(!changeMode);
+    ui->verifyLaterButton->setVisible(!changeMode);
 }
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::FE::AccountVerifWidget::verifyCharacter()
+{
+    if (ui->charsComboBox->isVisible() && ui->charsComboBox->currentIndex() == 0) {
+        QMessageBox::information(this, tr("Invalid character"), tr("Please, choose a character."));
+        return false;
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AccountVerifWidget::setCurrentCharacter()
+{
+    if (ui->charsComboBox->isVisible()) {
+        m_appFacade->setCurrentCharacter(ui->charsComboBox->currentText());
+    }
+}
+

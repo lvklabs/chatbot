@@ -16,41 +16,10 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QComboBox" name="comboBox">
-       <property name="minimumSize">
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>Pedro</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Florencia</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="0" colspan="6">
+     <item row="4" column="0" colspan="7">
       <widget class="Lvk::FE::ScriptCoverageWidget" name="tableView"/>
      </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
+     <item row="1" column="4">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -63,14 +32,61 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="pushButton_2">
+     <item row="0" column="1" colspan="4">
+      <widget class="QLabel" name="curCharacterLabel">
+       <property name="text">
+        <string>Character: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QToolButton" name="importButton">
+       <property name="text">
+        <string>Import...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="refreshButton">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QToolButton" name="uploadButton">
        <property name="text">
         <string>Upload</string>
        </property>
        <property name="icon">
         <iconset resource="../res/chatbot_theme.qrc">
          <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

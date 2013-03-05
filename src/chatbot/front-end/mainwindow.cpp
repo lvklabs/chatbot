@@ -101,6 +101,7 @@ void Lvk::FE::MainWindow::setupUi()
 
     ui->connectionWidget->setAppFacade(m_appFacade);
     ui->verificationWidget->setAppFacade(m_appFacade);
+    ui->clueWidget->setAppFacade(m_appFacade);
 
     ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
     ui->curScoreWidget->setUploadVisible(false);
@@ -175,6 +176,9 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->bestScoreWidget->clear();
     ui->remainingTimeLabel->clear();
     m_tinyScore->clear();
+
+    // Clue tab widgets
+    ui->clueWidget->clear();
 
     setUiMode(FE::WelcomeTabUiMode);
 }
@@ -1343,6 +1347,7 @@ void Lvk::FE::MainWindow::selectRule(const BE::Rule *rule)
 void Lvk::FE::MainWindow::startEditMode()
 {
     ui->connectionWidget->refresh();
+    ui->clueWidget->refresh();
     setUiMode(FE::EditRuleUiMode);
     selectFirstRule();
     updateScore();

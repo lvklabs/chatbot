@@ -117,10 +117,10 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
     connectSignals();
 
     ////////////////////////////// MOCK //////////////////////////////
-//    ui->teachRuleButton->setVisible(false);
-//    ui->showRuleButton->setVisible(false);
-//    ui->filter->setVisible(false);
-//    ui->filterLabel->setVisible(false);
+    ui->teachRuleButton->setVisible(false);
+    ui->showRuleButton->setVisible(false);
+    ui->filter->setVisible(false);
+    ui->filterLabel->setVisible(false);
 
     int nextRow;
 

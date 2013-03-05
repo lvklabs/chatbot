@@ -65,10 +65,10 @@ public:
     void clear();
 
     /**
-     * If \a allowed is true, the verification process can be skipped. Otherwise cannot.
-     * By default is allowed.
+     * If \a changeMode is true, hides widgets not used for changing accounts. By
+     * default is false
      */
-    void setSkipAllowed(bool allowed);
+    void setChangeAccountMode(bool changeMode);
 
 signals:
 
@@ -119,7 +119,10 @@ private:
     BE::AppFacade          *m_appFacade;
     UiMode                  m_uiMode;
 
+    void loadCharacters();
     void connectSignals();
+    bool verifyCharacter();
+    void setCurrentCharacter();
     void verifyAccount();
     void verifyBlockedForUpdate(const DAS::UpdateInfo &info);
     void setUiMode(UiMode mode);
