@@ -166,7 +166,7 @@ bool Lvk::Clue::ScriptManager::loadFile(const QString &filename, const QString &
             setError(Clue::CharacterMismatchError, filename);
         }
     } else {
-        setError(parser.error(), filename);
+        setParsingError(parser);
     }
 
     return m_error == Clue::NoError;
@@ -273,6 +273,17 @@ void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &fi
         m_errMsg = QObject::tr("Unknown error while parsing file '%1'").arg(filename);
         break;
     }
+
+    if (!m_errMsg.isEmpty()) {
+        qCritical() << "ScriptManager: " << m_errMsg;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptManager::setParsingError(const Clue::ScriptParser &parser)
+{
+    m_error = parser.error(&m_errMsg);
 
     if (!m_errMsg.isEmpty()) {
         qCritical() << "ScriptManager: " << m_errMsg;

@@ -62,10 +62,11 @@ public:
     /**
      * Returns the last error.
      */
-    ScriptError error();
+    ScriptError error(QString *errMsg = 0) const;
 
 private:
     ScriptError m_error;
+    QString m_errMsg;
 
     bool parseRoot(QDomElement &root, Clue::Script &script);
     bool parseHeader(QDomElement &head, Clue::Script &script);

@@ -79,17 +79,20 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
 {
     qDebug() << "ScriptParser: parsing filename" << filename;
 
+    m_errMsg.clear();
     script.clear();
     script.filename = QFileInfo(filename).fileName();
 
     QFile f(filename);
 
     if (!f.exists()) {
+        m_errMsg = QObject::tr("File not found: '%1'").arg(filename);
         m_error = Clue::FileNotFoundError;
         return false;
     }
 
     if (!f.open(QFile::ReadOnly | QFile::Text)) {
+        m_errMsg = QObject::tr("Cannot read file: '%1'").arg(filename);
         m_error = Clue::ReadError;
         return false;
     }
@@ -109,10 +112,11 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
             parsingOk = parseRoot(root, script);
         }
     } else {
-        qCritical() << "ScriptParser: Error in line " << line << ":" << col << err;
+        m_errMsg = QObject::tr("Error in line %1:%2 - %3").arg(line).arg(col).arg(err);
     }
 
     if (!parsingOk) {
+        m_errMsg = QObject::tr("Invalid format in file '%1'.\n%2").arg(filename, m_errMsg);
         m_error = Clue::InvalidFormatError;
         return false;
     }
@@ -125,7 +129,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
 bool Lvk::Clue::ScriptParser::parseRoot(QDomElement &root, Clue::Script &script)
 {
     if (root.childNodes().size() < 2) {
-        qCritical() << "ScriptParser: Header-Body is missing";
+        m_errMsg = QObject::tr("Missing Header and/or Body");
         return false;
     }
 
@@ -158,7 +162,7 @@ bool Lvk::Clue::ScriptParser::parseHeader(QDomElement &header, Clue::Script &scr
         } else if (name == "scriptnumber") {
             script.number = value.toInt();
         } else {
-            qCritical() << "ScriptParser: Unknown tag" << name;
+            m_errMsg = QObject::tr("Unknown tag 'name'").arg(name);
             return false;
         }
     }
@@ -210,17 +214,17 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
         } else if (name == "hint") {
             hint = value;
         } else {
-            qCritical() << "ScriptParser: Unknown tag" << name;
+            m_errMsg = QObject::tr("Unknown tag '%1'").arg(name);
             return false;
         }
     }
 
     // Check mandatory tags
     if (phrase.isEmpty()) {
-        qCritical() << "ScriptParser: Question incomplete: Phrase is missing";
+        m_errMsg = QObject::tr("Question icomplete: Phrase is missing");
         return false;
     } else if (expAnswer.isEmpty()) {
-        qCritical() << "ScriptParser: Question incomplete: Expected answer is missing";
+        m_errMsg = QObject::tr("Question icomplete: Expected answer is missing");
         return false;
     }
 
@@ -234,8 +238,7 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
 bool Lvk::Clue::ScriptParser::requireTagName(const QString &name, const QDomElement &e)
 {
     if (e.tagName().toLower() != name) {
-        qCritical() << "ScriptParser: Invalid tag" << e.tagName()
-                    << "expected" << name;
+        m_errMsg = QObject::tr("Invalid tag '%1' expected '%2'").arg(e.tagName(), name);
         return false;
     }
     return true;
@@ -243,7 +246,10 @@ bool Lvk::Clue::ScriptParser::requireTagName(const QString &name, const QDomElem
 
 //--------------------------------------------------------------------------------------------------
 
-Lvk::Clue::ScriptError Lvk::Clue::ScriptParser::error()
+Lvk::Clue::ScriptError Lvk::Clue::ScriptParser::error(QString *errMsg) const
 {
+    if (errMsg) {
+        *errMsg = m_errMsg;
+    }
     return m_error;
 }

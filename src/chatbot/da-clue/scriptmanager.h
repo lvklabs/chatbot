@@ -39,6 +39,8 @@ namespace Clue
 /// \addtogroup Clue
 /// @{
 
+class ScriptParser;
+
 /**
  * \brief The ScriptManager class manages all the scripts and characters in the system
  */
@@ -115,6 +117,7 @@ private:
     bool loadFile(const QString &filename, const QString &name);
     void resetError();
     void setError(Clue::ScriptError err, const QString &filename);
+    void setParsingError(const Clue::ScriptParser &parser);
 };
 
 /// @}
