@@ -19,14 +19,12 @@
  *
  */
 
-#ifndef LVK_CLUE_SCRIPT_H
-#define LVK_CLUE_SCRIPT_H
+#ifndef LVK_CLUE_REGEXP_H
+#define LVK_CLUE_REGEXP_H
 
-#include "da-clue/genericscript.h"
-#include "da-clue/scriptline.h"
+#include "nlp-engine/engine.h"
 
-#include <QList>
-#include <QtDebug>
+#include <QString>
 
 namespace Lvk
 {
@@ -42,42 +40,34 @@ namespace Clue
 /// @{
 
 /**
- * \brief The Script class provides an ordinary script
+ * \brief The RegExp class provides pattern matching using the NLP engine regular expressions
  */
-class Script : public GenericScript<ScriptLine>
+class RegExp
 {
 public:
 
     /**
-     * Constructs an empty Script
+     * Creates a RegExp object
      */
-    Script() { }
+    RegExp();
 
     /**
-     * Constructs an Script with \a filename, main \a character and script \a number
+     * Destroys the object
      */
-    Script(const QString &filename, const QString &character, int number)
-        : GenericScript<ScriptLine>(filename, character, number) { }
+    ~RegExp();
 
+    /**
+     * Returns true if \a str is matched exactly by \a pattern regular expression;
+     * otherwise returns false.
+     */
+    bool exactMatch(const QString &pattern, const QString &str);
+
+private:
+    RegExp(const RegExp&);
+    RegExp & operator=(const RegExp&);
+
+    Nlp::Engine *m_engine;
 };
-
-/**
- * \brief This function adds support to print debug information of Script objects
- */
-inline QDebug& operator<<(QDebug& dbg, const Script &s)
-{
-    dbg.nospace() << s.filename << ":";
-    foreach (const ScriptLine &line, s) {
-        dbg.nospace() << line;
-    }
-    return dbg.space();
-}
-
-
-/**
- * \brief The ScriptList class provides a list of Script's
- */
-typedef QList<Script> ScriptList;
 
 /// @}
 
@@ -88,5 +78,5 @@ typedef QList<Script> ScriptList;
 } // namespace Lvk
 
 
-#endif // LVK_CLUE_SCRIPT_H
+#endif // LVK_CLUE_REGEXP_H
 

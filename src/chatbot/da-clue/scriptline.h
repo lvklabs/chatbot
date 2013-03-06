@@ -77,11 +77,13 @@ public:
         : question(question), expAnswer(expAnswer), forbidAnswer(forbidAnswer), hint(hint),
           importance(importance) { }
 
+
     QString question;      ///< The detective question
     QString expAnswer;     ///< The suspect expected answer pattern
     QString forbidAnswer;  ///< The suspect forbidden answer pattern
     QString hint;          ///< The hint in case of rule mismatch
     Importance importance; ///< The question importance
+
 
     /**
      * Returns true if \a this instance is equeal to \a other

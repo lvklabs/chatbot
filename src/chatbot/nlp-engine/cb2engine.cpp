@@ -154,6 +154,19 @@ void Lvk::Nlp::Cb2Engine::setRules(const Lvk::Nlp::RuleList &rules)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Nlp::Cb2Engine::addRule(const Lvk::Nlp::Rule &rule)
+{
+    qDebug() << "Cb2Engine: Adding new rule...";
+
+    QMutexLocker locker(m_mutex);
+
+    m_rules.append(rule);
+
+    m_dirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 QString Lvk::Nlp::Cb2Engine::getResponse(const QString &input, MatchList &matches)
 {
     return getResponse(input, ANY_USER, matches);

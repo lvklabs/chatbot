@@ -78,6 +78,11 @@ public:
     virtual void setRules(const RuleList &rules) = 0;
 
     /**
+     * Adds \a rule
+     */
+    virtual void addRule(const Rule &rule) = 0;
+
+    /**
      * Gets a response for the given \a input ignoring targets.
      *
      * Returns the response if there is a match and \a matches contains

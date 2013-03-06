@@ -19,7 +19,8 @@ end_to_end_tests {
     SUBDIRS += \
         stats-manager-test \
         user-auth-test \
-        cb2-engine-full-test
+        cb2-engine-full-test \
+        clue-engine-test
 }
 
 OTHER_FILES += run-test-suite.sh

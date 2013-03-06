@@ -49,10 +49,50 @@ public:
      * Constructs an empty AnalizedLine
      */
     AnalizedLine()
-        : ruleId(0), score(0) { }
+        : ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
+
+    /**
+     * Constructs an AnalizedLine with \a line
+     */
+    AnalizedLine(const ScriptLine &line)
+        : ScriptLine(line), ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
+
+    /**
+     * Constructs an AnalizedLine with \a line, \a ruleId, \a inputIdx and \a score
+     */
+    AnalizedLine(const ScriptLine &line, Nlp::RuleId ruleId, int inputIdx, float score,
+                 const QString &answer = "", int outputIdx = -1)
+        : ScriptLine(line), ruleId(ruleId), inputIdx(inputIdx), score(score), answer(answer),
+          outputIdx(outputIdx) { }
+
 
     Nlp::RuleId ruleId; ///< The rule ID of the matched rule. 0 if there is no match.
+    int inputIdx;       ///< The input index of the matched rule. -1 if there is no match.
     float score;        ///< The score of the matched rule. 0 if there is no match.
+    QString answer;     ///< The selected answer to the question. Empty if there is no match.
+    int outputIdx;      ///< The output index of the selected output. -1 if there is no match.
+
+
+    /**
+     * Returns true if \a this instance is equal to \a other
+     */
+    bool operator==(const AnalizedLine &other) const
+    {
+        return ScriptLine::operator==(other) &&
+                ruleId == other.ruleId &&
+                inputIdx == other.inputIdx &&
+                score == other.score &&
+                answer == other.answer &&
+                outputIdx == other.outputIdx;
+    }
+
+    /**
+     * Returns true if \a this instance is *not* equeal to \a other
+     */
+    bool operator!=(const AnalizedLine &other) const
+    {
+        return !this->operator==(other);
+    }
 };
 
 /// @}

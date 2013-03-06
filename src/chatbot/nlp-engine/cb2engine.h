@@ -96,6 +96,11 @@ public:
     virtual void setRules(const RuleList &rules);
 
     /**
+     * \copydoc Engine::addRule()
+     */
+    virtual void addRule(const Rule &rule);
+
+    /**
      * \copydoc Engine::getResponse(const QString &, MatchList &)
      */
     virtual QString getResponse(const QString &input, MatchList &matches);

@@ -5,7 +5,7 @@ project_dir=..
 log_file=run.log
 
 unit_tests=`find -iname "*-unit-test" -type d | grep -v test-suite-shadow-build | cut -c 3- | tr "\n" " "`
-sys_tests="user-auth-test cb2-engine-full-test stats-manager-test"
+sys_tests="user-auth-test cb2-engine-full-test stats-manager-test clue-engine-test"
 
 show_usage()
 {

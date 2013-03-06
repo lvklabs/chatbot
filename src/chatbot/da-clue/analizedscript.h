@@ -45,13 +45,43 @@ class AnalizedScript : public GenericScript<AnalizedLine>
 {
 public:
     /**
-     * Constructs and empty AnalizedScript
+     * Constructs an empty AnalizedScript
      */
     AnalizedScript()
         : coverage(0) { }
 
+    /**
+     * Constructs an Script with \a filename, main \a character and script \a number
+     */
+    AnalizedScript(const QString &filename, const QString &character, int number)
+        : GenericScript<AnalizedLine>(filename, character, number), coverage(0) { }
+
+
     float coverage; ///< The script overall coverage
+
+
+    /**
+     * Returns true if \a this instance is equal to \a other
+     */
+    bool operator==(const AnalizedScript &other) const
+    {
+        return GenericScript<AnalizedLine>::operator==(other) && coverage == other.coverage;
+    }
+
+    /**
+     * Returns true if \a this instance is *not* equeal to \a other
+     */
+    bool operator!=(const AnalizedScript &other) const
+    {
+        return !this->operator==(other);
+    }
 };
+
+
+/**
+ * \brief The AnalizedList class provides a list of AnalizedScript's
+ */
+typedef QList<AnalizedScript> AnalyzedList;
 
 /// @}
 

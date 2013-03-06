@@ -22,36 +22,91 @@
 #include "da-clue/clueengine.h"
 #include "da-clue/analizedscript.h"
 #include "da-clue/script.h"
+#include "nlp-engine/enginefactory.h"
 
+#include <QtDebug>
 
 //--------------------------------------------------------------------------------------------------
 // ClueEngine
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Clue::ClueEngine::ClueEngine()
+    : m_engine(Nlp::EngineFactory().createEngine())
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Clue::ClueEngine::setRules(const Nlp::RuleList &/*rules*/)
+Lvk::Clue::ClueEngine::~ClueEngine()
 {
-    // TODO
+    delete m_engine;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ClueEngine::setRules(const Nlp::RuleList &rules)
+{
+    m_engine->setRules(rules);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::Clue::ClueEngine::clear()
 {
-    // TODO
+    m_engine->clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Clue::ClueEngine::analize(const Clue::Script &/*script*/, Clue::AnalizedScript &/*ascript*/)
+void Lvk::Clue::ClueEngine::analize(const Clue::ScriptList &scripts,
+                                    Clue::AnalyzedList &ascripts)
 {
-    // TODO
+    Clue::AnalizedScript as;
+
+    foreach (const Clue::Script &s, scripts) {
+        analize(s, as);
+        ascripts.append(as);
+    }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ClueEngine::analize(const Clue::Script &script, Clue::AnalizedScript &ascript)
+{
+    ascript.clear();
+    ascript.filename = script.filename;
+    ascript.character = script.character;
+    ascript.number = script.number;
+
+    Nlp::Engine::MatchList matches;
+
+    // FIXME not setting real score and outputIdx
+
+    qDebug() << "ClueEngine: Analyzing script:"  << script.filename;
+
+    foreach (const Clue::ScriptLine &line, script) {
+        qDebug() << "ClueEngine: Getting response for question:"  << line.question;
+
+        QString resp = m_engine->getResponse(line.question, matches);
+
+        if (matches.isEmpty()) {
+            qDebug() << "ClueEngine: no response!";
+            ascript.append(Clue::AnalizedLine(line));
+        } else {
+            qDebug() << "ClueEngine: Checking response:" << resp
+                     << "with expected pattern:" << line.expAnswer
+                     << "and forbidden pattern:" << line.forbidAnswer;
+            ascript.append(Clue::AnalizedLine(line, matches[0].first, matches[0].second, 0, resp));
+
+            if (m_regexp.exactMatch(line.expAnswer, resp) &&
+                    !m_regexp.exactMatch(line.forbidAnswer, resp)) {
+                qDebug() << "ClueEngine: pattern OK";
+                ascript.last().outputIdx = 0;
+            } else {
+                qDebug() << "ClueEngine: pattern failed!";
+            }
+        }
+    }
+}
 
 

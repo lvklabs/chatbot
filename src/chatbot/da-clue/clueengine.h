@@ -25,6 +25,7 @@
 #include "nlp-engine/rule.h"
 #include "nlp-engine/engine.h"
 #include "da-clue/script.h"
+#include "da-clue/regexp.h"
 
 namespace Lvk
 {
@@ -54,6 +55,11 @@ public:
     ClueEngine();
 
     /**
+     * Destroys the object
+     */
+    ~ClueEngine();
+
+    /**
      * Sets \a rules as the current rules to analize scripts
      */
     void setRules(const Nlp::RuleList &rules);
@@ -64,10 +70,21 @@ public:
     void clear();
 
     /**
-     * Analizes \a script and returns a AnalizedScript \a ascript object with the result
+     * Analizes \a script and returns a AnalizedScript \a ascript with the result
      */
     void analize(const Clue::Script & script, Clue::AnalizedScript &ascript);
 
+    /**
+     * Analizes \a scripts and returns a AnalyzedList \a ascripts with the result
+     */
+    void analize(const Clue::ScriptList & scripts, Clue::AnalyzedList &ascripts);
+
+private:
+    ClueEngine(const ClueEngine&);
+    ClueEngine & operator=(const ClueEngine&);
+
+    Nlp::Engine *m_engine;
+    Clue::RegExp m_regexp;
 };
 
 /// @}
