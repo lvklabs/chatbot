@@ -19,11 +19,11 @@
  *
  */
 
-#ifndef LVK_CLUE_ANALIZEDSCRIPT_H
-#define LVK_CLUE_ANALIZEDSCRIPT_H
+#ifndef LVK_CLUE_ANALYZEDSCRIPT_H
+#define LVK_CLUE_ANALYZEDSCRIPT_H
 
 #include "da-clue/genericscript.h"
-#include "da-clue/analizedline.h"
+#include "da-clue/analyzedline.h"
 
 namespace Lvk
 {
@@ -39,22 +39,23 @@ namespace Clue
 /// @{
 
 /**
- * \brief The AnalizedScript class provides a script that was analized by ClueEngine
+ * \brief The AnalyzedScript class provides a script that was analized by ClueEngine
  */
-class AnalizedScript : public GenericScript<AnalizedLine>
+class AnalyzedScript : public GenericScript<AnalyzedLine>
 {
 public:
+
     /**
-     * Constructs an empty AnalizedScript
+     * Constructs an empty AnalyzedScript
      */
-    AnalizedScript()
+    AnalyzedScript()
         : coverage(0) { }
 
     /**
      * Constructs an Script with \a filename, main \a character and script \a number
      */
-    AnalizedScript(const QString &filename, const QString &character, int number)
-        : GenericScript<AnalizedLine>(filename, character, number), coverage(0) { }
+    AnalyzedScript(const QString &filename, const QString &character, int number)
+        : GenericScript<AnalyzedLine>(filename, character, number), coverage(0) { }
 
 
     float coverage; ///< The script overall coverage
@@ -63,15 +64,15 @@ public:
     /**
      * Returns true if \a this instance is equal to \a other
      */
-    bool operator==(const AnalizedScript &other) const
+    bool operator==(const AnalyzedScript &other) const
     {
-        return GenericScript<AnalizedLine>::operator==(other) && coverage == other.coverage;
+        return GenericScript<AnalyzedLine>::operator==(other) && coverage == other.coverage;
     }
 
     /**
      * Returns true if \a this instance is *not* equeal to \a other
      */
-    bool operator!=(const AnalizedScript &other) const
+    bool operator!=(const AnalyzedScript &other) const
     {
         return !this->operator==(other);
     }
@@ -79,9 +80,9 @@ public:
 
 
 /**
- * \brief The AnalizedList class provides a list of AnalizedScript's
+ * \brief The AnalyzedList class provides a list of AnalyzedScript's
  */
-typedef QList<AnalizedScript> AnalyzedList;
+typedef QList<AnalyzedScript> AnalyzedList;
 
 /// @}
 
@@ -92,5 +93,5 @@ typedef QList<AnalizedScript> AnalyzedList;
 } // namespace Lvk
 
 
-#endif // LVK_CLUE_ANALIZEDSCRIPT_H
+#endif // LVK_CLUE_ANALYZEDSCRIPT_H
 

@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LVK_CLUE_ANALIZEDLINE_H
-#define LVK_CLUE_ANALIZEDLINE_H
+#ifndef LVK_CLUE_ANALYZEDLINE_H
+#define LVK_CLUE_ANALYZEDLINE_H
 
 #include "da-clue/scriptline.h"
 #include "nlp-engine/rule.h"
@@ -39,28 +39,28 @@ namespace Clue
 /// @{
 
 /**
- * \brief The AnalizedLine class provides an analized script line by the ClueEngine
+ * \brief The AnalyzedLine class provides an analized script line by the ClueEngine
  */
-class AnalizedLine : public ScriptLine
+class AnalyzedLine : public ScriptLine
 {
 public:
 
     /**
-     * Constructs an empty AnalizedLine
+     * Constructs an empty AnalyzedLine
      */
-    AnalizedLine()
+    AnalyzedLine()
         : ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
 
     /**
-     * Constructs an AnalizedLine with \a line
+     * Constructs an AnalyzedLine with \a line
      */
-    AnalizedLine(const ScriptLine &line)
+    AnalyzedLine(const ScriptLine &line)
         : ScriptLine(line), ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
 
     /**
-     * Constructs an AnalizedLine with \a line, \a ruleId, \a inputIdx and \a score
+     * Constructs an AnalyzedLine with \a line, \a ruleId, \a inputIdx and \a score
      */
-    AnalizedLine(const ScriptLine &line, Nlp::RuleId ruleId, int inputIdx, float score,
+    AnalyzedLine(const ScriptLine &line, Nlp::RuleId ruleId, int inputIdx, float score,
                  const QString &answer = "", int outputIdx = -1)
         : ScriptLine(line), ruleId(ruleId), inputIdx(inputIdx), score(score), answer(answer),
           outputIdx(outputIdx) { }
@@ -76,7 +76,7 @@ public:
     /**
      * Returns true if \a this instance is equal to \a other
      */
-    bool operator==(const AnalizedLine &other) const
+    bool operator==(const AnalyzedLine &other) const
     {
         return ScriptLine::operator==(other) &&
                 ruleId == other.ruleId &&
@@ -89,7 +89,7 @@ public:
     /**
      * Returns true if \a this instance is *not* equeal to \a other
      */
-    bool operator!=(const AnalizedLine &other) const
+    bool operator!=(const AnalyzedLine &other) const
     {
         return !this->operator==(other);
     }
@@ -104,5 +104,5 @@ public:
 } // namespace Lvk
 
 
-#endif // LVK_CLUE_ANALIZEDLINE_H
+#endif // LVK_CLUE_ANALYZEDLINE_H
 

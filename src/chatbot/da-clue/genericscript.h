@@ -41,7 +41,7 @@ namespace Clue
 /**
  * \brief The GenericScript class provides a generic class for diferent kind of sripts
  *
- * \see Script and AnalizedScript
+ * \see Script and AnalyzedScript
  */
 template<class LineType>
 class GenericScript : public QList<LineType>

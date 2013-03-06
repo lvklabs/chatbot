@@ -26,6 +26,7 @@
 #include "nlp-engine/engine.h"
 #include "da-clue/script.h"
 #include "da-clue/regexp.h"
+#include "da-clue/analyzedscript.h"
 
 namespace Lvk
 {
@@ -40,10 +41,8 @@ namespace Clue
 /// \addtogroup Clue
 /// @{
 
-class AnalizedScript;
-
 /**
- * \brief The ClueEngine class provides the engine to analize scripts againts a set of rules.
+ * \brief The ClueEngine class provides the engine to analyze scripts againts a set of rules.
  */
 class ClueEngine
 {
@@ -70,14 +69,14 @@ public:
     void clear();
 
     /**
-     * Analizes \a script and returns a AnalizedScript \a ascript with the result
+     * Analyzes \a script and returns a AnalyzedScript \a ascript with the result
      */
-    void analize(const Clue::Script & script, Clue::AnalizedScript &ascript);
+    void analyze(const Clue::Script & script, Clue::AnalyzedScript &ascript);
 
     /**
-     * Analizes \a scripts and returns a AnalyzedList \a ascripts with the result
+     * Analyzes \a scripts and returns a AnalyzedList \a ascripts with the result
      */
-    void analize(const Clue::ScriptList & scripts, Clue::AnalyzedList &ascripts);
+    void analyze(const Clue::ScriptList & scripts, Clue::AnalyzedList &ascripts);
 
 private:
     ClueEngine(const ClueEngine&);

@@ -20,7 +20,7 @@
  */
 
 #include "da-clue/clueengine.h"
-#include "da-clue/analizedscript.h"
+#include "da-clue/analyzedscript.h"
 #include "da-clue/script.h"
 #include "nlp-engine/enginefactory.h"
 
@@ -58,20 +58,20 @@ void Lvk::Clue::ClueEngine::clear()
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Clue::ClueEngine::analize(const Clue::ScriptList &scripts,
+void Lvk::Clue::ClueEngine::analyze(const Clue::ScriptList &scripts,
                                     Clue::AnalyzedList &ascripts)
 {
-    Clue::AnalizedScript as;
+    Clue::AnalyzedScript as;
 
     foreach (const Clue::Script &s, scripts) {
-        analize(s, as);
+        analyze(s, as);
         ascripts.append(as);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Clue::ClueEngine::analize(const Clue::Script &script, Clue::AnalizedScript &ascript)
+void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedScript &ascript)
 {
     ascript.clear();
     ascript.filename = script.filename;
@@ -91,12 +91,12 @@ void Lvk::Clue::ClueEngine::analize(const Clue::Script &script, Clue::AnalizedSc
 
         if (matches.isEmpty()) {
             qDebug() << "ClueEngine: no response!";
-            ascript.append(Clue::AnalizedLine(line));
+            ascript.append(Clue::AnalyzedLine(line));
         } else {
             qDebug() << "ClueEngine: Checking response:" << resp
                      << "with expected pattern:" << line.expAnswer
                      << "and forbidden pattern:" << line.forbidAnswer;
-            ascript.append(Clue::AnalizedLine(line, matches[0].first, matches[0].second, 0, resp));
+            ascript.append(Clue::AnalyzedLine(line, matches[0].first, matches[0].second, 0, resp));
 
             if (m_regexp.exactMatch(line.expAnswer, resp) &&
                     !m_regexp.exactMatch(line.forbidAnswer, resp)) {

@@ -9,7 +9,7 @@
 #include "nlp-engine/lemmatizerfactory.h"
 #include "da-clue/clueengine.h"
 #include "da-clue/script.h"
-#include "da-clue/analizedscript.h"
+#include "da-clue/analyzedscript.h"
 #include "da-clue/scripterror.h"
 
 #define UTF8    QString::fromUtf8
@@ -19,8 +19,8 @@ Q_DECLARE_METATYPE(Lvk::Nlp::Rule)
 Q_DECLARE_METATYPE(Lvk::Nlp::RuleList)
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptLine)
 Q_DECLARE_METATYPE(Lvk::Clue::Script)
-Q_DECLARE_METATYPE(Lvk::Clue::AnalizedLine)
-Q_DECLARE_METATYPE(Lvk::Clue::AnalizedScript)
+Q_DECLARE_METATYPE(Lvk::Clue::AnalyzedLine)
+Q_DECLARE_METATYPE(Lvk::Clue::AnalyzedScript)
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptList)
 Q_DECLARE_METATYPE(Lvk::Clue::ScriptError)
 
@@ -34,9 +34,9 @@ namespace QTest
 {
 
 template<>
-char * toString(const Lvk::Clue::AnalizedLine& l)
+char * toString(const Lvk::Clue::AnalyzedLine& l)
 {
-    QByteArray ba = QByteArray("\tAnalizedLine(")
+    QByteArray ba = QByteArray("\tAnalyzedLine(")
             + "\n\t\t"  + l.question.toUtf8()
             + ",\n\t\t" + l.expAnswer.toUtf8()
             + ",\n\t\t" + l.forbidAnswer.toUtf8()
@@ -55,15 +55,15 @@ char * toString(const Lvk::Clue::AnalizedLine& l)
 //--------------------------------------------------------------------------------------------------
 
 template<>
-char * toString(const Lvk::Clue::AnalizedScript& s)
+char * toString(const Lvk::Clue::AnalyzedScript& s)
 {
-    QByteArray ba = QByteArray("\nAnalizedScript(")
+    QByteArray ba = QByteArray("\nAnalyzedScript(")
             + "\n\tfile:" + s.filename.toUtf8()
             + "\n\tchar:" + s.character.toUtf8()
             + "\n\tnumb:"+ QByteArray::number(s.number)
             + "\n";
 
-    foreach (const Lvk::Clue::AnalizedLine &l, s) {
+    foreach (const Lvk::Clue::AnalyzedLine &l, s) {
         char * str = toString(l);
         ba += str;
         ba + ",\n";
@@ -122,13 +122,13 @@ void ClueEngineTest::testCase1()
 {
     QFETCH(Nlp::RuleList, rules);
     QFETCH(Clue::Script, script);
-    QFETCH(Clue::AnalizedScript, expAscript);
+    QFETCH(Clue::AnalyzedScript, expAscript);
 
     Clue::ClueEngine engine;
-    Clue::AnalizedScript ascript;
+    Clue::AnalyzedScript ascript;
 
     engine.setRules(rules);
-    engine.analize(script, ascript);
+    engine.analyze(script, ascript);
 
     QCOMPARE(ascript, expAscript);
 
@@ -206,26 +206,26 @@ void ClueEngineTest::testCase1_data()
     rl4.append(Nlp::Rule(2, QStringList() << q2,                    QStringList() << answ2c));
 
     // analyzed scripts
-    Clue::AnalizedScript as1(f1, n1, 1);
-    as1.append(Clue::AnalizedLine(l1, 0, -1, 0, "",     -1));
-    Clue::AnalizedScript as2(f2, n1, 2);
-    as2.append(Clue::AnalizedLine(l1, 1,  0, 0, answ1a,  0));
-    as2.append(Clue::AnalizedLine(l2, 2,  0, 0, answ2b, -1));
-    as2.append(Clue::AnalizedLine(l3, 0, -1, 0, "",     -1));
-    Clue::AnalizedScript as3(f2, n1, 2);
-    as3.append(Clue::AnalizedLine(l1, 1,  0, 0, answ1b,  0));
-    as3.append(Clue::AnalizedLine(l2, 2,  0, 0, answ2a,  0));
-    as3.append(Clue::AnalizedLine(l3, 3,  0, 0, answ2a,  0));
-    Clue::AnalizedScript as4(f2, n1, 2);
-    as4.append(Clue::AnalizedLine(l1, 1,  0, 0, answ1b,  0));
-    as4.append(Clue::AnalizedLine(l2, 2,  0, 0, answ2c, -1));
-    as4.append(Clue::AnalizedLine(l3, 0, -1, 0, "",     -1));
+    Clue::AnalyzedScript as1(f1, n1, 1);
+    as1.append(Clue::AnalyzedLine(l1, 0, -1, 0, "",     -1));
+    Clue::AnalyzedScript as2(f2, n1, 2);
+    as2.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1a,  0));
+    as2.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2b, -1));
+    as2.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
+    Clue::AnalyzedScript as3(f2, n1, 2);
+    as3.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
+    as3.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2a,  0));
+    as3.append(Clue::AnalyzedLine(l3, 3,  0, 0, answ2a,  0));
+    Clue::AnalyzedScript as4(f2, n1, 2);
+    as4.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
+    as4.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2c, -1));
+    as4.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
 
     //************************************************************************************
 
     QTest::addColumn<Nlp::RuleList>("rules");
     QTest::addColumn<Clue::Script>("script");
-    QTest::addColumn<Clue::AnalizedScript>("expAscript");
+    QTest::addColumn<Clue::AnalyzedScript>("expAscript");
 
     QTest::newRow("3") << rl4 << s2 << as4;
     QTest::newRow("0") << rl1 << s1 << as1;
