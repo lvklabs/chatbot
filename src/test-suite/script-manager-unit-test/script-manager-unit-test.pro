@@ -24,3 +24,11 @@ PROJECT_PATH = ../../chatbot
 
 include($$PROJECT_PATH/da-clue/da-clue.pri)
 include($$PROJECT_PATH/common/common.pri)
+
+HEADERS -= \
+    $$PROJECT_PATH/da-clue/clueengine.h \
+    $$PROJECT_PATH/da-clue/regexp.h
+
+SOURCES -= \
+    $$PROJECT_PATH/da-clue/clueengine.cpp \
+    $$PROJECT_PATH/da-clue/regexp.cpp
