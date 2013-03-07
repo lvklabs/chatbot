@@ -163,7 +163,7 @@ bool Lvk::Clue::ScriptManager::loadFile(const QString &filename, const QString &
         if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
             m_scripts.append(script);
         } else {
-            setError(Clue::CharacterMismatchError, filename);
+            setError(Clue::CharacterMismatchError, filename, script.character);
         }
     } else {
         setParsingError(parser);
@@ -235,7 +235,8 @@ Lvk::Clue::ScriptError Lvk::Clue::ScriptManager::error(QString *errMsg)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &filename)
+void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &filename,
+                                        const QString &extra)
 {
     m_error = err;
 
@@ -257,7 +258,8 @@ void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &fi
         break;
 
     case Clue::CharacterMismatchError:
-        m_errMsg = QObject::tr("Character mismatch in file '%1'").arg(filename);
+        m_errMsg = QObject::tr("Current character '%1' does not match character '%2' in file '%3'")
+                .arg(m_curChar, extra, filename);
         break;
 
     case Clue::CannotCopyError:

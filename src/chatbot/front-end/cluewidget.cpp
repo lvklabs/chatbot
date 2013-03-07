@@ -23,6 +23,7 @@
 #include "front-end/detailsdialog.h"
 #include "da-clue/scriptmanager.h"
 #include "da-clue/clueengine.h"
+#include "da-clue/scripterror.h"
 #include "common/globalstrings.h"
 #include "ui_cluewidget.h"
 
@@ -112,8 +113,13 @@ void Lvk::FE::ClueWidget::showError(const QString &filename)
 {
     QString details;
     int err = m_appFacade->error(&details);
+
     QString title = tr("Error %1").arg(err);
-    QString msg = tr("Cannot import file '%1'<br/>").arg(QFileInfo(filename).fileName());
+    QString msg = tr("Cannot import file '%1'.").arg(QFileInfo(filename).fileName());
+
+    if (err == Clue::CharacterMismatchError) {
+        msg.append(tr(" The character does not match."));
+    }
 
     FE::DetailsDialog dialog(msg, tr("Details"), details, this);
     dialog.setWindowTitle(title);

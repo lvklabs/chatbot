@@ -116,7 +116,7 @@ private:
     void initPaths();
     bool loadFile(const QString &filename, const QString &name);
     void resetError();
-    void setError(Clue::ScriptError err, const QString &filename);
+    void setError(Clue::ScriptError err, const QString &filename, const QString &extra = "");
     void setParsingError(const Clue::ScriptParser &parser);
 };
 

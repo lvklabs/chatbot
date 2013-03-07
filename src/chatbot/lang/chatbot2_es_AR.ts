@@ -485,31 +485,44 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
 <context>
     <name>Lvk::FE::ClueWidget</name>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="69"/>
+        <location filename="../front-end/cluewidget.cpp" line="70"/>
         <source>Character: </source>
         <translation>Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="80"/>
+        <location filename="../front-end/cluewidget.cpp" line="81"/>
         <source>Select the scripts files to import</source>
         <translation>Seleccioná los guiones que deseas importar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="115"/>
+        <location filename="../front-end/cluewidget.cpp" line="117"/>
         <source>Error %1</source>
         <translation>Error %1</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="116"/>
+        <location filename="../front-end/cluewidget.cpp" line="118"/>
+        <source>Cannot import file &apos;%1&apos;.</source>
+        <translation>No se pudo importar el archivo &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.cpp" line="121"/>
+        <source> The character does not match.</source>
+        <translation> El personaje no coincide.</translation>
+    </message>
+    <message>
+        <source>The character does not match.</source>
+        <translation type="obsolete">El personaje no coincide.</translation>
+    </message>
+    <message>
         <source>Cannot import file &apos;%1&apos;&lt;br/&gt;</source>
-        <translation>No se pudo importar el archivo &apos;%1&apos;&lt;/br&gt;</translation>
+        <translation type="obsolete">No se pudo importar el archivo &apos;%1&apos;&lt;/br&gt;</translation>
     </message>
     <message>
         <source>Cannot import file &apos;%1&apos;</source>
         <translation type="obsolete">No se pudo importar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="118"/>
+        <location filename="../front-end/cluewidget.cpp" line="124"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
@@ -519,7 +532,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation type="obsolete">No se pudo importar el archivo.</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="105"/>
+        <location filename="../front-end/cluewidget.cpp" line="106"/>
         <source>Character: (none)</source>
         <translation>Personaje: (ninguno)</translation>
     </message>
@@ -2587,37 +2600,41 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Ver que estoy enviando.</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="248"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="249"/>
         <source>File not found &apos;%1&apos;</source>
         <translation>No se encontró el archivo &apos;%1&apos; </translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="252"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="253"/>
         <source>Cannot read file &apos;%1&apos;</source>
         <translation>No se pudo leer el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="256"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="257"/>
         <source>Invalid format in file &apos;%1&apos;</source>
         <translation>El archivo &apos;%1&apos; contiene un formato inválido</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="260"/>
-        <source>Character mismatch in file &apos;%1&apos;</source>
-        <translation>El personaje actual no corresponde con el archivo &apos;%1&apos;</translation>
+        <location filename="../da-clue/scriptmanager.cpp" line="261"/>
+        <source>Current character &apos;%1&apos; does not match character &apos;%2&apos; in file &apos;%3&apos;</source>
+        <translation>El personaje actual &apos;%1&apos; no coincide con el personaje &apos;%2&apos; del archivo &apos;%3&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="264"/>
+        <source>Character mismatch in file &apos;%1&apos;</source>
+        <translation type="obsolete">El personaje actual no corresponde con el archivo &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../da-clue/scriptmanager.cpp" line="266"/>
         <source>Cannot copy file &apos;%1&apos;</source>
         <translation>No se pudo copiar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="268"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="270"/>
         <source>Cannot overwrite file &apos;%1&apos;</source>
         <translation>No se pudo sobreescribir el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="273"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="275"/>
         <source>Unknown error while parsing file &apos;%1&apos;</source>
         <translation>Error desconocido mientras se leía el archivo &apos;%1&apos;</translation>
     </message>
