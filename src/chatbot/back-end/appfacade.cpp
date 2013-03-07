@@ -35,6 +35,7 @@
 #include "common/globalstrings.h"
 #include "common/crashhandler.h"
 #include "stats/statsmanager.h"
+#include "da-clue/clueengine.h"
 
 #include <QDateTime>
 #include <QMetaType>
@@ -920,6 +921,21 @@ void Lvk::BE::AppFacade::setCurrentCharacter(const QString &name)
 const Lvk::Clue::ScriptList & Lvk::BE::AppFacade::scripts()
 {
     return m_scriptMgr.scripts();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Lvk::Clue::AnalyzedList Lvk::BE::AppFacade::analyzedScripts()
+{
+    refreshNlpEngine();
+
+    Clue::ClueEngine engine;
+    engine.setRules(m_nlpEngine->rules());
+
+    Clue::AnalyzedList ascripts;
+    engine.analyze(m_scriptMgr.scripts(), ascripts);
+
+    return ascripts;
 }
 
 

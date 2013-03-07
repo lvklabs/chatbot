@@ -39,6 +39,7 @@
 #include "da-server/remotelogger.h"
 #include "da-clue/character.h"
 #include "da-clue/scriptmanager.h"
+#include "da-clue/analyzedscript.h"
 #include "common/conversation.h"
 
 class QFile;
@@ -389,6 +390,11 @@ public:
      * Returns the list of scripts currently loaded.
      */
     const Clue::ScriptList &scripts();
+
+    /**
+     * Returns the list of analyzed scripts
+     */
+    Clue::AnalyzedList analyzedScripts();
 
 signals:
 
