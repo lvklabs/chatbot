@@ -23,19 +23,13 @@
 #define LVK_FE_SCRIPTCOVERAGEWIDGET_H
 
 #include <QWidget>
-#include <QHash>
-#include <QList>
 
-#include "common/conversation.h"
+class QModelIndex;
 
 namespace Ui {
     class ScriptCoverageWidget;
 }
 
-class QTableWidget;
-class QModelIndex;
-class QSplitter;
-class TestMainWindow;
 
 namespace Lvk
 {
@@ -51,12 +45,11 @@ namespace FE
 /// @{
 
 /**
- * \brief The ScriptCoverageWidget class provides a widget to display ...
+ * \brief The ScriptCoverageWidget class provides a widget to display the coverage of a list
+ *        of scripts and the rules used
  */
 class ScriptCoverageWidget : public QWidget
 {
-    friend class ::TestMainWindow;
-
     Q_OBJECT
 
 public:
@@ -76,46 +69,16 @@ public:
      */
     void clear();
 
-signals:
+private slots:
 
-    /**
-     * This signal is emitted if the user wants to teach a new rule from history with rule input
-     * \a input
-     */
-    void teachRule(const QString &input);
-
-    /**
-     * This signal is emitted if the user wants to see the definition of a rule that has matched.
-     */
-    void showRule(quint64 ruleId);
+    void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
 
 private:
 
     Ui::ScriptCoverageWidget *ui;
 
-    typedef QList<Lvk::Cmn::Conversation::Entry> EntryList;
-    QHash<QString, EntryList> m_entries;
-
     void setupTables();
     void connectSignals();
-
-    void addConversationTableRow(const Lvk::Cmn::Conversation::Entry &entry);
-    void addDateContactTableRow(const Lvk::Cmn::Conversation::Entry &entry);
-    void removeDateContactRow(int row);
-    void filter(const QString &text);
-    bool rowHasMatchStatus(int row);
-    bool askConfirmation(const QString &title, const QString &text);
-
-private slots:
-//    void onDateContactRowChanged(const QModelIndex &current, const QModelIndex &previous);
-//    void onConversationRowChanged(const QModelIndex &current, const QModelIndex &previous);
-    void onCellDoubleClicked(int row, int col);
-    void onFilterTextChanged(const QString &text);
-    void onTeachRuleClicked();
-    void onShowRuleClicked();
-
-    void teachRuleWithDialog(int row);
-    void showRuleWithDialog(int row);
 };
 
 /// @}
