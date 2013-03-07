@@ -41,6 +41,6 @@
 #define STATUS_DISCONNEC_ICON_FILE             ":/icons/status_disconnected.png"
 #define STATUS_CONNECTED_ICON_FILE             ":/icons/status_connected.png"
 
-#define SCRIPT_FILE_EXT                        "crf"
+#define SCRIPT_FILE_EXT                        "int"
 
 #endif // LVK_CMN_GLOBALSTRINGS_H
