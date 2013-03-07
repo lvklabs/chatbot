@@ -938,4 +938,17 @@ Lvk::Clue::AnalyzedList Lvk::BE::AppFacade::analyzedScripts()
     return ascripts;
 }
 
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::BE::AppFacade::importScript(const QString &scriptFile)
+{
+    return m_scriptMgr.import(scriptFile);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::BE::AppFacade::error(QString *errMsg)
+{
+    return m_scriptMgr.error(errMsg);
+}
 

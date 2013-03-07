@@ -112,7 +112,7 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
             parsingOk = parseRoot(root, script);
         }
     } else {
-        m_errMsg = QObject::tr("Error in line %1:%2 - %3").arg(line).arg(col).arg(err);
+        m_errMsg = QObject::tr("Error in line %1:%2.\n%3").arg(line).arg(col).arg(err);
     }
 
     if (!parsingOk) {

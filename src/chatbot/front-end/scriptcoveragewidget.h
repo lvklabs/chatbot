@@ -22,6 +22,8 @@
 #ifndef LVK_FE_SCRIPTCOVERAGEWIDGET_H
 #define LVK_FE_SCRIPTCOVERAGEWIDGET_H
 
+#include "da-clue/analyzedscript.h"
+
 #include <QWidget>
 
 class QModelIndex;
@@ -65,6 +67,11 @@ public:
     ~ScriptCoverageWidget();
 
     /**
+     * Displays the list of analyzed scripts \a ascripts
+     */
+    void setAnalyzedScripts(const Clue::AnalyzedList &scripts);
+
+    /**
      * Clears the widget.
      */
     void clear();
@@ -74,11 +81,12 @@ private slots:
     void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
 
 private:
-
     Ui::ScriptCoverageWidget *ui;
+    Clue::AnalyzedList m_scripts;
 
     void setupTables();
     void connectSignals();
+    void addScriptRow(const QString &filename, float coverage);
 };
 
 /// @}

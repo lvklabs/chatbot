@@ -105,6 +105,7 @@ void makeDirStructure()
     makeDir(settings.value(SETTING_LOGS_PATH).toString());
     makeDir(settings.value(SETTING_DATA_PATH).toString());
     makeDir(settings.value(SETTING_LANG_PATH).toString());
+    makeDir(settings.value(SETTING_CLUE_PATH).toString());
 }
 
 //--------------------------------------------------------------------------------------------------

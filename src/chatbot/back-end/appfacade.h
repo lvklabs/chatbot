@@ -396,6 +396,18 @@ public:
      */
     Clue::AnalyzedList analyzedScripts();
 
+    /**
+     * Imports a script from \a scriptFile.
+     * Returns true on success. Otherwise; false.
+     */
+    bool importScript(const QString &scriptFile);
+
+    /**
+     * Returns the last error. So far this only works for methods related with scripts.
+     * TODO use this for all methods.
+     */
+    int error(QString *errMsg = 0);
+
 signals:
 
     /**

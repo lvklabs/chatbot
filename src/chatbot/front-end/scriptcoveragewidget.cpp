@@ -24,8 +24,8 @@
 
 enum ScriptsTableColumns
 {
-    ScriptNameColumnn,
-    ScriptCoverageColumn,
+    ScriptNameCol,
+    ScriptCoverageCol,
     ScriptsTableTotalColumns
 };
 
@@ -45,6 +45,12 @@ enum
 namespace
 {
 
+// coverage string format
+inline QString covFormat(float cov)
+{
+    return "%" + QString::number((int)cov);
+}
+
 } // namespace
 
 
@@ -62,23 +68,6 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
     connectSignals();
 
     ui->splitter->setSizes(QList<int>() << (width()*3/10) << (width()*3/10) << (width()*4/10));
-
-    ////////////////////////////// MOCK //////////////////////////////
-    int nextRow;
-    nextRow = ui->scriptsTable->rowCount();
-    ui->scriptsTable->insertRow(nextRow);
-    ui->scriptsTable->setItem(nextRow, ScriptNameColumnn,    new QTableWidgetItem("pedro_1.txt"));
-    ui->scriptsTable->setItem(nextRow, ScriptCoverageColumn, new QTableWidgetItem("%70"));
-    nextRow = ui->scriptsTable->rowCount();
-    ui->scriptsTable->insertRow(nextRow);
-    ui->scriptsTable->setItem(nextRow, ScriptNameColumnn,    new QTableWidgetItem("pedro_2.txt"));
-    ui->scriptsTable->setItem(nextRow, ScriptCoverageColumn, new QTableWidgetItem("%90"));
-    nextRow = ui->scriptsTable->rowCount();
-    ui->scriptsTable->insertRow(nextRow);
-    ui->scriptsTable->setItem(nextRow, ScriptNameColumnn,    new QTableWidgetItem("pedro_3.txt"));
-    ui->scriptsTable->setItem(nextRow, ScriptCoverageColumn, new QTableWidgetItem("%20"));
-    ui->coverageLabel->setText(tr("Global coverage: 60%"));
-    //////////////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -102,7 +91,7 @@ void Lvk::FE::ScriptCoverageWidget::setupTables()
     ui->scriptsTable->setAlternatingRowColors(true);
     ui->scriptsTable->horizontalHeader()->setStretchLastSection(true);
     ui->scriptsTable->verticalHeader()->hide();
-    ui->scriptsTable->setColumnWidth(ScriptNameColumnn, 120);
+    ui->scriptsTable->setColumnWidth(ScriptNameCol, 120);
     ui->scriptsTable->setHorizontalHeaderLabels(QStringList()
                                                 << tr("File")
                                                 << tr("Coverage"));
@@ -116,11 +105,48 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(onScriptRowChanged(QModelIndex,QModelIndex)));
 }
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts)
+{
+    clear();
+
+    m_scripts = scripts;
+
+    float globalCov = 0.0;
+
+    foreach (const Clue::AnalyzedScript &s, scripts) {
+        addScriptRow(s.filename, s.coverage);
+        globalCov += s.coverage;
+    }
+
+    if (scripts.size() > 0) {
+        globalCov /= scripts.size();
+        ui->coverageLabel->setText(tr("Global coverage: ") + covFormat(globalCov));
+    } else {
+        ui->coverageLabel->clear();
+    }
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float coverage)
+{
+    int r = ui->scriptsTable->rowCount();
+    ui->scriptsTable->insertRow(r);
+    ui->scriptsTable->setItem(r, ScriptNameCol,     new QTableWidgetItem(filename));
+    ui->scriptsTable->setItem(r, ScriptCoverageCol, new QTableWidgetItem(covFormat(coverage)));
+}
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::clear()
 {
+    m_scripts.clear();
+    ui->scriptsTable->clearContents();
+    ui->scriptsTable->setRowCount(0);
+    ui->coverageLabel->clear();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -128,7 +154,7 @@ void Lvk::FE::ScriptCoverageWidget::clear()
 void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &current,
                                                        const QModelIndex &/*previous*/)
 {
-    QTableWidgetItem *item = ui->scriptsTable->item(current.row(), ScriptNameColumnn);
+    QTableWidgetItem *item = ui->scriptsTable->item(current.row(), ScriptNameCol);
     if (item) {
         ui->label->setText(item->text());
     } else {

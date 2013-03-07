@@ -126,22 +126,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Florencia</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="62"/>
+        <location filename="../front-end/cluewidget.ui" line="72"/>
         <source>Refresh</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="79"/>
+        <location filename="../front-end/cluewidget.ui" line="35"/>
         <source>Upload</source>
         <translation>Enviar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="38"/>
+        <location filename="../front-end/cluewidget.ui" line="95"/>
         <source>Character: </source>
         <translation>Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="45"/>
+        <location filename="../front-end/cluewidget.ui" line="55"/>
         <source>Import...</source>
         <translation>Importar...</translation>
     </message>
@@ -241,17 +241,17 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>DetailsDialog</name>
     <message>
-        <location filename="../front-end/detailsdialog.ui" line="93"/>
+        <location filename="../front-end/detailsdialog.ui" line="90"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Cancelar</translation>
     </message>
     <message>
-        <location filename="../front-end/detailsdialog.ui" line="100"/>
+        <location filename="../front-end/detailsdialog.ui" line="97"/>
         <source>&amp;Ok</source>
         <translation>&amp;Aceptar</translation>
     </message>
     <message>
-        <location filename="../front-end/detailsdialog.ui" line="138"/>
+        <location filename="../front-end/detailsdialog.ui" line="135"/>
         <source>Details:</source>
         <translation>Detalles:</translation>
     </message>
@@ -284,22 +284,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Reglas</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="250"/>
+        <location filename="../back-end/appfacade.cpp" line="251"/>
         <source>Greetings</source>
         <translation>Saludos</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="256"/>
+        <location filename="../back-end/appfacade.cpp" line="257"/>
         <source>Hello</source>
         <translation>Hola</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="257"/>
+        <location filename="../back-end/appfacade.cpp" line="258"/>
         <source>Hello!</source>
         <translation>Hola!</translation>
     </message>
     <message>
-        <location filename="../back-end/appfacade.cpp" line="263"/>
+        <location filename="../back-end/appfacade.cpp" line="264"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
     </message>
@@ -485,12 +485,41 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
 <context>
     <name>Lvk::FE::ClueWidget</name>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="41"/>
+        <location filename="../front-end/cluewidget.cpp" line="69"/>
         <source>Character: </source>
         <translation>Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="43"/>
+        <location filename="../front-end/cluewidget.cpp" line="80"/>
+        <source>Select the scripts files to import</source>
+        <translation>Seleccioná los guiones que deseas importar</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.cpp" line="115"/>
+        <source>Error %1</source>
+        <translation>Error %1</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.cpp" line="116"/>
+        <source>Cannot import file &apos;%1&apos;&lt;br/&gt;</source>
+        <translation>No se pudo importar el archivo &apos;%1&apos;&lt;/br&gt;</translation>
+    </message>
+    <message>
+        <source>Cannot import file &apos;%1&apos;</source>
+        <translation type="obsolete">No se pudo importar el archivo &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.cpp" line="118"/>
+        <source>Details</source>
+        <translation>Detalles</translation>
+    </message>
+    <message>
+        <source>Cannot import file.
+</source>
+        <translation type="obsolete">No se pudo importar el archivo.</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.cpp" line="105"/>
         <source>Character: (none)</source>
         <translation>Personaje: (ninguno)</translation>
     </message>
@@ -1464,29 +1493,31 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>Lvk::FE::ScriptCoverageWidget</name>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="185"/>
         <source>Global coverage: 60%</source>
-        <translation>Cobertura global: 60%</translation>
+        <translation type="obsolete">Cobertura global: 60%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="214"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="96"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="215"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="97"/>
         <source>Coverage</source>
         <translation>Cobertura</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="233"/>
-        <source>Script</source>
-        <translation>Guión</translation>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="125"/>
+        <source>Global coverage: </source>
+        <translation>Cobertura global: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="234"/>
+        <source>Script</source>
+        <translation type="obsolete">Guión</translation>
+    </message>
+    <message>
         <source>Rule</source>
-        <translation>Regla</translation>
+        <translation type="obsolete">Regla</translation>
     </message>
 </context>
 <context>
@@ -2601,15 +2632,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>No se pudo leer el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="115"/>
         <source>Error in line %1:%2 - %3</source>
-        <translation>Error en la línea %1:%2 - %3</translation>
+        <translation type="obsolete">Error en la línea %1:%2 - %3</translation>
+    </message>
+    <message>
+        <location filename="../da-clue/scriptparser.cpp" line="115"/>
+        <source>Error in line %1:%2.
+%3</source>
+        <translation>Error en la línea %1:%2.
+%3</translation>
     </message>
     <message>
         <location filename="../da-clue/scriptparser.cpp" line="119"/>
         <source>Invalid format in file &apos;%1&apos;.
 %2</source>
-        <translation>Formato inválido en el archivo &apos;%1&apos;. %2</translation>
+        <translation>Formato inválido en el archivo &apos;%1&apos;.
+%2</translation>
     </message>
     <message>
         <location filename="../da-clue/scriptparser.cpp" line="132"/>
@@ -2743,38 +2781,43 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 <context>
     <name>ScriptCoverageWidget</name>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="25"/>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="28"/>
         <source>Show rule definition</source>
-        <translation>Mostrar definición de la regla</translation>
+        <translation type="obsolete">Mostrar definición de la regla</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="51"/>
         <source>Teach rule from current message</source>
-        <translation>Enseñar regla desde el mensaje actual</translation>
+        <translation type="obsolete">Enseñar regla desde el mensaje actual</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="54"/>
         <source>Teach rule</source>
-        <translation>Enseñar regla</translation>
+        <translation type="obsolete">Enseñar regla</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="87"/>
         <source>Filter:</source>
-        <translation>Filtro:</translation>
+        <translation type="obsolete">Filtro:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="112"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="29"/>
         <source>Global coverage:</source>
         <translation>Cobertura global: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="148"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="54"/>
+        <source>Script HERE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="59"/>
+        <source>RuleMatch HERE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="67"/>
         <source>Remove all conversations</source>
         <translation>Borrar todas las conversaciones</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="153"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="72"/>
         <source>Remove selected conversation</source>
         <translation>Borrar conversación seleccionada</translation>
     </message>
