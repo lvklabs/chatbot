@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QStyle>
 
 namespace Ui {
     class DetailsDialog;
@@ -37,6 +38,16 @@ public:
      */
     explicit DetailsDialog(const QString &msg, const QString &linkMsg, const QString &details,
                            QWidget *parent = 0);
+
+    /**
+     * Shows or hides the cancel button. By default is visible.
+     */
+    void setCancelButtonVisible(bool visible);
+
+    /**
+     * Sets the dialog \a pixmap. By default is SP_MessageBoxQuestion.
+     */
+    void setPixmap(QStyle::StandardPixmap pixmap, int w = 48, int h = 48);
 
     /**
      * Destroys the object.

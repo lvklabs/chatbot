@@ -67,9 +67,6 @@ p, li { white-space: pre-wrap; }
      <property name="readOnly">
       <bool>true</bool>
      </property>
-     <property name="plainText">
-      <string notr="true"/>
-     </property>
     </widget>
    </item>
    <item row="3" column="0" colspan="3">

@@ -4,7 +4,6 @@
 #include <QPixmap>
 #include <QImage>
 #include <QIcon>
-#include <QStyle>
 #include <QDesktopWidget>
 
 #ifdef WIN32
@@ -27,13 +26,12 @@ Lvk::FE::DetailsDialog::DetailsDialog(const QString &msg, const QString &linkMsg
                                       const QString &details, QWidget *parent)
     : QDialog(parent), ui(new Ui::DetailsDialog), m_msg(msg)
 {
-    QPixmap questionPix = style()->standardIcon(QStyle::SP_MessageBoxQuestion).pixmap(48,48);
-
     ui->setupUi(this);
     ui->detailsText->setPlainText(details);
     ui->detailsLabel->setVisible(false);
     ui->detailsText->setVisible(false);
-    ui->icon->setPixmap(questionPix);
+
+    setPixmap(QStyle::SP_MessageBoxQuestion);
 
     QString labelText = msg;
 
@@ -41,6 +39,7 @@ Lvk::FE::DetailsDialog::DetailsDialog(const QString &msg, const QString &linkMsg
         labelText.append(QString("<br/><a href=\"#\">%1</a>").arg(linkMsg));
     }
 
+    ui->label->setTextFormat(Qt::RichText);
     ui->label->setText(labelText);
 
     alignCenter(DIALOG_INIT_W, DIALOG_INIT_H);
@@ -55,6 +54,20 @@ Lvk::FE::DetailsDialog::DetailsDialog(const QString &msg, const QString &linkMsg
 Lvk::FE::DetailsDialog::~DetailsDialog()
 {
     delete ui;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::DetailsDialog::setCancelButtonVisible(bool visible)
+{
+    ui->rejectButton->setVisible(visible);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::DetailsDialog::setPixmap(QStyle::StandardPixmap pixmap, int w, int h)
+{
+    ui->icon->setPixmap(style()->standardIcon(pixmap).pixmap(w, h));
 }
 
 //--------------------------------------------------------------------------------------------------
