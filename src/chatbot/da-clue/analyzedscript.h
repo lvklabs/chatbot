@@ -76,6 +76,15 @@ public:
     {
         return !this->operator==(other);
     }
+
+    /**
+     * Clears the script
+     */
+    void clear()
+    {
+        GenericScript<AnalyzedLine>::clear();
+        coverage = 0;
+    }
 };
 
 

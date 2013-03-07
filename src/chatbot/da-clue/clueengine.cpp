@@ -78,7 +78,8 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
     ascript.character = script.character;
     ascript.number = script.number;
 
-    Nlp::Engine::MatchList matches;
+    int matches = 0;
+    Nlp::Engine::MatchList ml;
 
     // FIXME not setting real score and outputIdx
 
@@ -87,25 +88,32 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
     foreach (const Clue::ScriptLine &line, script) {
         qDebug() << "ClueEngine: Getting response for question:"  << line.question;
 
-        QString resp = m_engine->getResponse(line.question, matches);
+        QString resp = m_engine->getResponse(line.question, ml);
 
-        if (matches.isEmpty()) {
+        if (ml.isEmpty()) {
             qDebug() << "ClueEngine: no response!";
             ascript.append(Clue::AnalyzedLine(line));
         } else {
             qDebug() << "ClueEngine: Checking response:" << resp
                      << "with expected pattern:" << line.expAnswer
                      << "and forbidden pattern:" << line.forbidAnswer;
-            ascript.append(Clue::AnalyzedLine(line, matches[0].first, matches[0].second, 0, resp));
+            ascript.append(Clue::AnalyzedLine(line, ml[0].first, ml[0].second, 0, resp));
 
             if (m_regexp.exactMatch(line.expAnswer, resp) &&
                     !m_regexp.exactMatch(line.forbidAnswer, resp)) {
                 qDebug() << "ClueEngine: pattern OK";
                 ascript.last().outputIdx = 0;
+                ++matches;
             } else {
                 qDebug() << "ClueEngine: pattern failed!";
             }
         }
+    }
+
+    if (script.size() > 0) {
+        ascript.coverage = matches/(float)script.size()*100;
+    } else {
+        ascript.coverage = 100; //?
     }
 }
 

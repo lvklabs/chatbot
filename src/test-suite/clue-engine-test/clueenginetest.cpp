@@ -61,6 +61,7 @@ char * toString(const Lvk::Clue::AnalyzedScript& s)
             + "\n\tfile:" + s.filename.toUtf8()
             + "\n\tchar:" + s.character.toUtf8()
             + "\n\tnumb:"+ QByteArray::number(s.number)
+            + "\n\tcov :"+ QByteArray::number(s.coverage)
             + "\n";
 
     foreach (const Lvk::Clue::AnalyzedLine &l, s) {
@@ -208,18 +209,22 @@ void ClueEngineTest::testCase1_data()
     // analyzed scripts
     Clue::AnalyzedScript as1(f1, n1, 1);
     as1.append(Clue::AnalyzedLine(l1, 0, -1, 0, "",     -1));
+    as1.coverage = 0.0/as1.size()*100;
     Clue::AnalyzedScript as2(f2, n1, 2);
     as2.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1a,  0));
     as2.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2b, -1));
     as2.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
+    as2.coverage = 1.0/as2.size()*100;
     Clue::AnalyzedScript as3(f2, n1, 2);
     as3.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
     as3.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2a,  0));
     as3.append(Clue::AnalyzedLine(l3, 3,  0, 0, answ2a,  0));
+    as3.coverage = 3.0/as3.size()*100;
     Clue::AnalyzedScript as4(f2, n1, 2);
     as4.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
     as4.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2c, -1));
     as4.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
+    as4.coverage = 1.0/as4.size()*100;
 
     //************************************************************************************
 
@@ -227,10 +232,10 @@ void ClueEngineTest::testCase1_data()
     QTest::addColumn<Clue::Script>("script");
     QTest::addColumn<Clue::AnalyzedScript>("expAscript");
 
-    QTest::newRow("3") << rl4 << s2 << as4;
     QTest::newRow("0") << rl1 << s1 << as1;
     QTest::newRow("1") << rl2 << s2 << as2;
     QTest::newRow("2") << rl3 << s2 << as3;
+    QTest::newRow("3") << rl4 << s2 << as4;
 }
 
 //--------------------------------------------------------------------------------------------------
