@@ -51,6 +51,13 @@ void Lvk::Clue::ClueEngine::setRules(const Nlp::RuleList &rules)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Clue::ClueEngine::setEvasive(const QString &evasive)
+{
+    m_evasive = evasive;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Clue::ClueEngine::clear()
 {
     m_engine->clear();
@@ -93,6 +100,7 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
         if (ml.isEmpty()) {
             qDebug() << "ClueEngine: no response!";
             ascript.append(Clue::AnalyzedLine(line));
+            ascript.last().answer = m_evasive;
         } else {
             qDebug() << "ClueEngine: Checking response:" << resp
                      << "with expected pattern:" << line.expAnswer

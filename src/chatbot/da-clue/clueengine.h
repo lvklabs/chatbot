@@ -64,6 +64,11 @@ public:
     void setRules(const Nlp::RuleList &rules);
 
     /**
+     * Sets \a evasive as the response when there is no match
+     */
+    void setEvasive(const QString &evasive);
+
+    /**
      * Clears the rules
      */
     void clear();
@@ -84,6 +89,7 @@ private:
 
     Nlp::Engine *m_engine;
     Clue::RegExp m_regexp;
+    QString m_evasive;
 };
 
 /// @}

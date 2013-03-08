@@ -229,6 +229,7 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->teachRuleButton->setEnabled(false);
         ui->undoRuleButton->setEnabled(false);
         ui->teachRuleButton->setText(QObject::tr("Change name"));
+        ui->ruleOutputWidget->setReadOnly(false);
         break;
 
     case BE::Rule::OrdinaryRule:
@@ -244,6 +245,7 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->undoRuleButton->setEnabled(false);
         ui->chatbotRepliesLabel->setText(QObject::tr("Chatbot replies:"));
         ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
+        ui->ruleOutputWidget->setReadOnly(false);
         break;
 
     case BE::Rule::EvasiveRule:
@@ -260,6 +262,7 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->chatbotRepliesLabel->setText(QObject::tr("If chatbot does not understand,"
                                                      " it replies:"));
         ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
+        ui->ruleOutputWidget->setReadOnly(true);
         break;
     }
 }

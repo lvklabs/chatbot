@@ -263,6 +263,7 @@ bool Lvk::BE::AppFacade::setDefaultRules()
 
     Rule *evasives  = new Rule(tr("Evasives"));
     evasives->setType(Rule::EvasiveRule);
+    evasives->setOutput(QStringList() << tr("I'm guilty!"));
 
     m_evasivesRule = evasives;
 
@@ -931,6 +932,7 @@ Lvk::Clue::AnalyzedList Lvk::BE::AppFacade::analyzedScripts()
 
     Clue::ClueEngine engine;
     engine.setRules(m_nlpEngine->rules());
+    engine.setEvasive(getEvasives().isEmpty() ? "" : getEvasives().first());
 
     Clue::AnalyzedList ascripts;
     engine.analyze(m_scriptMgr.scripts(), ascripts);
