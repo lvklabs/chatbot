@@ -16,20 +16,7 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="4">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="2" column="3">
+     <item row="1" column="3">
       <widget class="QToolButton" name="uploadButton">
        <property name="text">
         <string>Upload</string>
@@ -46,27 +33,20 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="7">
-      <widget class="Lvk::FE::ScriptCoverageWidget" name="scripts"/>
+     <item row="1" column="4">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
-     <item row="2" column="1">
-      <widget class="QToolButton" name="importButton">
-       <property name="text">
-        <string>Import...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
+     <item row="1" column="2">
       <widget class="QToolButton" name="refreshButton">
        <property name="text">
         <string>Refresh</string>
@@ -83,17 +63,36 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="4">
-      <widget class="QLabel" name="curCharacterLabel">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
+     <item row="1" column="0">
+      <widget class="QToolButton" name="importButton">
        <property name="text">
-        <string>Character: </string>
+        <string>Import...</string>
        </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="5">
+      <widget class="QGroupBox" name="charaterBox">
+       <property name="title">
+        <string>GroupBox</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="Lvk::FE::ScriptCoverageWidget" name="scripts"/>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

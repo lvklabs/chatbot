@@ -67,7 +67,7 @@ void Lvk::FE::ClueWidget::setAppFacade(BE::AppFacade *appFacade)
 void Lvk::FE::ClueWidget::refresh()
 {
     if (m_appFacade && !m_appFacade->currentCharacter().isEmpty()) {
-        ui->curCharacterLabel->setText(tr("Character: ") + m_appFacade->currentCharacter());
+        ui->charaterBox->setTitle(tr("Character: ") + m_appFacade->currentCharacter());
         ui->scripts->setAnalyzedScripts(m_appFacade->analyzedScripts());
     } else {
         clear();
@@ -103,7 +103,7 @@ void Lvk::FE::ClueWidget::import()
 
 void Lvk::FE::ClueWidget::clear()
 {
-    ui->curCharacterLabel->setText(tr("Character: (none)"));
+    ui->charaterBox->setTitle(tr("Character: (none)"));
     ui->scripts->clear();
 }
 
