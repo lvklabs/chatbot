@@ -29,13 +29,11 @@ enum ScriptsTableColumns
     ScriptsTableTotalColumns
 };
 
-enum
-{
-    HashKeyRole = Qt::UserRole,
-    EntryMatchRole,
-    EntryFromRole,
-    EntryRuleIdRole
-};
+const QString HTML_SCRIPT_START     = "<html><header><style></style></head><body>";
+const QString HTML_SCRIPT_LINE      = "<a href=\"#%6\" style=\"%1\">%2: %3<br/>%4: %5</a><br/>";
+const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000");
+const QString HTML_SCRIPT_LINE_FAIL = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#F00");
+const QString HTML_SCRIPT_END       = "</body></html>";
 
 
 //--------------------------------------------------------------------------------------------------
@@ -59,7 +57,7 @@ inline QString covFormat(float cov)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::ScriptCoverageWidget)
+    : QWidget(parent), ui(new Ui::ScriptCoverageWidget), m_detective(tr("Detective"))
 {
     ui->setupUi(this);
 
@@ -67,7 +65,9 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
     setupTables();
     connectSignals();
 
-    ui->splitter->setSizes(QList<int>() << (width()*3/10) << (width()*3/10) << (width()*4/10));
+    ui->splitter->setSizes(QList<int>() << (width()*2/10) << (width()*4/10) << (width()*4/10));
+
+    //ui->scriptView->setStyleSheet();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ void Lvk::FE::ScriptCoverageWidget::setupTables()
     ui->scriptsTable->setColumnWidth(ScriptNameCol, 120);
     ui->scriptsTable->setHorizontalHeaderLabels(QStringList()
                                                 << tr("File")
-                                                << tr("Coverage"));
+                                                << tr("%"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -104,6 +104,10 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
     connect(ui->scriptsTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(onScriptRowChanged(QModelIndex,QModelIndex)));
+
+    connect(ui->scriptView,
+            SIGNAL(anchorClicked(QUrl)),
+            SLOT(onAnchorClicked(QUrl)));
 }
 //--------------------------------------------------------------------------------------------------
 
@@ -155,10 +159,40 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
                                                        const QModelIndex &/*previous*/)
 {
     QTableWidgetItem *item = ui->scriptsTable->item(current.row(), ScriptNameCol);
+
     if (item) {
-        ui->label->setText(item->text());
+        showScript(m_scripts[current.row()]);
     } else {
-        ui->label->setText("no script selected");
+        ui->scriptView->setText(tr("(No script selected)"));
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::onAnchorClicked(const QUrl &url)
+{
+    // TODO
+    ui->groupBox->setTitle("Rule " + url.toString());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::showScript(const Lvk::Clue::AnalyzedScript &script)
+{
+    if (script.isEmpty()) {
+        ui->scriptView->setText(tr("(Empty script)"));
+        return;
+    }
+
+    QString html = HTML_SCRIPT_START;
+
+    foreach (const Clue::AnalyzedLine &line, script) {
+        html += (line.outputIdx != -1 ? HTML_SCRIPT_LINE_OK : HTML_SCRIPT_LINE_FAIL)
+                .arg(m_detective, line.question, script.character, line.answer).arg(line.ruleId);
+    }
+
+    html += HTML_SCRIPT_END;
+
+    ui->scriptView->setText(html);
 }
 

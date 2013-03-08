@@ -21,8 +21,8 @@
     <widget class="QLabel" name="coverageLabel">
      <property name="font">
       <font>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -30,7 +30,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="2" column="0">
     <widget class="QSplitter" name="splitter">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -48,16 +48,34 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Script HERE</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>RuleMatch HERE</string>
-      </property>
+     <widget class="QTextBrowser" name="scriptView"/>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Rule</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>

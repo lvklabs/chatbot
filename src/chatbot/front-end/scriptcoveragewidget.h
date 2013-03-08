@@ -27,6 +27,7 @@
 #include <QWidget>
 
 class QModelIndex;
+class QUrl;
 
 namespace Ui {
     class ScriptCoverageWidget;
@@ -79,14 +80,17 @@ public:
 private slots:
 
     void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
+    void onAnchorClicked(const QUrl &url);
 
 private:
     Ui::ScriptCoverageWidget *ui;
     Clue::AnalyzedList m_scripts;
+    QString m_detective;
 
     void setupTables();
     void connectSignals();
     void addScriptRow(const QString &filename, float coverage);
+    void showScript(const Clue::AnalyzedScript &script);
 };
 
 /// @}
