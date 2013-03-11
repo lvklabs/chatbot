@@ -30,5 +30,6 @@
         <file alias="cancel.png">gnome_theme/cancel.png</file>
         <file alias="status_connected.png">gnome_theme/status_connected.png</file>
         <file alias="status_disconnected.png">gnome_theme/status_disconnected.png</file>
+        <file alias="hint.png">gnome_theme/hint.png</file>
     </qresource>
 </RCC>

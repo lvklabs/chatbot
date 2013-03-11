@@ -35,6 +35,7 @@
         <file alias="detective.png">chatbot_theme/detective.png</file>
         <file alias="suspect.png">chatbot_theme/suspect.png</file>
         <file alias="refresh.png">chatbot_theme/refresh.png</file>
+        <file alias="hint.png">chatbot_theme/hint.png</file>
     </qresource>
     <qresource prefix="/bg">
         <file alias="welcome.png">chatbot_theme/welcome_bg.png</file>
