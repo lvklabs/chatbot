@@ -177,6 +177,8 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
     } else {
         ui->scriptView->setText(tr("(No script selected)"));
     }
+
+    ui->ruleGroupBox->setVisible(false);
 }
 
 //--------------------------------------------------------------------------------------------------
