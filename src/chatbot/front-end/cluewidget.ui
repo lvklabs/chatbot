@@ -16,6 +16,38 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="0" colspan="5">
+      <widget class="QGroupBox" name="charaterBox">
+       <property name="title">
+        <string>GroupBox</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="Lvk::FE::ScriptCoverageWidget" name="scripts"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QToolButton" name="importButton">
+       <property name="text">
+        <string>Import...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="3">
       <widget class="QToolButton" name="uploadButton">
        <property name="text">
@@ -24,6 +56,23 @@
        <property name="icon">
         <iconset resource="../res/chatbot_theme.qrc">
          <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="refreshButton">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/chatbot_theme.qrc">
+         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -45,55 +94,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="1" column="2">
-      <widget class="QToolButton" name="refreshButton">
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QToolButton" name="importButton">
-       <property name="text">
-        <string>Import...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" colspan="5">
-      <widget class="QGroupBox" name="charaterBox">
-       <property name="title">
-        <string>GroupBox</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <property name="topMargin">
-         <number>20</number>
-        </property>
-        <item row="0" column="0">
-         <widget class="Lvk::FE::ScriptCoverageWidget" name="scripts"/>
-        </item>
-       </layout>
-      </widget>
      </item>
     </layout>
    </item>

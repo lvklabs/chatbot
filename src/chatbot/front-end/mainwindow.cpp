@@ -292,6 +292,9 @@ void Lvk::FE::MainWindow::connectSignals()
     connect(m_appFacade,              SIGNAL(scoreRemainingTime(int)),
             SLOT(onScoreRemainingTime(int)));
 
+    // Clue tab
+    connect(ui->clueWidget,           SIGNAL(upload()),          SLOT(onUploadScore()));
+
     // Misc
     connect(ui->mainTabWidget,        SIGNAL(currentChanged(QWidget*)),
             SLOT(onCurrentTabChanged(QWidget*)));

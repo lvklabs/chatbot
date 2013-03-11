@@ -86,6 +86,13 @@ public slots:
      */
     void clear();
 
+signals:
+
+    /**
+     * This signal is emitted whenever the "upload" button is pressed.
+     */
+    void upload();
+
 private:
     Ui::ClueWidget *ui;
     BE::AppFacade  *m_appFacade;

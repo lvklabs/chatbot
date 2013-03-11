@@ -42,6 +42,7 @@ Lvk::FE::ClueWidget::ClueWidget(QWidget *parent) :
 
     connect(ui->refreshButton, SIGNAL(clicked()), SLOT(refresh()));
     connect(ui->importButton,  SIGNAL(clicked()), SLOT(import()));
+    connect(ui->uploadButton,  SIGNAL(clicked()), SIGNAL(upload()));
 
     refresh();
 }
