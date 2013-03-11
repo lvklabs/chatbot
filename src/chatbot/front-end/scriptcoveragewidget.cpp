@@ -110,6 +110,10 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
     connect(ui->scriptView,
             SIGNAL(anchorClicked(QUrl)),
             SLOT(onAnchorClicked(QUrl)));
+
+    connect(ui->showRuleDefButton,
+            SIGNAL(clicked()),
+            SLOT(onShowRuleDefClicked()));
 }
 //--------------------------------------------------------------------------------------------------
 
@@ -183,7 +187,14 @@ void Lvk::FE::ScriptCoverageWidget::onAnchorClicked(const QUrl &url)
    int i = indexes[0].toUInt();
    int j = indexes[1].toUInt();
 
-    showRuleUsed(i, j);
+   showRuleUsed(i, j);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::onShowRuleDefClicked()
+{
+    emit showRule(ui->ruleView->ruleId());
 }
 
 //--------------------------------------------------------------------------------------------------

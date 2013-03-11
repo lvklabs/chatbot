@@ -294,6 +294,7 @@ void Lvk::FE::MainWindow::connectSignals()
 
     // Clue tab
     connect(ui->clueWidget,           SIGNAL(upload()),          SLOT(onUploadScore()));
+    connect(ui->clueWidget,           SIGNAL(showRule(quint64)), SLOT(onClueShowRule(quint64)));
 
     // Misc
     connect(ui->mainTabWidget,        SIGNAL(currentChanged(QWidget*)),
@@ -1849,6 +1850,15 @@ void Lvk::FE::MainWindow::uploadBlockedForUpdate(const DAS::UpdateInfo &info)
 }
 
 //--------------------------------------------------------------------------------------------------
+// Clue
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::onClueShowRule(quint64 ruleId)
+{
+    showRule(ruleId);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Updates
 //--------------------------------------------------------------------------------------------------
 
@@ -1856,3 +1866,4 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
+

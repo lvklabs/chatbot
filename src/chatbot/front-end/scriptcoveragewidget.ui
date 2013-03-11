@@ -55,12 +55,18 @@
      <widget class="QTextBrowser" name="scriptView"/>
      <widget class="QWidget" name="verticalLayoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>15</number>
+       </property>
        <item>
         <widget class="QGroupBox" name="ruleGroupBox">
          <property name="title">
           <string>Rule used:</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
           <property name="topMargin">
            <number>20</number>
           </property>
@@ -84,13 +90,19 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButton">
+           <widget class="QToolButton" name="showRuleDefButton">
+            <property name="toolTip">
+             <string>Show definition (Ctrl+D)</string>
+            </property>
             <property name="text">
              <string>Show definition</string>
             </property>
             <property name="icon">
              <iconset resource="../res/chatbot_theme.qrc">
               <normaloff>:/icons/show_rule.png</normaloff>:/icons/show_rule.png</iconset>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+D</string>
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextBesideIcon</enum>

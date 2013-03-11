@@ -78,10 +78,18 @@ public:
      */
     void clear();
 
+signals:
+
+    /**
+     * This signal is emitted whenever the "Show rule definition" button is pressed.
+     */
+    void showRule(quint64 ruleId);
+
 private slots:
 
     void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
     void onAnchorClicked(const QUrl &url);
+    void onShowRuleDefClicked();
 
 private:
     ScriptCoverageWidget(const ScriptCoverageWidget&);

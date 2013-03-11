@@ -259,6 +259,8 @@ private slots:
     void onScoreRemainingTime(int time);
 
     void onUpdate(const DAS::UpdateInfo &info);
+
+    void onClueShowRule(quint64 ruleId);
 };
 
 /// @}

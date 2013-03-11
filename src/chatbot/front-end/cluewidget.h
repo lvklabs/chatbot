@@ -93,6 +93,11 @@ signals:
      */
     void upload();
 
+    /**
+     * This signal is emitted whenever the "Show rule definition" button is pressed.
+     */
+    void showRule(quint64 ruleId);
+
 private:
     Ui::ClueWidget *ui;
     BE::AppFacade  *m_appFacade;
