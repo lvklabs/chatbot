@@ -23,6 +23,7 @@
 #define LVK_FE_SCRIPTCOVERAGEWIDGET_H
 
 #include "da-clue/analyzedscript.h"
+#include "back-end/rule.h"
 
 #include <QWidget>
 
@@ -70,7 +71,7 @@ public:
     /**
      * Displays the list of analyzed scripts \a ascripts
      */
-    void setAnalyzedScripts(const Clue::AnalyzedList &scripts);
+    void setAnalyzedScripts(const Clue::AnalyzedList &scripts, const BE::Rule *root);
 
     /**
      * Clears the widget.
@@ -83,14 +84,20 @@ private slots:
     void onAnchorClicked(const QUrl &url);
 
 private:
+    ScriptCoverageWidget(const ScriptCoverageWidget&);
+    ScriptCoverageWidget & operator=(const ScriptCoverageWidget&);
+
     Ui::ScriptCoverageWidget *ui;
     Clue::AnalyzedList m_scripts;
     QString m_detective;
+    const BE::Rule *m_root;
 
     void setupTables();
     void connectSignals();
     void addScriptRow(const QString &filename, float coverage);
-    void showScript(const Clue::AnalyzedScript &script);
+    void showScript(int i);
+    void showRuleUsed(int i, int j);
+    const BE::Rule *findRule(quint64 ruleId);
 };
 
 /// @}

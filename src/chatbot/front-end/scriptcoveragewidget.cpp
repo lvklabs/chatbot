@@ -30,9 +30,12 @@ enum ScriptsTableColumns
 };
 
 const QString HTML_SCRIPT_START     = "<html><header><style></style></head><body>";
-const QString HTML_SCRIPT_LINE      = "<a href=\"#%6\" style=\"%1\">%2: %3<br/>%4: %5</a><br/>";
-const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000");
-const QString HTML_SCRIPT_LINE_FAIL = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#F00");
+const QString HTML_SCRIPT_LINE      = "<a href=\"%6,%7\" style=\"%1\">"
+                                       "<span style=\" color:#000088;\">%2:</span> %3<br/>"
+                                       "<span style=\" color:#008800;\">%4:</span> %5"
+                                      "</a><br/>";
+const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000000");
+const QString HTML_SCRIPT_LINE_FAIL = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#aa0000");
 const QString HTML_SCRIPT_END       = "</body></html>";
 
 
@@ -57,7 +60,7 @@ inline QString covFormat(float cov)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::ScriptCoverageWidget), m_detective(tr("Detective"))
+    : QWidget(parent), ui(new Ui::ScriptCoverageWidget), m_detective(tr("Detective")), m_root(0)
 {
     ui->setupUi(this);
 
@@ -66,8 +69,7 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
     connectSignals();
 
     ui->splitter->setSizes(QList<int>() << (width()*2/10) << (width()*4/10) << (width()*4/10));
-
-    //ui->scriptView->setStyleSheet();
+    ui->scriptView->setOpenLinks(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -111,11 +113,13 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
 }
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts)
+void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts,
+                                                       const Lvk::BE::Rule *root)
 {
     clear();
 
     m_scripts = scripts;
+    m_root = root; // CHECK deep copy? !!!
 
     float globalCov = 0.0;
 
@@ -147,10 +151,14 @@ void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float 
 
 void Lvk::FE::ScriptCoverageWidget::clear()
 {
+    m_root = 0;
     m_scripts.clear();
     ui->scriptsTable->clearContents();
     ui->scriptsTable->setRowCount(0);
     ui->coverageLabel->clear();
+    ui->ruleView->clear();
+    ui->scriptView->setText(tr("(No script selected)"));
+    ui->ruleGroupBox->setVisible(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -161,7 +169,7 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
     QTableWidgetItem *item = ui->scriptsTable->item(current.row(), ScriptNameCol);
 
     if (item) {
-        showScript(m_scripts[current.row()]);
+        showScript(current.row());
     } else {
         ui->scriptView->setText(tr("(No script selected)"));
     }
@@ -171,24 +179,30 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
 
 void Lvk::FE::ScriptCoverageWidget::onAnchorClicked(const QUrl &url)
 {
-    // TODO
-    ui->groupBox->setTitle("Rule " + url.toString());
+   QStringList indexes = url.toString().split(",");
+   int i = indexes[0].toUInt();
+   int j = indexes[1].toUInt();
+
+    showRuleUsed(i, j);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ScriptCoverageWidget::showScript(const Lvk::Clue::AnalyzedScript &script)
+void Lvk::FE::ScriptCoverageWidget::showScript(int i)
 {
-    if (script.isEmpty()) {
+    if (m_scripts[i].isEmpty()) {
         ui->scriptView->setText(tr("(Empty script)"));
         return;
     }
 
     QString html = HTML_SCRIPT_START;
 
-    foreach (const Clue::AnalyzedLine &line, script) {
+    for (int j = 0; j < m_scripts[i].size(); ++j) {
+        const Clue::AnalyzedLine &line = m_scripts[i][j];
+        const QString &character = m_scripts[i].character;
+
         html += (line.outputIdx != -1 ? HTML_SCRIPT_LINE_OK : HTML_SCRIPT_LINE_FAIL)
-                .arg(m_detective, line.question, script.character, line.answer).arg(line.ruleId);
+                .arg(m_detective, line.question, character, line.answer).arg(i).arg(j);
     }
 
     html += HTML_SCRIPT_END;
@@ -196,3 +210,46 @@ void Lvk::FE::ScriptCoverageWidget::showScript(const Lvk::Clue::AnalyzedScript &
     ui->scriptView->setText(html);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::showRuleUsed(int i, int j)
+{
+    Clue::AnalyzedLine line = m_scripts[i][j];
+
+    const BE::Rule *rule = findRule(line.ruleId);
+
+    ui->ruleView->setRule(rule, line.inputIdx);
+
+    if (line.outputIdx == -1 && !line.hint.isEmpty()) {
+        ui->hintLabel->setText(tr("Hint: ") + line.hint);
+        ui->lightBulb->setVisible(true);
+    } else {
+        ui->hintLabel->clear();
+        ui->lightBulb->setVisible(false);
+    }
+
+    ui->ruleGroupBox->setVisible(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+const Lvk::BE::Rule *Lvk::FE::ScriptCoverageWidget::findRule(quint64 ruleId)
+{
+    if (!m_root) {
+        return 0;
+    }
+
+    for (BE::Rule::const_iterator it = m_root->begin(); it != m_root->end(); ++it) {
+        if (ruleId != 0) {
+            if ((*it)->id() == ruleId) {
+                return *it;
+            }
+        } else {
+            if ((*it)->type() == BE::Rule::EvasiveRule) {
+                return *it;
+            }
+        }
+    }
+
+    return 0;
+}

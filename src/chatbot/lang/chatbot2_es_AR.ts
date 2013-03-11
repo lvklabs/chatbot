@@ -118,6 +118,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation></translation>
     </message>
     <message>
+        <location filename="../front-end/cluewidget.ui" line="86"/>
+        <source>GroupBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Pedro</source>
         <translation type="obsolete">Pedro</translation>
     </message>
@@ -126,22 +131,21 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Florencia</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="72"/>
+        <location filename="../front-end/cluewidget.ui" line="52"/>
         <source>Refresh</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="35"/>
+        <location filename="../front-end/cluewidget.ui" line="22"/>
         <source>Upload</source>
         <translation>Enviar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="95"/>
         <source>Character: </source>
-        <translation>Personaje: </translation>
+        <translation type="obsolete">Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="55"/>
+        <location filename="../front-end/cluewidget.ui" line="69"/>
         <source>Import...</source>
         <translation>Importar...</translation>
     </message>
@@ -302,6 +306,11 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <location filename="../back-end/appfacade.cpp" line="264"/>
         <source>Evasives</source>
         <translation>Si no entiende</translation>
+    </message>
+    <message>
+        <location filename="../back-end/appfacade.cpp" line="266"/>
+        <source>I&apos;m guilty!</source>
+        <translation>Soy culpable!</translation>
     </message>
 </context>
 <context>
@@ -1510,17 +1519,42 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Cobertura global: 60%</translation>
     </message>
     <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="60"/>
+        <source>Detective</source>
+        <translation>Detective</translation>
+    </message>
+    <message>
         <location filename="../front-end/scriptcoveragewidget.cpp" line="96"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
         <location filename="../front-end/scriptcoveragewidget.cpp" line="97"/>
-        <source>Coverage</source>
-        <translation>Cobertura</translation>
+        <source>%</source>
+        <translation>%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="125"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="158"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="172"/>
+        <source>(No script selected)</source>
+        <translation>(Ningún guión seleccionado)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="192"/>
+        <source>(Empty script)</source>
+        <translation>(Guión vacío)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="222"/>
+        <source>Hint: </source>
+        <translation>Pista: </translation>
+    </message>
+    <message>
+        <source>Coverage</source>
+        <translation type="obsolete">Cobertura</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="131"/>
         <source>Global coverage: </source>
         <translation>Cobertura global: </translation>
     </message>
@@ -2454,18 +2488,18 @@ p, li { white-space: pre-wrap; }
         <translation>Cambiar nombre</translation>
     </message>
     <message>
-        <location filename="../front-end/ruleeditwidget.cpp" line="245"/>
+        <location filename="../front-end/ruleeditwidget.cpp" line="246"/>
         <source>Chatbot replies:</source>
         <translation>El chatbot responde:</translation>
     </message>
     <message>
-        <location filename="../front-end/ruleeditwidget.cpp" line="246"/>
-        <location filename="../front-end/ruleeditwidget.cpp" line="262"/>
+        <location filename="../front-end/ruleeditwidget.cpp" line="247"/>
+        <location filename="../front-end/ruleeditwidget.cpp" line="264"/>
         <source>Teach rule to the chatbot</source>
         <translation>Enseñar regla al chatbot</translation>
     </message>
     <message>
-        <location filename="../front-end/ruleeditwidget.cpp" line="260"/>
+        <location filename="../front-end/ruleeditwidget.cpp" line="262"/>
         <source>If chatbot does not understand, it replies:</source>
         <translation>Si el chatbot no entiende la pregunta responde:</translation>
     </message>
@@ -2819,22 +2853,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Cobertura global: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="54"/>
-        <source>Script HERE</source>
-        <translation type="unfinished"></translation>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="61"/>
+        <source>Rule used:</source>
+        <translation>Regla usada para responder:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="59"/>
-        <source>RuleMatch HERE</source>
-        <translation type="unfinished"></translation>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="93"/>
+        <source>Hint:</source>
+        <translation>Pista:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="67"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="120"/>
         <source>Remove all conversations</source>
         <translation>Borrar todas las conversaciones</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="72"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="125"/>
         <source>Remove selected conversation</source>
         <translation>Borrar conversación seleccionada</translation>
     </message>
