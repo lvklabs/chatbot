@@ -103,6 +103,8 @@ private:
     BE::AppFacade  *m_appFacade;
 
     void showError(const QString &filename);
+    void loadSettings();
+    void saveSettings();
 };
 
 /// @}

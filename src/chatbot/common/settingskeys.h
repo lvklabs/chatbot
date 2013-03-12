@@ -42,4 +42,6 @@
 
 #define SETTING_NLP_LANGUAGE                        "NlpEngine/Language"
 
+#define SETTING_CLUE_WIDGET_COLS_W                  "Clue/Columns/Width"
+
 #endif // LVK_CMN_SETTINGSKEYS_H

@@ -29,6 +29,7 @@
 
 class QModelIndex;
 class QUrl;
+class QSplitter;
 
 namespace Ui {
     class ScriptCoverageWidget;
@@ -67,6 +68,11 @@ public:
      * Destroys the object.
      */
     ~ScriptCoverageWidget();
+
+    /**
+     * Returns the wiget splitter
+     */
+    QSplitter &splitter();
 
     /**
      * Displays the list of analyzed scripts \a ascripts

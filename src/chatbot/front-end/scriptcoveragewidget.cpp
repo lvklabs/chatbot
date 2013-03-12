@@ -115,10 +115,19 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
             SIGNAL(clicked()),
             SLOT(onShowRuleDefClicked()));
 }
+
+//--------------------------------------------------------------------------------------------------
+
+QSplitter &Lvk::FE::ScriptCoverageWidget::splitter()
+{
+    return *ui->splitter;
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts,
                                                        const Lvk::BE::Rule *root)
+
 {
     clear();
 
@@ -140,7 +149,6 @@ void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList 
     }
 
 }
-
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float coverage)
@@ -157,6 +165,7 @@ void Lvk::FE::ScriptCoverageWidget::clear()
 {
     m_root = 0;
     m_scripts.clear();
+
     ui->scriptsTable->clearContents();
     ui->scriptsTable->setRowCount(0);
     ui->coverageLabel->clear();

@@ -25,11 +25,14 @@
 #include "da-clue/clueengine.h"
 #include "da-clue/scripterror.h"
 #include "common/globalstrings.h"
+#include "common/settings.h"
+#include "common/settingskeys.h"
 #include "ui_cluewidget.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QSplitter>
 
 //--------------------------------------------------------------------------------------------------
 // ClueWidget
@@ -45,6 +48,8 @@ Lvk::FE::ClueWidget::ClueWidget(QWidget *parent) :
     connect(ui->uploadButton,  SIGNAL(clicked()),         SIGNAL(upload()));
     connect(ui->scripts,       SIGNAL(showRule(quint64)), SIGNAL(showRule(quint64)));
 
+    loadSettings();
+
     refresh();
 }
 
@@ -52,6 +57,8 @@ Lvk::FE::ClueWidget::ClueWidget(QWidget *parent) :
 
 Lvk::FE::ClueWidget::~ClueWidget()
 {
+    saveSettings();
+
     delete ui;
 }
 
@@ -128,4 +135,39 @@ void Lvk::FE::ClueWidget::showError(const QString &filename)
     dialog.setCancelButtonVisible(false);
     dialog.setPixmap(QStyle::SP_MessageBoxCritical);
     dialog.exec();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ClueWidget::loadSettings()
+{
+    QString colsw = Cmn::Settings().value(SETTING_CLUE_WIDGET_COLS_W).toString();
+
+    if (colsw.isEmpty()) {
+        return;
+    }
+
+    QStringList ws = colsw.split(",", QString::SkipEmptyParts);
+
+    QList<int> sizes;
+    foreach (const QString &w, ws) {
+        sizes.append(w.toInt());
+    }
+
+    if (!sizes.isEmpty()) {
+        ui->scripts->splitter().setSizes(sizes);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ClueWidget::saveSettings()
+{
+    QString colsw;
+
+    foreach (int size, ui->scripts->splitter().sizes()) {
+        colsw += QString::number(size) + ",";
+    }
+
+    Cmn::Settings().setValue(SETTING_CLUE_WIDGET_COLS_W, colsw);
 }
