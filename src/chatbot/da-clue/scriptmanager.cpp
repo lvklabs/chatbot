@@ -33,6 +33,25 @@
 #include <QObject>
 
 //--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+namespace
+{
+
+inline bool equalFilename(QString f1, QString f2)
+{
+#ifdef WIN32
+    return QFileInfo(f1).fileName().compare(QFileInfo(f2).fileName(), Qt::CaseInsensitive) == 0;
+#else
+    return QFileInfo(f1).fileName().compare(QFileInfo(f2).fileName(), Qt::CaseSensitive) == 0;
+#endif
+}
+
+} // namespace
+
+
+//--------------------------------------------------------------------------------------------------
 // ScriptManager
 //--------------------------------------------------------------------------------------------------
 
@@ -161,7 +180,15 @@ bool Lvk::Clue::ScriptManager::loadFile(const QString &filename, const QString &
 
     if (parser.parse(filename, script)) {
         if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
-            m_scripts.append(script);
+            int i = 0;
+
+            for (; i < m_scripts.size() && !equalFilename(m_scripts[i].filename, filename); ++i);
+
+            if (i < m_scripts.size()) {
+                m_scripts[i] = script;
+            } else {
+                m_scripts.append(script);
+            }
         } else {
             setError(Clue::CharacterMismatchError, filename, script.character);
         }
