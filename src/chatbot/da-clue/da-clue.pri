@@ -13,9 +13,9 @@ HEADERS += \
     $$PROJECT_PATH/da-clue/genericscript.h \
     $$PROJECT_PATH/da-clue/clueengine.h \
     $$PROJECT_PATH/da-clue/character.h \
-    $$PROJECT_PATH/da-clue/analizedscript.h \
+    $$PROJECT_PATH/da-clue/analyzedscript.h \
     $$PROJECT_PATH/da-clue/scriptparser.h \
-    $$PROJECT_PATH/da-clue/analizedline.h \
+    $$PROJECT_PATH/da-clue/analyzedline.h \
     $$PROJECT_PATH/da-clue/scripterror.h \
     $$PROJECT_PATH/da-clue/regexp.h
 
