@@ -387,6 +387,11 @@ public:
     void setCurrentCharacter(const QString &name);
 
     /**
+     * Forces to reload all scripts
+     */
+    void reloadScripts();
+
+    /**
      * Returns the list of scripts currently loaded.
      */
     const Clue::ScriptList &scripts();

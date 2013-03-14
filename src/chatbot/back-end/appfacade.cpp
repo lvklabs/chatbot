@@ -919,6 +919,13 @@ void Lvk::BE::AppFacade::setCurrentCharacter(const QString &name)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::BE::AppFacade::reloadScripts()
+{
+    m_scriptMgr.loadScripts();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const Lvk::Clue::ScriptList & Lvk::BE::AppFacade::scripts()
 {
     return m_scriptMgr.scripts();
