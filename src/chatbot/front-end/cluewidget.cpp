@@ -155,7 +155,7 @@ void Lvk::FE::ClueWidget::loadSettings()
     }
 
     if (!sizes.isEmpty()) {
-        ui->scripts->splitter().setSizes(sizes);
+        ui->scripts->setSplitterSizes(sizes);
     }
 }
 
@@ -165,7 +165,7 @@ void Lvk::FE::ClueWidget::saveSettings()
 {
     QString colsw;
 
-    foreach (int size, ui->scripts->splitter().sizes()) {
+    foreach (int size, ui->scripts->splitterSizes()) {
         colsw += QString::number(size) + ",";
     }
 

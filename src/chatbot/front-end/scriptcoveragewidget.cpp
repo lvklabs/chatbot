@@ -64,12 +64,13 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    m_sizes = QList<int>() << (width()*2/10) << (width()*4/10) << (width()*4/10);
+
+    ui->splitter->setSizes(m_sizes);
+
     clear();
     setupTables();
     connectSignals();
-
-    ui->splitter->setSizes(QList<int>() << (width()*2/10) << (width()*4/10) << (width()*4/10));
-    ui->scriptView->setOpenLinks(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ void Lvk::FE::ScriptCoverageWidget::setupTables()
     ui->scriptsTable->setColumnWidth(ScriptNameCol, 120);
     ui->scriptsTable->setHorizontalHeaderLabels(QStringList()
                                                 << tr("File")
-                                                << tr("%"));
+                                                << tr("Coverage"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -114,20 +115,44 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
     connect(ui->showRuleDefButton,
             SIGNAL(clicked()),
             SLOT(onShowRuleDefClicked()));
+
+    connect(ui->splitter,
+            SIGNAL(splitterMoved(int, int)),
+            SLOT(onSplitterMoved(int, int)));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-QSplitter &Lvk::FE::ScriptCoverageWidget::splitter()
+QList<int> Lvk::FE::ScriptCoverageWidget::splitterSizes() const
 {
-    return *ui->splitter;
+    return m_sizes;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::setSplitterSizes(const QList<int> &sizes)
+{
+    m_sizes = sizes;
+
+    showRuleUsedColumn(ui->ruleGroupBox->isVisible());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::onSplitterMoved(int, int)
+{
+    m_sizes[0] = ui->splitter->sizes()[0];
+    m_sizes[1] = ui->splitter->sizes()[1];
+
+    if (ui->splitter->sizes()[2] > 0) {
+        m_sizes[2] = ui->splitter->sizes()[2];
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts,
                                                        const Lvk::BE::Rule *root)
-
 {
     clear();
 
@@ -171,7 +196,8 @@ void Lvk::FE::ScriptCoverageWidget::clear()
     ui->coverageLabel->clear();
     ui->ruleView->clear();
     ui->scriptView->setText(tr("(No script selected)"));
-    ui->ruleGroupBox->setVisible(false);
+
+    showRuleUsedColumn(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -187,7 +213,7 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
         ui->scriptView->setText(tr("(No script selected)"));
     }
 
-    ui->ruleGroupBox->setVisible(false);
+    showRuleUsedColumn(false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -250,7 +276,16 @@ void Lvk::FE::ScriptCoverageWidget::showRuleUsed(int i, int j)
         ui->lightBulb->setVisible(false);
     }
 
-    ui->ruleGroupBox->setVisible(true);
+    showRuleUsedColumn(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::showRuleUsedColumn(bool show)
+{
+    ui->splitter->setSizes(show ? m_sizes : m_sizes.mid(0, 2));
+    ui->ruleGroupBox->setVisible(show);
+
 }
 
 //--------------------------------------------------------------------------------------------------

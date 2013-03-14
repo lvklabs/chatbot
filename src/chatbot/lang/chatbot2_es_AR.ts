@@ -118,11 +118,6 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="22"/>
-        <source>GroupBox</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Pedro</source>
         <translation type="obsolete">Pedro</translation>
     </message>
@@ -131,12 +126,17 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Florencia</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="71"/>
+        <location filename="../front-end/cluewidget.ui" line="22"/>
+        <source>Character: XXX</source>
+        <translation>Personaje: XXX</translation>
+    </message>
+    <message>
+        <location filename="../front-end/cluewidget.ui" line="59"/>
         <source>Refresh</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="54"/>
+        <location filename="../front-end/cluewidget.ui" line="82"/>
         <source>Upload</source>
         <translation>Enviar</translation>
     </message>
@@ -145,7 +145,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.ui" line="37"/>
+        <location filename="../front-end/cluewidget.ui" line="36"/>
         <source>Import...</source>
         <translation>Importar...</translation>
     </message>
@@ -494,27 +494,27 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
 <context>
     <name>Lvk::FE::ClueWidget</name>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="72"/>
+        <location filename="../front-end/cluewidget.cpp" line="79"/>
         <source>Character: </source>
         <translation>Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="83"/>
+        <location filename="../front-end/cluewidget.cpp" line="90"/>
         <source>Select the scripts files to import</source>
         <translation>Seleccioná los guiones que deseas importar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="119"/>
+        <location filename="../front-end/cluewidget.cpp" line="126"/>
         <source>Error %1</source>
         <translation>Error %1</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="120"/>
+        <location filename="../front-end/cluewidget.cpp" line="127"/>
         <source>Cannot import file &apos;%1&apos;.</source>
         <translation>No se pudo importar el archivo &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="123"/>
+        <location filename="../front-end/cluewidget.cpp" line="130"/>
         <source> The character does not match.</source>
         <translation> El personaje no coincide.</translation>
     </message>
@@ -531,7 +531,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation type="obsolete">No se pudo importar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="126"/>
+        <location filename="../front-end/cluewidget.cpp" line="133"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
@@ -541,7 +541,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation type="obsolete">No se pudo importar el archivo.</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="108"/>
+        <location filename="../front-end/cluewidget.cpp" line="115"/>
         <source>Character: (none)</source>
         <translation>Personaje: (ninguno)</translation>
     </message>
@@ -1524,37 +1524,37 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Detective</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="98"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="97"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="99"/>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="164"/>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="178"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="179"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="193"/>
         <source>(No script selected)</source>
         <translation>(Ningún guión seleccionado)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="205"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="222"/>
         <source>(Empty script)</source>
         <translation>(Guión vacío)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="235"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="252"/>
         <source>Hint: </source>
         <translation>Pista: </translation>
     </message>
     <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="98"/>
         <source>Coverage</source>
-        <translation type="obsolete">Cobertura</translation>
+        <translation>Cobertura</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="137"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="151"/>
         <source>Global coverage: </source>
         <translation>Cobertura global: </translation>
     </message>
@@ -2634,22 +2634,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Ver que estoy enviando.</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="249"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="276"/>
         <source>File not found &apos;%1&apos;</source>
         <translation>No se encontró el archivo &apos;%1&apos; </translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="253"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="280"/>
         <source>Cannot read file &apos;%1&apos;</source>
         <translation>No se pudo leer el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="257"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="284"/>
         <source>Invalid format in file &apos;%1&apos;</source>
         <translation>El archivo &apos;%1&apos; contiene un formato inválido</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="261"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="288"/>
         <source>Current character &apos;%1&apos; does not match character &apos;%2&apos; in file &apos;%3&apos;</source>
         <translation>El personaje actual &apos;%1&apos; no coincide con el personaje &apos;%2&apos; del archivo &apos;%3&apos;</translation>
     </message>
@@ -2658,17 +2658,17 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">El personaje actual no corresponde con el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="266"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="293"/>
         <source>Cannot copy file &apos;%1&apos;</source>
         <translation>No se pudo copiar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="270"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="297"/>
         <source>Cannot overwrite file &apos;%1&apos;</source>
         <translation>No se pudo sobreescribir el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="275"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="302"/>
         <source>Unknown error while parsing file &apos;%1&apos;</source>
         <translation>Error desconocido mientras se leía el archivo &apos;%1&apos;</translation>
     </message>
@@ -2848,27 +2848,27 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Filtro:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="29"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="190"/>
         <source>Global coverage:</source>
         <translation>Cobertura global: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="64"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="55"/>
         <source>Rule used:</source>
         <translation>Regla usada para responder:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="95"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="86"/>
         <source>Show definition (Ctrl+D)</source>
         <translation>Mostrar definición (Ctrl+D)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="98"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="89"/>
         <source>Show definition</source>
         <translation>Mostrar definición</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="105"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="102"/>
         <source>Ctrl+D</source>
         <translation></translation>
     </message>
@@ -2878,12 +2878,12 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Pista:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="194"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="197"/>
         <source>Remove all conversations</source>
         <translation>Borrar todas las conversaciones</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="199"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="202"/>
         <source>Remove selected conversation</source>
         <translation>Borrar conversación seleccionada</translation>
     </message>

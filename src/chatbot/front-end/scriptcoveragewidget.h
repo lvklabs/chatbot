@@ -26,6 +26,7 @@
 #include "back-end/rule.h"
 
 #include <QWidget>
+#include <QList>
 
 class QModelIndex;
 class QUrl;
@@ -70,9 +71,14 @@ public:
     ~ScriptCoverageWidget();
 
     /**
-     * Returns the wiget splitter
+     * Returns the widget splitter sizes
      */
-    QSplitter &splitter();
+    QList<int> splitterSizes() const;
+
+    /**
+     * Returns the wiget splitter sizes
+     */
+    void setSplitterSizes(const QList<int> &sizes);
 
     /**
      * Displays the list of analyzed scripts \a ascripts
@@ -96,6 +102,7 @@ private slots:
     void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
     void onAnchorClicked(const QUrl &url);
     void onShowRuleDefClicked();
+    void onSplitterMoved(int, int);
 
 private:
     ScriptCoverageWidget(const ScriptCoverageWidget&);
@@ -105,12 +112,14 @@ private:
     Clue::AnalyzedList m_scripts;
     QString m_detective;
     const BE::Rule *m_root;
+    QList<int> m_sizes;
 
     void setupTables();
     void connectSignals();
     void addScriptRow(const QString &filename, float coverage);
     void showScript(int i);
     void showRuleUsed(int i, int j);
+    void showRuleUsedColumn(bool show);
     const BE::Rule *findRule(quint64 ruleId);
 };
 

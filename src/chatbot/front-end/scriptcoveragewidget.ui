@@ -39,7 +39,11 @@
        <bool>false</bool>
       </attribute>
      </widget>
-     <widget class="QTextBrowser" name="scriptView"/>
+     <widget class="QTextBrowser" name="scriptView">
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
+     </widget>
      <widget class="QWidget" name="verticalLayoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
