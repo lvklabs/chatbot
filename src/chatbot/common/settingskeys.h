@@ -25,7 +25,7 @@
 #define SETTING_APP_LANGUAGE                        "Application/Language"
 #define SETTING_APP_SEND_STATS                      "Application/SendStatistics"
 
-#define SETTING_LAST_FILE                           "Files/LastFile"
+#define SETTING_LAST_FILE                           "Files/LastClueFile"
 #define SETTING_LOGS_PATH                           "Files/LogsPath"
 #define SETTING_DATA_PATH                           "Files/DataPath"
 #define SETTING_LANG_PATH                           "Files/LangPath"
