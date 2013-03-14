@@ -16,84 +16,106 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="0" colspan="5">
+     <item row="0" column="0" colspan="2">
       <widget class="QGroupBox" name="charaterBox">
        <property name="title">
-        <string>GroupBox</string>
+        <string>Character: XXX</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <property name="topMargin">
          <number>20</number>
         </property>
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="Lvk::FE::ScriptCoverageWidget" name="scripts"/>
+        </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QToolButton" name="importButton">
+            <property name="text">
+             <string>Import...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../res/chatbot_theme.qrc">
+              <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="refreshButton">
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../res/chatbot_theme.qrc">
+              <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="uploadButton">
+            <property name="text">
+             <string>Upload</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../res/chatbot_theme.qrc">
+              <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QToolButton" name="importButton">
-       <property name="text">
-        <string>Import...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/open_chatbot.png</normaloff>:/icons/open_chatbot.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QToolButton" name="uploadButton">
-       <property name="text">
-        <string>Upload</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QToolButton" name="refreshButton">
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/chatbot_theme.qrc">
-         <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
