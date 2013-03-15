@@ -1,6 +1,7 @@
-This folder is intended to build and release a Chatbot Open version
+Chatbot - Open Version
+======================
 
-To release a new version just invoke:
+To compile and package a new version just invoke:
 
 ./release.sh
 

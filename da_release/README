@@ -1,12 +1,17 @@
-This folder is only intended to build and release a Chatbot for the "Dale Aceptar" contest
+Chatbot - Dale Aceptar Version
+==============================
 
-To release a new version just invoke:
+NOTE: Most likely what you are looking for is the open or public version. See open_release/README.
+      This folder is only intended to build and release a custom Chatbot for the "Dale Aceptar" contest.
+
+To release a new "Dale Aceptar" version just invoke:
 
 ./release.sh
 
 The package version will be taken from src/common/version.h
 
-If the proper keys of are added in the key-chain, the script runs unattended
+If the proper keys of are added in the key-chain, the script runs unattended and uploads the
+package.
 
 
 To download precompiled builds of the project visit: 
