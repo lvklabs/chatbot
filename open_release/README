@@ -1,0 +1,14 @@
+Chatbot - Open Version
+======================
+
+To compile and package a new version just invoke:
+
+./release.sh
+
+
+
+To download precompiled builds of the project visit: 
+
+http://lavandaink.com.ar/builds/chatbot
+
+

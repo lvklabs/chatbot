@@ -1,0 +1,75 @@
+
+
+    ---------------------------------------------------------        
+    COPYING FreeLing: Open-Source Suite of Language Analyzers
+    ---------------------------------------------------------        
+
+  The contents of this package are distributed under different open licenses. 
+If you want to redistribute this software, part of it, or derived works based 
+on it or on any of its parts, make sure you are doing so under the terms stated
+in the license applying to each of the involved modules.
+
+  The licenses applying to the modules contained in FreeLing are the following:
+
+ 1.- English WordNet synset and relation data, contained in files
+     data/en/senses* and data/common/wn16* in this package are
+     distributed under the original WordNet license.  You can find it
+     in the file LICENSES/WN.license included in this package or at
+     http://wordnet.princeton.edu
+
+ 2.- Italian dictionary contained in the file data/it/dicc.src in this package is
+     straightforwardly extracted from Morph-it! lexicon developed at the University
+     of bologna (see http://sslmitdev-online.sslmit.unibo.it/linguistics/morph-it.php),
+     and is distributed under an Attribution-ShareAlike Creative Commons license.
+     You'll find the license in the file LICENSES/CC-BY-SA.license included in this 
+     package or at http://creativecommons.org/licenses/by-sa/2.0/  
+
+ 3.- Galician dictionary contained in the file data/gl/dicc.src in this package is
+     straightforwardly extracted from the OpenTrad project (http://www.opentrad.org)
+     and has been developed by the Seminario de Lingüística Informática (http://sli.uvigo.es)
+     at Universidade de Vigo. It is distributed under an Attribution-ShareAlike 
+     Creative Commons license.
+     You'll find the license in the file LICENSES/CC-BY-SA.license included in this 
+     package or at http://creativecommons.org/licenses/by-sa/2.0/  
+
+ 4.- Spanish dictionary contained in the file data/es/dicc.src in this
+     package is extracted from the Spanish Resource Grammar projects
+     (http://www.upf.edu/pdi/iula/montserrat.marimon/srg.html) and was
+     developed at the Institut Universitari de Linguistica Aplicada 
+     (http://www.iula.upf.edu) of the Universitat Pompeu Fabra. It is 
+     distributed under a Lesser General Public License For Linguistic 
+     Resources license.
+     You'll find the license in the file LICENSES/LGPLLR.license included 
+     in this package or at http://sanskrit.inria.fr/DATA/LGPLLR.html
+
+ 5.- Catalan dictionary was obtained from "El Corrector", a Catalan 
+     spellchecker project (http://projectes.lafarga.cat/projects/corrector), 
+     which was funded  by the Catalan Government, developed by Fundacio 
+     Barcelona Media (http://www.barcelonamedia.org/), and released under GPL.
+
+ 6.- Portuguese dictionary contained in the file data/pt/dicc.src in this package is
+     extracted from the LABEL-LEX project (http://label.ist.utl.pt/pt/labellex_pt.php)
+     developed by Laboratório de Engenharia da Linguagem (http://label.ist.utl.pt) at 
+     Universidade Técnica de Lisboa (http://www.utl.pt), and adapted to FreeLing
+     by Pablo Gamallo and Marcos Garcia, from Universidade de Santiago de Compostela.
+     It is licensed under a Creative Commons license that can be found in the file 
+     LICENSES/CC-BY-SA.license included in this package or 
+     at http://creativecommons.org/licenses/by-sa/2.0/  
+
+ 7.- Welsh dictionary was extracted from Eurfa project (http://kevindonnelly.org.uk/eurfa/)
+     developed by Kevin Donelly. It is distributed under its original GPL licencse.
+
+ 8.- Asturian dictionary was developed at the Universidad the Oviedo in the 
+     framework of the Eslema project (http://www.uniovi.es/eslema/). It is distributed
+     under its original GPL license.
+
+ 8.- Word Sense Disambiguation module UKB was developed at the Basque Country Universitiy,
+     and is distributed under GPL 3.0.  See http://ixa2.si.ehu.es/ukb/ for details.
+
+ 9.- All other data and code modules in this package are distributed
+     under GNU General Public License (GPL) and copyrighted by
+     Universitat Politècnica de Catalunya.
+
+     You can find a copy of GPL license in the file
+     LICENSES/GPL.license included in this package or at
+     http://www.gnu.org/licenses

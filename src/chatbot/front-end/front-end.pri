@@ -1,8 +1,7 @@
 # Front-end module
 
 QT += \
-    gui \
-    qt3support ### TODO remove this dep
+    gui
 
 isEmpty(PROJECT_PATH) {
     PROJECT_PATH = .

@@ -546,7 +546,7 @@ void Lvk::FE::ChatHistoryWidget::filter(const QString &text)
     for (int i = 0; i < ui->conversationTable->rowCount(); ++i) {
         bool match = false;
         for (int j = 0; j < ui->conversationTable->columnCount() && !match; ++j) {
-            if (ui->conversationTable->item(i, j)->text().contains(text, false)) {
+            if (ui->conversationTable->item(i, j)->text().contains(text, Qt::CaseInsensitive)) {
                 match = true;
             }
         }

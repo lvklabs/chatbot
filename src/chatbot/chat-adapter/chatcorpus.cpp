@@ -32,6 +32,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QDateTime>
+#include <QtDebug>
 
 #define CORPUS_FILE     "corpus.dat"
 
@@ -84,7 +85,7 @@ void Lvk::CA::ChatCorpus::init()
             load();
 
             if (!m_corpusFile.open(QFile::Append)) {
-                qWarning(QObject::tr("Warning: cannot open corpus file for writing"));
+                qWarning() << QObject::tr("Warning: cannot open corpus file for writing");
             }
 
             m_init = true;
@@ -143,7 +144,7 @@ void Lvk::CA::ChatCorpus::load()
         return;
     }
     if (!m_corpusFile.open(QFile::ReadOnly)) {
-        qWarning(QObject::tr("Warning: cannot open corpus file for reading"));
+        qWarning() << QObject::tr("Warning: cannot open corpus file for reading");
         return;
     }
 

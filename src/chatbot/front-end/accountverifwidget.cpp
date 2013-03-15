@@ -92,7 +92,7 @@ void Lvk::FE::AccountVerifWidget::onVerifyPressed()
     // user's email. The 'Dale Aceptar' verification mechanism provide us of the facebook
     // username so this check only makes sense for non-'Dale Aceptar' versions because
     #ifndef DA_CONTEST
-    if (uiChatSelected() == BE::FbChat && username.contains("@") &&
+    if (ui->fbChatRadio->isChecked() && username.contains("@") &&
                !username.contains("@facebook.com")) {
         title = tr("Invalid username");
         errMsg = tr("To connect you need to provide your Facebook username instead of your "
