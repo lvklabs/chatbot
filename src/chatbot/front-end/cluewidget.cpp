@@ -78,7 +78,10 @@ void Lvk::FE::ClueWidget::refresh()
     if (m_appFacade && !m_appFacade->currentCharacter().isEmpty()) {
         ui->charaterBox->setTitle(tr("Character: ") + m_appFacade->currentCharacter());
         m_appFacade->reloadScripts();
+
+        int i = ui->scripts->currentScript();
         ui->scripts->setAnalyzedScripts(m_appFacade->analyzedScripts(), m_appFacade->rootRule());
+        ui->scripts->setCurrentScript(i);
     } else {
         clear();
     }

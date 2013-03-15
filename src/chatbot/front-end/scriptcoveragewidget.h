@@ -86,6 +86,16 @@ public:
     void setAnalyzedScripts(const Clue::AnalyzedList &scripts, const BE::Rule *root);
 
     /**
+     * Returns the index of the currently selected script
+     */
+    int currentScript();
+
+    /**
+     * Sets the \a i-th script as the currently selected script
+     */
+    void setCurrentScript(int i);
+
+    /**
      * Clears the widget.
      */
     void clear();

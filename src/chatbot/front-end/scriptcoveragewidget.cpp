@@ -174,6 +174,21 @@ void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList 
     }
 
 }
+
+//--------------------------------------------------------------------------------------------------
+
+int Lvk::FE::ScriptCoverageWidget::currentScript()
+{
+    return ui->scriptsTable->currentRow();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::setCurrentScript(int i)
+{
+    ui->scriptsTable->setCurrentCell(i, 0);
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float coverage)
@@ -310,3 +325,4 @@ const Lvk::BE::Rule *Lvk::FE::ScriptCoverageWidget::findRule(quint64 ruleId)
 
     return 0;
 }
+
