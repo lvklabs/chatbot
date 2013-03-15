@@ -1,20 +1,18 @@
 Chatbot - Dale Aceptar Version
 ==============================
 
-NOTE: Most likely what you are looking for is the open or public version. See open_release/README.
-      This folder is only intended to build and release a custom Chatbot for the "Dale Aceptar" contest.
+NOTE: This folder is only intended to build and release a custom Chatbot 
+      for the "Dale Aceptar" contest.
+      Most likely what you are looking for is the open version. See:
+      open_release/README.
+      
 
-To release a new "Dale Aceptar" version just invoke:
+To compile, package and upload a new "Dale Aceptar" version just invoke:
 
 ./release.sh
-
-The package version will be taken from src/common/version.h
-
-If the proper keys of are added in the key-chain, the script runs unattended and uploads the
-package.
 
 
 To download precompiled builds of the project visit: 
 
-http://lvklabs.com/builds/chatbot
+http://lavandaink.com.ar/builds/chatbot
 

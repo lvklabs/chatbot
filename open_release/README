@@ -5,9 +5,10 @@ To compile and package a new version just invoke:
 
 ./release.sh
 
-The package version will be taken from src/common/version.h
+
 
 To download precompiled builds of the project visit: 
 
-http://lvklabs.com/builds/chatbot
+http://lavandaink.com.ar/builds/chatbot
+
 

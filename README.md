@@ -9,7 +9,7 @@ Developed by LVK (www.lvklabs.com) in conjunction with FaMAF - UNC
 
 Currently there two versions:
  - The "Public" or "Open" version for general usage
- - The "Dale Aceptar" version intended only for the Dale Aceptar contest https://www.daleaceptar.gob.ar
+ - The "Dale Aceptar" version intended only for the Dale Aceptar contest: https://www.daleaceptar.gob.ar
 
 ### Compile
 
