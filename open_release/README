@@ -1,0 +1,12 @@
+This folder is intended to build and release a Chatbot Open version
+
+To release a new version just invoke:
+
+./release.sh
+
+The package version will be taken from src/common/version.h
+
+To download precompiled builds of the project visit: 
+
+http://lvklabs.com/builds/chatbot
+
