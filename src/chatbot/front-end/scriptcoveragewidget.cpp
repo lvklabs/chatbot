@@ -35,7 +35,8 @@ const QString HTML_SCRIPT_LINE      = "<a href=\"%6,%7\" style=\"%1\">"
                                        "<span style=\" color:#008800;\">%4:</span> %5"
                                       "</a><br/>";
 const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000000");
-const QString HTML_SCRIPT_LINE_FAIL = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#aa0000");
+const QString HTML_SCRIPT_LINE_ERR1 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#990000");
+const QString HTML_SCRIPT_LINE_ERR2 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#ff0000");
 const QString HTML_SCRIPT_END       = "</body></html>";
 
 
@@ -259,13 +260,21 @@ void Lvk::FE::ScriptCoverageWidget::showScript(int i)
     }
 
     QString html = HTML_SCRIPT_START;
+    QString linePattern;
 
     for (int j = 0; j < m_scripts[i].size(); ++j) {
         const Clue::AnalyzedLine &line = m_scripts[i][j];
         const QString &character = m_scripts[i].character;
 
-        html += (line.outputIdx != -1 ? HTML_SCRIPT_LINE_OK : HTML_SCRIPT_LINE_FAIL)
-                .arg(m_detective, line.question, character, line.answer).arg(i).arg(j);
+        if (line.outputIdx != -1) {
+            linePattern = HTML_SCRIPT_LINE_OK;
+        } else if (line.ruleId != 0) {
+            linePattern = HTML_SCRIPT_LINE_ERR1;
+        } else {
+            linePattern = HTML_SCRIPT_LINE_ERR2;
+        }
+
+        html += linePattern.arg(m_detective, line.question, character, line.answer).arg(i).arg(j);
     }
 
     html += HTML_SCRIPT_END;
