@@ -144,9 +144,9 @@ void Lvk::FE::TestInputText::onSimulateUser()
 {
     bool ok;
 
-    QString fullname = QInputDialog::getItem(tr("Select user"),
+    QString fullname = QInputDialog::getItem(this, tr("Select user"),
                                              tr("Select the user you want to emulate to test:"),
-                                             m_list, 0, true, &ok, this);
+                                             m_list, 0, true, &ok);
 
     if (ok) {
         m_currentItem.clear();

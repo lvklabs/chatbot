@@ -71,7 +71,9 @@ void Lvk::FE::RuleInputWidget::setupUi()
 
     m_layout->setMargin(0);
 
-    QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout(m_layout);
+    QHBoxLayout *selectUsersInnerLayout = new QHBoxLayout();
+
+    m_layout->addItem(selectUsersInnerLayout);
 
     m_layout->addWidget(m_targetTextEdit);
     m_layout->addWidget(m_inputLabel);

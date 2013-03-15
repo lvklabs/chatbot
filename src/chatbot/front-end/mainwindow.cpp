@@ -102,7 +102,13 @@ void Lvk::FE::MainWindow::setupUi()
     ui->connectionWidget->setAppFacade(m_appFacade);
     ui->verificationWidget->setAppFacade(m_appFacade);
 
-    ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
+    // Deprecated:
+    //ui->teachTabsplitter->setBackgroundColor(QColor(0,0,0,0));
+    // Instead
+    QPalette palette;
+    palette.setColor(ui->teachTabsplitter->backgroundRole(), QColor(0,0,0,0));
+    ui->teachTabsplitter->setPalette(palette);
+
     ui->curScoreWidget->setUploadVisible(false);
 
     m_tinyScore = new TinyScoreWidget(ui->mainTabWidget);
@@ -1263,7 +1269,7 @@ Lvk::BE::Rule * Lvk::FE::MainWindow::getCategoryFromDialog()
     bool ok;
     QString title = tr("Select category");
     QString msg = tr("Please select a category to add the new rule:");
-    QString item = QInputDialog::getItem(title, msg, categories, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, title, msg, categories, 0, false, &ok);
 
     BE::Rule *category = 0;
 

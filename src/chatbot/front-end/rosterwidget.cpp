@@ -215,7 +215,7 @@ void Lvk::FE::RosterWidget::onFilterTextChanged(const QString &)
 {
     for (int i = 0; i < m_rosterListWidget->count(); ++i) {
         QListWidgetItem *item = m_rosterListWidget->item(i);
-        if (item->text().contains(m_filterText->text(), false)) {
+        if (item->text().contains(m_filterText->text(), Qt::CaseInsensitive)) {
             item->setHidden(false);
         } else {
             item->setHidden(true);

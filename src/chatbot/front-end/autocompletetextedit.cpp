@@ -237,7 +237,7 @@ void Lvk::FE::AutocompleteTextEdit::onTargetTextEdited(QString)
 
         //if (current.size() > 0) {
             foreach (const QString &str, m_vocab) {
-                if (str.contains(current, false)) {
+                if (str.contains(current, Qt::CaseInsensitive)) {
                     m_listWidget->addItem(str);
                 }
                 if (m_listWidget->count() == 1) {

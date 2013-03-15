@@ -116,13 +116,13 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(false);
             ui->actionOptions->setEnabled(false);
 
-            ui->mainTabWidget->addTab(ui->welcomeTab, QObject::tr("Init"));
-            ui->mainTabWidget->removePage(ui->teachTab);
-            ui->mainTabWidget->removePage(ui->testTab);
-            ui->mainTabWidget->removePage(ui->connectTab);
-            ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->scoreTab);
-            ui->mainTabWidget->removePage(ui->verificationTab);
+            addTab(ui->welcomeTab, QObject::tr("Init"));
+            removeTab(ui->teachTab);
+            removeTab(ui->testTab);
+            removeTab(ui->connectTab);
+            removeTab(ui->conversationsTab);
+            removeTab(ui->scoreTab);
+            removeTab(ui->verificationTab);
             break;
 
         case VerifyAccountUiMode:
@@ -132,13 +132,13 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(false);
             ui->actionOptions->setEnabled(false);
 
-            ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->removePage(ui->testTab);
-            ui->mainTabWidget->removePage(ui->connectTab);
-            ui->mainTabWidget->removePage(ui->teachTab);
-            ui->mainTabWidget->removePage(ui->conversationsTab);
-            ui->mainTabWidget->removePage(ui->scoreTab);
-            ui->mainTabWidget->addTab(ui->verificationTab, QObject::tr("Verify account"));
+            removeTab(ui->welcomeTab);
+            removeTab(ui->testTab);
+            removeTab(ui->connectTab);
+            removeTab(ui->teachTab);
+            removeTab(ui->conversationsTab);
+            removeTab(ui->scoreTab);
+            addTab(ui->verificationTab, QObject::tr("Verify account"));
             break;
 
         default:
@@ -148,15 +148,15 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             ui->actionExport->setEnabled(true);
             ui->actionOptions->setEnabled(true);
 
-            ui->mainTabWidget->removePage(ui->welcomeTab);
-            ui->mainTabWidget->addTab(ui->teachTab,         QObject::tr("T&each"));
-            ui->mainTabWidget->addTab(ui->testTab,          QObject::tr("&Test your chatbot"));
-            ui->mainTabWidget->addTab(ui->connectTab,       QObject::tr("&Connection"));
-            ui->mainTabWidget->addTab(ui->conversationsTab, QObject::tr("C&onversations"));
+            removeTab(ui->welcomeTab);
+            addTab(ui->teachTab,         QObject::tr("T&each"));
+            addTab(ui->testTab,          QObject::tr("&Test your chatbot"));
+            addTab(ui->connectTab,       QObject::tr("&Connection"));
+            addTab(ui->conversationsTab, QObject::tr("C&onversations"));
         #ifdef DA_CONTEST
-            ui->mainTabWidget->addTab(ui->scoreTab,         QObject::tr("&Score"));
+            addTab(ui->scoreTab,         QObject::tr("&Score"));
         #endif
-            ui->mainTabWidget->removePage(ui->verificationTab);
+            removeTab(ui->verificationTab);
             break;
         }
 
@@ -183,4 +183,17 @@ void Lvk::FE::MainWindowRefactor::setConnectionTabIcon(bool connected)
     ui->mainTabWidget->setTabIcon(connectTabIdx, icon);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindowRefactor::removeTab(QWidget *w)
+{
+    ui->mainTabWidget->removeTab(ui->mainTabWidget->indexOf(w));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindowRefactor::addTab(QWidget *w, const QString &label)
+{
+    ui->mainTabWidget->addTab(w, label);
+}
 

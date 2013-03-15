@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += testlib xml qt3support gui
+QT       += testlib xml gui
 
 TARGET = statsManagerTest
 CONFIG   += console
@@ -41,7 +41,6 @@ SOURCES += \
     ../../chatbot/nlp-engine/varstack.cpp \
     ../../chatbot/nlp-engine/globaltools.cpp \
     ../../chatbot/back-end/rule.cpp \
-    ../../third-party/ProgramQ/aimlparser.cpp \
     statsmanagertest.cpp
 
 

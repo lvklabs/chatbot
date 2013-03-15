@@ -118,6 +118,9 @@ private:
     inline bool hasLastFile();
     inline QString username();
     inline QPixmap chatIcon();
+
+    void removeTab(QWidget *w);
+    void addTab(QWidget *w, const QString &title);
 };
 
 /// @}
