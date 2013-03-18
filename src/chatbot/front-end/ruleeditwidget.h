@@ -101,6 +101,10 @@ public:
      */
     void setFocusOnOutput();
 
+    /**
+     * Sets teach and undo buttons as \a enabled
+     */
+    void setButtonsEnabled(bool enabled);
 
 signals:
     void teachRule();

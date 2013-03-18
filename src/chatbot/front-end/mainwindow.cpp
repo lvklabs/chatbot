@@ -1465,6 +1465,8 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     m_appFacade->save();
 
     updateScore();
+
+    ui->ruleEditWidget->setButtonsEnabled(false);
 }
 
 //--------------------------------------------------------------------------------------------------

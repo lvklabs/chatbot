@@ -150,10 +150,17 @@ void Lvk::FE::RuleEditWidget::setFocusOnOutput()
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::RuleEditWidget::setButtonsEnabled(bool enabled)
+{
+    ui->teachRuleButton->setEnabled(enabled);
+    ui->undoRuleButton->setEnabled(enabled);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleEditWidget::onTeachButtonPressed()
 {
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
+    setButtonsEnabled(false);
 
     backupRule();
 
@@ -164,8 +171,7 @@ void Lvk::FE::RuleEditWidget::onTeachButtonPressed()
 
 void Lvk::FE::RuleEditWidget::onUndoButtonPressed()
 {
-    ui->teachRuleButton->setEnabled(false);
-    ui->undoRuleButton->setEnabled(false);
+    setButtonsEnabled(false);
 
     ui->categoryNameTextEdit->setText(m_ruleBackup.name());
     ui->ruleInputWidget->setTargets(m_ruleBackup.target());
@@ -179,8 +185,7 @@ void Lvk::FE::RuleEditWidget::onUndoButtonPressed()
 
 void Lvk::FE::RuleEditWidget::onRuleEdited()
 {
-    ui->teachRuleButton->setEnabled(true);
-    ui->undoRuleButton->setEnabled(true);
+    setButtonsEnabled(true);
 
     emit ruleEdited();
 }
