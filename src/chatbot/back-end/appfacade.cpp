@@ -66,6 +66,7 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
     }
 
     nlpRule.setTarget(targets);
+    nlpRule.setNextTopic(rule->nextCategory());
 
     return nlpRule;
 }

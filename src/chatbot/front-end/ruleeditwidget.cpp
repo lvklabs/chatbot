@@ -1,17 +1,13 @@
 #include "front-end/ruleeditwidget.h"
 #include "ui_ruleeditwidget.h"
 
-//if (rule->type() == BE::Rule::OrdinaryRule) {
-//} else if (rule->type() == BE::Rule::EvasiveRule) {
-//} else if (rule->type() == BE::Rule::ContainerRule) {
-//}
 
 //--------------------------------------------------------------------------------------------------
 // RuleEditWidget
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleEditWidget::RuleEditWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::RuleEditWidget)
+    : QWidget(parent), ui(new Ui::RuleEditWidget), m_type(-1), m_nextCatVisible(false)
 {
     ui->setupUi(this);
     clear();
@@ -42,6 +38,8 @@ void Lvk::FE::RuleEditWidget::connectSignals()
             SLOT(onRuleInputEdited(QString)));
     connect(ui->ruleInputWidget,       SIGNAL(targetTextEdited(QString)),
             SLOT(onRuleTargetEdited(QString)));
+    connect(ui->nextCategoryList,      SIGNAL(activated(int)),
+            SLOT(onNextCategoryEdited(int)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -51,10 +49,17 @@ void Lvk::FE::RuleEditWidget::setRule(const BE::Rule *rule)
     clear();
 
     if (rule) {
+        if (rule->type() == BE::Rule::OrdinaryRule) {
+            initCategoriesList(rule);
+        } else {
+            ui->nextCategoryList->clear();
+        }
+
         ui->categoryNameTextEdit->setText(rule->name());
         ui->ruleInputWidget->setTargets(rule->target());
         ui->ruleInputWidget->setInput(rule->input());
         ui->ruleOutputWidget->setOutput(rule->output());
+        setNextCategory(rule->nextCategory());
 
         backupRule();
 
@@ -66,9 +71,12 @@ void Lvk::FE::RuleEditWidget::setRule(const BE::Rule *rule)
 
 void Lvk::FE::RuleEditWidget::clear()
 {
+    m_type = -1;
+
     ui->categoryNameTextEdit->clear();
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
+    ui->nextCategoryList->clear();
 
     m_ruleBackup.clear();
 
@@ -77,6 +85,8 @@ void Lvk::FE::RuleEditWidget::clear()
     ui->ruleInputWidget->setVisible(false);
     ui->ruleOutputWidget->setVisible(false);
     ui->chatbotRepliesLabel->setVisible(false);
+    ui->nextCategoryLabel->setVisible(false);
+    ui->nextCategoryList->setVisible(false);
     ui->teachRuleButton->setVisible(false);
     ui->undoRuleButton->setVisible(false);
     ui->teachRuleButton->setEnabled(false);
@@ -158,6 +168,37 @@ void Lvk::FE::RuleEditWidget::setButtonsEnabled(bool enabled)
 
 //--------------------------------------------------------------------------------------------------
 
+QString Lvk::FE::RuleEditWidget::nextCategory() const
+{
+    return ui->nextCategoryList->currentText();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleEditWidget::setNextCategory(const QString &category)
+{
+    for (int i = 0; i < ui->nextCategoryList->count(); ++i) {
+        if (ui->nextCategoryList->itemText(i) == category) {
+            ui->nextCategoryList->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleEditWidget::setNextCategoryVisible(bool visible)
+{
+    m_nextCatVisible = visible;
+
+    if (m_type == BE::Rule::OrdinaryRule) {
+        ui->nextCategoryLabel->setVisible(visible);
+        ui->nextCategoryList->setVisible(visible);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleEditWidget::onTeachButtonPressed()
 {
     setButtonsEnabled(false);
@@ -177,6 +218,7 @@ void Lvk::FE::RuleEditWidget::onUndoButtonPressed()
     ui->ruleInputWidget->setTargets(m_ruleBackup.target());
     ui->ruleInputWidget->setInput(m_ruleBackup.input());
     ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
+    setNextCategory(m_ruleBackup.nextCategory());
 
     emit undoRule();
 }
@@ -208,12 +250,44 @@ void Lvk::FE::RuleEditWidget::onRuleTargetEdited(const QString &/*ruleInput*/)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::RuleEditWidget::onNextCategoryEdited(int /*index*/)
+{
+    if (ui->nextCategoryList->currentText() != m_ruleBackup.nextCategory()) {
+        onRuleEdited();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::RuleEditWidget::backupRule()
 {
     m_ruleBackup.setName(ui->categoryNameTextEdit->text());
     m_ruleBackup.setTarget(ui->ruleInputWidget->targets());
     m_ruleBackup.setInput(ui->ruleInputWidget->input());
     m_ruleBackup.setOutput(ui->ruleOutputWidget->output());
+    m_ruleBackup.setNextCategory(ui->nextCategoryList->currentText());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleEditWidget::initCategoriesList(const BE::Rule *rule)
+{
+    // Find root rule
+    const BE::Rule *root = rule;
+    while (root->parent()) {
+        root = root->parent();
+    }
+
+    ui->nextCategoryList->clear();
+    ui->nextCategoryList->addItem(/*tr("(Keeps current category)")*/ "");
+
+    foreach (const BE::Rule *child, root->children()) {
+        if (child->type() == BE::Rule::ContainerRule) {
+            ui->nextCategoryList->addItem(QIcon(":/icons/category.png"),
+                                          child->name(),
+                                          child->id());
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -229,6 +303,8 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->ruleInputWidget->setVisible(false);
         ui->ruleOutputWidget->setVisible(false);
         ui->chatbotRepliesLabel->setVisible(false);
+        ui->nextCategoryLabel->setVisible(false);
+        ui->nextCategoryList->setVisible(false);
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
@@ -243,6 +319,8 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->ruleInputWidget->setVisible(true);
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
+        ui->nextCategoryLabel->setVisible(m_nextCatVisible);
+        ui->nextCategoryList->setVisible(m_nextCatVisible);
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
@@ -258,6 +336,8 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->ruleInputWidget->setVisible(false);
         ui->ruleOutputWidget->setVisible(true);
         ui->chatbotRepliesLabel->setVisible(true);
+        ui->nextCategoryLabel->setVisible(false);
+        ui->nextCategoryList->setVisible(false);
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
         ui->teachRuleButton->setEnabled(false);
@@ -267,5 +347,7 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
         break;
     }
+
+    m_type = type;
 }
 

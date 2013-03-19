@@ -320,6 +320,23 @@ public:
      */
     void setOutput(const QStringList &output);
 
+
+    /**
+     * Returns a const reference to the next topic of the rule
+     */
+    const QString &nextCategory() const;
+
+    /**
+     * Returns a reference to the next topic of the rule
+     */
+    QString &nextCategory();
+
+    /**
+     * Sets the next topic of the rule
+     */
+    void setNextCategory(const QString &category);
+
+
     /**
      * Returns true if output, input, target and name are empty. Otherwise; returns false.
      */
@@ -446,6 +463,7 @@ private:
     QStringList m_input;
     QStringList m_output;
     TargetList m_target;
+    QString m_nextCategory;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;

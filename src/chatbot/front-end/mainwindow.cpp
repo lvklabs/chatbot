@@ -204,7 +204,10 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     delete m_ruleTreeModel;
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
     ui->categoriesTree->setModel(m_ruleTreeModel);
+
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
+    ui->ruleEditWidget->setNextCategoryVisible(nlpEngineOption(BE::AppFacade::PreferCurCategory));
 
     connect(m_ruleTreeModel,
             SIGNAL(rowsRemoved(QModelIndex, int, int)),
@@ -913,6 +916,8 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
         }
         if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
             setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
+
+            ui->ruleEditWidget->setNextCategoryVisible(newOpt.preferCurCategory);
         }
     }
 }
@@ -1449,6 +1454,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     rule->setTarget(ui->ruleEditWidget->targets());
     rule->setInput(ui->ruleEditWidget->input());
     rule->setOutput(ui->ruleEditWidget->output());
+    rule->setNextCategory(ui->ruleEditWidget->nextCategory());
 
     ruleEditFinished();
 

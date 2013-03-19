@@ -52,24 +52,29 @@ public:
     void setRule(const BE::Rule *rule);
 
     /**
-     * Returns the rule name, by default is empty.
+     * Returns the rule name.
      */
     QString name() const;
 
     /**
-     * Returns a const reference to the list of targets in the rule.
+     * Returns the list of targets in the rule.
      */
     BE::TargetList targets() const;
 
     /**
-     * Returns a const reference to the list of input strings in the rule.
+     * Returns the list of input strings in the rule.
      */
     QStringList input() const;
 
     /**
-     * Returns a const reference to the list of output strings in the rule.
+     * Returns the list of output strings in the rule.
      */
     QStringList output() const;
+
+    /**
+     * Returns the next category attribute in the rule
+     */
+    QString nextCategory() const;
 
     /**
      * Clears the widget with exception of the roster. To clear the roster use clearRoster()
@@ -87,7 +92,7 @@ public:
     void clearRoster();
 
     /**
-     *  Clears the widget, including the roster.
+     * Clears the widget, including the roster.
      */
     void clearAll();
 
@@ -106,6 +111,11 @@ public:
      */
     void setButtonsEnabled(bool enabled);
 
+    /**
+     * Sets the combo box with the next category as \a visible
+     */
+    void setNextCategoryVisible(bool visible);
+
 signals:
     void teachRule();
 
@@ -119,16 +129,21 @@ private slots:
     void onRuleEdited();
     void onRuleInputEdited(const QString &input);
     void onRuleTargetEdited(const QString &ruleInput);
+    void onNextCategoryEdited(int index);
     void onTeachButtonPressed();
     void onUndoButtonPressed();
 
 private:
     Ui::RuleEditWidget *ui;
+    int                 m_type;
     BE::Rule            m_ruleBackup;
+    bool                m_nextCatVisible;
 
     void connectSignals();
     void setUiMode(BE::Rule::Type type);
     void backupRule();
+    void setNextCategory(const QString &category);
+    void initCategoriesList(const BE::Rule *rule);
 };
 
 /// @}
