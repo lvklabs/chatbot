@@ -322,19 +322,14 @@ public:
 
 
     /**
-     * Returns a const reference to the next topic of the rule
+     * Returns the next category ID of the rule
      */
-    const QString &nextCategory() const;
-
-    /**
-     * Returns a reference to the next topic of the rule
-     */
-    QString &nextCategory();
+    quint64 nextCategory() const;
 
     /**
      * Sets the next topic of the rule
      */
-    void setNextCategory(const QString &category);
+    void setNextCategory(quint64 catId);
 
 
     /**
@@ -463,13 +458,13 @@ private:
     QStringList m_input;
     QStringList m_output;
     TargetList m_target;
-    QString m_nextCategory;
     Rule *m_parentItem;
     Type m_type;
     bool m_enabled;
     Status m_status;
     Qt::CheckState m_checkState;
     quint64 m_id;
+    quint64 m_nextCatId;
 };
 
 /**

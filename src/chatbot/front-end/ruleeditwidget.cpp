@@ -59,7 +59,7 @@ void Lvk::FE::RuleEditWidget::setRule(const BE::Rule *rule)
         ui->ruleInputWidget->setTargets(rule->target());
         ui->ruleInputWidget->setInput(rule->input());
         ui->ruleOutputWidget->setOutput(rule->output());
-        setNextCategory(rule->nextCategory());
+        setCurrentNextCategory(rule->nextCategory());
 
         backupRule();
 
@@ -168,21 +168,9 @@ void Lvk::FE::RuleEditWidget::setButtonsEnabled(bool enabled)
 
 //--------------------------------------------------------------------------------------------------
 
-QString Lvk::FE::RuleEditWidget::nextCategory() const
+quint64 Lvk::FE::RuleEditWidget::nextCategory() const
 {
-    return ui->nextCategoryList->currentText();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Lvk::FE::RuleEditWidget::setNextCategory(const QString &category)
-{
-    for (int i = 0; i < ui->nextCategoryList->count(); ++i) {
-        if (ui->nextCategoryList->itemText(i) == category) {
-            ui->nextCategoryList->setCurrentIndex(i);
-            break;
-        }
-    }
+    return currentCategoryId();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -218,7 +206,7 @@ void Lvk::FE::RuleEditWidget::onUndoButtonPressed()
     ui->ruleInputWidget->setTargets(m_ruleBackup.target());
     ui->ruleInputWidget->setInput(m_ruleBackup.input());
     ui->ruleOutputWidget->setOutput(m_ruleBackup.output());
-    setNextCategory(m_ruleBackup.nextCategory());
+    setCurrentNextCategory(m_ruleBackup.nextCategory());
 
     emit undoRule();
 }
@@ -252,7 +240,7 @@ void Lvk::FE::RuleEditWidget::onRuleTargetEdited(const QString &/*ruleInput*/)
 
 void Lvk::FE::RuleEditWidget::onNextCategoryEdited(int /*index*/)
 {
-    if (ui->nextCategoryList->currentText() != m_ruleBackup.nextCategory()) {
+    if (currentCategoryId() != m_ruleBackup.nextCategory()) {
         onRuleEdited();
     }
 }
@@ -265,7 +253,7 @@ void Lvk::FE::RuleEditWidget::backupRule()
     m_ruleBackup.setTarget(ui->ruleInputWidget->targets());
     m_ruleBackup.setInput(ui->ruleInputWidget->input());
     m_ruleBackup.setOutput(ui->ruleOutputWidget->output());
-    m_ruleBackup.setNextCategory(ui->nextCategoryList->currentText());
+    m_ruleBackup.setNextCategory(currentCategoryId());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -279,15 +267,43 @@ void Lvk::FE::RuleEditWidget::initCategoriesList(const BE::Rule *rule)
     }
 
     ui->nextCategoryList->clear();
-    ui->nextCategoryList->addItem(/*tr("(Keeps current category)")*/ "");
+    ui->nextCategoryList->addItem(tr("(Keep current category)"), 0);
 
     foreach (const BE::Rule *child, root->children()) {
-        if (child->type() == BE::Rule::ContainerRule) {
-            ui->nextCategoryList->addItem(QIcon(":/icons/category.png"),
-                                          child->name(),
-                                          child->id());
+        if (child->type() == BE::Rule::ContainerRule && child->id() != rule->parent()->id()) {
+            ui->nextCategoryList->addItem(child->name(), child->id());
         }
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::RuleEditWidget::setCurrentNextCategory(quint64 catId)
+{
+    for (int i = 0; i < ui->nextCategoryList->count(); ++i) {
+        if (categoryId(i) == catId) {
+            ui->nextCategoryList->setCurrentIndex(i);
+            return;
+        }
+    }
+
+    if (ui->nextCategoryList->count() > 0) {
+        ui->nextCategoryList->setCurrentIndex(0);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+quint64 Lvk::FE::RuleEditWidget::currentCategoryId() const
+{
+    return categoryId(ui->nextCategoryList->currentIndex());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+quint64 Lvk::FE::RuleEditWidget::categoryId(int index) const
+{
+    return ui->nextCategoryList->itemData(index).toULongLong();
 }
 
 //--------------------------------------------------------------------------------------------------

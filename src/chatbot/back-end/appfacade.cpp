@@ -51,13 +51,20 @@
 namespace
 {
 
+inline QString idToNlpTopic(quint64 id)
+{
+    return id != 0 ? QString::number(id) : "";
+}
+
+//--------------------------------------------------------------------------------------------------
+
 // Make Nlp::Rule from BE::Rule
 inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 {
     Lvk::Nlp::Rule nlpRule(rule->id(), rule->input(), rule->output());
 
     if (rule->parent()) {
-        nlpRule.setTopic(rule->parent()->name());
+        nlpRule.setTopic(idToNlpTopic(rule->parent()->id()));
     }
 
     QStringList targets;
@@ -66,7 +73,7 @@ inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
     }
 
     nlpRule.setTarget(targets);
-    nlpRule.setNextTopic(rule->nextCategory());
+    nlpRule.setNextTopic(idToNlpTopic(rule->nextCategory()));
 
     return nlpRule;
 }

@@ -74,7 +74,7 @@ public:
     /**
      * Returns the next category attribute in the rule
      */
-    QString nextCategory() const;
+    quint64 nextCategory() const;
 
     /**
      * Clears the widget with exception of the roster. To clear the roster use clearRoster()
@@ -142,7 +142,9 @@ private:
     void connectSignals();
     void setUiMode(BE::Rule::Type type);
     void backupRule();
-    void setNextCategory(const QString &category);
+    void setCurrentNextCategory(quint64 catId);
+    quint64 currentCategoryId() const;
+    quint64 categoryId(int index) const;
     void initCategoriesList(const BE::Rule *rule);
 };
 
