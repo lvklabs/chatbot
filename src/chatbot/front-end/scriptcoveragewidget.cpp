@@ -50,7 +50,7 @@ namespace
 // coverage string format
 inline QString covFormat(float cov)
 {
-    return "%" + QString::number((int)cov);
+    return  QString::number((int)cov) + "%";
 }
 
 } // namespace
