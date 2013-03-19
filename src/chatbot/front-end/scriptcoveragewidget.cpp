@@ -292,15 +292,36 @@ void Lvk::FE::ScriptCoverageWidget::showRuleUsed(int i, int j)
 
     ui->ruleView->setRule(rule, line.inputIdx);
 
-    if (line.outputIdx == -1 && !line.hint.isEmpty()) {
-        ui->hintLabel->setText(tr("Hint: ") + line.hint);
+    showRuleUsedColumn(true);
+
+    switch (line.status) {
+    case Clue::NoAnswerFound:
+    case Clue::MismatchExpectedAnswer:
+        showHint(line.expHint);
+        break;
+    case Clue::MatchForbiddenAnswer:
+        showHint(line.forbidHint);
+        break;
+    case Clue::AnswerOk:
+    case Clue::NotAnalyzed:
+    default:
+        showHint("");
+        break;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::showHint(const QString &hint)
+{
+    if (!hint.isEmpty()) {
+        ui->hintLabel->setText(tr("Hint: ") + hint);
         ui->lightBulb->setVisible(true);
     } else {
         ui->hintLabel->clear();
         ui->lightBulb->setVisible(false);
     }
 
-    showRuleUsedColumn(true);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@
        <EXPECTEDANSWERS>*durmiendo* | *descanzando*</EXPECTEDANSWERS>
        <FORBIDDENANSWERS></FORBIDDENANSWERS>
        <IMPORTANCE>STANDARD</IMPORTANCE>
-       <HINT>Recordar que a Jorge le gusta dormir.</HINT>
+       <EXPECTEDHINT>Recordar que a Jorge le gusta dormir.</EXPECTEDHINT>
       </QUESTION>
 
       <QUESTION>
@@ -49,7 +49,7 @@
        <EXPECTEDANSWERS>*</EXPECTEDANSWERS>
        <FORBIDDENANSWERS>*odiaba* | *detestaba*</FORBIDDENANSWERS>
        <IMPORTANCE>CRITICAL</IMPORTANCE>
-       <HINT>No puede admitir que la odiaba!</HINT>
+       <FORBIDDENHINT>No puede admitir que la odiaba!</FORBIDDENHINT>
       </QUESTION>
 
       <QUESTION>
@@ -57,7 +57,6 @@
        <EXPECTEDANSWERS>*</EXPECTEDANSWERS>
        <FORBIDDENANSWERS></FORBIDDENANSWERS>
        <IMPORTANCE>STANDARD</IMPORTANCE>
-       <HINT></HINT>
       </QUESTION>
 
      </BODY>
@@ -189,7 +188,7 @@ bool Lvk::Clue::ScriptParser::parseBody(QDomElement &body, Clue::Script &script)
 
 bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script)
 {
-    QString phrase, expAnswer, forbidAnswer, hint;
+    QString phrase, expAnswer, forbAnswer, expHint, forbHint;
     Clue::ScriptLine::Importance importance = Clue::ScriptLine::Standard;
 
     for (int i = 0; i < q.childNodes().size(); ++i) {
@@ -207,12 +206,14 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
         } else if (name == "expectedanswers") {
             expAnswer = value;
         } else if (name == "forbiddenanswers") {
-            forbidAnswer = value;
+            forbAnswer = value;
+        } else if (name == "expectedhint") {
+            expHint = value;
+        } else if (name == "forbiddenhint") {
+            forbHint = value;
         } else if (name == "importance") {
             importance = (value.toLower() == "critical") ? Clue::ScriptLine::Critical
                                                          : Clue::ScriptLine::Standard;
-        } else if (name == "hint") {
-            hint = value;
         } else {
             m_errMsg = QObject::tr("Unknown tag '%1'").arg(name);
             return false;
@@ -228,7 +229,7 @@ bool Lvk::Clue::ScriptParser::parseQuestion(QDomElement &q, Clue::Script &script
         return false;
     }
 
-    script.append(Clue::ScriptLine(phrase, expAnswer, forbidAnswer, hint, importance));
+    script.append(Clue::ScriptLine(phrase, expAnswer, forbAnswer, expHint, forbHint, importance));
 
     return true;
 }

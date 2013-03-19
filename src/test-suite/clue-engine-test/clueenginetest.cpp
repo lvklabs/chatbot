@@ -40,13 +40,15 @@ char * toString(const Lvk::Clue::AnalyzedLine& l)
             + "\n\t\t"  + l.question.toUtf8()
             + ",\n\t\t" + l.expAnswer.toUtf8()
             + ",\n\t\t" + l.forbidAnswer.toUtf8()
-            + ",\n\t\t" + l.hint.toUtf8()
+            + ",\n\t\t" + l.expHint.toUtf8()
+            + ",\n\t\t" + l.forbidHint.toUtf8()
             + ",\n\t\t" + l.answer.toUtf8()
             + ",\n\t\t" + (l.importance == Clue::ScriptLine::Critical ? "CRITICAL" : "STANDARD")
             + ",\n\t\t" + QByteArray::number(l.ruleId)
             + ", "      + QByteArray::number(l.inputIdx)
             + ", "      + QByteArray::number(l.score)
             + ", "      + QByteArray::number(l.outputIdx)
+            + ", "      + QByteArray::number(l.status)
             + "\n\t)\n";
 
     return qstrdup(ba.data());
@@ -58,10 +60,10 @@ template<>
 char * toString(const Lvk::Clue::AnalyzedScript& s)
 {
     QByteArray ba = QByteArray("\nAnalyzedScript(")
-            + "\n\tfile:" + s.filename.toUtf8()
-            + "\n\tchar:" + s.character.toUtf8()
-            + "\n\tnumb:"+ QByteArray::number(s.number)
-            + "\n\tcov :"+ QByteArray::number(s.coverage)
+            + "\n\tfile: " + s.filename.toUtf8()
+            + "\n\tchar: " + s.character.toUtf8()
+            + "\n\tnumb: " + QByteArray::number(s.number)
+            + "\n\tcov : " + QByteArray::number(s.coverage)
             + "\n";
 
     foreach (const Lvk::Clue::AnalyzedLine &l, s) {
@@ -165,15 +167,20 @@ void ClueEngineTest::testCase1_data()
     QString fa2 = "*odiaba* | *detestaba*";
     QString fa3 = "";
 
-    // hints
-    QString h1 = "Recordar que a Jorge le gusta dormir.";
-    QString h2 = "No puede admitir que la odiaba!";
-    QString h3 = "";
+    // expected hints
+    QString eh1 = "Recordar que a Jorge le gusta dormir.";
+    QString eh2 = "No puede admitir que la odiaba!";
+    QString eh3 = "";
+
+    // forbidden hints
+    QString fh1 = "";
+    QString fh2 = "No mencionar el arma!";
+    QString fh3 = "No mencionar su pareja!";
 
     // lines
-    Clue::ScriptLine l1(q1, ea1, fa1, h1, Clue::ScriptLine::Standard);
-    Clue::ScriptLine l2(q2, ea2, fa2, h2, Clue::ScriptLine::Critical);
-    Clue::ScriptLine l3(q3, ea3, fa3, h3, Clue::ScriptLine::Standard);
+    Clue::ScriptLine l1(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard);
+    Clue::ScriptLine l2(q2, ea2, fa2, eh2, fh2, Clue::ScriptLine::Critical);
+    Clue::ScriptLine l3(q3, ea3, fa3, eh3, fh3, Clue::ScriptLine::Standard);
 
     // parsed scripts
     Clue::Script s1(f1, n1, 1);
@@ -208,22 +215,22 @@ void ClueEngineTest::testCase1_data()
 
     // analyzed scripts
     Clue::AnalyzedScript as1(f1, n1, 1);
-    as1.append(Clue::AnalyzedLine(l1, 0, -1, 0, "",     -1));
+    as1.append(Clue::AnalyzedLine(l1, 0, -1, 0, "",     -1, Clue::NoAnswerFound));
     as1.coverage = 0.0/as1.size()*100;
     Clue::AnalyzedScript as2(f2, n1, 2);
-    as2.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1a,  0));
-    as2.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2b, -1));
-    as2.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
+    as2.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1a,  0, Clue::AnswerOk));
+    as2.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2b, -1, Clue::MismatchExpectedAnswer));
+    as2.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1, Clue::NoAnswerFound));
     as2.coverage = 1.0/as2.size()*100;
     Clue::AnalyzedScript as3(f2, n1, 2);
-    as3.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
-    as3.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2a,  0));
-    as3.append(Clue::AnalyzedLine(l3, 3,  0, 0, answ2a,  0));
+    as3.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0, Clue::AnswerOk));
+    as3.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2a,  0, Clue::AnswerOk));
+    as3.append(Clue::AnalyzedLine(l3, 3,  0, 0, answ2a,  0, Clue::AnswerOk));
     as3.coverage = 3.0/as3.size()*100;
     Clue::AnalyzedScript as4(f2, n1, 2);
-    as4.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0));
-    as4.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2c, -1));
-    as4.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1));
+    as4.append(Clue::AnalyzedLine(l1, 1,  0, 0, answ1b,  0, Clue::AnswerOk));
+    as4.append(Clue::AnalyzedLine(l2, 2,  0, 0, answ2c, -1, Clue::MatchForbiddenAnswer));
+    as4.append(Clue::AnalyzedLine(l3, 0, -1, 0, "",     -1, Clue::NoAnswerFound));
     as4.coverage = 1.0/as4.size()*100;
 
     //************************************************************************************

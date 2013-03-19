@@ -38,6 +38,19 @@ namespace Clue
 /// \addtogroup Clue
 /// @{
 
+
+/**
+ * @brief The LineStatus enum
+ */
+enum LineStatus
+{
+    NotAnalyzed,
+    NoAnswerFound,
+    MismatchExpectedAnswer,
+    MatchForbiddenAnswer,
+    AnswerOk
+};
+
 /**
  * \brief The AnalyzedLine class provides an analized script line by the ClueEngine
  */
@@ -49,21 +62,22 @@ public:
      * Constructs an empty AnalyzedLine
      */
     AnalyzedLine()
-        : ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
+        : ruleId(0), inputIdx(-1), score(0), outputIdx(-1), status(NotAnalyzed) { }
 
     /**
      * Constructs an AnalyzedLine with \a line
      */
     AnalyzedLine(const ScriptLine &line)
-        : ScriptLine(line), ruleId(0), inputIdx(-1), score(0), outputIdx(-1) { }
+        : ScriptLine(line), ruleId(0), inputIdx(-1), score(0), outputIdx(-1), status(NotAnalyzed)
+    { }
 
     /**
      * Constructs an AnalyzedLine with \a line, \a ruleId, \a inputIdx and \a score
      */
     AnalyzedLine(const ScriptLine &line, Nlp::RuleId ruleId, int inputIdx, float score,
-                 const QString &answer = "", int outputIdx = -1)
+                 const QString &answer = "", int outputIdx = -1, LineStatus status = NotAnalyzed)
         : ScriptLine(line), ruleId(ruleId), inputIdx(inputIdx), score(score), answer(answer),
-          outputIdx(outputIdx) { }
+          outputIdx(outputIdx), status(status) { }
 
 
     Nlp::RuleId ruleId; ///< The rule ID of the matched rule. 0 if there is no match.
@@ -71,6 +85,7 @@ public:
     float score;        ///< The score of the matched rule. 0 if there is no match.
     QString answer;     ///< The selected answer to the question. Empty if there is no match.
     int outputIdx;      ///< The output index of the selected output. -1 if there is no match.
+    LineStatus status;  ///< The status of the analyzed line
 
 
     /**
@@ -83,7 +98,8 @@ public:
                 inputIdx == other.inputIdx &&
                 score == other.score &&
                 answer == other.answer &&
-                outputIdx == other.outputIdx;
+                outputIdx == other.outputIdx &&
+                status == other.status;
     }
 
     /**

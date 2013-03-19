@@ -99,22 +99,34 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
 
         if (ml.isEmpty()) {
             qDebug() << "ClueEngine: no response!";
-            ascript.append(Clue::AnalyzedLine(line));
-            ascript.last().answer = m_evasive;
+
+            Clue::AnalyzedLine aline(line);
+
+            aline.status = Clue::NoAnswerFound;
+            aline.answer = m_evasive;
+
+            ascript.append(aline);
         } else {
             qDebug() << "ClueEngine: Checking response:" << resp
                      << "with expected pattern:" << line.expAnswer
                      << "and forbidden pattern:" << line.forbidAnswer;
-            ascript.append(Clue::AnalyzedLine(line, ml[0].first, ml[0].second, 0, resp));
 
-            if (m_regexp.exactMatch(line.expAnswer, resp) &&
-                    !m_regexp.exactMatch(line.forbidAnswer, resp)) {
-                qDebug() << "ClueEngine: pattern OK";
-                ascript.last().outputIdx = 0;
-                ++matches;
+            Clue::AnalyzedLine aline(line, ml[0].first, ml[0].second, 0, resp);
+
+            if (!m_regexp.exactMatch(line.expAnswer, resp)) {
+                qDebug() << "ClueEngine: Mismatch expected answer!";
+                aline.status = Clue::MismatchExpectedAnswer;
+            } else if (m_regexp.exactMatch(line.forbidAnswer, resp)) {
+                qDebug() << "ClueEngine: Match forbidden answer!";
+                aline.status = Clue::MatchForbiddenAnswer;
             } else {
-                qDebug() << "ClueEngine: pattern failed!";
+                qDebug() << "ClueEngine: Answer OK";
+                aline.status = Clue::AnswerOk;
+                aline.outputIdx = 0;
+                ++matches;
             }
+
+            ascript.append(aline);
         }
     }
 

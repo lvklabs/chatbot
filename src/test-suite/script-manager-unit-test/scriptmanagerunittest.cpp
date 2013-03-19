@@ -39,7 +39,8 @@ const QString XML_QUESTION =
           "<EXPECTEDANSWERS>%2</EXPECTEDANSWERS>"
           "<FORBIDDENANSWERS>%3</FORBIDDENANSWERS>"
           "<IMPORTANCE>%4</IMPORTANCE>"
-          "<HINT>%5</HINT>"
+          "<EXPECTEDHINT>%5</EXPECTEDHINT>"
+          "<FORBIDDENHINT>%6</FORBIDDENHINT>"
         "</QUESTION>\n";
 
 const QString XML_STANDARD = "STANDARD";
@@ -232,27 +233,31 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     QString fa1 = "";
     QString fa2 = "*odiaba* | *detestaba*";
 
-    // hints
-    QString h1 = "Recordar que a Jorge le gusta dormir.";
-    QString h2 = "No puede admitir que la odiaba!";
+    // expected hints
+    QString eh1 = "Recordar que a Jorge le gusta dormir.";
+    QString eh2 = "No puede admitir que la odiaba!";
+
+    // forbidden hints
+    QString fh1 = "No mencionar el arma";
+    QString fh2 = "Mencionar el arma";
 
     // file contents
     QString c1 = XML_SCRIPT.arg(XML_HEADER.arg(n1, "1"),
-                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, h1));
+                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1));
     QString c2 = XML_SCRIPT.arg(XML_HEADER.arg(n1, "2"),
-                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, h1) +
-                                XML_QUESTION.arg(q2, ea2, fa2, XML_CRITICAL, h2));
+                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1) +
+                                XML_QUESTION.arg(q2, ea2, fa2, XML_CRITICAL, eh2, fh2));
     QString c3 = XML_SCRIPT.arg(XML_HEADER.arg(n2, "1"),
-                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, h1));
+                                XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1));
 
     // parsed scripts
     Clue::Script s1(f1, n1, 1);
-    s1.append(Clue::ScriptLine(q1, ea1, fa1, h1, Clue::ScriptLine::Standard));
+    s1.append(Clue::ScriptLine(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard));
     Clue::Script s2(f2, n1, 2);
-    s2.append(Clue::ScriptLine(q1, ea1, fa1, h1, Clue::ScriptLine::Standard));
-    s2.append(Clue::ScriptLine(q2, ea2, fa2, h2, Clue::ScriptLine::Critical));
+    s2.append(Clue::ScriptLine(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard));
+    s2.append(Clue::ScriptLine(q2, ea2, fa2, eh2, fh2, Clue::ScriptLine::Critical));
     Clue::Script s3(f3, n2, 1);
-    s3.append(Clue::ScriptLine(q1, ea1, fa1, h1, Clue::ScriptLine::Standard));
+    s3.append(Clue::ScriptLine(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard));
     //************************************************************************************
 
     QTest::addColumn<QStringList>("filenames");

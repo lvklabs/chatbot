@@ -66,22 +66,23 @@ public:
      * Constructs an ScriptLine with \a question expected answer \a expAnswer, and \a hint
      */
     ScriptLine(const QString &question, const QString &expAnswer, const QString &hint)
-        : question(question), expAnswer(expAnswer), hint(hint), importance(Standard) { }
+        : question(question), expAnswer(expAnswer), expHint(hint), importance(Standard) { }
 
     /**
      * Constructs an ScriptLine with \a question expected answer \a expAnswer, forbidden answer
-     * \a forbidAnswer, \a hint, and \a importance
+     * \a forbidAnswer, expected hint \a expHint, forbidden hint \forbidHing and \a importance
      */
     ScriptLine(const QString &question, const QString &expAnswer, const QString &forbidAnswer,
-               const QString &hint, Importance importance)
-        : question(question), expAnswer(expAnswer), forbidAnswer(forbidAnswer), hint(hint),
-          importance(importance) { }
+               const QString &expHint, const QString &forbidHint, Importance importance)
+        : question(question), expAnswer(expAnswer), forbidAnswer(forbidAnswer), expHint(expHint),
+          forbidHint(forbidHint), importance(importance) { }
 
 
     QString question;      ///< The detective question
     QString expAnswer;     ///< The suspect expected answer pattern
     QString forbidAnswer;  ///< The suspect forbidden answer pattern
-    QString hint;          ///< The hint in case of rule mismatch
+    QString expHint;       ///< The hint in case of mismatch in the expected answer
+    QString forbidHint;    ///< The hint in case of match in the forbidden answer
     Importance importance; ///< The question importance
 
 
@@ -93,7 +94,8 @@ public:
         return question == other.question &&
                 expAnswer == other.expAnswer &&
                 forbidAnswer == other.forbidAnswer &&
-                hint == other.hint &&
+                expHint == other.expHint &&
+                forbidHint == other.forbidHint &&
                 importance == other.importance;
     }
 

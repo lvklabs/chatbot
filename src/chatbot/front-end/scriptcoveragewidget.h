@@ -129,6 +129,7 @@ private:
     void addScriptRow(const QString &filename, float coverage);
     void showScript(int i);
     void showRuleUsed(int i, int j);
+    void showHint(const QString &hint);
     void showRuleUsedColumn(bool show);
     const BE::Rule *findRule(quint64 ruleId);
 };
