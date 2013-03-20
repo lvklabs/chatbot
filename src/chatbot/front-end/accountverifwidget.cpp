@@ -326,6 +326,7 @@ void Lvk::FE::AccountVerifWidget::setCurrentCharacter()
 {
     if (ui->charsComboBox->isVisible()) {
         m_appFacade->setCurrentCharacter(ui->charsComboBox->currentText());
+        m_appFacade->save();
     }
 }
 
