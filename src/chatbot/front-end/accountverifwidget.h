@@ -121,6 +121,7 @@ private:
 
     void loadCharacters();
     void connectSignals();
+    void connectAppFacadeSignals(bool connected);
     bool verifyCharacter();
     void setCurrentCharacter();
     void verifyAccount();

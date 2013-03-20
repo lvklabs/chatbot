@@ -62,12 +62,27 @@ void Lvk::FE::AccountVerifWidget::setAppFacade(BE::AppFacade *appFacade)
 {
     m_appFacade = appFacade;
 
-    if (m_appFacade) {
-        connect(m_appFacade, SIGNAL(accountOk()),               SLOT(onAccountOk()));
-        connect(m_appFacade, SIGNAL(accountError(int, QString)),SLOT(onAccountError(int, QString)));
-    }
-
     loadCharacters();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::AccountVerifWidget::connectAppFacadeSignals(bool connected)
+{
+    if (m_appFacade) {
+        // Connect these signals only if we are currently verifying an account.
+        // If we have several instances of the widget, the disconnection avoids that
+        // all instances receives the accountOk or accountError signal
+        if (connected) {
+            connect(m_appFacade, SIGNAL(accountOk()), SLOT(onAccountOk()));
+            connect(m_appFacade, SIGNAL(accountError(int, QString)),
+                    SLOT(onAccountError(int, QString)));
+        } else {
+            m_appFacade->disconnect(this);
+        }
+    } else {
+        qCritical() << "AccountVerifWidget: No AppFacade set";
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -128,6 +143,8 @@ void Lvk::FE::AccountVerifWidget::verifyAccount()
 
     qDebug() << "AccountVerifWidget: Verifying Account...";
 
+    connectAppFacadeSignals(true);
+
     QString username = ui->usernameText->text();
     QString password = ui->passwordText->text();
     BE::ChatType type = ui->gtalkChatRadio->isChecked() ? BE::GTalkChat : BE::FbChat;
@@ -139,6 +156,10 @@ void Lvk::FE::AccountVerifWidget::verifyAccount()
 
 void Lvk::FE::AccountVerifWidget::verifyBlockedForUpdate(const DAS::UpdateInfo &info)
 {
+    qDebug() << "AccountVerifWidget: Verify blocked for update";
+
+    connectAppFacadeSignals(false);
+
     setUiMode(VerifyAccountUiMode);
 
     emit blockedForUpdate(info);
@@ -149,6 +170,8 @@ void Lvk::FE::AccountVerifWidget::verifyBlockedForUpdate(const DAS::UpdateInfo &
 void Lvk::FE::AccountVerifWidget::onAccountOk()
 {
     qDebug() << "AccountVerifWidget: Verify Account Ok";
+
+    connectAppFacadeSignals(false);
 
     setCurrentCharacter();
 
@@ -162,6 +185,8 @@ void Lvk::FE::AccountVerifWidget::onAccountOk()
 void Lvk::FE::AccountVerifWidget::onAccountError(int err, const QString &msg)
 {
     qDebug() << "AccountVerifWidget: Verify Account Error" << err << msg;
+
+    connectAppFacadeSignals(false);
 
     setUiMode(VerifyAccountFailedUiMode);
 
@@ -178,6 +203,8 @@ void Lvk::FE::AccountVerifWidget::onVerifyAccountSkipped()
 
     qDebug() << "AccountVerifWidget: Verify Account Skipped";
 
+    connectAppFacadeSignals(false);
+
     setCurrentCharacter();
 
     clear();
@@ -192,6 +219,8 @@ void Lvk::FE::AccountVerifWidget::onCancelChAccountPressed()
     assert(m_appFacade);
 
     qDebug() << "AccountVerifWidget: Verify Account Canceled";
+
+    connectAppFacadeSignals(false);
 
     m_appFacade->cancelVerifyAccount();
 
