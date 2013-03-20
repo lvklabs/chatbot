@@ -61,7 +61,11 @@ inline QString covFormat(float cov)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::ScriptCoverageWidget), m_detective(tr("Detective")), m_root(0)
+    : QWidget(parent),
+      ui(new Ui::ScriptCoverageWidget),
+      m_detective(tr("Detective")),
+      m_root(0),
+      m_collapseDef(false) // Collapse rule defintion column when it is not used
 {
     ui->setupUi(this);
 
@@ -126,14 +130,18 @@ void Lvk::FE::ScriptCoverageWidget::connectSignals()
 
 QList<int> Lvk::FE::ScriptCoverageWidget::splitterSizes() const
 {
-    return m_sizes;
+    return m_collapseDef ? m_sizes : ui->splitter->sizes();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::setSplitterSizes(const QList<int> &sizes)
 {
-    m_sizes = sizes;
+    if (m_collapseDef) {
+        m_sizes = sizes;
+    } else {
+        ui->splitter->setSizes(sizes);
+    }
 
     showRuleUsedColumn(ui->ruleGroupBox->isVisible());
 }
@@ -321,16 +329,17 @@ void Lvk::FE::ScriptCoverageWidget::showHint(const QString &hint)
         ui->hintLabel->clear();
         ui->lightBulb->setVisible(false);
     }
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::showRuleUsedColumn(bool show)
 {
-    ui->splitter->setSizes(show ? m_sizes : m_sizes.mid(0, 2));
-    ui->ruleGroupBox->setVisible(show);
+    if (m_collapseDef) {
+        ui->splitter->setSizes(show ? m_sizes : m_sizes.mid(0, 2));
+    }
 
+    ui->ruleGroupBox->setVisible(show);
 }
 
 //--------------------------------------------------------------------------------------------------

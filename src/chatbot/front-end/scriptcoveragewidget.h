@@ -123,6 +123,7 @@ private:
     QString m_detective;
     const BE::Rule *m_root;
     QList<int> m_sizes;
+    bool m_collapseDef;
 
     void setupTables();
     void connectSignals();
