@@ -120,6 +120,7 @@ private:
     UiMode                  m_uiMode;
 
     void connectSignals();
+    void connectAppFacadeSignals(bool connected);
     void verifyAccount();
     void verifyBlockedForUpdate(const DAS::UpdateInfo &info);
     void setUiMode(UiMode mode);
