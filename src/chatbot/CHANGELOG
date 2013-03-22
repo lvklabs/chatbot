@@ -1,3 +1,7 @@
+v2.0
+ - New custom engine implemented from scratch
+ - Dropdown list to select the next category
+
 v1.4
  - Implemented drag & drop of rules and categories
  - Added support to open a chatbot file by command line
