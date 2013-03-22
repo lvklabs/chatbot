@@ -312,6 +312,42 @@ inline void setRules6(Lvk::Nlp::Engine *engine)
 
 //--------------------------------------------------------------------------------------------------
 
+inline void setRules6b(Lvk::Nlp::Engine *engine)
+{
+    Lvk::Nlp::RuleList rules;
+
+    QString topic1 = "1";
+    QString topic2 = "2";
+
+    // TOPIC 1 --------------------
+
+    rules << Lvk::Nlp::Rule(RULE_7_ID,
+                            QStringList() << RULE_7_INPUT_1,
+                            QStringList() << RULE_7_OUTPUT_1);
+
+    rules[0].setTopic(topic1);
+    rules[0].setNextTopic(topic2);
+
+    rules << Lvk::Nlp::Rule(RULE_18_ID,
+                            QStringList() << RULE_18_INPUT_1,
+                            QStringList() << RULE_18_OUTPUT_1);
+
+    rules[1].setTopic(topic1);
+
+
+    // TOPIC 2 --------------------
+
+    rules << Lvk::Nlp::Rule(RULE_19_ID,
+                            QStringList() << RULE_19_INPUT_1,
+                            QStringList() << RULE_19_OUTPUT_1);
+
+    rules[2].setTopic(topic2);
+
+    engine->setRules(rules);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 inline void setRules7(Lvk::Nlp::Engine *engine)
 {
     Lvk::Nlp::RuleList rules;

@@ -25,12 +25,12 @@
 #include <QIcon>
 #include <assert.h>
 
-#define LVK_BE_RULE_VERSION     3
+#define LVK_BE_RULE_VERSION     4
 
 
 Lvk::BE::Rule::Rule()
     : m_name(""), m_input(), m_output(), m_parentItem(0), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
 }
 
@@ -38,7 +38,7 @@ Lvk::BE::Rule::Rule()
 
 Lvk::BE::Rule::Rule(const QString &name)
     : m_name(name), m_input(), m_output(), m_parentItem(0), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
 }
 
@@ -46,7 +46,7 @@ Lvk::BE::Rule::Rule(const QString &name)
 
 Lvk::BE::Rule::Rule(const QString &name, Type type)
     : m_name(name), m_input(), m_output(), m_parentItem(0), m_type(type),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
 }
 
@@ -54,7 +54,7 @@ Lvk::BE::Rule::Rule(const QString &name, Type type)
 
 Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QStringList &ouput)
     : m_name(name), m_input(input), m_output(ouput), m_parentItem(0), m_type(OrdinaryRule),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
 }
 
@@ -63,7 +63,7 @@ Lvk::BE::Rule::Rule(const QString &name, const QStringList &input, const QString
 Lvk::BE::Rule::Rule(const QString &name, Type type, const QStringList &input,
                     const QStringList &ouput)
     : m_name(name), m_input(input), m_output(ouput), m_parentItem(0), m_type(type),
-      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_enabled(false), m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
 }
 
@@ -72,7 +72,7 @@ Lvk::BE::Rule::Rule(const QString &name, Type type, const QStringList &input,
 Lvk::BE::Rule::Rule(const Rule &other, bool deepCopy /*= false*/)
     : m_name(other.m_name), m_input(other.m_input), m_output(other.m_output),
       m_target(other.m_target), m_parentItem(0), m_type(other.m_type), m_enabled(other.m_enabled),
-      m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0)
+      m_status(Unsaved), m_checkState(Qt::Unchecked), m_id(0), m_nextCatId(0)
 {
     if (deepCopy) {
         foreach (const Rule *rule, other.m_childItems) {
@@ -96,6 +96,7 @@ Lvk::BE::Rule::~Rule()
 //    m_target = other.m_target
 //    m_input = other.m_input;
 //    m_output = other.m_output;
+//    m_nextCategory = other.m_nextCategory;
 //    m_parentItem = 0;
 //    m_type = other.m_type;
 //    m_enabled = other.m_enabled;
@@ -112,6 +113,7 @@ bool Lvk::BE::Rule::operator==(const Lvk::BE::Rule &other) const
     return m_type == other.m_type &&
            m_name == other.m_name &&
            m_target == other.m_target &&
+           m_nextCatId == other.m_nextCatId &&
            m_input == other.m_input &&
            m_output == other.m_output &&
            m_id == other.m_id;
@@ -298,6 +300,7 @@ void Lvk::BE::Rule::clear()
     m_childItems.clear();
     m_status = Unsaved;
     m_checkState = Qt::Unchecked;
+    m_nextCatId = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -394,6 +397,24 @@ void Lvk::BE::Rule::setOutput(const QStringList &output)
 
 //--------------------------------------------------------------------------------------------------
 
+quint64 Lvk::BE::Rule::nextCategory() const
+{
+    return m_nextCatId;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::BE::Rule::setNextCategory(quint64 catId)
+{
+    if (m_nextCatId != catId) {
+        m_nextCatId = catId;
+
+        m_status = Unsaved;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 const QString &Lvk::BE::Rule::name() const
 {
     return m_name;
@@ -409,7 +430,6 @@ void Lvk::BE::Rule::setName(const QString &name)
         m_status = Unsaved;
     }
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -443,6 +463,7 @@ QDataStream &Lvk::BE::operator<<(QDataStream &stream, const Rule &rule)
     stream << rule.target();
     stream << rule.input();
     stream << rule.output();
+    stream << rule.nextCategory();
     stream << static_cast<int>(rule.type());
     stream << rule.childCount();
     stream << rule.id();
@@ -466,6 +487,7 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     int type;
     int childCount;
     quint64 id = 0;
+    quint64 nextCatId = 0;
 
     stream >> version;
     stream >> name;
@@ -476,6 +498,11 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
 
     stream >> input;
     stream >> output;
+
+    if (version > 3) {
+        stream >> nextCatId;
+    }
+
     stream >> type;
     stream >> childCount;
     stream >> id;
@@ -484,6 +511,7 @@ QDataStream &Lvk::BE::operator>>(QDataStream &stream, Rule &rule)
     rule.setName(name);
     rule.setInput(input);
     rule.setOutput(output);
+    rule.setNextCategory(nextCatId);
     rule.setType(static_cast<Rule::Type>(type));
     rule.setId(id);
 

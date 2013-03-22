@@ -147,6 +147,21 @@ public:
     void setTopic(const QString &topic) { m_topic = topic; }
 
     /**
+     * Returns a const reference to the next topic of the rule
+     */
+    const QString &nextTopic() const { return m_nextTopic; }
+
+    /**
+     * Returns a reference to the next topic of the rule
+     */
+    QString &nextTopic() { return m_nextTopic; }
+
+    /**
+     * Sets the next topic of the rule
+     */
+    void setNextTopic(const QString &topic) { m_nextTopic = topic; }
+
+    /**
      * Returns true if the output should be selected randomly; otherwise returns false.
      * By default is sequential.
      */
@@ -165,6 +180,7 @@ private:
     QStringList m_output;
     QStringList m_target;
     QString m_topic;
+    QString m_nextTopic;
     bool m_random;
 };
 
