@@ -470,17 +470,17 @@ void Lvk::FE::ChatHistoryWidget::teachRuleWithDialog(int row)
 
 void Lvk::FE::ChatHistoryWidget::showRuleWithDialog(int row)
 {
-    QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
+    //QString chatMsg = ui->conversationTable->item(row, MessageColumn)->text();
 
-    QString title = tr("Show rule definition");
-    QString text = QString(tr("Show rule definition for message: \"%1\" ?")).arg(chatMsg);
+    //QString title = tr("Show rule definition");
+    //QString text = QString(tr("Show rule definition for message: \"%1\" ?")).arg(chatMsg);
 
-    if (askConfirmation(title, text)) {
+    //if (askConfirmation(title, text)) {
         quint64 ruleId = ui->conversationTable->item(row, StatusColumn)->data(EntryRuleIdRole)
                 .toULongLong();
 
         emit showRule(ruleId);
-    }
+    //}
 }
 
 //--------------------------------------------------------------------------------------------------
