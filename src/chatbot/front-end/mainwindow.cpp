@@ -1149,13 +1149,12 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
     category->setType(BE::Rule::ContainerRule);
     category->setId(m_appFacade->nextRuleId());
 
-    if (added) {
-        return category;
-    } else {
+    if (!added) {
         delete category;
-
         return 0;
     }
+
+    return category;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1168,13 +1167,12 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *categ
 
     bool appended = m_ruleTreeModel->appendItem(rule, category);
 
-    if (appended) {
-        return rule;
-    } else {
+    if (!appended) {
         delete rule;
-
         return 0;
     }
+
+    return rule;
 }
 
 //--------------------------------------------------------------------------------------------------
