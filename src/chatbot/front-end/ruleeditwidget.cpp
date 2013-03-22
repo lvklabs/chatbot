@@ -11,7 +11,7 @@
 //--------------------------------------------------------------------------------------------------
 
 Lvk::FE::RuleEditWidget::RuleEditWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::RuleEditWidget)
+    : QWidget(parent), ui(new Ui::RuleEditWidget), m_type(-1)
 {
     ui->setupUi(this);
     clear();
@@ -66,6 +66,8 @@ void Lvk::FE::RuleEditWidget::setRule(const BE::Rule *rule)
 
 void Lvk::FE::RuleEditWidget::clear()
 {
+    m_type = -1;
+
     ui->categoryNameTextEdit->clear();
     ui->ruleInputWidget->clear();
     ui->ruleOutputWidget->clear();
@@ -109,7 +111,20 @@ void Lvk::FE::RuleEditWidget::clearAll()
 
 QString Lvk::FE::RuleEditWidget::name() const
 {
-    return ui->categoryNameTextEdit->text();
+    switch (m_type) {
+    case BE::Rule::OrdinaryRule:
+        if (!ui->ruleInputWidget->input().isEmpty()) {
+            return ui->ruleInputWidget->input().first();
+        } else {
+            return "";
+        }
+    case BE::Rule::ContainerRule:
+        return ui->categoryNameTextEdit->text();
+    case BE::Rule::EvasiveRule:
+        return ui->categoryNameTextEdit->text();
+    default:
+        return "";
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -267,5 +282,7 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
         break;
     }
+
+    m_type = type;
 }
 

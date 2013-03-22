@@ -125,6 +125,7 @@ private slots:
 private:
     Ui::RuleEditWidget *ui;
     BE::Rule            m_ruleBackup;
+    int                 m_type;
 
     void connectSignals();
     void setUiMode(BE::Rule::Type type);
