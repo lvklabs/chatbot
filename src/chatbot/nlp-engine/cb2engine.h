@@ -186,6 +186,7 @@ private:
     Nlp::Tree * buildTree(const QString &target);
     void reorderByTopic(const QString &topic, Nlp::ResultList &results);
     QString topicForRule(Nlp::RuleId ruleId);
+    QString nextTopicForRule(Nlp::RuleId ruleId);
 };
 
 /// @}

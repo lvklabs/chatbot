@@ -45,6 +45,7 @@
 #define EnableTestMatchWithRandomOutput
 #define EnableTestMatchWithSecuentialOutput
 #define EnableTestMatchWithTopic
+#define EnableTestMatchWithNextTopic
 #define EnableTestInfiniteLoopDetection
 
 #define USER_INPUT_1a                       "Hello"
@@ -127,6 +128,7 @@ private Q_SLOTS:
     void testMatchPriority();
 
     void testMatchWithTopic();
+    void testMatchWithNextTopic();
 
     void testInfiniteLoopDetection();
     void testInfiniteLoopDetection_data();
@@ -545,8 +547,45 @@ void TestCb2Engine::testMatchWithTopic()
         QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
     }
 }
+
 //--------------------------------------------------------------------------------------------------
 
+void TestCb2Engine::testMatchWithNextTopic()
+{
+#ifndef EnableTestMatchWithNextTopic
+    QSKIP("Skip macro on", SkipAll);
+#endif
+
+    m_engine->setLemmatizer(new MockLemmatizer());
+
+    setRules6b(m_engine);
+
+    m_engine->setProperty(NLP_PROP_PREFER_CUR_TOPIC, true);
+
+    Lvk::Nlp::Engine::MatchList matches;
+    QString response;
+
+    // Verify that we prefer rules with the current topic and that next topic attribute works fine
+
+    for (int i = 0; i < 3; ++i) {
+        response = m_engine->getResponse(USER_INPUT_8c, matches);
+        QCOMPARE(response, QString(RULE_7_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_7_ID);
+
+        response = m_engine->getResponse(USER_INPUT_19, matches);
+        QCOMPARE(response, QString(RULE_19_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
+
+        response = m_engine->getResponse(USER_INPUT_19, matches);
+        QCOMPARE(response, QString(RULE_19_OUTPUT_1));
+        QCOMPARE(matches.size(), 1);
+        QCOMPARE(matches[0].first, (Lvk::Nlp::RuleId)RULE_19_ID);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 
 void TestCb2Engine::testInfiniteLoopDetection_data()
 {

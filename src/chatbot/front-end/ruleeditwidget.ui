@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="ruleEditLayout" stretch="0,0,0,0,1,0,0">
+  <layout class="QVBoxLayout" name="ruleEditLayout" stretch="0,0,0,0,1,0,0,0">
    <item>
     <widget class="QLabel" name="categoryNameLabel">
      <property name="text">
@@ -55,7 +55,41 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="nextCategoryLayout">
+     <item>
+      <widget class="QLabel" name="nextCategoryLabel">
+       <property name="text">
+        <string>Jumps to category:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="nextCategoryList">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonsLayout">
      <item>
       <widget class="QToolButton" name="undoRuleButton">
        <property name="sizePolicy">

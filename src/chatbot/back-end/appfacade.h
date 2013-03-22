@@ -175,6 +175,11 @@ public:
     Rule *evasivesRule();
 
     /**
+     * Returns the next rule ID
+     */
+    quint64 nextRuleId();
+
+    /**
      * Provides a list of pairs (Rule Id, Input index) used to store which rules has matched with
      * which rule input.
      *

@@ -320,6 +320,18 @@ public:
      */
     void setOutput(const QStringList &output);
 
+
+    /**
+     * Returns the next category ID of the rule
+     */
+    quint64 nextCategory() const;
+
+    /**
+     * Sets the next topic of the rule
+     */
+    void setNextCategory(quint64 catId);
+
+
     /**
      * Returns true if output, input, target and name are empty. Otherwise; returns false.
      */
@@ -452,6 +464,7 @@ private:
     Status m_status;
     Qt::CheckState m_checkState;
     quint64 m_id;
+    quint64 m_nextCatId;
 };
 
 /**

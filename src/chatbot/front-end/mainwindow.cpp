@@ -208,7 +208,10 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
     delete m_ruleTreeModel;
     m_ruleTreeModel = new FE::RuleTreeModel(m_appFacade->rootRule(), this);
     ui->categoriesTree->setModel(m_ruleTreeModel);
+
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
+
+    ui->ruleEditWidget->setNextCategoryVisible(nlpEngineOption(BE::AppFacade::PreferCurCategory));
 
     connect(m_ruleTreeModel,
             SIGNAL(rowsRemoved(QModelIndex, int, int)),
@@ -921,6 +924,8 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
         }
         if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
             setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
+
+            ui->ruleEditWidget->setNextCategoryVisible(newOpt.preferCurCategory);
         }
     }
 }
@@ -1146,17 +1151,18 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
     }
 
     bool added = m_ruleTreeModel->insertRows(lastButOneRow, 1, QModelIndex());
+
     BE::Rule *category = m_ruleTreeModel->rootItem()->child(lastButOneRow);
     category->setName(name);
     category->setType(BE::Rule::ContainerRule);
+    category->setId(m_appFacade->nextRuleId());
 
-    if (added) {
-        return category;
-    } else {
+    if (!added) {
         delete category;
-
         return 0;
     }
+
+    return category;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1164,16 +1170,17 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *category)
 {
     BE::Rule *rule = new BE::Rule(name);
+    rule->setType(BE::Rule::OrdinaryRule);
+    rule->setId(m_appFacade->nextRuleId());
 
     bool appended = m_ruleTreeModel->appendItem(rule, category);
 
-    if (appended) {
-        return rule;
-    } else {
+    if (!appended) {
         delete rule;
-
         return 0;
     }
+
+    return rule;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1458,6 +1465,7 @@ void Lvk::FE::MainWindow::teachRule(BE::Rule *rule)
     rule->setTarget(ui->ruleEditWidget->targets());
     rule->setInput(ui->ruleEditWidget->input());
     rule->setOutput(ui->ruleEditWidget->output());
+    rule->setNextCategory(ui->ruleEditWidget->nextCategory());
 
     ruleEditFinished();
 

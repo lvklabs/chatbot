@@ -226,7 +226,7 @@ QStringList Lvk::Nlp::Cb2Engine::getAllResponses(const QString &input, const QSt
     if (m_preferCurTopic && !results.isEmpty()) {
         QString &topic = m_topics[target];
         reorderByTopic(topic, results);
-        topic = topicForRule(results[0].ruleId);
+        topic = nextTopicForRule(results[0].ruleId);
     }
 
     // TODO Avoid this convertion. In the future remove MatchList and use only ResultList
@@ -314,6 +314,19 @@ QString Lvk::Nlp::Cb2Engine::topicForRule(Nlp::RuleId ruleId)
     foreach (const Nlp::Rule &rule, m_rules) {
         if (rule.id() == ruleId) {
             return rule.topic();
+        }
+    }
+    return "";
+}
+
+
+//--------------------------------------------------------------------------------------------------
+
+QString Lvk::Nlp::Cb2Engine::nextTopicForRule(Nlp::RuleId ruleId)
+{
+    foreach (const Nlp::Rule &rule, m_rules) {
+        if (rule.id() == ruleId) {
+            return !rule.nextTopic().isEmpty() ? rule.nextTopic() : rule.topic();
         }
     }
     return "";
