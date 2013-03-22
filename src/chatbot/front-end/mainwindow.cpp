@@ -1143,9 +1143,11 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
     }
 
     bool added = m_ruleTreeModel->insertRows(lastButOneRow, 1, QModelIndex());
+
     BE::Rule *category = m_ruleTreeModel->rootItem()->child(lastButOneRow);
     category->setName(name);
     category->setType(BE::Rule::ContainerRule);
+    category->setId(m_appFacade->nextRuleId());
 
     if (added) {
         return category;
@@ -1161,6 +1163,8 @@ Lvk::BE::Rule *Lvk::FE::MainWindow::addCategory(const QString &name)
 Lvk::BE::Rule *Lvk::FE::MainWindow::addRule(const QString &name, BE::Rule *category)
 {
     BE::Rule *rule = new BE::Rule(name);
+    rule->setType(BE::Rule::OrdinaryRule);
+    rule->setId(m_appFacade->nextRuleId());
 
     bool appended = m_ruleTreeModel->appendItem(rule, category);
 
