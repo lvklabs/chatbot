@@ -15,4 +15,4 @@ echo "Building"
 echo "--------"
 
 mkdir -p $shadow_build_dir
-( cd $shadow_build_dir && qmake $project_file "CONFIG+=release da_contest" && make )
+( cd $shadow_build_dir && qmake $project_file "CONFIG+=release" && make )

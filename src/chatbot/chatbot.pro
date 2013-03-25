@@ -48,23 +48,9 @@ include(chat-adapter/chat-adapter.pri)
 include(crypto/crypto.pri)
 include(stats/stats.pri)
 include(da-server/da-server.pri)
-include(da-clue/da-clue.pri)
-
-# 'Dale Aceptar' contest
-da_contest {
-    include(da-contest.pri)
-}
-
+da_contest:include(da-clue/da-clue.pri)
+da_contest:include(da-contest.pri)
 include(3rd-party.pri)
-
-RC_FILE = \
-    res/chatbot.rc
-
-TRANSLATIONS = \
-    lang/chatbot2_es_AR.ts
-
-OTHER_FILES += \
-    res/chatbot.rc
 
 ### Update git revision in versionrev.h ##########################
 versionrev.target = common/versionrev.h

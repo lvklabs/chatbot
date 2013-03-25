@@ -14,6 +14,10 @@ isEmpty(PROJECT_PATH) {
     PROJECT_PATH = .
 }
 
+RC_FILE += $$PROJECT_PATH/res/chatbot.rc
+OTHER_FILES += $$PROJECT_PATH/res/chatbot.rc
+TRANSLATIONS += $$PROJECT_PATH/lang/chatbot2_es_AR.ts
+
 exists (da-server/daserverconfig.h) {
     DEFINES += DA_SERVER_CONFIG
     HEADERS += $$PROJECT_PATH/da-server/daserverconfig.h
@@ -42,3 +46,4 @@ qssh {
     HEADERS += $$PROJECT_PATH/da-server/sftpcontestdatauploader.h
     SOURCES += $$PROJECT_PATH/da-server/sftpcontestdatauploader.cpp
 }
+

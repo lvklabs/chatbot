@@ -20,9 +20,9 @@ else
   mkdir -p $pkg_dir/lang  
 
   cp -vR runtime/* $pkg_dir
-  cp -v .build/chatbot $pkg_dir
+  cp -v .build/chatbot $pkg_dir/chatbot.bin
 
-  strip $pkg_dir/chatbot
+  strip $pkg_dir/chatbot.bin
 
   tar -czvf chatbot-linux32-$1.tar.gz $pkg_dir
 fi
