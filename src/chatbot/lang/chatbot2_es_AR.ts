@@ -1531,12 +1531,12 @@ Tiempo restante: %3</translation>
         <translation type="obsolete">Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../front-end/welcomewidget.cpp" line="87"/>
+        <location filename="../front-end/welcomewidget.cpp" line="91"/>
         <source>Last file opened does not exist anymore: &apos;%1&apos;</source>
         <translation>El último archivo abierto ya no existe: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/welcomewidget.cpp" line="88"/>
+        <location filename="../front-end/welcomewidget.cpp" line="92"/>
         <source>Open last file</source>
         <translation>Abrir último archivo</translation>
     </message>
