@@ -51,6 +51,8 @@ include(da-server/da-server.pri)
 da_contest:include(da-contest.pri)
 include(3rd-party.pri)
 
+TRANSLATIONS += lang/chatbot2_es_AR.ts
+
 ### Update git revision in versionrev.h ##########################
 versionrev.target = common/versionrev.h
 win32:versionrev.commands = $$PWD/sh/update-revision.bat $$PWD

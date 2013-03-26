@@ -58,6 +58,13 @@ inline QString idToNlpTopic(quint64 id)
 
 //--------------------------------------------------------------------------------------------------
 
+inline quint64 nlpTopicToId(const QString &topic)
+{
+    return !topic.isEmpty() ? topic.toULongLong() : 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 // Make Nlp::Rule from BE::Rule
 inline Lvk::Nlp::Rule toNlpRule(const Lvk::BE::Rule *rule)
 {
@@ -465,6 +472,19 @@ QString Lvk::BE::AppFacade::getResponse(const QString &input, const QString &tar
     }
 
     return response;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+quint64 Lvk::BE::AppFacade::getCurrentCategory(const QString &target) const
+{
+    quint64 id = 0;
+
+    if (m_nlpEngine) {
+        id = nlpTopicToId(m_nlpEngine->getCurrentTopic(target));
+    }
+
+    return id;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -897,5 +917,6 @@ QString Lvk::BE::AppFacade::getTempFileForUpload()
 {
     return BE::ChatbotTempFile().getTempFileForUpload(m_rules.filename());
 }
+
 
 

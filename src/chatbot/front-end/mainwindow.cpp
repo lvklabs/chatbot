@@ -168,9 +168,12 @@ void Lvk::FE::MainWindow::clear(bool resetModel)
     ui->chatHistory->clear();
 
     // test tab widgets
+    // TODO create a new widget to handle this:
     ui->testConversationText->clear();
     ui->testInputText->clearAll();
     ui->clearTestConvButton->setEnabled(false);
+    ui->categoryGroupBox->setVisible(false);
+    ui->categoryLabel->clear();
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
     ui->transfView->clear();
@@ -207,7 +210,7 @@ bool Lvk::FE::MainWindow::initWithFile(const QString &filename, bool newFile)
 
     m_ruleTreeSelectionModel = ui->categoriesTree->selectionModel();
 
-    ui->ruleEditWidget->setNextCategoryVisible(nlpEngineOption(BE::AppFacade::PreferCurCategory));
+    setPccWidgetsVisible(nlpEngineOption(BE::AppFacade::PreferCurCategory));
 
     connect(m_ruleTreeModel,
             SIGNAL(rowsRemoved(QModelIndex, int, int)),
@@ -916,8 +919,7 @@ void Lvk::FE::MainWindow::onOptionsMenuTriggered()
         }
         if (newOpt.preferCurCategory != curOpt.preferCurCategory) {
             setNlpEngineOption(BE::AppFacade::PreferCurCategory, newOpt.preferCurCategory);
-
-            ui->ruleEditWidget->setNextCategoryVisible(newOpt.preferCurCategory);
+            setPccWidgetsVisible(newOpt.preferCurCategory);
         }
     }
 }
@@ -938,6 +940,13 @@ void Lvk::FE::MainWindow::setNlpEngineOption(BE::AppFacade::NlpEngineOption opt,
     options = enabled ? options | opt : options & ~opt;
 
     m_appFacade->setNlpEngineOptions(options);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setPccWidgetsVisible(bool visible)
+{
+    ui->ruleEditWidget->setNextCategoryVisible(visible);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1529,23 +1538,23 @@ void Lvk::FE::MainWindow::onTestInputTextEntered()
     QString input = ui->testInputText->text();
     QString target = ui->testInputText->currentItem().username;
 
-    BE::AppFacade::MatchList matches;
-    QString response;
-
     if (target.isEmpty()) {
-        response = m_appFacade->getResponse(input, "[ChatbotTest]", matches);
-    } else {
-        // FIXME if target is currently talking with the chatbot, we can change the current topic,
-        // it's not very likely but possible.
-        response = m_appFacade->getResponse(input, target, matches);
+        target = "[ChatbotTest]";
     }
+
+    // FIXME if target is currently talking with the chatbot, we can change the current topic,
+    // it's not very likely but possible.
+    BE::AppFacade::MatchList matches;
+    QString response = m_appFacade->getResponse(input, target, matches);
 
     qDebug() << "Test input:" << input << " Response:" << response << " Matches:" << matches.size();
 
+    // TODO create a new widget to handle this:
     ui->testConversationText->appendConversation(input, response, !matches.isEmpty());
     ui->testInputText->setText("");
     ui->clearTestConvButton->setEnabled(true);
 
+    setCurrentCategory(m_appFacade->getCurrentCategory(target));
     highlightMatchedRules(matches);
 }
 
@@ -1568,6 +1577,8 @@ void Lvk::FE::MainWindow::onClearTestConvPressed()
 {
     ui->clearTestConvButton->setEnabled(false);
     ui->testConversationText->clear();
+    ui->categoryGroupBox->setVisible(false);
+    ui->categoryLabel->clear();
     ui->ruleView->clear();
     ui->ruleViewGroupBox->setVisible(false);
 }
@@ -1600,6 +1611,19 @@ void Lvk::FE::MainWindow::highlightMatchedRules(const BE::AppFacade::MatchList &
 
     ui->ruleViewGroupBox->setVisible(true);
     ui->ruleView->setRule(rule, inputNumber);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::MainWindow::setCurrentCategory(quint64 catId)
+{
+    if (nlpEngineOption(BE::AppFacade::PreferCurCategory)) {
+        const BE::Rule *category = findRule(catId);
+        ui->categoryLabel->setText(category ? category->name() : tr("(none)"));
+        ui->categoryGroupBox->setVisible(true);
+    } else {
+        ui->categoryGroupBox->setVisible(false);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1864,3 +1888,5 @@ void Lvk::FE::MainWindow::onUpdate(const DAS::UpdateInfo &info)
 {
     FE::NewUpdateDialog(info, this).exec();
 }
+
+

@@ -16,7 +16,6 @@ isEmpty(PROJECT_PATH) {
 
 RC_FILE += $$PROJECT_PATH/res/chatbot.rc
 OTHER_FILES += $$PROJECT_PATH/res/chatbot.rc
-TRANSLATIONS += $$PROJECT_PATH/lang/chatbot2_es_AR.ts
 
 exists (da-server/daserverconfig.h) {
     DEFINES += DA_SERVER_CONFIG
