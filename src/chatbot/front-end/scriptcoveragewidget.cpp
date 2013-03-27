@@ -30,13 +30,11 @@ enum ScriptsTableColumns
 };
 
 const QString HTML_SCRIPT_START     = "<html><header><style></style></head><body>";
-const QString HTML_SCRIPT_LINE      = "<a href=\"%6,%7\" style=\"%1\">"
-                                       "<span style=\" color:#000088;\">%2:</span> %3<br/>"
-                                       "<span style=\" color:#008800;\">%4:</span> %5"
-                                      "</a><br/>";
+const QString HTML_SCRIPT_LINE      = "<a href=\"%6,%7\" style=\"%1\"><b>%2:</b> %3<br/>"
+                                       "<b>%4:</b> %5</a><br/>";
 const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000000");
-const QString HTML_SCRIPT_LINE_ERR1 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#990000");
-const QString HTML_SCRIPT_LINE_ERR2 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#ff0000");
+const QString HTML_SCRIPT_LINE_ERR1 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#017e82");
+const QString HTML_SCRIPT_LINE_ERR2 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#ff2f00");
 const QString HTML_SCRIPT_END       = "</body></html>";
 
 
