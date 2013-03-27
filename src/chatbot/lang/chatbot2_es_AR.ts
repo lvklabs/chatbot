@@ -310,7 +310,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
     <message>
         <location filename="../back-end/appfacade.cpp" line="282"/>
         <source>I&apos;m guilty!</source>
-        <translation type="unfinished">¡Soy culpable!</translation>
+        <translation>¡Soy culpable!</translation>
     </message>
 </context>
 <context>

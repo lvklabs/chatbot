@@ -7,10 +7,15 @@
 versionrev.h
 .test-suite-shadow-build
 doc/html
+src/chatbot/lang/chatbot2_xx_XX.ts
 da_release/linux32/chatbot-*
 da_release/linux32/.build
 da_release/win32/chatbot-*
 da_release/win32/.build
+open_release/linux32/chatbot-*
+open_release/linux32/.build
+open_release/win32/chatbot-*
+open_release/win32/.build
 src/chatbot/crypto/dakeymanager.h
 src/chatbot/crypto/dakeymanager.cpp
 src/chatbot/da-server/daserverconfig.h
