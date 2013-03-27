@@ -310,7 +310,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
     <message>
         <location filename="../back-end/appfacade.cpp" line="282"/>
         <source>I&apos;m guilty!</source>
-        <translation>Soy culpable!</translation>
+        <translation type="unfinished">¡Soy culpable!</translation>
     </message>
 </context>
 <context>
@@ -493,22 +493,22 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation>Personaje: </translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="95"/>
+        <location filename="../front-end/cluewidget.cpp" line="98"/>
         <source>Select the scripts files to import</source>
         <translation>Seleccioná los guiones que deseas importar</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="131"/>
+        <location filename="../front-end/cluewidget.cpp" line="134"/>
         <source>Error %1</source>
         <translation>Error %1</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="132"/>
+        <location filename="../front-end/cluewidget.cpp" line="135"/>
         <source>Cannot import file &apos;%1&apos;.</source>
         <translation>No se pudo importar el archivo &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="135"/>
+        <location filename="../front-end/cluewidget.cpp" line="138"/>
         <source> The character does not match.</source>
         <translation> El personaje no coincide.</translation>
     </message>
@@ -525,7 +525,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation type="obsolete">No se pudo importar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="138"/>
+        <location filename="../front-end/cluewidget.cpp" line="141"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
@@ -535,7 +535,7 @@ de Facebook o Gmail para obtener una lista con tus contactos</translation>
         <translation type="obsolete">No se pudo importar el archivo.</translation>
     </message>
     <message>
-        <location filename="../front-end/cluewidget.cpp" line="120"/>
+        <location filename="../front-end/cluewidget.cpp" line="123"/>
         <source>Character: (none)</source>
         <translation>Personaje: (ninguno)</translation>
     </message>
@@ -1056,37 +1056,37 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Para conectar tu chatbot necesitás ingresar tu usuario de Facebook que es diferente a tu correo electrónico.&lt;br/&gt;&lt;br/&gt;¿Necesitás ayuda? ¿No tenés o no te acordás tu usuario? &lt;a href=&quot;http://www.facebook.com/username&quot;&gt;Click aquí&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1653"/>
+        <location filename="../front-end/mainwindow.cpp" line="1654"/>
         <source>Account verified</source>
         <translation>Cuenta verificada</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1653"/>
+        <location filename="../front-end/mainwindow.cpp" line="1654"/>
         <source>Account verified!</source>
         <translation>¡Cuenta verificada!</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1669"/>
+        <location filename="../front-end/mainwindow.cpp" line="1670"/>
         <source>Account error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1670"/>
+        <location filename="../front-end/mainwindow.cpp" line="1671"/>
         <source>The account could not be verified. Please check your username and password and internet connection.</source>
         <translation>La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1674"/>
+        <location filename="../front-end/mainwindow.cpp" line="1675"/>
         <source>The account could not be verified. Your system does not support secure connections.</source>
         <translation>La cuenta no pudo ser verificada. Su sistema no tiene soporte para conexiones seguras.</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1875"/>
+        <location filename="../front-end/mainwindow.cpp" line="1876"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1876"/>
+        <location filename="../front-end/mainwindow.cpp" line="1877"/>
         <source>Could not create file for upload. Please verify that you have enough space in you hard disk.</source>
         <translation>No se pudo crear el archivo que necesita ser enviado. Por favor, revisá si tenés espacio libre en tu disco duro.</translation>
     </message>
@@ -1099,12 +1099,12 @@ Todas las reglas que pertenecen a esta categoría también serán borradas</tran
         <translation type="obsolete">Puntos: </translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1817"/>
+        <location filename="../front-end/mainwindow.cpp" line="1818"/>
         <source>Upload score</source>
         <translation>Enviar puntaje</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1818"/>
+        <location filename="../front-end/mainwindow.cpp" line="1819"/>
         <source>Before sending your score you need to verify your account.
 Please, go to the &apos;Connection&apos; tab and verify your account</source>
         <translation>Antes de enviar tu puntaje necesitás verificar tu cuenta.
@@ -1123,17 +1123,17 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation type="obsolete">Esta versión no tiene soporte para envío de puntajes</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1847"/>
+        <location filename="../front-end/mainwindow.cpp" line="1848"/>
         <source>Chatbot connected</source>
         <translation>Chatbot conectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1847"/>
+        <location filename="../front-end/mainwindow.cpp" line="1848"/>
         <source>Chatbot disconnected</source>
         <translation>Chatbot desconectado</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1849"/>
+        <location filename="../front-end/mainwindow.cpp" line="1850"/>
         <source>Remaining time: %1 (%2)</source>
         <translation>Tiempo restante: %1 (%2)</translation>
     </message>
@@ -1146,7 +1146,7 @@ Por favor, ingresá a la pestaña &quot;Conexión&quot; para verificar tu cuenta
         <translation type="obsolete">La cuenta no pudo ser verificada. Por favor revisá tu nombre de usuario y contraseña, y que esté funcionando la conexión a Internet</translation>
     </message>
     <message>
-        <location filename="../front-end/mainwindow.cpp" line="1673"/>
+        <location filename="../front-end/mainwindow.cpp" line="1674"/>
         <source>SSL error</source>
         <translation>Error SSL</translation>
     </message>
@@ -1531,7 +1531,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation>Detective</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="104"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="105"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
@@ -1540,28 +1540,33 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="222"/>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="237"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="232"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="249"/>
         <source>(No script selected)</source>
         <translation>(Ningún guión seleccionado)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="266"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="278"/>
         <source>(Empty script)</source>
         <translation>(Guión vacío)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="326"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="339"/>
         <source>Hint: </source>
         <translation>Pista: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="105"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="366"/>
+        <source>(none)</source>
+        <translation>(Ninguna)</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="106"/>
         <source>Coverage</source>
         <translation>Cobertura</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="180"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="181"/>
         <source>Global coverage: </source>
         <translation>Cobertura global: </translation>
     </message>
@@ -2869,42 +2874,47 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Filtro:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="190"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="206"/>
         <source>Global coverage:</source>
         <translation>Cobertura global: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="55"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="71"/>
         <source>Rule used:</source>
         <translation>Regla usada para responder:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="86"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="55"/>
+        <source>Current category:</source>
+        <translation>Categoría actual:</translation>
+    </message>
+    <message>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="102"/>
         <source>Show definition (Ctrl+D)</source>
         <translation>Mostrar definición (Ctrl+D)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="89"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="105"/>
         <source>Show definition</source>
         <translation>Mostrar definición</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="102"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="118"/>
         <source>Ctrl+D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="162"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="178"/>
         <source>Hint:</source>
         <translation>Pista:</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="197"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="213"/>
         <source>Remove all conversations</source>
         <translation>Borrar todas las conversaciones</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.ui" line="202"/>
+        <location filename="../front-end/scriptcoveragewidget.ui" line="218"/>
         <source>Remove selected conversation</source>
         <translation>Borrar conversación seleccionada</translation>
     </message>
