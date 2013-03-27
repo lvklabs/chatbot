@@ -1526,12 +1526,12 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Cobertura global: 60%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="66"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="64"/>
         <source>Detective</source>
         <translation>Detective</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="105"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="103"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
@@ -1540,33 +1540,33 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="232"/>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="249"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="230"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="247"/>
         <source>(No script selected)</source>
         <translation>(Ningún guión seleccionado)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="278"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="276"/>
         <source>(Empty script)</source>
         <translation>(Guión vacío)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="339"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="337"/>
         <source>Hint: </source>
         <translation>Pista: </translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="366"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="364"/>
         <source>(none)</source>
         <translation>(Ninguna)</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="106"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="104"/>
         <source>Coverage</source>
         <translation>Cobertura</translation>
     </message>
     <message>
-        <location filename="../front-end/scriptcoveragewidget.cpp" line="181"/>
+        <location filename="../front-end/scriptcoveragewidget.cpp" line="179"/>
         <source>Global coverage: </source>
         <translation>Cobertura global: </translation>
     </message>
@@ -2651,22 +2651,22 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Ver que estoy enviando.</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="276"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="285"/>
         <source>File not found &apos;%1&apos;</source>
         <translation>No se encontró el archivo &apos;%1&apos; </translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="280"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="289"/>
         <source>Cannot read file &apos;%1&apos;</source>
         <translation>No se pudo leer el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="284"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="293"/>
         <source>Invalid format in file &apos;%1&apos;</source>
         <translation>El archivo &apos;%1&apos; contiene un formato inválido</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="288"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="297"/>
         <source>Current character &apos;%1&apos; does not match character &apos;%2&apos; in file &apos;%3&apos;</source>
         <translation>El personaje actual &apos;%1&apos; no coincide con el personaje &apos;%2&apos; del archivo &apos;%3&apos;</translation>
     </message>
@@ -2675,27 +2675,27 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">El personaje actual no corresponde con el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="293"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="302"/>
         <source>Cannot copy file &apos;%1&apos;</source>
         <translation>No se pudo copiar el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="297"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="306"/>
         <source>Cannot overwrite file &apos;%1&apos;</source>
         <translation>No se pudo sobreescribir el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptmanager.cpp" line="302"/>
+        <location filename="../da-clue/scriptmanager.cpp" line="311"/>
         <source>Unknown error while parsing file &apos;%1&apos;</source>
         <translation>Error desconocido mientras se leía el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="88"/>
+        <location filename="../da-clue/scriptparser.cpp" line="92"/>
         <source>File not found: &apos;%1&apos;</source>
         <translation>No se encontró el archivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="94"/>
+        <location filename="../da-clue/scriptparser.cpp" line="101"/>
         <source>Cannot read file: &apos;%1&apos;</source>
         <translation>No se pudo leer el archivo &apos;%1&apos;</translation>
     </message>
@@ -2710,35 +2710,40 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
 %3</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="114"/>
+        <location filename="../da-clue/scriptparser.cpp" line="130"/>
         <source>Ill-formed XML in line %1:%2</source>
         <translation>XML mal formado en la línea %1:%2</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="118"/>
+        <location filename="../da-clue/scriptparser.cpp" line="134"/>
         <source>Invalid format in file &apos;%1&apos;.
 %2</source>
         <translation>Formato inválido en el archivo &apos;%1&apos;.
 %2</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="131"/>
+        <location filename="../da-clue/scriptparser.cpp" line="110"/>
+        <source>Cannot deobfuscate: &apos;%1&apos;</source>
+        <translation>No se pudo desofuscar &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../da-clue/scriptparser.cpp" line="159"/>
         <source>Missing Header and/or Body</source>
         <translation>Cabecera y/o cuerpo no declarados</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="164"/>
-        <location filename="../da-clue/scriptparser.cpp" line="218"/>
+        <location filename="../da-clue/scriptparser.cpp" line="192"/>
+        <location filename="../da-clue/scriptparser.cpp" line="246"/>
         <source>Unknown tag &apos;%1&apos;</source>
         <translation>Etiqueta desconocida &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="225"/>
+        <location filename="../da-clue/scriptparser.cpp" line="253"/>
         <source>Incomplete question found: Phrase is missing</source>
         <translation>Se encontró una pregunta incompleta: Falta la frase</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="228"/>
+        <location filename="../da-clue/scriptparser.cpp" line="256"/>
         <source>Incomplete question found: Expected answer is missing</source>
         <translation>Se encontró una pregunta incompleta: Falta la respuesta esperada</translation>
     </message>
@@ -2747,7 +2752,7 @@ Por favor ingresá tu nombre de usuario y contraseña. Luego presioná &quot;Ver
         <translation type="obsolete">Pregunta incompleta: Falta la frase</translation>
     </message>
     <message>
-        <location filename="../da-clue/scriptparser.cpp" line="242"/>
+        <location filename="../da-clue/scriptparser.cpp" line="270"/>
         <source>Invalid tag &apos;%1&apos; expected &apos;%2&apos;</source>
         <translation>Etiqueta &apos;%1&apos; inválida. Se esperaba &apos;%2&apos;</translation>
     </message>

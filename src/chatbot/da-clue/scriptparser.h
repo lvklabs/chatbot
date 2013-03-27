@@ -24,6 +24,7 @@
 
 #include "da-clue/script.h"
 #include "da-clue/scripterror.h"
+#include "da-clue/scriptformat.h"
 
 #include <QString>
 
@@ -57,7 +58,7 @@ public:
     /**
      * Parses \a filename into \a script. Returns true on success; Otherwise returns false.
      */
-    bool parse(const QString &filename, Clue::Script &script);
+    bool parse(const QString &filename, Clue::Script &script, Clue::ScriptFormat format = XmlPlain);
 
     /**
      * Returns the last error.
@@ -68,6 +69,7 @@ private:
     ScriptError m_error;
     QString m_errMsg;
 
+    bool deobfuscate(QByteArray &data);
     bool parseRoot(QDomElement &root, Clue::Script &script);
     bool parseHeader(QDomElement &head, Clue::Script &script);
     bool parseBody(QDomElement &body, Clue::Script &script);

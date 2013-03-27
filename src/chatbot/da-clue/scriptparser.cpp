@@ -20,12 +20,15 @@
  */
 
 #include "da-clue/scriptparser.h"
+#include "crypto/keymanagerfactory.h"
+#include "crypto/cipher.h"
 
 #include <QFile>
 #include <QFileInfo>
 #include <QObject>
 #include <QDomDocument>
 #include <QtDebug>
+#include <memory>
 
 /* Script example:
 
@@ -74,7 +77,8 @@ Lvk::Clue::ScriptParser::ScriptParser()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &script)
+bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &script,
+                                    Clue::ScriptFormat format)
 {
     qDebug() << "ScriptParser: parsing filename" << filename;
 
@@ -90,19 +94,31 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
         return false;
     }
 
-    if (!f.open(QFile::ReadOnly | QFile::Text)) {
+    QIODevice::OpenMode flags = (format == XmlObfuscated) ? QFile::ReadOnly
+                                                          : QFile::ReadOnly | QFile::Text;
+
+    if (!f.open(flags)) {
         m_errMsg = QObject::tr("Cannot read file: '%1'").arg(filename);
         m_error = Clue::ReadError;
         return false;
     }
 
+    QByteArray data = f.readAll();
+
+    if (format == XmlObfuscated) {
+        if (!deobfuscate(data)) {
+            m_errMsg = QObject::tr("Cannot deobfuscate: '%1'").arg(filename);
+            m_error = Clue::InvalidFormatError;
+            return false;
+        }
+    }
+
+    QString xml = QString::fromUtf8(data);
     QDomDocument doc;
     QString err;
     int line = 0;
     int col = 0;
     bool parsingOk = false;
-
-    QString xml = QString::fromUtf8(f.readAll());
 
     if (doc.setContent(xml, &err, &line, &col)) {
         QDomElement root = doc.documentElement();
@@ -121,6 +137,18 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
     }
 
     return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool Lvk::Clue::ScriptParser::deobfuscate(QByteArray &data)
+{
+    std::auto_ptr<Crypto::KeyManager> keyMgr(Crypto::KeyManagerFactory().create());
+
+    QByteArray iv = keyMgr->getIV(Crypto::KeyManager::ClueScriptsRole);
+    QByteArray key = keyMgr->getKey(Crypto::KeyManager::ClueScriptsRole);
+
+    return Crypto::Cipher(iv, key).decrypt(data);
 }
 
 //--------------------------------------------------------------------------------------------------

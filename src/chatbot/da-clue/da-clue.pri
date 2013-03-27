@@ -17,7 +17,8 @@ HEADERS += \
     $$PROJECT_PATH/da-clue/scriptparser.h \
     $$PROJECT_PATH/da-clue/analyzedline.h \
     $$PROJECT_PATH/da-clue/scripterror.h \
-    $$PROJECT_PATH/da-clue/regexp.h
+    $$PROJECT_PATH/da-clue/regexp.h \
+    $$PROJECT_PATH/da-clue/scriptformat.h
 
 
 SOURCES += \

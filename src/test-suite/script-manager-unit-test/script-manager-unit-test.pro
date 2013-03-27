@@ -24,6 +24,7 @@ PROJECT_PATH = ../../chatbot
 
 include($$PROJECT_PATH/da-clue/da-clue.pri)
 include($$PROJECT_PATH/common/common.pri)
+include($$PROJECT_PATH/crypto/crypto.pri)
 
 HEADERS -= \
     $$PROJECT_PATH/da-clue/clueengine.h \

@@ -25,6 +25,7 @@
 #include "da-clue/character.h"
 #include "da-clue/script.h"
 #include "da-clue/scripterror.h"
+#include "da-clue/scriptformat.h"
 
 namespace Lvk
 {
@@ -67,6 +68,11 @@ public:
      * Sets the current character name
      */
     void setCurrentCharacter(const QString &name);
+
+    /**
+     * Sets the script \a format. By default is Clue::Plain
+     */
+    void setScriptFormat(Clue::ScriptFormat format);
 
     /**
      * Loads the scripts for the current character
@@ -112,6 +118,7 @@ private:
     QString m_charsPath;
     Clue::ScriptError m_error;
     QString m_errMsg;
+    Clue::ScriptFormat m_format;
 
     void initPaths();
     bool loadFile(const QString &filename, const QString &name);

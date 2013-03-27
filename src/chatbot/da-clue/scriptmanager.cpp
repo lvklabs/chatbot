@@ -56,7 +56,7 @@ inline bool equalFilename(QString f1, QString f2)
 //--------------------------------------------------------------------------------------------------
 
 Lvk::Clue::ScriptManager::ScriptManager()
-    : m_error(Clue::NoError)
+    : m_error(Clue::NoError), m_format(Clue::XmlPlain)
 {
     initPaths();
 }
@@ -128,6 +128,13 @@ void Lvk::Clue::ScriptManager::setCurrentCharacter(const QString &name)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Clue::ScriptManager::setScriptFormat(Clue::ScriptFormat format)
+{
+    m_format = format;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool Lvk::Clue::ScriptManager::loadScripts()
 {
     if (m_curChar.isEmpty()) {
@@ -178,7 +185,9 @@ bool Lvk::Clue::ScriptManager::loadFile(const QString &filename, const QString &
     Clue::ScriptParser parser;
     Clue::Script script;
 
-    if (parser.parse(filename, script)) {
+    resetError();
+
+    if (parser.parse(filename, script, m_format)) {
         if (QString::compare(script.character, name, Qt::CaseInsensitive) == 0) {
             int i = 0;
 

@@ -19,10 +19,8 @@
  *
  */
 
-#ifndef LVK_CRYPTO_KEYMANAGER_H
-#define LVK_CRYPTO_KEYMANAGER_H
-
-#include <QByteArray>
+#ifndef LVK_CLUE_SCRIPTFORMAT_H
+#define LVK_CLUE_SCRIPTFORMAT_H
 
 namespace Lvk
 {
@@ -30,58 +28,30 @@ namespace Lvk
 /// \addtogroup Lvk
 /// @{
 
-namespace Crypto
+namespace Clue
 {
 
 /// \ingroup Lvk
-/// \addtogroup Crypto
+/// \addtogroup Clue
 /// @{
 
 /**
- * \brief The KeyManager class provides access to the cryptographic keys required by the
- *        application
+ * @brief The ScriptFormat enum provides the supported script formats
  */
-class KeyManager
+enum ScriptFormat
 {
-public:
-
-    /**
-     * Key Roles
-     */
-    enum Role
-    {
-        DefaultRole,
-        LocalStatsRole,
-        RemoteLoggerRole,
-        AuthServerRole,
-        FileServerRole,
-        ClueScriptsRole
-    };
-
-    /**
-     * Destroys the object
-     */
-    virtual ~KeyManager() { }
-
-    /**
-     * Returns the key for the given \a role
-     */
-    virtual QByteArray getKey(Role role) = 0;
-
-    /**
-     * Returns the initialization vector for the given \a role
-     */
-    virtual QByteArray getIV(Role role) = 0;
+    XmlPlain,          ///< Plain XML format
+    XmlObfuscated      ///< Obfuscated XML format
 };
 
 /// @}
 
-} // namespace Crypto
+} // namespace Clue
 
 /// @}
 
 } // namespace Lvk
 
 
-#endif // LVK_CRYPTO_KEYMANAGER_H
+#endif // LVK_CLUE_SCRIPTFORMAT_H
 
