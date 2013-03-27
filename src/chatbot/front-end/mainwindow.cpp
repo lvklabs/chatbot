@@ -1631,6 +1631,7 @@ void Lvk::FE::MainWindow::setCurrentCategory(quint64 catId)
         ui->categoryLabel->setText(category ? category->name() : tr("(none)"));
         ui->categoryGroupBox->setVisible(true);
     } else {
+        ui->categoryLabel->clear();
         ui->categoryGroupBox->setVisible(false);
     }
 }

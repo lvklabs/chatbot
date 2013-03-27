@@ -23,6 +23,7 @@
 #include "da-clue/analyzedscript.h"
 #include "da-clue/script.h"
 #include "nlp-engine/enginefactory.h"
+#include "nlp-engine/nlpproperties.h"
 
 #include <QtDebug>
 
@@ -54,6 +55,13 @@ void Lvk::Clue::ClueEngine::setRules(const Nlp::RuleList &rules)
 void Lvk::Clue::ClueEngine::setEvasive(const QString &evasive)
 {
     m_evasive = evasive;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ClueEngine::setCategoriesEnabled(bool enabled)
+{
+    m_engine->setProperty(NLP_PROP_PREFER_CUR_TOPIC, enabled);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -96,6 +104,7 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
         qDebug() << "ClueEngine: Getting response for question:"  << line.question;
 
         QString resp = m_engine->getResponse(line.question, ml);
+        QString topic = m_engine->getCurrentTopic("");
 
         if (ml.isEmpty()) {
             qDebug() << "ClueEngine: no response!";
@@ -104,6 +113,7 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
 
             aline.status = Clue::NoAnswerFound;
             aline.answer = m_evasive;
+            aline.topic = topic;
 
             ascript.append(aline);
         } else {
@@ -112,6 +122,8 @@ void Lvk::Clue::ClueEngine::analyze(const Clue::Script &script, Clue::AnalyzedSc
                      << "and forbidden pattern:" << line.forbidAnswer;
 
             Clue::AnalyzedLine aline(line, ml[0].first, ml[0].second, 0, resp);
+
+            aline.topic = topic;
 
             if (!m_regexp.exactMatch(line.expAnswer, resp)) {
                 qDebug() << "ClueEngine: Mismatch expected answer!";

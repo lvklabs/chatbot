@@ -83,6 +83,9 @@ void Lvk::FE::ClueWidget::refresh()
         int i = ui->scripts->currentScript();
         ui->scripts->setAnalyzedScripts(m_appFacade->analyzedScripts(), m_appFacade->rootRule());
         ui->scripts->setCurrentScript(i);
+
+        bool catVisible = m_appFacade->nlpEngineOptions() & BE::AppFacade::PreferCurCategory;
+        ui->scripts->setCategoryVisible(catVisible);
     } else {
         clear();
     }

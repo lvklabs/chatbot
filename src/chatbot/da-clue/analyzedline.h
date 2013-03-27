@@ -86,6 +86,7 @@ public:
     QString answer;     ///< The selected answer to the question. Empty if there is no match.
     int outputIdx;      ///< The output index of the selected output. -1 if there is no match.
     LineStatus status;  ///< The status of the analyzed line
+    QString topic;      ///< The current topic after analyzing the rule
 
 
     /**
@@ -99,7 +100,8 @@ public:
                 score == other.score &&
                 answer == other.answer &&
                 outputIdx == other.outputIdx &&
-                status == other.status;
+                status == other.status &&
+                topic == other.topic;
     }
 
     /**

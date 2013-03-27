@@ -69,6 +69,11 @@ public:
     void setEvasive(const QString &evasive);
 
     /**
+     *
+     */
+    void setCategoriesEnabled(bool enabled);
+
+    /**
      * Clears the rules
      */
     void clear();

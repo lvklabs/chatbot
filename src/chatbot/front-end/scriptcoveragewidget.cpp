@@ -65,7 +65,8 @@ Lvk::FE::ScriptCoverageWidget::ScriptCoverageWidget(QWidget *parent)
       ui(new Ui::ScriptCoverageWidget),
       m_detective(tr("Detective")),
       m_root(0),
-      m_collapseDef(false) // Collapse rule defintion column when it is not used
+      m_collapseDef(false), // Collapse rule defintion column when it is not used
+      m_categoryVisible(false)
 {
     ui->setupUi(this);
 
@@ -198,6 +199,15 @@ void Lvk::FE::ScriptCoverageWidget::setCurrentScript(int i)
     ui->scriptsTable->setCurrentCell(i, 0);
 }
 
+void Lvk::FE::ScriptCoverageWidget::setCategoryVisible(bool visible)
+{
+    m_categoryVisible = visible;
+
+    if (!ui->categoryLabel->text().isEmpty()) {
+        ui->categoryGroupBox->setVisible(visible);
+    }
+}
+
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float coverage)
@@ -220,6 +230,8 @@ void Lvk::FE::ScriptCoverageWidget::clear()
     ui->coverageLabel->clear();
     ui->ruleView->clear();
     ui->scriptView->setText(tr("(No script selected)"));
+    ui->categoryLabel->clear();
+    ui->categoryGroupBox->setVisible(false);
 
     showRuleUsedColumn(false);
 }
@@ -301,6 +313,7 @@ void Lvk::FE::ScriptCoverageWidget::showRuleUsed(int i, int j)
     ui->ruleView->setRule(rule, line.inputIdx);
 
     showRuleUsedColumn(true);
+    showCurrentCategory(line.topic);
 
     switch (line.status) {
     case Clue::NoAnswerFound:
@@ -340,6 +353,22 @@ void Lvk::FE::ScriptCoverageWidget::showRuleUsedColumn(bool show)
     }
 
     ui->ruleGroupBox->setVisible(show);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ScriptCoverageWidget::showCurrentCategory(const QString topic)
+{
+    // TODO refactor duplicated code from MainWindow
+    if (m_categoryVisible) {
+        quint64 catId = topic.toULongLong(); // FIXME breaking AppFacade encapsulation!
+        const BE::Rule *category = findRule(catId);
+        ui->categoryLabel->setText(category ? category->name() : tr("(none)"));
+        ui->categoryGroupBox->setVisible(true);
+    } else {
+        ui->categoryLabel->clear();
+        ui->categoryGroupBox->setVisible(false);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

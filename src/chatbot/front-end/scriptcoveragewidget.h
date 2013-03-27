@@ -96,6 +96,11 @@ public:
     void setCurrentScript(int i);
 
     /**
+     * Sets the current category group box as \a visible. By default is not visible.
+     */
+    void setCategoryVisible(bool visible);
+
+    /**
      * Clears the widget.
      */
     void clear();
@@ -124,6 +129,7 @@ private:
     const BE::Rule *m_root;
     QList<int> m_sizes;
     bool m_collapseDef;
+    bool m_categoryVisible;
 
     void setupTables();
     void connectSignals();
@@ -132,6 +138,7 @@ private:
     void showRuleUsed(int i, int j);
     void showHint(const QString &hint);
     void showRuleUsedColumn(bool show);
+    void showCurrentCategory(const QString topic);
     const BE::Rule *findRule(quint64 ruleId);
 };
 

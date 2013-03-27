@@ -974,6 +974,7 @@ Lvk::Clue::AnalyzedList Lvk::BE::AppFacade::analyzedScripts()
     refreshNlpEngine();
 
     Clue::ClueEngine engine;
+    engine.setCategoriesEnabled(m_nlpOptions & BE::AppFacade::PreferCurCategory);
     engine.setRules(m_nlpEngine->rules());
     engine.setEvasive(getEvasives().isEmpty() ? "" : getEvasives().first());
 

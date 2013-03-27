@@ -50,6 +50,22 @@
         <number>15</number>
        </property>
        <item>
+        <widget class="QGroupBox" name="categoryGroupBox">
+         <property name="title">
+          <string>Current category:</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="categoryLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="ruleGroupBox">
          <property name="title">
           <string>Rule used:</string>
