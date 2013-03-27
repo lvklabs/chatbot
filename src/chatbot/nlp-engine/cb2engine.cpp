@@ -255,6 +255,13 @@ void Lvk::Nlp::Cb2Engine::getAllResponsesWithTree(const QString &treeName, const
 
 //--------------------------------------------------------------------------------------------------
 
+QString Lvk::Nlp::Cb2Engine::getCurrentTopic(const QString &target) const
+{
+    return m_topics[target];
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Nlp::Cb2Engine::refresh()
 {
     m_trees.clear();
@@ -390,6 +397,7 @@ void Lvk::Nlp::Cb2Engine::setProperty(const QString &name, const QVariant &value
         if (value.toBool() == false && m_preferCurTopic) {
             qDebug() << "Cb2Engine: Disabled topics";
             m_preferCurTopic = false;
+            m_topics.clear();
         }
     }
 }
@@ -405,3 +413,4 @@ void Lvk::Nlp::Cb2Engine::clear()
     m_trees.clear();
     m_topics.clear();
 }
+

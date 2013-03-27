@@ -35,6 +35,10 @@ Lvk::FE::WelcomeWidget::WelcomeWidget(QWidget *parent) :
     ui->spacerTop->changeSize(20, 214);
 #endif
 
+#ifndef DA_CONTEST
+    ui->linkLabel->setVisible(false);
+#endif
+
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
                                     qApp->desktop()->availableGeometry()));
 

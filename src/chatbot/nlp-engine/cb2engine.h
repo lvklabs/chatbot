@@ -120,6 +120,12 @@ public:
      */
     virtual QStringList getAllResponses(const QString &input, const QString &target,
                                         MatchList &matches);
+
+    /**
+     * \copydoc Engine::getCurrentTopic()
+     */
+    virtual QString getCurrentTopic(const QString &target) const;
+
     /**
      * \copydoc Engine::setPreSanitizer()
      *

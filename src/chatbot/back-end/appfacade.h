@@ -198,6 +198,11 @@ public:
     QString getResponse(const QString &input, const QString &target, MatchList &matches) const;
 
     /**
+     * Returns then current category in the NLP engine for \a target
+     */
+    quint64 getCurrentCategory(const QString &target) const;
+
+    /**
      * Refreshes the NLP engine. Invoke this method if the root rule or any other child rule has
      * been changed.
      */

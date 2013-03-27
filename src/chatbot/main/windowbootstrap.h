@@ -23,7 +23,7 @@
 
 #include "front-end/mainwindow.h"
 
-#ifdef DA_CONTEST
+#ifdef ENABLE_WELCOME_WINDOW
 # include "front-end/welcomewidget.h"
 #endif
 
@@ -74,7 +74,7 @@ public:
 
 private:
 
-#ifdef DA_CONTEST
+#ifdef ENABLE_WELCOME_WINDOW
     typedef Lvk::FE::WelcomeWidget WelcomeWindow;
     typedef Lvk::FE::MainWindow    MainWindow;
 #else

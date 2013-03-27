@@ -1,0 +1,40 @@
+* Which languages are supported?
+
+  Currently, en_US (default) and es_AR are the only languages supported.
+
+
+* How to set es_AR as the default language?
+
+  Edit chatbot.conf and add the following lines:
+
+  [Application]
+  Language=es_AR
+
+
+* Can I translate the application to a different language?
+
+  Yes, you can. 
+
+  Instructions:
+
+  1) Download and install Qt 4.7 or higher (http://qt-project.org/downloads)
+  2) Make a copy of the file lang/chatbot2_xx_XX.ts
+  3) Rename the file and replace xx_XX with your desired language. 
+     For instance: chatbot2_en_UK.ts, chatbot2_it_IT.ts or chatbot2_es_ES.ts
+  4) Launch Qt Linguist
+  5) Let's assume we are translating it_IT. Open chatbot2_it_IT.ts
+  6) Translate all the strings. See the Qt Linguist documentation if you don't 
+     know how to do it: http://qt-project.org/doc/qt-4.8/linguist-translators.html
+  7) Release the file. Go to the menu: File -> Release
+     IMPORTANT: This must create a file chatbot2_it_IT.qm
+                Make sure that file is in the lang/ folder. If not, move it.
+  8) Edit chatbot.conf and add (or update):
+     
+     [Application]
+     Language=it_IT
+
+  9) Restart Chatbot
+
+
+
+  

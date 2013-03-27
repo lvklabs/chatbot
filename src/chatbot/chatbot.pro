@@ -5,6 +5,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -Wall -Wextra
 
 DEFINES +=  \
+    ENABLE_WELCOME_WINDOW \
     QT_USE_FAST_CONCATENATION \
     QT_USE_FAST_OPERATOR_PLUS \
     #DRAG_AND_DROP_DISABLED
@@ -34,6 +35,10 @@ win32 {
 
 PROJECT_PATH = $$PWD
 
+TRANSLATIONS += \
+    lang/chatbot2_es_AR.ts\
+    lang/chatbot2_xx_XX.ts
+
 HEADERS += \
     main/windowbootstrap.h \
 
@@ -51,6 +56,7 @@ include(da-server/da-server.pri)
 da_contest:include(da-clue/da-clue.pri)
 da_contest:include(da-contest.pri)
 include(3rd-party.pri)
+
 
 ### Update git revision in versionrev.h ##########################
 versionrev.target = common/versionrev.h

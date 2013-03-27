@@ -176,6 +176,7 @@ private:
     void ruleEditFinished();
 
     void highlightMatchedRules(const BE::AppFacade::MatchList &matches);
+    void setCurrentCategory(quint64 catId);
 
     void undoRuleEdited(BE::Rule *rule);
 
@@ -196,6 +197,8 @@ private:
 
     void setNlpEngineOption(BE::AppFacade::NlpEngineOption option, bool enabled);
     bool nlpEngineOption(BE::AppFacade::NlpEngineOption option);
+
+    void setPccWidgetsVisible(bool visible);
 
     void uploadContestData();
 

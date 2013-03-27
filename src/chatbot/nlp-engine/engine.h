@@ -125,6 +125,12 @@ public:
                                         MatchList &matches) = 0;
 
     /**
+     * Returns the current topic for \a target if topics are enabled. Otherwise returns an
+     * empty string
+     */
+    virtual QString getCurrentTopic(const QString &target) const = 0;
+
+    /**
      * Sets the pre-lemmatization \a sanitizer, i.e. the sanitizer to be executed before
      * lemmatization. The instance owns the given pointer.
      */
