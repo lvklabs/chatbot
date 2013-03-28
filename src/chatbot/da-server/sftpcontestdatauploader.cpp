@@ -202,18 +202,22 @@ void Lvk::DAS::SftpContestDataUploader::onOpfinished(QSsh::SftpJobId job, const 
 
 bool Lvk::DAS::SftpContestDataUploader::sendScore()
 {
-    DAS::RemoteLogger::FieldList fields;
-    fields.append(RLOG_KEY_APP_VERSION,    APP_VERSION_STR);
-    fields.append(RLOG_KEY_CHATBOT_ID,     m_data.chatbotId);
-    fields.append(RLOG_KEY_USER_ID,        m_data.username);
-    fields.append(RLOG_KEY_RULES_SCORE,    QString::number(m_data.bestScore.rules));
-    fields.append(RLOG_KEY_CONV_SCORE,     QString::number(m_data.bestScore.conversations));
-    fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(m_data.bestScore.contacts));
-    fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(m_data.bestScore.total));
+// Disabled send score:
+//
+//    DAS::RemoteLogger::FieldList fields;
+//    fields.append(RLOG_KEY_APP_VERSION,    APP_VERSION_STR);
+//    fields.append(RLOG_KEY_CHATBOT_ID,     m_data.chatbotId);
+//    fields.append(RLOG_KEY_USER_ID,        m_data.username);
+//    fields.append(RLOG_KEY_RULES_SCORE,    QString::number(m_data.bestScore.rules));
+//    fields.append(RLOG_KEY_CONV_SCORE,     QString::number(m_data.bestScore.conversations));
+//    fields.append(RLOG_KEY_CONTACTS_SCORE, QString::number(m_data.bestScore.contacts));
+//    fields.append(RLOG_KEY_TOTAL_SCORE,    QString::number(m_data.bestScore.total));
+//
+//    std::auto_ptr<DAS::RemoteLogger> secureLogger(DAS::RemoteLoggerFactory().createSecureLogger());
+//
+//    return secureLogger->log("Manually uploaded score", fields) == 0;
 
-    std::auto_ptr<DAS::RemoteLogger> secureLogger(DAS::RemoteLoggerFactory().createSecureLogger());
-
-    return secureLogger->log("Manually uploaded score", fields) == 0;
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
