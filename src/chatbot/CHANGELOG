@@ -1,6 +1,10 @@
+v2.1
+ - Fixed bug github#35
+
 v2.0
  - New custom engine implemented from scratch
  - Dropdown list to select the next category
+ - "Clue" tab
 
 v1.4
  - Implemented drag & drop of rules and categories

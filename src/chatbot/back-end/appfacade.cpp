@@ -318,9 +318,9 @@ bool Lvk::BE::AppFacade::generalSetup()
     setupChatbot();
     refreshNlpEngine();
 
+    m_scriptMgr.setScriptFormat(Clue::XmlObfuscated);
     m_scriptMgr.setCurrentCharacter(m_rules.metadata(FILE_METADATA_CLUE_CHARACTER).toString());
     if (!m_scriptMgr.currentCharacter().isEmpty()) {
-        m_scriptMgr.setScriptFormat(Clue::XmlObfuscated);
         m_scriptMgr.loadScripts();
     }
 
