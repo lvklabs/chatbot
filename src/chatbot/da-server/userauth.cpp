@@ -164,10 +164,10 @@ bool Lvk::DAS::UserAuth::verifyCertChain()
             throw QString("Invalid peer's immediate cert");
         }
         if (cert.issuerInfo(QSslCertificate::CommonName) != CA2_CERT_ISSUER_NAME) {
-            throw QString("wrong issuer name");
+            throw QString("wrong issuer name: " + cert.issuerInfo(QSslCertificate::CommonName));
         }
         if (cert.subjectInfo(QSslCertificate::CommonName) != PEER_CERT_SUBJECT_NAME) {
-            throw QString("wrong subect name");
+            throw QString("wrong subect name: " + cert.subjectInfo(QSslCertificate::CommonName));
         }
 
         valid = true;
