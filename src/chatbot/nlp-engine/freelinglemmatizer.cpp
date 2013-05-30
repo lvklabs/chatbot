@@ -11,6 +11,10 @@
 
 #include "freeling.h"
 
+#ifdef ENABLE_FREELING_TRACES
+# include "freeling/traces.h"
+#endif
+
 #define KEY_TOKENIZER_FILE  1
 #define KEY_SPLITTER_FILE   2
 #define KEY_PROBS_FILE      3
@@ -176,6 +180,11 @@ inline void convert(const std::list<sentence> &ls, Lvk::Nlp::WordList &l)
 Lvk::Nlp::FreelingLemmatizer::FreelingLemmatizer()
     : m_flInit(false), m_tk(0), m_sp(0), m_morpho(0), m_preSanitizer(0), m_postSanitizer(0)
 {
+#ifdef ENABLE_FREELING_TRACES
+    traces::TraceLevel=4;
+    traces::TraceModule=0xFFFFF;
+#endif
+
     ConfigFilesMap configFiles;
 
     getFlConfigFiles(configFiles);

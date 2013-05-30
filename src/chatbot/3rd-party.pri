@@ -41,7 +41,7 @@ CONFIG(debug, debug|release) {
         QSSH_LIBS          = # TODO compile QSsh for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
+        FREELING_LIBS      = -lmorfo_d -lfries -lomlet
         ZLIB_LIBS          = -lz
         OPENSSL_LIBS       = -lcrypto
         QSSH_LIBS          = -lBotan -lQSsh
@@ -78,6 +78,7 @@ qxmpp {
 
 freeling {
     DEFINES += PCRE_STATIC FREELING_SUPPORT
+    #DEFINES += ENABLE_FREELING_TRACES
     INCLUDEPATH += $$FREELING_INCLUDE_PATH
     LIBS += -L$$FREELING_LIB_PATH $$FREELING_LIBS
 }
