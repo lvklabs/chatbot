@@ -163,6 +163,13 @@ void Cb2EnginefullTest::testCase1_data()
     QTest::newRow("38") << UTF8("Tengo 10 a\xc3\xb1os")     << "sos mas chico que yo"  << RULE_15_ID << 0;
     QTest::newRow("39") << UTF8("Tengo -9 a\xc3\xb1os")     << "imposible!"            << RULE_15_ID << 0;
     QTest::newRow("40") << UTF8("Tengo muuuuchos a\xc3\xb1os") << "sos un viejo"       << RULE_15_ID << 0;
+
+    // Test cases for bug #36
+    QTest::newRow("b #36a") << "Soy la diva"                << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
+    QTest::newRow("b #36b") << "Soy la diva. de hoy"        << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
+    QTest::newRow("b #36c") << "Soy la diva."               << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
+    QTest::newRow("b #36d") << "Soy la diva.."              << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
+    QTest::newRow("b #36e") << "Soy la diva..."             << RULE_23_OUTPUT_1 << RULE_23_ID << 0;
 }
 
 //--------------------------------------------------------------------------------------------------

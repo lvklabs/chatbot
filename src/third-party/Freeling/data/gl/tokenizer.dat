@@ -21,6 +21,15 @@ OTHERS     [\]<>[(\.,";:?!¿¡«»'`)^@~|}{_/\\+=&$¤£¢¥#*+%\-]
 ##     created for each substring from 1 to the specified value.
 ##    -The third field is the regexp to match against the line
 ## 
+
+## LVK custom rules
+## Adding support to tokenize smileys, variable declarations and 
+## exact match with the following rules:
+##   SMILEYS
+##   VAR_DECL
+##   REC_DECL
+##   EM_DECL
+
 <RegExps>
 INDEX_SEQUENCE  0  (\.{4,}|-{2,}|\*{2,}|_{2,}|/{2,})
 INITIALS1       1  ([A-Z](\.[A-Z])+)(\.\.\.)
@@ -34,13 +43,10 @@ URLS 	        0  ((mailto:|(news|http|https|ftp|ftps)://)[\w\.\-]+|^(www(\.[\w\-
 KEEP_COMPOUNDS  0  {ALPHA}+(['_\-]{ALPHA}+)+
 *ABREVIATIONS1  0  (({ALPHA}+\.)+)(?!\.\.)
 *ABREVIATIONS2  0  ({ALPHA}+\.)(?!\.\.)
-## LVK modification to the rules -- start
-## Adding support to tokenize variable declarations
 SMILEYS         0  ([:;=8BXx]|:')[-^]?[()/|DPpbSs$*Oo@\]\[{}] 
 VAR_DECL        0  \[{ALPHANUM}+\]
 REC_DECL        0  [rR]\[{ALPHANUM}+\]
 EM_DECL         0  '.*'
-## LVK modification to the rules -- end
 WORD            0  {ALPHANUM}+
 OTHERS_C        0  {OTHERS}
 </RegExps>

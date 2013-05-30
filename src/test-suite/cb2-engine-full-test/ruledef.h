@@ -74,6 +74,10 @@
                                             "{if [num] >= 19} sos mas grande que yo {  if [num] == muchos  } sos un viejo"\
                                             "{if [num] >= 1} sos mas chico que yo {if [num]<1} imposible!"
 
+#define RULE_23_ID                           23
+#define RULE_23_INPUT_1                      "*diva*"
+#define RULE_23_OUTPUT_1                     "Ok"
+
 //--------------------------------------------------------------------------------------------------
 
 inline void setRules1(Lvk::Nlp::Engine *engine)
@@ -136,6 +140,10 @@ inline void setRules1(Lvk::Nlp::Engine *engine)
     rules << Lvk::Nlp::Rule(RULE_15_ID,
                             QStringList() << QString::fromUtf8(RULE_15_INPUT_1),
                             QStringList() << RULE_15_OUTPUT_1);
+
+    rules << Lvk::Nlp::Rule(RULE_23_ID,
+                            QStringList() << RULE_23_INPUT_1,
+                            QStringList() << RULE_23_OUTPUT_1);
 
     engine->setRules(rules);
 }
