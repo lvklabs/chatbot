@@ -27,7 +27,7 @@
 #define ORGANIZATION_NAME   "LVK"
 #define ORGANIZATION_DOMAIN "lvklabs.com"
 
-#define APP_VERSION_STR     "2.2-clue"
+#define APP_VERSION_STR     "2.3-clue"
 #define APP_VERSION_REV     AUTO_APP_VERSION_REV
 #define APP_NAME            "Chatbot"
 #define APP_URL_CONTACT     "www.lvklabs.com"
