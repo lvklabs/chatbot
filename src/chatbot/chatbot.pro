@@ -67,7 +67,7 @@ PRE_TARGETDEPS += common/versionrev.h
 
 ### Copy language files ##########################################
 win32:copylang.commands = # FIXME
-else:copylang.commands = cp -R $$PROJECT_PATH/lang .
+else:copylang.commands =  if [ `pwd -P` != $$PROJECT_PATH ]; then cp -R $$PROJECT_PATH/lang .; fi
 QMAKE_EXTRA_TARGETS += copylang
 POST_TARGETDEPS += copylang
 
