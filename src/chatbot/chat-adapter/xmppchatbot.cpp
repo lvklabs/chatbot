@@ -153,19 +153,16 @@ void Lvk::CA::XmppChatbot::connectToServer(const QString &user, const QString &p
     m_user = normalizeUser(user);
     m_domain = normalizeDomain(domain);
 
-//    QXmppConfiguration conf;
-//    conf.setDomain(m_domain);
-//    conf.setUser(m_user);
-//    conf.setPassword(passwd);
-//    conf.setResource("");
-//    conf.setAutoAcceptSubscriptions(true);
-//    m_xmppClient->connectToServer(conf);
+    QXmppConfiguration conf;
+    conf.setDomain(m_domain);
+    conf.setUser(m_user);
+    conf.setPassword(passwd);
+    conf.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
+    m_xmppClient->connectToServer(conf);
 
-    QString jid = m_user + "@" + m_domain;
-
-    qDebug() << "XmppChatbot: Connecting with jid:" << jid;
-
-    m_xmppClient->connectToServer(jid, passwd);
+//    QString jid = m_user + "@" + m_domain;
+//    qDebug() << "XmppChatbot: Connecting with jid:" << jid;
+//    m_xmppClient->connectToServer(jid, passwd);
 }
 
 //--------------------------------------------------------------------------------------------------
