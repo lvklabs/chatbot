@@ -45,6 +45,7 @@ enum ScriptError
     FileNotFoundError,
     CannotOverwriteError,
     CannotCopyError,
+    CannotRemoveError,
     ReadError,
     InvalidFormatError,
     CharacterMismatchError,

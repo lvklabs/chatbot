@@ -46,6 +46,8 @@ const QString XML_QUESTION =
 const QString XML_STANDARD = "STANDARD";
 const QString XML_CRITICAL = "CRITICAL";
 
+const QString XML_COMMENT = "<!--%1-->";
+
 //--------------------------------------------------------------------------------------------------
 // ScriptManagerUnitTest
 //--------------------------------------------------------------------------------------------------
@@ -216,6 +218,7 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     QString f1 = "pedro1." SCRIPT_FILE_EXT;
     QString f2 = "script." SCRIPT_FILE_EXT;
     QString f3 = "script_flor." SCRIPT_FILE_EXT;
+    QString f4 = "script_flor_with_comments." SCRIPT_FILE_EXT;
 
     // names
     QString n1 = "pedro";
@@ -244,11 +247,25 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     // file contents
     QString c1 = XML_SCRIPT.arg(XML_HEADER.arg(n1, "1"),
                                 XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1));
+
     QString c2 = XML_SCRIPT.arg(XML_HEADER.arg(n1, "2"),
                                 XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1) +
                                 XML_QUESTION.arg(q2, ea2, fa2, XML_CRITICAL, eh2, fh2));
+
     QString c3 = XML_SCRIPT.arg(XML_HEADER.arg(n2, "1"),
                                 XML_QUESTION.arg(q1, ea1, fa1, XML_STANDARD, eh1, fh1));
+
+    QString c4 = XML_COMMENT.arg("\n\nstart script\nThis is the begining of the script\n\n") +
+            XML_SCRIPT.arg(XML_COMMENT.arg(" start header ") +
+                           XML_HEADER.arg(n2, "1") +
+                           XML_COMMENT.arg(" end header <!--"),
+                           XML_COMMENT.arg("-- start questions --") +
+                           XML_QUESTION.arg(q1 + XML_COMMENT.arg("<b>another comment</b>\n"),
+                                            ea1 + XML_COMMENT.arg("") + XML_COMMENT.arg("1"),
+                                            fa1, XML_STANDARD, eh1, fh1) +
+                           XML_COMMENT.arg(XML_QUESTION.arg(q2, ea2, fa2, XML_CRITICAL, eh2, fh2)) +
+                           XML_COMMENT.arg("-- end questions --"))
+            + XML_COMMENT.arg("\nend script\n");
 
     // parsed scripts
     Clue::Script s1(f1, n1, 1);
@@ -258,6 +275,8 @@ void ScriptManagerUnitTest::testLoadScripts_data()
     s2.append(Clue::ScriptLine(q2, ea2, fa2, eh2, fh2, Clue::ScriptLine::Critical));
     Clue::Script s3(f3, n2, 1);
     s3.append(Clue::ScriptLine(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard));
+    Clue::Script s4(f4, n2, 1);
+    s4.append(Clue::ScriptLine(q1, ea1, fa1, eh1, fh1, Clue::ScriptLine::Standard));
     //************************************************************************************
 
     QTest::addColumn<QStringList>("filenames");
@@ -284,6 +303,11 @@ void ScriptManagerUnitTest::testLoadScripts_data()
                        << (QStringList() << c1 << c2 << c3)
                        << n1
                        << (Clue::ScriptList() << s1 << s2);
+
+    QTest::newRow("4") << (QStringList() << f4)
+                       << (QStringList() << c4)
+                       << n2
+                       << (Clue::ScriptList() << s4);
 }
 
 //--------------------------------------------------------------------------------------------------

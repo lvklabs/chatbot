@@ -35,7 +35,10 @@
 #include "common/globalstrings.h"
 #include "common/crashhandler.h"
 #include "stats/statsmanager.h"
-#include "da-clue/clueengine.h"
+
+#ifdef DA_CONTEST
+#  include "da-clue/clueengine.h"
+#endif
 
 #include <QDateTime>
 #include <QMetaType>
@@ -172,7 +175,8 @@ Lvk::BE::AppFacade::~AppFacade()
 QString Lvk::BE::AppFacade::getExtrasPath()
 {
     QFileInfo info(m_rules.filename());
-    QString extrasPath = info.canonicalPath() + QDir::separator() + info.baseName() + "_extras";
+    QString extrasPath = info.canonicalPath() + QDir::separator() + info.baseName()
+            + EXTRAS_DIR_SUFFIX;
 
     QDir().mkpath(extrasPath);
 
@@ -279,7 +283,11 @@ bool Lvk::BE::AppFacade::setDefaultRules()
 
     Rule *evasives  = new Rule(tr("Evasives"));
     evasives->setType(Rule::EvasiveRule);
+#ifdef DA_CONTEST
     evasives->setOutput(QStringList() << tr("I'm guilty!"));
+#else
+    evasives->setOutput(QStringList() << "");
+#endif
 
     m_evasivesRule = evasives;
 
@@ -318,11 +326,13 @@ bool Lvk::BE::AppFacade::generalSetup()
     setupChatbot();
     refreshNlpEngine();
 
+#ifdef DA_CONTEST
     m_scriptMgr.setScriptFormat(Clue::XmlObfuscated);
     m_scriptMgr.setCurrentCharacter(m_rules.metadata(FILE_METADATA_CLUE_CHARACTER).toString());
     if (!m_scriptMgr.currentCharacter().isEmpty()) {
         m_scriptMgr.loadScripts();
     }
+#endif
 
     return true;
 }
@@ -360,7 +370,9 @@ bool Lvk::BE::AppFacade::hasUnsavedChanges() const
 
 void Lvk::BE::AppFacade::close()
 {
+#ifdef DA_CONTEST
     m_scriptMgr.clear();
+#endif
 
     // If chatbot never saved
     if (m_rules.filename().isEmpty()) {
@@ -933,6 +945,8 @@ QString Lvk::BE::AppFacade::getTempFileForUpload()
 // Clue
 //--------------------------------------------------------------------------------------------------
 
+#ifdef DA_CONTEST
+
 QList<Lvk::Clue::Character> Lvk::BE::AppFacade::characters()
 {
     return m_scriptMgr.characters();
@@ -994,10 +1008,19 @@ bool Lvk::BE::AppFacade::importScript(const QString &scriptFile)
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::BE::AppFacade::removeScript(const QString &scriptFile)
+{
+    return m_scriptMgr.remove(scriptFile);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 int Lvk::BE::AppFacade::error(QString *errMsg)
 {
     return m_scriptMgr.error(errMsg);
 }
+
+#endif // DA_CONTEST
 
 
 

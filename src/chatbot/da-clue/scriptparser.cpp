@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QObject>
 #include <QDomDocument>
+#include <QRegExp>
 #include <QtDebug>
 #include <memory>
 
@@ -120,6 +121,8 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
     int col = 0;
     bool parsingOk = false;
 
+    removeComments(xml);
+
     if (doc.setContent(xml, &err, &line, &col)) {
         QDomElement root = doc.documentElement();
 
@@ -128,6 +131,8 @@ bool Lvk::Clue::ScriptParser::parse(const QString &filename, Clue::Script &scrip
         }
     } else {
         m_errMsg = QObject::tr("Ill-formed XML in line %1:%2").arg(line).arg(col);
+        // More details:
+        //m_errMsg = QObject::tr("Ill-formed XML in line %1:%2 %3").arg(line).arg(col).arg(xml);
     }
 
     if (!parsingOk) {
@@ -149,6 +154,13 @@ bool Lvk::Clue::ScriptParser::deobfuscate(QByteArray &data)
     QByteArray key = keyMgr->getKey(Crypto::KeyManager::ClueScriptsRole);
 
     return Crypto::Cipher(iv, key).decrypt(data);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::Clue::ScriptParser::removeComments(QString &xml)
+{
+    xml.remove(QRegExp("<!--((?!-->).)*-->"));
 }
 
 //--------------------------------------------------------------------------------------------------

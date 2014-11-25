@@ -1,0 +1,12 @@
+﻿Este programa es parte del Desafío Dale Aceptar (http://www.daleaceptar.gob.ar/). 
+Fue encomendado por la Fundación Dr. Manuel Sadosky 
+(http://www.fundacionsadosky.org.ar/) al Grupo de Lógica, Interaccion y Sistemas 
+Inteligentes (http://liis.famaf.unc.edu.ar/) de la Facultad de Matemática, 
+Astronomía y Física (FaMAF) de la Universidad Nacional de Córdoba, y desarrollado 
+en colaboración con LVK (http://www.lvklabs.com/).
+
+
+Contacto:
+Luciana Benotti - benotti@famaf.unc.edu.ar
+Andres Pagliano - andres.pagliano@lvklabs.com
+

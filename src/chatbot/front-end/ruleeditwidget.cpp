@@ -371,12 +371,18 @@ void Lvk::FE::RuleEditWidget::setUiMode(BE::Rule::Type type)
         ui->nextCategoryList->setVisible(false);
         ui->teachRuleButton->setVisible(true);
         ui->undoRuleButton->setVisible(true);
-        ui->teachRuleButton->setEnabled(false);
-        ui->undoRuleButton->setEnabled(false);
         ui->chatbotRepliesLabel->setText(QObject::tr("If chatbot does not understand,"
                                                      " it replies:"));
         ui->teachRuleButton->setText(QObject::tr("Teach rule to the chatbot"));
+#ifdef DA_CONTEST
         ui->ruleOutputWidget->setReadOnly(true);
+        ui->teachRuleButton->setEnabled(false);
+        ui->undoRuleButton->setEnabled(false);
+#else
+        ui->ruleOutputWidget->setReadOnly(false);
+        ui->teachRuleButton->setEnabled(true);
+        ui->undoRuleButton->setEnabled(true);
+#endif // DA_CONTEST
         break;
     }
 

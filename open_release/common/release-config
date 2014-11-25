@@ -1,7 +1,7 @@
 
-lvk_user=lavandaink
+lvk_user=lvklabs
 lvk_host=lvklabs.com
-pkg_host_path=lavandaink.com.ar/builds/chatbot
+pkg_host_path=lvklabs.com/builds/chatbot
 pkg_basename=chatbot
 
 pkg_version=`../common/current-version.sh 2>/dev/null` || \

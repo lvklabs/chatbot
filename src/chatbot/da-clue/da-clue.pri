@@ -18,14 +18,16 @@ HEADERS += \
     $$PROJECT_PATH/da-clue/analyzedline.h \
     $$PROJECT_PATH/da-clue/scripterror.h \
     $$PROJECT_PATH/da-clue/regexp.h \
-    $$PROJECT_PATH/da-clue/scriptformat.h
+    $$PROJECT_PATH/da-clue/scriptformat.h \
+    $$PROJECT_PATH/da-clue/batchanalyzer.h
 
 
 SOURCES += \
     $$PROJECT_PATH/da-clue/scriptmanager.cpp \
     $$PROJECT_PATH/da-clue/scriptparser.cpp \
     $$PROJECT_PATH/da-clue/clueengine.cpp \
-    $$PROJECT_PATH/da-clue/regexp.cpp
+    $$PROJECT_PATH/da-clue/regexp.cpp \
+    $$PROJECT_PATH/da-clue/batchanalyzer.cpp
 
 
 

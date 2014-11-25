@@ -856,20 +856,26 @@ void Lvk::FE::MainWindow::onAboutMenuTriggered()
 {
     QString title = QString(tr("About %1...")).arg(APP_NAME);
 #ifdef DA_CONTEST
-    QString text = QString(tr(
+    QString text = QObject::trUtf8(
         "<p><b>%1 %2</b><br/>Rev: %3</p>"
-        "<p>Developed by LVK in conjuntion with FaMAF - UNC for the Manuel Sadosky Foundation</p>"
-        "<a href=\"http://%4\">www.lvklabs.com</a>"
-        "<br/><a href=\"http://www.famaf.unc.edu.ar/\">www.famaf.unc.edu.ar</a>"
-        "<br/><a href=\"http://www.fundacionsadosky.org.ar\">www.fundacionsadosky.org.ar</a>"
-        "<br/><p>Chatbot is free software: you can redistribute it and/or modify "
+        "<p>This program is used by the "
+        "<a href=\"http://www.daleaceptar.gob.ar/\">Desaf\xc3\xado Dale Aceptar</a>. "
+        "It was funded by the "
+        "<a href=\"http://www.fundacionsadosky.org.ar\">Fundaci\xc3\xb3n Dr. Manuel Sadosky</a> "
+        "and the <a href=\"http://www.unc.edu.ar/\">Universidad Nacional de C\xc3\xb3rdoba</a> "
+        "and developed by the <a href=\"http://liis.famaf.unc.edu.ar/\">Research Group Logics, "
+        "Interaction and Intelligent Systems</a> "
+        "of the Facultad de Matem\xc3\xa1tica, Astronomia y F\xc3\xadsica (FaMAF) of the "
+        "Universidad Nacional de C\xc3\xb3""rdoba together with "
+        "<a href=\"http://%4\">LVK Labs</a>.</p>"
+        "<p>Chatbot is free software: you can redistribute it and/or modify "
         "it under the terms of the GNU General Public License as published by "
         "the Free Software Foundation, either version 3 of the License, or "
         "(at your option) any later version.</p>"
         "<p>Chatbot is distributed in the hope that it will be useful, "
         "but WITHOUT ANY WARRANTY; without even the implied warranty of "
         "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
-        "GNU General Public License for more details.</p>"))
+        "GNU General Public License for more details.</p>")
             .arg(APP_NAME)
             .arg(APP_VERSION_STR)
             .arg(QString(APP_VERSION_REV).mid(0, 30))

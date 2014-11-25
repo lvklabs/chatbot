@@ -17,7 +17,7 @@ else
 fi
 
 if [ -z "$target_os" ] || ! [ -d "$target_os" ]; then
-  show_usage $*
+  echo "ERROR: Unsupported OS type: " `uname` 
   exit 1
 fi
 
@@ -33,10 +33,12 @@ if [ -z "$pkg_name" ]; then
   exit 1
 fi
 
-echo "*************************"
-echo "Releasing chatbot v$pkg_version"
-echo "*************************"
+echo "**************************************************"
+echo "Releasing chatbot v$pkg_version" - Dale Aceptar
+echo "**************************************************"
 
+pkg_version="$pkg_version-clue"
+pkg_name="$pkg_name-clue"
 pkg_filename=$pkg_name.$pkg_format
 
 echo "Verifying if $pkg_filename already exists at $lvk_host/$pkg_host_path..."

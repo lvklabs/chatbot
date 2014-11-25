@@ -43,4 +43,6 @@
 
 #define SCRIPT_FILE_EXT                        "int"
 
+#define EXTRAS_DIR_SUFFIX                      "_extras"
+
 #endif // LVK_CMN_GLOBALSTRINGS_H

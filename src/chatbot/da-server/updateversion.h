@@ -78,7 +78,7 @@ struct UpdateVersion
     static UpdateVersion fromString(const QString &strVer)
     {
         UpdateVersion v(-1, -1);
-        QStringList tokens = strVer.split(".", QString::SkipEmptyParts);
+        QStringList tokens = strVer.split("-").at(0).split(".", QString::SkipEmptyParts);
         if (tokens.size() == 2 || tokens.size() == 3) {
             v._major = tokens[0].toInt();
             v._minor = tokens[1].toInt();

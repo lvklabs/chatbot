@@ -41,9 +41,9 @@ CONFIG(debug, debug|release) {
         QSSH_LIBS          = # TODO compile QSsh for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp_d
-        FREELING_LIBS      = -lmorfo_d -lfries -lomlet
+        FREELING_LIBS      = -lmorfo_d -lfries -lomlet -lpcre
         ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -lcrypto
+        OPENSSL_LIBS       = -lcrypto -ldl
         QSSH_LIBS          = -lBotan -lQSsh
     }
 } else {
@@ -61,9 +61,9 @@ CONFIG(debug, debug|release) {
         QSSH_LIBS          = # TODO compile QSsh for Mac
     } else {
         QXMPP_LIBS         = -lqxmpp
-        FREELING_LIBS      = -lmorfo -lfries -lomlet
+        FREELING_LIBS      = -lmorfo -lfries -lomlet -lpcre
         ZLIB_LIBS          = -lz
-        OPENSSL_LIBS       = -lcrypto
+        OPENSSL_LIBS       = -lcrypto  -ldl
         QSSH_LIBS          = -lBotan -lQSsh
     }
 }

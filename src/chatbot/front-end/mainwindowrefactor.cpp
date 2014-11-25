@@ -157,8 +157,8 @@ void Lvk::FE::MainWindowRefactor::updateTabsLayout(UiMode mode)
             addTab(ui->conversationsTab, QObject::tr("C&onversations"));
         #ifdef DA_CONTEST
             //addTab(ui->scoreTab,         QObject::tr("&Score"));
-        #endif
             addTab(ui->clueTab,          QObject::tr("C&lue"));
+        #endif
             removeTab(ui->verificationTab);
             break;
         }

@@ -97,8 +97,9 @@ inline QString getOSType()
 // Logger
 //--------------------------------------------------------------------------------------------------
 
-QFile * Lvk::Cmn::Logger::m_logFile = 0;
-QString Lvk::Cmn::Logger::m_strPid;
+QFile *   Lvk::Cmn::Logger::m_logFile = 0;
+QString   Lvk::Cmn::Logger::m_strPid;
+QtMsgType Lvk::Cmn::Logger::m_verbLevel = QtDebugMsg;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -162,6 +163,13 @@ void Lvk::Cmn::Logger::rotateLog(const QString &logFilename, qint64 maxSize)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::Cmn::Logger::setVerboseLevel(QtMsgType verbLevel)
+{
+    m_verbLevel = verbLevel;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Cmn::Logger::msgHandler(QtMsgType type, const char *msg)
 {
     m_logFile->write(QDateTime::currentDateTime().toString(DATE_TIME_LOG_FORMAT).toUtf8());
@@ -171,24 +179,30 @@ void Lvk::Cmn::Logger::msgHandler(QtMsgType type, const char *msg)
 
     switch (type) {
     case QtDebugMsg:
-#ifndef QT_NO_DEBUG
-        std::cout << DEBUG_STR << msg << std::endl;
-#endif
+        if (type >= m_verbLevel) {
+            std::cout << DEBUG_STR << msg << std::endl;
+        }
         m_logFile->write(DEBUG_STR);
         break;
 
     case QtWarningMsg:
-        std::cerr << WARNING_STR << msg << std::endl;
+        if (type >= m_verbLevel) {
+            std::cerr << WARNING_STR << msg << std::endl;
+        }
         m_logFile->write(WARNING_STR);
         break;
 
     case QtCriticalMsg:
-        std::cerr << CRITICAL_STR << msg << std::endl;
+        if (type >= m_verbLevel) {
+            std::cerr << CRITICAL_STR << msg << std::endl;
+        }
         m_logFile->write(CRITICAL_STR);
         break;
 
     case QtFatalMsg:
-        std::cerr << FATAL_STR << msg << std::endl;
+        if (type >= m_verbLevel) {
+            std::cerr << FATAL_STR << msg << std::endl;
+        }
         m_logFile->write(FATAL_STR);
         break;
     }

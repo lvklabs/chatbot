@@ -31,36 +31,25 @@
  * \brief The WindowBootstrap class is in charge of bootstraping the application window.
  *
  * The WindowBootstrap is a helper class used by the application entry point, that is main().
- * The class must be constructed with the application command line arguments. If the
- * first parameter does not starts with '-' then a Chatbot file is assumed and the file is
- * opened. If no Chatbot file is found then the "welcome" window is displayed.
  */
 class WindowBootstrap
 {
 public:
 
     /**
-     * Constructs a WindowBootstrap class with command line arguments \a argc and \a argv.
-     * According the parameters the proper window is constructed and displayed. If the
-     * first parameter does not starts with '-' then a Chatbot file is assumed and the file is
-     * opened. If no Chatbot file is found then the "welcome" window is displayed.
+     * Constructs a WindowBootstrap class and opens the given file.
+     * If no Chatbot file is provided the "welcome" window is displayed.
      */
-    WindowBootstrap(int argc, char *argv[])
+    WindowBootstrap(const QString &filename)
         : m_w(0)
     {
-        QString filename;
-
-        if (argc > 1 && argv[1][0] != '-') {
+        if (!filename.isEmpty()) {
             m_w = new MainWindow();
-            filename = argv[1];
+            m_w->show();
+            dynamic_cast<MainWindow*>(m_w)->openFile(filename);
         } else {
             m_w = new WelcomeWindow();
-        }
-
-        m_w->show();
-
-        if (!filename.isEmpty()) {
-            dynamic_cast<MainWindow*>(m_w)->openFile(filename);
+            m_w->show();
         }
     }
 

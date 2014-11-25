@@ -119,7 +119,7 @@ inline int sendTcpMessage(const QByteArray &data, const QString &host, unsigned 
         qDebug() << "sendTcpMessage OK";
 
     } catch (int err) {
-        qWarning() << "sendTcpMessage error" << err;
+        qDebug() << "sendTcpMessage error" << err;
         bytes = -1;
     }
 

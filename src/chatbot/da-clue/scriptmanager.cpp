@@ -250,6 +250,27 @@ bool Lvk::Clue::ScriptManager::import(const QString &filename)
 
 //--------------------------------------------------------------------------------------------------
 
+bool Lvk::Clue::ScriptManager::remove(const QString &filename)
+{
+    qDebug() << "ScriptManager: Removing file" << filename;
+
+    QString rmFile = m_clueBasePath + QFileInfo(filename).fileName();
+
+    if (!QFile::exists(rmFile)) {
+        setError(Clue::FileNotFoundError, rmFile);
+        return false;
+    }
+
+    if (!QFile::remove(rmFile)) {
+        setError(Clue::CannotRemoveError, rmFile);
+        return false;
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::Clue::ScriptManager::clear()
 {
     m_curChar.clear();
@@ -306,14 +327,19 @@ void Lvk::Clue::ScriptManager::setError(Clue::ScriptError err, const QString &fi
         m_errMsg = QObject::tr("Cannot overwrite file '%1'").arg(filename);
         break;
 
+    case Clue::CannotRemoveError:
+        m_errMsg = QObject::tr("Cannot remove file '%1'").arg(filename);
+        break;
+
     case Clue::UnknownError:
     default:
         m_errMsg = QObject::tr("Unknown error while parsing file '%1'").arg(filename);
         break;
     }
 
-    if (!m_errMsg.isEmpty()) {
-        qCritical() << "ScriptManager: " << m_errMsg;
+    if (!m_errMsg.isEmpty()) { 
+        (err == Clue::CharacterMismatchError ? qDebug() : qCritical())
+                << "ScriptManager: " << m_errMsg;
     }
 }
 

@@ -70,6 +70,11 @@ public:
      */
     static void rotateLog(const QString &logFilename, qint64 maxSize = 1024*1024);
 
+    /**
+     * Sets the level of verbosity for information printed in the screen. By default QtDebugMsg.
+     */
+    static void setVerboseLevel(QtMsgType verbLevel);
+
 private:
     Logger();
     Logger(Logger&);
@@ -78,6 +83,7 @@ private:
 
     static QFile *m_logFile;
     static QString m_strPid;
+    static QtMsgType m_verbLevel;
 };
 
 /// @}

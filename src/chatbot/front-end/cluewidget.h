@@ -98,6 +98,10 @@ signals:
      */
     void showRule(quint64 ruleId);
 
+private slots:
+
+    void onRemoveScript(const QString &filename);
+
 private:
     Ui::ClueWidget *ui;
     BE::AppFacade  *m_appFacade;

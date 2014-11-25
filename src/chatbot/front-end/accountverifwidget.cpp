@@ -18,7 +18,13 @@ Lvk::FE::AccountVerifWidget::AccountVerifWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+#ifdef DA_CONTEST
     loadCharacters();
+#else
+    ui->charsComboBox->setVisible(false);
+    ui->characterLabel->setVisible(false);
+#endif // DA_CONTEST
+
 
     clear();
 
@@ -36,6 +42,7 @@ Lvk::FE::AccountVerifWidget::~AccountVerifWidget()
 
 void Lvk::FE::AccountVerifWidget::loadCharacters()
 {
+#ifdef DA_CONTEST
     ui->charsComboBox->clear();
     ui->charsComboBox->addItem(tr("(Choose one)"));
 
@@ -44,6 +51,8 @@ void Lvk::FE::AccountVerifWidget::loadCharacters()
             ui->charsComboBox->addItem(c.name);
         }
     }
+#endif // DA_CONTEST
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -284,7 +293,9 @@ inline bool Lvk::FE::AccountVerifWidget::gtalkEnabled() const
 #ifdef DA_CONTEST
     return false;
 #else
-    return true;
+    // Gtalk does not use XMPP anymore and it is not supported
+    //return true;
+    return false;
 #endif
 }
 
@@ -304,9 +315,11 @@ void Lvk::FE::AccountVerifWidget::clear()
 
 void Lvk::FE::AccountVerifWidget::setChangeAccountMode(bool changeMode)
 {
+    ui->verifyLaterButton->setVisible(!changeMode);
+#ifdef DA_CONTEST
     ui->charsComboBox->setVisible(!changeMode);
     ui->characterLabel->setVisible(!changeMode);
-    ui->verifyLaterButton->setVisible(!changeMode);
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -324,9 +337,11 @@ bool Lvk::FE::AccountVerifWidget::verifyCharacter()
 
 void Lvk::FE::AccountVerifWidget::setCurrentCharacter()
 {
+#ifdef DA_CONTEST
     if (ui->charsComboBox->isVisible()) {
         m_appFacade->setCurrentCharacter(ui->charsComboBox->currentText());
         m_appFacade->save();
     }
+#endif // DA_CONTEST
 }
 

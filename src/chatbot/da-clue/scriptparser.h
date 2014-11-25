@@ -70,6 +70,7 @@ private:
     QString m_errMsg;
 
     bool deobfuscate(QByteArray &data);
+    void removeComments(QString &xml);
     bool parseRoot(QDomElement &root, Clue::Script &script);
     bool parseHeader(QDomElement &head, Clue::Script &script);
     bool parseBody(QDomElement &body, Clue::Script &script);

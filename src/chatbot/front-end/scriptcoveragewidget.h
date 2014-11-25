@@ -112,12 +112,18 @@ signals:
      */
     void showRule(quint64 ruleId);
 
+    /**
+     * This signal is emitted whenever the "Remove" option of the context menu has been selected.
+     */
+    void scriptRemoved(const QString &filename);
+
 private slots:
 
     void onScriptRowChanged(const QModelIndex &, const QModelIndex &);
     void onAnchorClicked(const QUrl &url);
     void onShowRuleDefClicked();
     void onSplitterMoved(int, int);
+    void onCustomMenu(const QPoint &pos);
 
 private:
     ScriptCoverageWidget(const ScriptCoverageWidget&);
@@ -133,7 +139,7 @@ private:
 
     void setupTables();
     void connectSignals();
-    void addScriptRow(const QString &filename, float coverage);
+    void addScriptRow(int i, const QString &filename, float coverage);
     void showScript(int i);
     void showRuleUsed(int i, int j);
     void showHint(const QString &hint);

@@ -53,8 +53,8 @@ include(chat-adapter/chat-adapter.pri)
 include(crypto/crypto.pri)
 include(stats/stats.pri)
 include(da-server/da-server.pri)
-da_contest:include(da-clue/da-clue.pri)
 da_contest:include(da-contest.pri)
+da_contest:include(da-clue/da-clue.pri)
 include(3rd-party.pri)
 
 

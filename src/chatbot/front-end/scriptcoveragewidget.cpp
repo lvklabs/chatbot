@@ -22,6 +22,9 @@
 #include "front-end/scriptcoveragewidget.h"
 #include "ui_scriptcoveragewidget.h"
 
+#include <QMenu>
+#include <QMessageBox>
+
 enum ScriptsTableColumns
 {
     ScriptNameCol,
@@ -29,14 +32,19 @@ enum ScriptsTableColumns
     ScriptsTableTotalColumns
 };
 
+enum ScriptRole
+{
+    ScriptIdRole = Qt::UserRole
+};
+
+
 const QString HTML_SCRIPT_START     = "<html><header><style></style></head><body>";
 const QString HTML_SCRIPT_LINE      = "<a href=\"%6,%7\" style=\"%1\"><b>%2:</b> %3<br/>"
                                        "<b>%4:</b> %5</a><br/>";
 const QString HTML_SCRIPT_LINE_OK   = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#000000");
-const QString HTML_SCRIPT_LINE_ERR1 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#017e82");
-const QString HTML_SCRIPT_LINE_ERR2 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#ff2f00");
+const QString HTML_SCRIPT_LINE_ERR1 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#772b77");
+const QString HTML_SCRIPT_LINE_ERR2 = HTML_SCRIPT_LINE.arg("text-decoration:none;color:#ff0000");
 const QString HTML_SCRIPT_END       = "</body></html>";
-
 
 //--------------------------------------------------------------------------------------------------
 // Helpers
@@ -89,6 +97,7 @@ Lvk::FE::ScriptCoverageWidget::~ScriptCoverageWidget()
 void Lvk::FE::ScriptCoverageWidget::setupTables()
 {
     // Date-Contact table
+    ui->scriptsTable->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->scriptsTable->setRowCount(0);
     ui->scriptsTable->setColumnCount(ScriptsTableTotalColumns);
     ui->scriptsTable->setSortingEnabled(true);
@@ -108,6 +117,10 @@ void Lvk::FE::ScriptCoverageWidget::setupTables()
 
 void Lvk::FE::ScriptCoverageWidget::connectSignals()
 {
+    connect(ui->scriptsTable,
+            SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(onCustomMenu(QPoint)));
+
     connect(ui->scriptsTable->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(onScriptRowChanged(QModelIndex,QModelIndex)));
@@ -159,6 +172,35 @@ void Lvk::FE::ScriptCoverageWidget::onSplitterMoved(int, int)
 
 //--------------------------------------------------------------------------------------------------
 
+void Lvk::FE::ScriptCoverageWidget::onCustomMenu(const QPoint &pos)
+{
+    QTableWidgetItem *item = ui->scriptsTable->itemAt(pos);
+
+    if (item) {
+        QPoint gpos = ui->scriptsTable->viewport()->mapToGlobal(pos);
+
+        QMenu menu;
+        menu.addAction(tr("Remove"));
+
+        QAction* selItem = menu.exec(gpos);
+        if (selItem) {
+            QString filename = ui->scriptsTable->item(item->row(), ScriptNameCol)->text();
+            QString title = tr("Remove script");
+            QString msg = tr("Are you sure you want to remove the script '%1'?").arg(filename);
+
+            int selButton = QMessageBox::question(this, title, msg, QMessageBox::Ok,
+                                                  QMessageBox::Cancel);
+
+            if (selButton == QMessageBox::Ok) {
+                ui->scriptsTable->removeRow(item->row());
+                emit scriptRemoved(filename);
+            }
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList &scripts,
                                                        const Lvk::BE::Rule *root)
 {
@@ -168,11 +210,16 @@ void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList 
     m_root = root; // CHECK deep copy? !!!
 
     float globalCov = 0.0;
+    int i = 0;
+
+    ui->scriptsTable->setSortingEnabled(false);
 
     foreach (const Clue::AnalyzedScript &s, scripts) {
-        addScriptRow(s.filename, s.coverage);
+        addScriptRow(i++, s.filename, s.coverage);
         globalCov += s.coverage;
     }
+
+    ui->scriptsTable->setSortingEnabled(true);
 
     if (scripts.size() > 0) {
         globalCov /= scripts.size();
@@ -180,7 +227,6 @@ void Lvk::FE::ScriptCoverageWidget::setAnalyzedScripts(const Clue::AnalyzedList 
     } else {
         ui->coverageLabel->clear();
     }
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -208,12 +254,13 @@ void Lvk::FE::ScriptCoverageWidget::setCategoryVisible(bool visible)
 
 //--------------------------------------------------------------------------------------------------
 
-void Lvk::FE::ScriptCoverageWidget::addScriptRow(const QString &filename, float coverage)
+void Lvk::FE::ScriptCoverageWidget::addScriptRow(int i, const QString &filename, float coverage)
 {
     int r = ui->scriptsTable->rowCount();
     ui->scriptsTable->insertRow(r);
     ui->scriptsTable->setItem(r, ScriptNameCol,     new QTableWidgetItem(filename));
     ui->scriptsTable->setItem(r, ScriptCoverageCol, new QTableWidgetItem(covFormat(coverage)));
+    ui->scriptsTable->item(r, ScriptNameCol)->setData(ScriptIdRole, QVariant(i));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -227,7 +274,7 @@ void Lvk::FE::ScriptCoverageWidget::clear()
     ui->scriptsTable->setRowCount(0);
     ui->coverageLabel->clear();
     ui->ruleView->clear();
-    ui->scriptView->setText(tr("(No script selected)"));
+    ui->scriptView->setHtml(tr("(No script selected)"));
     ui->categoryLabel->clear();
     ui->categoryGroupBox->setVisible(false);
 
@@ -242,9 +289,9 @@ void Lvk::FE::ScriptCoverageWidget::onScriptRowChanged(const QModelIndex &curren
     QTableWidgetItem *item = ui->scriptsTable->item(current.row(), ScriptNameCol);
 
     if (item) {
-        showScript(current.row());
+        showScript(item->data(ScriptIdRole).toInt());
     } else {
-        ui->scriptView->setText(tr("(No script selected)"));
+        ui->scriptView->setHtml(tr("(No script selected)"));
     }
 
     showRuleUsedColumn(false);
@@ -272,8 +319,14 @@ void Lvk::FE::ScriptCoverageWidget::onShowRuleDefClicked()
 
 void Lvk::FE::ScriptCoverageWidget::showScript(int i)
 {
+    qDebug() << "ScriptCoverageWidget: Showing script #" << i;
+
+    if (i < 0 || i >= m_scripts.size()) {
+        ui->scriptView->setHtml(tr("Error: Wrong script index"));
+        return;
+    }
     if (m_scripts[i].isEmpty()) {
-        ui->scriptView->setText(tr("(Empty script)"));
+        ui->scriptView->setHtml(tr("(Empty script)"));
         return;
     }
 
@@ -297,13 +350,18 @@ void Lvk::FE::ScriptCoverageWidget::showScript(int i)
 
     html += HTML_SCRIPT_END;
 
-    ui->scriptView->setText(html);
+    ui->scriptView->setHtml(html);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ScriptCoverageWidget::showRuleUsed(int i, int j)
 {
+    if (i >= m_scripts.size() || j >= m_scripts[i].size()) {
+        qCritical() << "ScriptCoverageWidget: Invalid indices" << i << j;
+        return;
+    }
+
     Clue::AnalyzedLine line = m_scripts[i][j];
 
     const BE::Rule *rule = findRule(line.ruleId);

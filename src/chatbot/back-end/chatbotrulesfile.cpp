@@ -219,7 +219,7 @@ bool Lvk::BE::ChatbotRulesFile::read(QFile &file)
     istream >> magicNumber;
 
     if (magicNumber != CRF_MAGIC_NUMBER) {
-        qCritical("Cannot read rules: Invalid magic number");
+        qCritical() << "Cannot read rules: Invalid magic number in file" << file.fileName();
         return false;
     }
 
@@ -227,7 +227,7 @@ bool Lvk::BE::ChatbotRulesFile::read(QFile &file)
     istream >> version;
 
     if (version > CRF_FILE_FORMAT_VERSION) {
-        qCritical("Cannot read rules: Invalid format version");
+        qCritical() << "Cannot read rules: Invalid format version in file" << file.fileName();
         return false;
     }
 
@@ -239,7 +239,7 @@ bool Lvk::BE::ChatbotRulesFile::read(QFile &file)
     istream >> m_nextRuleId;
 
     if (istream.status() != QDataStream::Ok) {
-        qCritical("Cannot read rules: Invalid file format");
+        qCritical() << "Cannot read rules: Invalid file format in file" << file.fileName();
         return false;
     }
 

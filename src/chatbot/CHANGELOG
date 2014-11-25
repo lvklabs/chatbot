@@ -1,5 +1,27 @@
+v2.8
+ - Fixed connection error to Fb chat
+ - Merged clue branch
+
+v2.7
+ - Updated DA certificates
+
+v2.6
+ - Removed copyright notice from Chatbot.LICENSE
+ - Added username to the batch mode output
+
+v2.5
+ - Added batch mode
+ - Added leeme.txt
+ - New about message for the English version
+
+v2.4
+ - Added 'remove' option to the context (right-click) menu of the scripts list
+ - Added support for comments in the script file format
+ - Fixed invalid links in the script view
+
 v2.3
- - Fixed bug github#36
+ - Fixed bug github#36, github#37
+ - New colors in the 'clue' tab
 
 v2.2
  - Updated certificate CA

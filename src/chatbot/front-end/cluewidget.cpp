@@ -21,13 +21,16 @@
 
 #include "front-end/cluewidget.h"
 #include "front-end/detailsdialog.h"
-#include "da-clue/scriptmanager.h"
-#include "da-clue/clueengine.h"
-#include "da-clue/scripterror.h"
 #include "common/globalstrings.h"
 #include "common/settings.h"
 #include "common/settingskeys.h"
 #include "ui_cluewidget.h"
+
+#ifdef DA_CONTEST
+# include "da-clue/scriptmanager.h"
+# include "da-clue/clueengine.h"
+# include "da-clue/scripterror.h"
+#endif // DA_CONTEST
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -43,10 +46,11 @@ Lvk::FE::ClueWidget::ClueWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->refreshButton, SIGNAL(clicked()),         SLOT(refresh()));
-    connect(ui->importButton,  SIGNAL(clicked()),         SLOT(import()));
-    connect(ui->uploadButton,  SIGNAL(clicked()),         SIGNAL(upload()));
-    connect(ui->scripts,       SIGNAL(showRule(quint64)), SIGNAL(showRule(quint64)));
+    connect(ui->refreshButton, SIGNAL(clicked()),              SLOT(refresh()));
+    connect(ui->importButton,  SIGNAL(clicked()),              SLOT(import()));
+    connect(ui->uploadButton,  SIGNAL(clicked()),              SIGNAL(upload()));
+    connect(ui->scripts,       SIGNAL(showRule(quint64)),      SIGNAL(showRule(quint64)));
+    connect(ui->scripts,       SIGNAL(scriptRemoved(QString)), SLOT(onRemoveScript(QString)));
 
     loadSettings();
 
@@ -75,6 +79,7 @@ void Lvk::FE::ClueWidget::setAppFacade(BE::AppFacade *appFacade)
 
 void Lvk::FE::ClueWidget::refresh()
 {
+#ifdef DA_CONTEST
     if (m_appFacade && !m_appFacade->currentCharacter().isEmpty()) {
         ui->charaterBox->setTitle(tr("Character: ") + m_appFacade->currentCharacter());
 
@@ -89,12 +94,14 @@ void Lvk::FE::ClueWidget::refresh()
     } else {
         clear();
     }
+#endif // DA_CONTEST
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ClueWidget::import()
 {
+#ifdef DA_CONTEST
     QString caption = tr("Select the scripts files to import");
     QString dir = ".";
     QString filter = "*." SCRIPT_FILE_EXT ";;*.*";
@@ -114,20 +121,49 @@ void Lvk::FE::ClueWidget::import()
     if (count > 0) {
         refresh();
     }
+#endif // DA_CONTEST
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Lvk::FE::ClueWidget::onRemoveScript(const QString &filename)
+{
+#ifdef DA_CONTEST
+    QString errMsg;
+
+    if (m_appFacade) {
+        if (m_appFacade->removeScript(filename)) {
+            // nothing to do
+        } else {
+            m_appFacade->error(&errMsg);
+        }
+    } else {
+        errMsg = tr("Could not remove file '%1'.\nInternal error.");
+    }
+
+    if (errMsg.size() > 0) {
+        QMessageBox::critical(this, tr("Error"), errMsg.arg(filename));
+    }
+
+    refresh();
+#endif // DA_CONTEST
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ClueWidget::clear()
 {
+#ifdef DA_CONTEST
     ui->charaterBox->setTitle(tr("Character: (none)"));
     ui->scripts->clear();
+#endif // DA_CONTEST
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ClueWidget::showError(const QString &filename)
 {
+#ifdef DA_CONTEST
     QString details;
     int err = m_appFacade->error(&details);
 
@@ -143,12 +179,14 @@ void Lvk::FE::ClueWidget::showError(const QString &filename)
     dialog.setCancelButtonVisible(false);
     dialog.setPixmap(QStyle::SP_MessageBoxCritical);
     dialog.exec();
+#endif // DA_CONTEST
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Lvk::FE::ClueWidget::loadSettings()
 {
+#ifdef DA_CONTEST
     QString colsw = Cmn::Settings().value(SETTING_CLUE_WIDGET_COLS_W).toString();
 
     if (colsw.isEmpty()) {
@@ -165,6 +203,7 @@ void Lvk::FE::ClueWidget::loadSettings()
     if (!sizes.isEmpty()) {
         ui->scripts->setSplitterSizes(sizes);
     }
+#endif // DA_CONTEST
 }
 
 //--------------------------------------------------------------------------------------------------

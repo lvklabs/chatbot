@@ -36,10 +36,14 @@
 #include "back-end/target.h"
 #include "back-end/rloghelper.h"
 #include "back-end/accountverifier.h"
-#include "da-server/remotelogger.h"
-#include "da-clue/character.h"
-#include "da-clue/scriptmanager.h"
-#include "da-clue/analyzedscript.h"
+
+#ifdef DA_CONTEST
+# include "da-server/remotelogger.h"
+# include "da-clue/character.h"
+# include "da-clue/scriptmanager.h"
+# include "da-clue/analyzedscript.h"
+#endif
+
 #include "common/conversation.h"
 
 class QFile;
@@ -381,6 +385,8 @@ public:
      */
     QString getTempFileForUpload();
 
+#ifdef DA_CONTEST
+
     /**
      * Returns the list of available characters
      */
@@ -418,10 +424,18 @@ public:
     bool importScript(const QString &scriptFile);
 
     /**
+     * Removes \a scriptFile.
+     * Returns true on success. Otherwise; false.
+     */
+    bool removeScript(const QString &scriptFile);
+
+    /**
      * Returns the last error. So far this only works for methods related with scripts.
      * TODO use this for all methods.
      */
     int error(QString *errMsg = 0);
+
+#endif // DA_CONTEST
 
 signals:
 
@@ -485,7 +499,9 @@ private:
     unsigned m_nlpOptions;
     RlogHelper m_rlogh;
     AccountVerifier m_account;
+#ifdef DA_CONTEST
     Clue::ScriptManager m_scriptMgr;
+#endif
 
     void init();
     bool setDefaultNlpOptions();

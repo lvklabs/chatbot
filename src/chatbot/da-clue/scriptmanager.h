@@ -107,6 +107,12 @@ public:
     bool import(const QString &filename);
 
     /**
+     * Removes the script pointed by filaname. The script must exists in the scripts folder.
+     * Returns true on success. Otherwise; returns false.
+     */
+    bool remove(const QString &filename);
+
+    /**
      * Clears the scripts loaded
      */
     void clear();
